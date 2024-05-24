@@ -1,13 +1,12 @@
 import { Option, Select } from '@mui/joy'
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setSpecialization } from 'src/redux/actions/Specilization.Action'
 import _ from 'underscore'
 
-const JoySpecializationSelect = ({ value, setValue, course, specdisable }) => {
+const JoySpecializationSelect = ({ value, setValue, course, setSpecName }) => {
 
     const dispatch = useDispatch()
-    const [flag, setFlag] = useState(0)
 
     useEffect(() => dispatch(setSpecialization()), [dispatch])
 
@@ -16,22 +15,12 @@ const JoySpecializationSelect = ({ value, setValue, course, specdisable }) => {
 
     const filterarr = specList?.filter(val => val.cour_slno === course)
 
-    const Onclick = useCallback((value) => {
-        if (value !== null) {
-            setFlag(1)
-            setValue(value)
-        }
-        else {
-            setValue(0)
-        }
-        return
-    }, [value, setValue])
-
     return (
         <Select
             value={value}
             onChange={(event, newValue) => {
-                Onclick(newValue);
+                setValue(newValue);
+                setSpecName(event.target.innerText)
             }}
             size='md'
             variant='outlined'

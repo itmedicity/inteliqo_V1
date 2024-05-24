@@ -28,7 +28,7 @@ export const employeeRecordUpdationUserChoice = async (newcontractdetl, oldPerso
 
 }
 
-export const updateoldAttndanceDetail = async (attendancedetls, punchmast) => {
+export const updateoldAttndanceDetail = async (attendancedetls, punchmast, dutyplanData) => {
     /**attendance details updation**/
 
     if (punchmast.length === 0) {
@@ -46,12 +46,18 @@ export const updateoldAttndanceDetail = async (attendancedetls, punchmast) => {
             const result = await axioslogin.patch('/empcontract/update/punchmast', punchmast)
             const { success } = result.data
             if (success === 1) {
-                return { status: 1, message: "updated successfully" }
+                const result = await axioslogin.patch('/empcontract/update/dutyplan', dutyplanData)
+                const { success } = result.data
+                if (success === 1) {
+                    return { status: 1, message: "updated successfully" }
+                } else {
+                    return { status: 0, message: "Error While Updating Dutyplan Data" }
+                }
             } else {
-                return { status: 0, message: "Error Updating Attendance" }
+                return { status: 0, message: "Error Updating Punchmaster Data" }
             }
         } else {
-            return { status: 0, message: "Error Updating Attendance" }
+            return { status: 0, message: "Error Saving Attendance Data" }
         }
     }
 }
@@ -67,7 +73,7 @@ export const updateArrearSalary = async (arreardetails) => {
     }
 }
 
-export const updateEmployeeMasterTable = async (updateempMast, no, newempId, updateSlno) => {
+export const updateEmployeeMasterTable = async (updateempMast, no, updateSlno) => {
     let messsage = { modelStatus: 0 }
     const delteId = {
         emp_slno: updateSlno
@@ -87,8 +93,8 @@ export const updateEmployeeMasterTable = async (updateempMast, no, newempId, upd
                     emp_no: em_no,
                     emp_id: em_id,
                     emp_status: 1,
-                    emp_username: newempId,
-                    emp_password: newempId,
+                    emp_username: updateempMast.em_no,
+                    emp_password: updateempMast.em_no,
                     emp_email: em_email,
                     create_user: employeeNumber()
                 }

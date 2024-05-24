@@ -1,19 +1,28 @@
 import { Button, Checkbox, CssVarsProvider, Sheet, Tooltip } from '@mui/joy'
 import { Box, FormControl, MenuItem, Select, TextField } from '@mui/material'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import moment from 'moment'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import _ from 'underscore'
 import { ToastContainer } from 'react-toastify'
-import { addHours, format, subHours } from 'date-fns'
+import { addHours, addMinutes, format, isAfter, isBefore, subHours, isEqual, addDays, startOfMonth, lastDayOfMonth } from 'date-fns'
+import { setCommonSetting } from 'src/redux/actions/Common.Action'
 // import { CalculationFun } from './CommonRqstFun'
 
-const OneHourRequest = () => {
+const OneHourRequest = ({ count, setCount }) => {
+
+    const reduxDispatch = useDispatch()
+
+    useEffect(() => {
+        reduxDispatch(setCommonSetting())
+    }, [reduxDispatch])
+
 
     const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
@@ -22,7 +31,7 @@ const OneHourRequest = () => {
 
     // const state = useSelector((state) => state.getCommonSettings, _.isEqual)
 
-    const [fromDate, setFromDate] = useState(moment(new Date()))
+    const [fromDate, setFromDate] = useState(moment())
     const [deptShift, setDeptShift] = useState([])
     const [selectedShift, setSelectedShift] = useState(0)
 
@@ -38,11 +47,14 @@ const OneHourRequest = () => {
     const [punchInTime, setPunchInTime] = useState(0);
     const [punchOutTime, setPunchOutTime] = useState(0);
     const [reason, setReason] = useState('')
+    const [punchCheck, setPunchcheck] = useState(0)
+    const [punchData, setPunchData] = useState([])
 
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
-
+    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
+    const { cmmn_grace_period, comp_hour_count } = state;
 
     useEffect(() => {
         const getdepartmentShift = async () => {
@@ -105,30 +117,41 @@ const OneHourRequest = () => {
 
                 // GET SHIFT DATA
                 const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
-                const { shft_chkin_time, shft_chkout_time } = selectedShiftTiming[0]
+                const { shft_chkin_time, shft_chkout_time, shft_cross_day } = selectedShiftTiming[0]
 
-                const inTime = moment(shft_chkin_time).format('HH:mm:ss');
-                const outTime = moment(shft_chkout_time).format('HH:mm:ss');
+                const inTime = moment(shft_chkin_time).format('HH:mm');
+                // const outTime = moment(shft_chkout_time).format('HH:mm');
 
                 setCheckin(moment(shft_chkin_time).format('hh:mm'))
                 setCheckout(moment(shft_chkout_time).format('hh:mm'))
 
                 const chekIn = `${moment(fromDate).format('YYYY-MM-DD')} ${inTime}`;
-                const chekOut = `${moment(fromDate).format('YYYY-MM-DD')} ${outTime}`;
+                // const chekOut = `${moment(fromDate).format('YYYY-MM-DD')} ${outTime}`;
+
+                const chekOut = shft_cross_day === 0 ? `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}` :
+                    `${format(addDays(new Date(fromDate), 1), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}`;
+
                 setPunchInTime(chekIn)
                 setPunchOutTime(chekOut)
 
+                // const postDataForpunchMaster = {
+                //     date2:  shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                //     date1: shft_cross_day === 0 ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                //     em_no: em_no
+                // }
                 const postDataForpunchMaster = {
-                    date1: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
-                    date2: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
+                    date2: format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                    date1: format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
                     em_no: em_no
                 }
+
                 //FETCH THE PUNCH TIME FROM PUNCH DATA
                 const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
-                const { success } = result.data;
+                const { success, data } = result.data;
                 if (success === 1) {
-                    // setPunchDetl(data)
+                    setPunchData(data)
                     succesNofity('Done , Select The Punching Info')
+                    setPunchcheck(1)
                 } else {
                     //no record
                     warningNofity('Punching Data Not Found')
@@ -153,6 +176,7 @@ const OneHourRequest = () => {
             check_out: punchOutTime,
             shift_id: selectedShift,
             reason: reason,
+            attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
             incharge_req_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
                 (authorization_incharge === 1 && incharge === 0) ? 1 :
                     (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
@@ -181,38 +205,147 @@ const OneHourRequest = () => {
         selectedShift, authorization_incharge, authorization_hod, hod, incharge,
         checkinBox, checkoutBox, empHodStat])
 
-    const submitRequest = async () => {
+    const holidayData = useMemo(() => {
+        return {
+            em_id: em_id,
+            date: moment(fromDate).format('YYYY-MM-DD')
+        }
+    }, [fromDate, em_id])
+
+    const submitRequest = useCallback(async () => {
         if (checkinBox === false && checkoutBox === false) {
             warningNofity("Check In || Check Out Needs To Check")
         }
         else if (reason === '') {
             warningNofity("Reason Is Mandatory")
+        } else if (punchCheck === 0) {
+            warningNofity("Please Select Punch Data Button!!")
         }
         else {
-            // CalculationFun(punchDetl, checkinBox, checkoutBox, punchInTime, punchOutTime)
-            const result = await axioslogin.post('/CommonReqst', postData)
-            const { message, success } = result.data;
-            if (success === 1) {
-                succesNofity(message)
-                setSelectedShift(0)
-                setFromDate(moment(new Date()))
-                setReason('')
-                setPunchInTime(0)
-                setPunchOutTime(0)
-                setCheckInCheck(false)
-                setCheckOutCheck(false)
+            const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+            const dateCheck = {
+                month: monthStartDate,
+                section: em_dept_section
+            }
+            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
+            const { success, data } = checkPunchMarkingHr.data
+            if (success === 0 || success === 1) {
+                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+
+                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                    warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
+                } else {
+                    //check in time correct
+                    if (checkinBox === true) {
+                        const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd H:mm')
+                        const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd H:mm')
+                        const result = punchData.find((val) => val)
+                        const dd = isBefore(new Date(result.punch_time), new Date(relaxTime)) && isAfter(new Date(result.punch_time), new Date(punchInTime)) || isEqual(new Date(result.punch_time), new Date(punchInTime)) ? 1 : 0
+                        if (dd === 0) {
+                            warningNofity("Can't Apply For One Hour Request!!");
+                            setSelectedShift(0)
+                            setFromDate(moment(new Date()))
+                            setReason('')
+                            setPunchInTime(0)
+                            setPunchOutTime(0)
+                            setCheckInCheck(false)
+                            setCheckOutCheck(false)
+                        } else {
+                            // CalculationFun(punchDetl, checkinBox, checkoutBox, punchInTime, punchOutTime)
+                            const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
+                            const { success, data } = result.data;
+                            if (success === 1) {
+                                const { holiday_status } = data[0]
+                                if (holiday_status === 1) {
+                                    warningNofity("Cannot Apply for One request on Holiday")
+                                } else {
+                                    const result = await axioslogin.post('/CommonReqst', postData)
+                                    const { message, success } = result.data;
+                                    if (success === 1) {
+                                        succesNofity(message)
+                                        setCount(count + 1)
+                                        setSelectedShift(0)
+                                        setFromDate(moment(new Date()))
+                                        setReason('')
+                                        setPunchInTime(0)
+                                        setPunchOutTime(0)
+                                        setCheckInCheck(false)
+                                        setCheckOutCheck(false)
+                                    } else {
+                                        warningNofity(message)
+                                        setSelectedShift(0)
+                                        setFromDate(moment(new Date()))
+                                        setReason('')
+                                        setPunchInTime(0)
+                                        setPunchOutTime(0)
+                                        setCheckInCheck(false)
+                                        setCheckOutCheck(false)
+                                    }
+                                }
+                            } else {
+                                warningNofity("Duty plan data not found, Contact HRD")
+                            }
+                        }
+                    } else {
+
+                        const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd H:mm')
+                        const result = punchData.findLast((val) => val)
+                        const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) || isEqual(new Date(result.punch_time), new Date(outtime)) ? 1
+                            : 0
+
+                        if (dd === 0) {
+                            warningNofity("Can't Apply For One Hour Request!!");
+                            setSelectedShift(0)
+                            setFromDate(moment(new Date()))
+                            setReason('')
+                            setPunchInTime(0)
+                            setPunchOutTime(0)
+                            setCheckInCheck(false)
+                            setCheckOutCheck(false)
+                        } else {
+                            const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
+                            const { success, data } = result.data;
+                            if (success === 1) {
+                                const { holiday_status } = data[0]
+                                if (holiday_status === 1) {
+                                    warningNofity("Cannot Apply for One request on Holiday")
+                                } else {
+                                    const result = await axioslogin.post('/CommonReqst', postData)
+                                    const { message, success } = result.data;
+                                    if (success === 1) {
+                                        succesNofity(message)
+                                        setCount(count + 1)
+                                        setSelectedShift(0)
+                                        setFromDate(moment(new Date()))
+                                        setReason('')
+                                        setPunchInTime(0)
+                                        setPunchOutTime(0)
+                                        setCheckInCheck(false)
+                                        setCheckOutCheck(false)
+                                    } else {
+                                        warningNofity(message)
+                                        setSelectedShift(0)
+                                        setFromDate(moment(new Date()))
+                                        setReason('')
+                                        setPunchInTime(0)
+                                        setPunchOutTime(0)
+                                        setCheckInCheck(false)
+                                        setCheckOutCheck(false)
+                                    }
+                                }
+                            } else {
+                                warningNofity("Duty plan data not found, Contact HRD")
+                            }
+                        }
+                    }
+                }
             } else {
-                warningNofity(message)
-                setSelectedShift(0)
-                setFromDate(moment(new Date()))
-                setReason('')
-                setPunchInTime(0)
-                setPunchOutTime(0)
-                setCheckInCheck(false)
-                setCheckOutCheck(false)
+                errorNofity("Error getting PunchMarkingHR ")
             }
         }
-    }
+    }, [postData, checkinBox, checkoutBox, cmmn_grace_period, count, em_dept_section, fromDate, holidayData,
+        punchCheck, punchData, punchInTime, punchOutTime, reason, setCount])
 
     return (
         <Fragment>
@@ -222,11 +355,12 @@ const OneHourRequest = () => {
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             views={['day']}
+                            // maxDate={moment(calanderMaxDate)}
                             inputFormat="DD-MM-YYYY"
                             value={fromDate}
-                            onChange={setFromDate}
+                            onChange={(date) => setFromDate(date)}
                             renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex', pt: 0.5 }} />
+                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
                             )}
                         />
                     </LocalizationProvider>
@@ -261,16 +395,18 @@ const OneHourRequest = () => {
                 </Box>
                 <Box sx={{ width: '5%', p: 0.5, mt: 0.5 }} >
                     <CssVarsProvider>
-                        <Button
-                            aria-label="Like"
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => {
-                                getShiftdetail()
-                            }}
-                        >
-                            <AddCircleOutlineIcon />
-                        </Button>
+                        <Tooltip title="Select Punch Data" followCursor placement='top' arrow >
+                            <Button
+                                aria-label="Like"
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => {
+                                    getShiftdetail()
+                                }}
+                            >
+                                <AddCircleOutlineIcon />
+                            </Button>
+                        </Tooltip>
                     </CssVarsProvider>
                 </Box>
                 <Box sx={{ width: '60%', }}>

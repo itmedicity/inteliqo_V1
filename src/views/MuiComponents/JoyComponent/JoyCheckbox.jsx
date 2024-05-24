@@ -11,11 +11,13 @@ const JoyCheckbox = ({
     value,
     defaultChecked,
     name,
-    disabled
+    disabled,
+    uncheckedIcon
 }) => {
     return (
         <CssVarsProvider>
             <Checkbox
+                uncheckedIcon={uncheckedIcon}
                 label={label}
                 size={size}
                 defaultChecked={defaultChecked}

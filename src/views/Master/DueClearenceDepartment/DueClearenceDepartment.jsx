@@ -247,69 +247,6 @@ const DueClearenceDepartment = () => {
                 </Paper>
             </Box>
         </MasterLayout>
-        // <Fragment>
-        //     <PageLayoutSave
-        //         heading="Due Clearence Department"
-        //         redirect={RedirectToProfilePage}
-        //         submit={submitFormData}
-        //     >
-        //         <div className="row g-1">
-        //             <div className="col-md-5">
-        //                 <div className="col-md-12">
-        //                     <DepartmentSelect select="Department" style={SELECT_CMP_STYLE} />
-        //                 </div>
-        //                 <div className="col-md-12">
-        //                     <DepartmentSectionSelect select="Department Section" style={SELECT_CMP_STYLE} />
-        //                 </div>
-        //                 <div className="row g-1">
-        //                     <div className="col-md-11">
-        //                         <DeptSecSelectAuth select="Clearence Department" style={SELECT_CMP_STYLE} />
-        //                     </div>
-        //                     <div className="col-md-1">
-        //                         <IconButton
-        //                             aria-label="add"
-        //                             style={{ padding: '0rem' }}
-        //                             onClick={getDepartmentdata}
-        //                         >
-        //                             <MdOutlineAddCircleOutline className="text-info" size={30} />
-        //                         </IconButton>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //             <div className="col-md-7">
-        //                 <DueClearenceCard />
-        //                 <div>
-        //                     {
-        //                         arraydata.map((val, index) => {
-        //                             return (
-        //                                 <li className="list-group-item py-0" key={val.id}>
-        //                                     <div className="d-flex justify-content-between" >
-        //                                         <div className="col-md-1 text-start">{val.deptcode}</div>
-        //                                         <div className="col-md-4 text-start">{val.deptdesc}</div>
-        //                                         <div className="col-md-1  text-start">
-        //                                             <IconButton
-        //                                                 aria-label="add"
-        //                                                 style={{ padding: '0rem' }}
-        //                                                 onClick={(e) => {
-        //                                                     onClickdelete(val.id)
-        //                                                 }}
-        //                                             >
-        //                                                 <MdDeleteSweep className="text-info" size={25} />
-        //                                             </IconButton>
-        //                                         </div>
-        //                                     </div>
-        //                                 </li>
-        //                             )
-        //                         })
-        //                     }
-        //                 </div>
-        //             </div>
-        //             <div className="col-md-12">
-        //                 <DueClearenceDepartmentTable update={count} />
-        //             </div>
-        //         </div>
-        //     </PageLayoutSave>
-        // </Fragment>
     )
 };
 

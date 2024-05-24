@@ -167,7 +167,7 @@ const EarnDeduction = () => {
                     insertWage(arr).then((values) => {
                         const { status, message } = values
                         if (status === 1) {
-                            updateEmpmaster(no).then((values) => {
+                            updateEmpmaster(id).then((values) => {
                                 const { status, message } = values
                                 if (status === 1) {
                                     succesNofity(message);
@@ -194,12 +194,19 @@ const EarnDeduction = () => {
                 const result = await axioslogin.post('/empearndeduction/create/newentry', postData)
                 const { message, success } = result.data;
                 if (success === 1) {
-                    setcount(count + 1)
-                    succesNofity(message);
-                    setWageType(resetForm);
-                    setWage(0)
-                    setflag(0)
-                    setlastWage(0)
+                    updateEmpmaster(id).then((values) => {
+                        const { status, message } = values
+                        if (status === 1) {
+                            succesNofity(message);
+                            setcount(count + 1)
+                            setWageType(resetForm);
+                            setWage(0)
+                            setflag(0)
+                            setlastWage(0)
+                        } else {
+                            infoNofity(message)
+                        }
+                    })
                 } else {
                     infoNofity(message)
                     setWageType(resetForm);
@@ -232,7 +239,7 @@ const EarnDeduction = () => {
                     insertWage(arr).then((values) => {
                         const { status, message } = values
                         if (status === 1) {
-                            updateEmpmaster(no).then((values) => {
+                            updateEmpmaster(id).then((values) => {
                                 const { status, message } = values
                                 if (status === 1) {
                                     succesNofity(message);
@@ -262,7 +269,7 @@ const EarnDeduction = () => {
         else {
             updateSubmit(updateData)
         }
-    }, [updateData, postData, id, no, count, flag, resetForm])
+    }, [updateData, postData, id, count, flag, resetForm])
 
     //Redirection
     const handleClose = () => {
@@ -358,7 +365,7 @@ const EarnDeduction = () => {
                 insertWage(arr).then((values) => {
                     const { status, message } = values
                     if (status === 1) {
-                        updateEmpmaster(no).then((values) => {
+                        updateEmpmaster(id).then((values) => {
                             const { status, message } = values
                             if (status === 1) {
                                 succesNofity(message);
@@ -382,7 +389,7 @@ const EarnDeduction = () => {
         } else {
 
         }
-    }, [count, id, no, resetForm])
+    }, [count, id, resetForm])
 
     return (
         <Fragment>

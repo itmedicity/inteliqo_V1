@@ -20,6 +20,7 @@ const StatutoryInformation = () => {
     const [value, setValue] = useState(1) //use state for setting serail no for edit
 
     const [leaveProcessdata, setleaveProcessdata] = useState({})
+    const [esidata, setEsidata] = useState({})
 
     //setting initial state
     const [formData, SetformData] = useState({
@@ -64,6 +65,8 @@ const StatutoryInformation = () => {
             const { data, success } = result.data
             if (success === 0) {
                 const arr = data.find((val) => val.llvetype_slno === 7)
+                const arr2 = data.find((val) => val.llvetype_slno === 6)
+                setEsidata(arr2)
                 setleaveProcessdata(arr)
             } else {
                 setleaveProcessdata({})
@@ -221,6 +224,30 @@ const StatutoryInformation = () => {
         }
     }, [no, nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount, value])
 
+
+    const inactiveEsi = useMemo(() => {
+        return {
+            em_id: no,
+            em_pf_status: pf === false ? 0 : 1,
+            em_pf_no: pfno,
+            em_uan_no: uanno,
+            em_esi_status: esi === false ? 0 : 1,
+            em_esi_no: esino,
+            em_grade: selectGrade,
+            esi_slno: value,
+            edit_user: employeeNumber(),
+            nps: nps === false ? 0 : 1,
+            npsnumber: npsnumber,
+            npsamount: npsamount,
+            lwf_status: lwf === false ? 0 : 1,
+            lwfnumber: lwfnumber,
+            lwfamount: lwfamount,
+            inactive_status: 1
+        }
+    }, [no, pf, pfno, uanno, esi, esino, selectGrade, value,
+        nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
+
+
     //saving form data
     const submitFormData = async (e) => {
         e.preventDefault()
@@ -244,7 +271,7 @@ const StatutoryInformation = () => {
             if (success === 1) {
                 succesNofity(message)
             } else {
-                errorNofity('Error Occured!!!Please Contact EDP')
+                errorNofity(message)
             }
         }
         else {
@@ -259,22 +286,41 @@ const StatutoryInformation = () => {
                     warningNofity(message)
                 }
                 else {
-                    errorNofity('Error Occured !!! Plaese Contact EDP')
+                    errorNofity(message)
                 }
 
             } else {
-                const result = await axioslogin.patch('/empesipf', postDataEdit)
-                const { success, message } = result.data
-                if (success === 2) {
-                    succesNofity(message)
-                    Setenable(true)
+                if (esi === false) {
+                    const result = await axioslogin.patch('/empesipf/inactive', inactiveEsi)
+                    const { success, message } = result.data
+                    if (success === 2) {
+                        const result = await axioslogin.patch('/yearleaveprocess/inactive/esi', esidata)
+                        const { success, message } = result.data
+                        if (success === 1) {
+                            succesNofity(message)
+                        } else {
+                            errorNofity(message)
+                        }
+                    }
+                    else {
+                        errorNofity(message)
+                    }
+                } else {
+                    const result = await axioslogin.patch('/empesipf', postDataEdit)
+                    const { success, message } = result.data
+                    if (success === 2) {
+                        succesNofity(message)
+                        Setenable(true)
+                    }
+                    else if (success === 3) {
+                        warningNofity(message)
+                    }
+                    else {
+                        errorNofity(message)
+                    }
                 }
-                else if (success === 3) {
-                    warningNofity(message)
-                }
-                else {
-                    errorNofity('Error Occured !!! Plaese Contact EDP')
-                }
+
+
             }
         }
     }

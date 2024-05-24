@@ -121,7 +121,7 @@ export const urlExist = (url, callBack) => {
     }
 }
 
-export const colorList = ["#63B598", "#CE7D78", "#EA9E70", "#A48A9E", "#C6E1E8", "#648177", "#0D5AC1",
+export const colorList = ["#63B598", "#CE7D78", "#EA9E70", "#A48A9E", "#C6E1E8", "#648177", "#FC458E",
     "#F205E6", "#1C0365", "#14A9AD", "#4CA2F9", "#A4E43F", "#D298E2", "#6119D0",
     "#D2737D", "#C0A43C", "#F2510E", "#651BE6", "#79806E", "#61DA5E", "#CD2F00",
     "#9348AF", "#01AC53", "#C5A4FB", "#996635", "#B11573", "#4BB473", "#75D89E",
@@ -140,7 +140,7 @@ export const colorList = ["#63B598", "#CE7D78", "#EA9E70", "#A48A9E", "#C6E1E8",
     "#7FB411", "#0023B8", "#3B8C2A", "#986B53", "#F50422", "#983F7A", "#EA24A3",
     "#79352C", "#521250", "#C79ED2", "#D6DD92", "#E33E52", "#B2BE57", "#FA06EC",
     "#1BB699", "#6B2E5F", "#64820F", "#1C271", "#9CB64A", "#996C48", "#9AB9B7",
-    "#06E052", "#E3A481", "#0EB621", "#FC458E", "#B2DB15", "#AA226D", "#792ED8",
+    "#06E052", "#E3A481", "#0EB621", "#0D5AC1", "#B2DB15", "#AA226D", "#792ED8",
     "#73872A", "#520D3A", "#CEFCB8", "#A5B3D9", "#7D1D85", "#C4FD57", "#F1AE16",
     "#8FE22A", "#EF6E3C", "#243EEB", "#1DC18", "#DD93FD", "#3F8473", "#E7DBCE",
     "#421F79", "#7A3D93", "#635F6D", "#93F2D7", "#9B5C2A", "#15B9EE", "#0F5997",
@@ -160,3 +160,6 @@ export const colorList = ["#63B598", "#CE7D78", "#EA9E70", "#A48A9E", "#C6E1E8",
     "#1BEDE6", "#8798A4", "#D7790F", "#B2C24F", "#DE73C2", "#D70A9C", "#25B67",
     "#88E9B8", "#C2B0E2", "#86E98F", "#AE90E2", "#1A806B", "#436A9E", "#0EC0FF",
     "#F812B3", "#B17FC9", "#8D6C2F", "#D3277A", "#2CA1AE", "#9685EB", "#8A96C6"]
+
+
+export const screenInnerHeight = window.innerHeight

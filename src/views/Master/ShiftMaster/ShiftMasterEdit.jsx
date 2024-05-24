@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import TextInput from 'src/views/Component/TextInput';
@@ -41,22 +41,22 @@ const ShiftMasterEdit = () => {
     }
     //use State For Check In
     const [checkIn, setCheckIn] = useState(new Date());
-    const SetcheckInTime = (val) => {
+    const SetcheckInTime = useCallback((val) => {
         setCheckIn(val)
-        const result = subHours(new Date(val), 4)
+        const result = subHours(new Date(val), 8)
         setcheckInStart(result)
         const result2 = addHours(new Date(val), 4)
         setcheckInEnd(result2)
-    }
+    }, [])
     //use State For Check Out
     const [checkOut, setCheckOut] = useState(new Date());
-    const SetcheckOutTime = (val) => {
+    const SetcheckOutTime = useCallback((val) => {
         setCheckOut(val)
-        const result = subHours(new Date(val), 4)
+        const result = subHours(new Date(val), 2)
         setcheckOutStart(result)
-        const result2 = addHours(new Date(val), 4)
+        const result2 = addHours(new Date(val), 8)
         setcheckOutEnd(result2)
-    }
+    }, [])
     //use State For Check In Start
     const [checkInStart, setcheckInStart] = useState(new Date());
     // const SetcheckInTimeStart = (val) => {
@@ -79,54 +79,54 @@ const ShiftMasterEdit = () => {
     // }
     //use State For Break Start
     const [BreakStart, setBreakStart] = useState(new Date());
-    const SetBreakTimestart = (val) => {
+    const SetBreakTimestart = useCallback((val) => {
         setBreakStart(val)
-    }
+    }, [])
     //use State For Break End
     const [Breakend, setBreakEnd] = useState(new Date());
-    const SetBreakTimeend = (val) => {
+    const SetBreakTimeend = useCallback((val) => {
         setBreakEnd(val)
-    }
+    }, [])
     //use State For Early In
     const [EarlyIn, setEarlyIn] = useState(new Date());
-    const setEarlyInTime = (val) => {
+    const setEarlyInTime = useCallback((val) => {
         setEarlyIn(val)
-    }
+    }, [])
     //use State For Early Out
     const [EarlyOut, setEarlyOut] = useState(new Date());
-    const setEarlyOutTime = (val) => {
+    const setEarlyOutTime = useCallback((val) => {
         setEarlyOut(val)
-    }
+    }, [])
     //use State For Allowed Late in
     const [LateIn, setLateIn] = useState(new Date());
-    const setlateInTime = (val) => {
+    const setlateInTime = useCallback((val) => {
         setLateIn(val)
-    }
+    }, [])
     //use State For Allowed LateOut
     const [LateOut, setLateOut] = useState(new Date());
-    const setlateOutTime = (val) => {
+    const setlateOutTime = useCallback((val) => {
         setLateOut(val)
-    }
+    }, [])
     //use State ForFirst Half Check In
     const [firsthalfcheckin, setfirsthalfcheckin] = useState(new Date());
-    const SetfirsthalfcheckinTime = (val) => {
+    const SetfirsthalfcheckinTime = useCallback((val) => {
         setfirsthalfcheckin(val)
-    }
+    }, [])
     //use State ForFirst Half Check Out
     const [firsthalfcheckout, setfirsthalfcheckout] = useState(new Date());
-    const SetfirsthalfcheckOutTime = (val) => {
+    const SetfirsthalfcheckOutTime = useCallback((val) => {
         setfirsthalfcheckout(val)
-    }
+    }, [])
     //use State For second Half Check In
     const [Secondhalfcheckin, setSecondhalfcheckin] = useState(new Date());
-    const SetSecondhalfcheckInTime = (val) => {
+    const SetSecondhalfcheckInTime = useCallback((val) => {
         setSecondhalfcheckin(val)
-    }
+    }, [])
     //use State For second Half Check Out
     const [Secondhalfcheckout, SetSecondhalfcheckout] = useState(new Date());
-    const SetSecondhalfcheckOutTime = (val) => {
+    const SetSecondhalfcheckOutTime = useCallback((val) => {
         SetSecondhalfcheckout(val)
-    }
+    }, [])
     //FUNCTION TO GET TO TOMORROW DATE
     const nextdate = new Date(new Date(checkOut).setDate(new Date().getDate() + 1));
     const checkoutstartcrossday = new Date(new Date(checkOutStart).setDate(new Date().getDate() + 1));
@@ -252,6 +252,8 @@ const ShiftMasterEdit = () => {
         shft_status: shift_status === true ? 1 : 0,
     }
     // console.log('checkIn')
+
+
     const submitFormData = async (e) => {
         e.preventDefault()
         const result = await axioslogin.patch('/shift', postData)

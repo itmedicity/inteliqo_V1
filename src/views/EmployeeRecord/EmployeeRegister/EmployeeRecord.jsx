@@ -29,7 +29,7 @@ import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategoryS
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import JoyDoctorTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyDoctorTypeSelect'
-import { addDays, addYears } from 'date-fns'
+import { addDays, addYears,endOfMonth  } from 'date-fns'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'underscore'
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
@@ -186,10 +186,10 @@ const EmployeeRecord = () => {
       em_designation: designation,
       em_doc_type: doctortype === true ? doct : null,
       em_category: category,
-      em_prob_end_date: moment(probationendDate).format('YYYY-MM-DD'),
+      em_prob_end_date: moment(endOfMonth(new Date(probationendDate))).format('YYYY-MM-DD'),
       em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
       em_retirement_date: moment(retirementyear).format('YYYY-MM-DD'),
-      em_contract_end_date: moment(cont_perioddate).format('YYYY-MM-DD'),
+      em_contract_end_date: moment(endOfMonth(new Date(cont_perioddate))).format('YYYY-MM-DD'),
       em_status: empstatus === true ? 1 : 0,
       create_user: employeeNumber(),
       addressPermnt1: addressPermnt1,
@@ -206,6 +206,7 @@ const EmployeeRecord = () => {
       hrm_religion: religion,
       contractflag: contractflag,
       probation_status: prob_status,
+      gross_salary: Salary,
       recomend_salary: Salary,
       clinicaltype: clinictype,
       doctor_status: doctor === true ? 1 : 0
@@ -299,6 +300,7 @@ const EmployeeRecord = () => {
                   em_cont_end: moment(cont_perioddate).format('YYYY-MM-DD'),
                   em_prob_end_date: moment(probationendDate).format('YYYY-MM-DD'),
                   em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
+                  status: 0
                 }
                 const result = await axioslogin.post('/empmast/createContract', postContractDetl)
                 const { success, message } = result.data
@@ -306,9 +308,23 @@ const EmployeeRecord = () => {
                   const result = await axioslogin.post('/Vaccination/vaccinentry', submitemployee)
                   const { success, message } = result.data
                   if (success === 1) {
-                    clearForm()
-                    history.push(`/Home/Prfle/${empno}/${em_id}`)
-                    succesNofity(message)
+                    const TrainingEntry = {
+                      em_id: em_id,
+                      em_no: empno,
+                      joining_date: dateofjoining,
+                      assign_status: 0,
+                      create_user: employeeNumber()
+                    }
+                    const result2 = await axioslogin.post('/TrainingAfterJoining/insertTrainingMaster', TrainingEntry)
+                    const { success, message } = result2.data
+                    if (success === 1) {
+                      clearForm()
+                      history.push(`/Home/Prfle/${empno}/${em_id}`)
+                      succesNofity(message)
+                    }
+                    else {
+                      infoNofity(message)
+                    }
                   } else {
                     infoNofity(message)
                   }
@@ -367,9 +383,23 @@ const EmployeeRecord = () => {
                 const result = await axioslogin.post('/Vaccination/vaccinentry', submitemployee)
                 const { success, message } = result.data
                 if (success === 1) {
-                  clearForm()
-                  history.push(`/Home/Prfle/${empno}/${em_id}`)
-                  succesNofity(message)
+                  const TrainingEntry = {
+                    em_id: em_id,
+                    em_no: empno,
+                    joining_date: dateofjoining,
+                    assign_status: 0,
+                    create_user: employeeNumber()
+                  }
+                  const result2 = await axioslogin.post('/TrainingAfterJoining/insertTrainingMaster', TrainingEntry)
+                  const { success, message } = result2.data
+                  if (success === 1) {
+                    clearForm()
+                    history.push(`/Home/Prfle/${empno}/${em_id}`)
+                    succesNofity(message)
+                  }
+                  else {
+                    infoNofity(message)
+                  }
                 } else {
                   errorNofity(message)
                 }
@@ -394,7 +424,7 @@ const EmployeeRecord = () => {
       }
 
       if (contractflag === 1) {
-        contractEmployee(submitdata)
+       contractEmployee(submitdata)
       } else {
         permanentEmployee(submitdata)
       }

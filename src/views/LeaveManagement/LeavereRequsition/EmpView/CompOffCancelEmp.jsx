@@ -23,6 +23,7 @@ const CompOffCancelEmp = ({ open, setOpen, data, setCount }) => {
     //STATES
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
+    const [punchSlno, setPunchSlno] = useState(0)
 
     const [coff, setCoff] = useState({
         reqestdate: '',
@@ -48,6 +49,18 @@ const CompOffCancelEmp = ({ open, setOpen, data, setCount }) => {
                 cf_hr_apprv_status: cf_hr_apprv_status
             }
             setCoff(formdata)
+            const postData = {
+                emp_id: em_id,
+                duty_day: moment(leave_date).format('YYYY-MM-DD')
+            }
+            const result = await axioslogin.post('common/getShiftdetails/', postData);
+            const { success } = result.data;
+            if (success === 1) {
+                const { punch_slno } = result.data.data[0];
+                setPunchSlno(punch_slno)
+            } else {
+                setPunchSlno(0)
+            }
         }
     }
 
@@ -69,9 +82,10 @@ const CompOffCancelEmp = ({ open, setOpen, data, setCount }) => {
             comment: reason,
             apprvdate: moment(new Date()).format('YYYY-MM-DD HH:mm'),
             us_code: emno,
-            slno: slno
+            slno: slno,
+            punchSlno: punchSlno
         }
-    }, [emno, reason, slno])
+    }, [emno, reason, slno, punchSlno])
 
     const CancelRequest = useCallback(async () => {
         if (reason === '') {
@@ -89,7 +103,7 @@ const CompOffCancelEmp = ({ open, setOpen, data, setCount }) => {
                 setCount(Math.random())
                 setOpenBkDrop(false)
                 setOpen(false)
-                errorNofity('Error Updating Leave Request')
+                errorNofity('Error While cancelling Compensatory Off Request!')
             }
         }
     }, [Canceldata, reason, setOpen, setCount])

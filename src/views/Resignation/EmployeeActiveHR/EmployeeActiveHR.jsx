@@ -2,7 +2,7 @@ import { Box, Button, CssVarsProvider, } from '@mui/joy'
 import { IconButton, Paper, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import {  warningNofity } from 'src/views/CommonCode/Commonfunc'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
@@ -11,6 +11,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ActiveModal from './ActiveModal'
 
 const EmployeeActiveHR = () => {
 
@@ -20,6 +21,8 @@ const EmployeeActiveHR = () => {
     const [deptSect, setDeptSect] = useState(0)
     const [state, setState] = useState(0)
     const [empData, setempData] = useState([])
+    const [flag, setFlag] = useState(false)
+    const [details, setDetails] = useState({})
 
     const getemployeedetails = useCallback(async () => {
         if (dept === 0 && deptSect === 0) {
@@ -76,19 +79,9 @@ const EmployeeActiveHR = () => {
 
     const InactiveEmp = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
-        const { em_id } = data[0]
-        const postData = {
-            em_id: em_id
-        }
-        const result = await axioslogin.patch('/empmast/empmsater/active', postData)
-        const { success, message } = result.data
-        if (success === 2) {
-            succesNofity("Employee Inactivated")
-            setCount(count + 1)
-        } else {
-            warningNofity(message)
-        }
-    }, [count])
+        setDetails(data)
+        setFlag(true)
+    }, [])
 
     return (
         <CustomLayout title="Employee Active" displayClose={true} >
@@ -131,6 +124,7 @@ const EmployeeActiveHR = () => {
                         headerHeight={30}
                     />
                 </Paper>
+                <ActiveModal open={flag} setOpen={setFlag} data={details} setCount={setCount}/>
             </Box>
         </CustomLayout>
     )

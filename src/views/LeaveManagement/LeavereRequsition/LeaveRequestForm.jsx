@@ -1,4 +1,4 @@
-import { Button, Checkbox, CssVarsProvider } from '@mui/joy'
+import { Button, Checkbox, CssVarsProvider, Tooltip } from '@mui/joy'
 import { Box, Paper, TextField } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
@@ -11,7 +11,7 @@ import { memo } from 'react'
 import moment from 'moment'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { differenceInCalendarDays, differenceInDays } from 'date-fns'
+import { differenceInCalendarDays } from 'date-fns'
 import { useEffect } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
@@ -49,15 +49,12 @@ const LeaveRequestForm = ({ em_id }) => {
     }, [singleLeveTypeCheck, dateCheckBox])
 
     const leaveRequestSubmitFun = useCallback(async () => {
-        if (differenceInDays(new Date(), new Date(fromDate)) > 3) {
-            warningNofity("Can't Apply for Leave Request, limitted days exceeded!!")
-        }
-        else if (fromDate > toDate && dateCheckBox === true) {
+
+        if (fromDate > toDate && dateCheckBox === true) {
             warningNofity("To Date Should be Greater Than From Date")
         } else {
-
+            //for single leave 
             if (singleLeveTypeCheck === true) {
-                // console.log('single leaves')
                 if (commnLevType === 0) {
                     warningNofity("Please Select The Leave Type")
                 } else {
@@ -103,7 +100,9 @@ const LeaveRequestForm = ({ em_id }) => {
                         }
 
                     } else {
-                        //SINGLE DATE SELECTED FOR SINGLE LEAVE
+                        /**single date selected for single leave and leave type select
+                         * component selected
+                         * **/
                         let totalDays = differenceInCalendarDays(new Date(fromDate), new Date(fromDate))
 
                         const postData = {
@@ -111,7 +110,6 @@ const LeaveRequestForm = ({ em_id }) => {
                             toDate: moment(fromDate).format('YYYY-MM-DD'),
                             empId: em_id
                         }
-
                         const checkDutyPlan = await axioslogin.post('/plan/checkDutyExcist', postData);
                         const { success, data } = checkDutyPlan.data;
                         if (success === 1) {
@@ -142,86 +140,83 @@ const LeaveRequestForm = ({ em_id }) => {
                 }
             } else {
                 setRequestFom(false)
-                if ((differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1) > 3) {
-                    warningNofity("You Can't apply leave for more than 3 days!!")
+                //Not a single Leave type Leave Selection
+                if (dateCheckBox === true) {
+                    //MULTI DATE SELECTED 
+                    let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
+
+                    const postData = {
+                        fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                        toDate: moment(toDate).format('YYYY-MM-DD'),
+                        empId: em_id
+                    }
+
+                    const checkDutyPlan = await axioslogin.post('/plan/checkDutyExcist', postData);
+                    const { success, data } = checkDutyPlan.data;
+                    if (success === 1) {
+                        let db_count = data.plan;
+                        let dateCount = totalDays + 1
+
+                        if (db_count === dateCount) {
+
+                            let postFormDataSgleDate = {
+                                dateRangeCheck: dateCheckBox,
+                                fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                                toDate: moment(toDate).format('YYYY-MM-DD'),
+                                singleLevCheck: singleLeveTypeCheck,
+                                singleLeaveType: commnLevType,
+                                singleLeaveDesc: commnLevDesc,
+                                totalDays: totalDays + 1,
+                                formSubmit: true
+                            }
+
+                            dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
+                            setBackDrop(false)
+                        } else {
+                            setBackDrop(false)
+                            setRequestFom(0)
+                            warningNofity('chosen date have no duty schedule. First, complete the duty plan')
+                        }
+                    }
                 } else {
-                    //Not a single Leave type Leave Selection
-                    if (dateCheckBox === true) {
-                        //MULTI DATE SELECTED 
-                        let totalDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate))
+                    //single date selected and show leaves button selected
+                    let totalDays = differenceInCalendarDays(new Date(fromDate), new Date(fromDate))
 
-                        const postData = {
-                            fromDate: moment(fromDate).format('YYYY-MM-DD'),
-                            toDate: moment(toDate).format('YYYY-MM-DD'),
-                            empId: em_id
-                        }
+                    const postData = {
+                        fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                        toDate: moment(fromDate).format('YYYY-MM-DD'),
+                        empId: em_id
+                    }
 
-                        const checkDutyPlan = await axioslogin.post('/plan/checkDutyExcist', postData);
-                        const { success, data } = checkDutyPlan.data;
-                        if (success === 1) {
-                            let db_count = data.plan;
-                            let dateCount = totalDays + 1
+                    const checkDutyPlan = await axioslogin.post('/plan/checkDutyExcist', postData);
+                    const { success, data } = checkDutyPlan.data;
+                    if (success === 1) {
+                        let db_count = data.plan;
+                        let dateCount = totalDays + 1
 
-                            if (db_count === dateCount) {
+                        if (db_count === dateCount) {
 
-                                let postFormDataSgleDate = {
-                                    dateRangeCheck: dateCheckBox,
-                                    fromDate: moment(fromDate).format('YYYY-MM-DD'),
-                                    toDate: moment(toDate).format('YYYY-MM-DD'),
-                                    singleLevCheck: singleLeveTypeCheck,
-                                    singleLeaveType: commnLevType,
-                                    singleLeaveDesc: commnLevDesc,
-                                    totalDays: totalDays + 1,
-                                    formSubmit: true
-                                }
-
-                                dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
-                                setBackDrop(false)
-                            } else {
-                                setBackDrop(false)
-                                setRequestFom(0)
-                                warningNofity('chosen date have no duty schedule. First, complete the duty plan')
+                            let postFormDataSgleDate = {
+                                dateRangeCheck: dateCheckBox,
+                                fromDate: moment(fromDate).format('YYYY-MM-DD'),
+                                toDate: moment(fromDate).format('YYYY-MM-DD'),
+                                singleLevCheck: singleLeveTypeCheck,
+                                singleLeaveType: commnLevType,
+                                singleLeaveDesc: commnLevDesc,
+                                totalDays: totalDays + 1,
+                                formSubmit: true
                             }
-                        }
-                    } else {
-                        //MULTI DATE SELECTED
-                        let totalDays = differenceInCalendarDays(new Date(fromDate), new Date(fromDate))
 
-                        const postData = {
-                            fromDate: moment(fromDate).format('YYYY-MM-DD'),
-                            toDate: moment(toDate).format('YYYY-MM-DD'),
-                            empId: em_id
-                        }
-
-                        const checkDutyPlan = await axioslogin.post('/plan/checkDutyExcist', postData);
-                        const { success, data } = checkDutyPlan.data;
-                        if (success === 1) {
-                            let db_count = data.plan;
-                            let dateCount = totalDays + 1
-
-                            if (db_count === dateCount) {
-
-                                let postFormDataSgleDate = {
-                                    dateRangeCheck: dateCheckBox,
-                                    fromDate: moment(fromDate).format('YYYY-MM-DD'),
-                                    toDate: moment(fromDate).format('YYYY-MM-DD'),
-                                    singleLevCheck: singleLeveTypeCheck,
-                                    singleLeaveType: commnLevType,
-                                    singleLeaveDesc: commnLevDesc,
-                                    totalDays: totalDays + 1,
-                                    formSubmit: true
-                                }
-
-                                dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
-                                setBackDrop(false)
-                            } else {
-                                setBackDrop(false)
-                                setRequestFom(0)
-                                warningNofity('chosen date have no duty schedule. First, complete the duty plan')
-                            }
+                            dispatch({ type: FETCH_SINGLE_LEAVE_REQ_FORM_DATA, payload: postFormDataSgleDate })
+                            setBackDrop(false)
+                        } else {
+                            setBackDrop(false)
+                            setRequestFom(0)
+                            warningNofity('chosen date have no duty schedule. First, complete the duty plan')
                         }
                     }
                 }
+                // }
 
             }
         }
@@ -301,16 +296,18 @@ const LeaveRequestForm = ({ em_id }) => {
                 </Box>
                 <Box sx={{ display: "flex", p: 0.2 }} >
                     <CssVarsProvider>
-                        <Button
-                            aria-label="Like"
-                            variant="outlined"
-                            color="primary"
-                            onClick={leaveRequestSubmitFun}
-                            sx={{
-                                // color: '#90caf9'
-                            }} >
-                            <PublishedWithChangesIcon />
-                        </Button>
+                        <Tooltip title="Show Leaves" followCursor placement='top' arrow >
+                            <Button
+                                aria-label="Like"
+                                variant="outlined"
+                                color="primary"
+                                onClick={leaveRequestSubmitFun}
+                                sx={{
+                                    // color: '#90caf9'
+                                }} >
+                                <PublishedWithChangesIcon />
+                            </Button>
+                        </Tooltip>
                     </CssVarsProvider>
                 </Box>
             </Paper >

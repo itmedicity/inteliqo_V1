@@ -7,12 +7,13 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import MappingCheckbox from 'src/views/MuiComponents/MappingCheckbox';
 import _ from 'underscore';
-import DeptSectionSelect from '../../NightOff/DeptSectionSelect';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import EnableMispunchmodal from './Modals/EnableMispunchmodal';
 import OndutyReqstModal from './Modals/OndutyReqstModal';
 import OneHourReqstModal from './Modals/OneHourReqstModal';
+import ApprovalDeptSectSelection from 'src/views/MuiComponents/ApprovalDeptSectSelection';
+import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 
 const InchargeApproval = () => {
 
@@ -20,6 +21,7 @@ const InchargeApproval = () => {
     const [deptSection, setDeptSection] = useState(0)
     const [selectValue, setSelectValue] = useState(1)
     const [tableData, setTableData] = useState([])//for displaying table data
+    const [DeptSect, updateDeptSect] = useState([])
 
     const [openenable, setOpenEnable] = useState(false)
     const [openOnduty, setOpenOnduty] = useState(false)
@@ -55,7 +57,7 @@ const InchargeApproval = () => {
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department Section', field: 'section', filter: true, minWidth: 200 },
         { headerName: 'Request Date', field: 'section', filter: true, minWidth: 200 },
-        { headerName: 'Status ', field: 'status', minWidth: 200 },
+        { headerName: 'Status ', field: 'status', minWidth: 200, filter: true },
         {
             headerName: 'Action',
             cellRenderer: params => {
@@ -77,9 +79,15 @@ const InchargeApproval = () => {
     ])
 
     useEffect(() => {
-        if (selectValue === 2) {
-            if (Object.keys(onDutyData).length > 0) {
-                const arr = onDutyData?.map((val) => {
+        const arraydepsect = DeptSect.map((val) => { return val.dept_section })
+        if (selectValue === 2 && deptSection === 0) {
+
+            const filtered = onDutyData.filter(val => arraydepsect.includes(val.dept_sect_id))
+            const filteronDuty = filtered && filtered.filter((val) => {
+                return (val.incharge_req_status === 1)
+            })
+            if (Object.keys(filteronDuty).length > 0) {
+                const arr = filteronDuty?.map((val) => {
                     return {
                         reqsttype: 2,
                         slno: val.onduty_slno,
@@ -95,24 +103,80 @@ const InchargeApproval = () => {
                         hrreq: val.hr_req_status,
                         hr_apprv: val.hr_approval_status,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
-                            (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                            (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Rejected' :
+                                (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                    (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                        (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                            (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 0) ? 'HR Approval Pending' :
+                                                    (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approved',
                         hrstatus: val.hr_approval_status,
                         reqDate: val.request_date,
                         onDutydate: val.on_duty_date,
                         reason: val.onduty_reason,
                         shft_desc: val.shft_desc,
+                        inchargeComment: val.incharge_approval_comment,
+                        hodComment: val.hod_approval_comment,
+                        ceoComment: val.ceo_approval_comment
+                    }
+                })
+                setTableData(arr)
+
+            } else {
+                infoNofity("No On Duty request pending for this department!!")
+                setTableData([])
+            }
+        } else if (selectValue === 2 && deptSection === 0) {
+            const filteronDuty = onDutyData && onDutyData.filter((val) => {
+                return (val.dept_sect_id === deptSection && val.incharge_req_status === 1)
+            })
+            if (Object.keys(filteronDuty).length > 0) {
+                const arr = filteronDuty?.map((val) => {
+                    return {
+                        reqsttype: 2,
+                        slno: val.onduty_slno,
+                        emno: val.em_no,
+                        name: val.em_name,
+                        section: val.dept_name,
+                        increq: val.incharge_req_status,
+                        incaprv: val.incharge_approval_status,
+                        hod_req: val.hod_req_status,
+                        hodaprv: val.hod_approval_status,
+                        ceo_req: val.ceo_req_status,
+                        ceo_apprv: val.ceo_approval_status,
+                        hrreq: val.hr_req_status,
+                        hr_apprv: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
+                            (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Rejected' :
+                                (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                    (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                        (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                            (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 0) ? 'HR Approval Pending' :
+                                                    (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approved',
+                        hrstatus: val.hr_approval_status,
+                        reqDate: val.request_date,
+                        onDutydate: val.on_duty_date,
+                        reason: val.onduty_reason,
+                        shft_desc: val.shft_desc,
+                        inchargeComment: val.incharge_approval_comment,
+                        hodComment: val.hod_approval_comment,
+                        ceoComment: val.ceo_approval_comment
                     }
                 })
                 setTableData(arr)
             } else {
+                infoNofity("No On Duty request pending for this department!!")
                 setTableData([])
             }
-        } else if (selectValue === 3) {
-            if (Object.keys(oneHourData).length > 0) {
-                const arr = oneHourData?.map((val) => {
+        }
+
+        else if (selectValue === 3 && deptSection === 0) {
+            const filtered = oneHourData.filter(val => arraydepsect.includes(val.dept_sect_id))
+            const filteronehour = filtered && filtered.filter((val) => {
+                return (val.incharge_req_status === 1)
+            })
+            if (Object.keys(filteronehour).length > 0) {
+                const arr = filteronehour?.map((val) => {
                     return {
                         reqsttype: 3,
                         slno: val.request_slno,
@@ -128,27 +192,84 @@ const InchargeApproval = () => {
                         hrreq: val.hr_req_status,
                         hr_apprv: val.hr_approval_status,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
-                            (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                            (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Rejected' :
+                                (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                    (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                        (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                            (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 0) ? 'HR Approval Pending' :
+                                                    (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approved',
                         hrstatus: val.hr_approval_status,
                         reqDate: val.request_date,
                         dutyDate: val.one_hour_duty_day,
                         reason: val.reason,
                         shft_desc: val.shft_desc,
                         check_in: val.check_in,
-                        check_out: val.check_out
+                        check_out: val.check_out,
+                        inchargeComment: val.incharge_approval_comment,
+                        hodComment: val.hod_approval_comment,
+                        ceoComment: val.ceo_approval_comment
                     }
                 })
                 setTableData(arr)
             } else {
+                infoNofity("No One Hour request pending for this department!!")
                 setTableData([])
             }
 
-        } else if (selectValue === 1) {
-            if (Object.keys(enableData).length > 0) {
-                const arr = enableData?.map((val) => {
+        } else if (selectValue === 3 && deptSection !== 0) {
+            const filteronehour = oneHourData && oneHourData.filter((val) => {
+                return (val.dept_sect_id === deptSection && val.incharge_req_status === 1)
+            })
+            if (Object.keys(filteronehour).length > 0) {
+                const arr = filteronehour?.map((val) => {
+                    return {
+                        reqsttype: 3,
+                        slno: val.request_slno,
+                        emno: val.em_no,
+                        name: val.em_name,
+                        section: val.dept_name,
+                        increq: val.incharge_req_status,
+                        incaprv: val.incharge_approval_status,
+                        hod_req: val.hod_req_status,
+                        hodaprv: val.hod_approval_status,
+                        ceo_req: val.ceo_req_status,
+                        ceo_apprv: val.ceo_approval_status,
+                        hrreq: val.hr_req_status,
+                        hr_apprv: val.hr_approval_status,
+                        status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
+                            (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Rejected' :
+                                (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                    (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                        (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                            (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 0) ? 'HR Approval Pending' :
+                                                    (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approved',
+                        hrstatus: val.hr_approval_status,
+                        reqDate: val.request_date,
+                        dutyDate: val.one_hour_duty_day,
+                        reason: val.reason,
+                        shft_desc: val.shft_desc,
+                        check_in: val.check_in,
+                        check_out: val.check_out,
+                        inchargeComment: val.incharge_approval_comment,
+                        hodComment: val.hod_approval_comment,
+                        ceoComment: val.ceo_approval_comment
+                    }
+                })
+                setTableData(arr)
+            } else {
+                infoNofity("No One Hour request pending for this department!!")
+                setTableData([])
+            }
+
+        } else if (selectValue === 1 && deptSection === 0) {
+            const filtered = enableData.filter(val => arraydepsect.includes(val.dept_sect_id))
+            const filterenable = filtered && filtered.filter((val) => {
+                return (val.incharge_req_status === 1)
+            })
+            if (Object.keys(filterenable).length > 0) {
+                const arr = filterenable?.map((val) => {
                     return {
                         reqsttype: 1,
                         slno: val.slno,
@@ -164,10 +285,13 @@ const InchargeApproval = () => {
                         hrreq: val.hr_req_status,
                         hr_apprv: val.hr_approval_status,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
-                            (val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
-                                (val.ceo_req_status === 1 && val.ceo_approval_status === 0) ? 'CEO Approval Pending' :
-                                    (val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'Approved' :
-                                        (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'Reject' : 'HR Approval Pending',
+                            (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Rejected' :
+                                (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                    (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                        (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                            (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 0) ? 'HR Approval Pending' :
+                                                    (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approved',
                         hrstatus: val.hr_approval_status,
                         reqDate: val.request_date,
                         punchDate: val.miss_punch_day,
@@ -177,16 +301,65 @@ const InchargeApproval = () => {
                         check_out: val.check_out,
                         checkInflag: val.checkInflag,
                         checkoutflag: val.checkoutflag,
-                        inchargeComment: val.incharge_approval_comment
-
+                        inchargeComment: val.incharge_approval_comment,
+                        hodComment: val.hod_approval_comment,
+                        ceoComment: val.ceo_approval_comment
                     }
                 })
                 setTableData(arr)
             } else {
+                infoNofity("No request pending for this department!!")
+                setTableData([])
+            }
+        } else if (selectValue === 1 && deptSection !== 0) {
+            const filterenable = enableData && enableData.filter((val) => {
+                return (val.dept_sect_id === deptSection && val.incharge_req_status === 1)
+            })
+            if (Object.keys(filterenable).length > 0) {
+                const arr = filterenable?.map((val) => {
+                    return {
+                        reqsttype: 1,
+                        slno: val.slno,
+                        emno: val.em_no,
+                        name: val.em_name,
+                        section: val.dept_name,
+                        increq: val.incharge_req_status,
+                        incaprv: val.incharge_approval_status,
+                        hod_req: val.hod_req_status,
+                        hodaprv: val.hod_approval_status,
+                        ceo_req: val.ceo_req_status,
+                        ceo_apprv: val.ceo_approval_status,
+                        hrreq: val.hr_req_status,
+                        hr_apprv: val.hr_approval_status,
+                        status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
+                            (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Rejected' :
+                                (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                    (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                        (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                            (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 0) ? 'HR Approval Pending' :
+                                                    (val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approved',
+                        hrstatus: val.hr_approval_status,
+                        reqDate: val.request_date,
+                        punchDate: val.miss_punch_day,
+                        reason: val.reason,
+                        shft_desc: val.shft_desc,
+                        check_in: val.check_in,
+                        check_out: val.check_out,
+                        checkInflag: val.checkInflag,
+                        checkoutflag: val.checkoutflag,
+                        inchargeComment: val.incharge_approval_comment,
+                        hodComment: val.hod_approval_comment,
+                        ceoComment: val.ceo_approval_comment
+                    }
+                })
+                setTableData(arr)
+            } else {
+                infoNofity("No request pending for this department!!")
                 setTableData([])
             }
         }
-    }, [oneHourData, onDutyData, enableData, selectValue])
+    }, [oneHourData, onDutyData, enableData, selectValue, deptSection, DeptSect])
 
     const handleClick = async (params) => {
         const data = params.api.getSelectedRows()
@@ -213,7 +386,7 @@ const InchargeApproval = () => {
             <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
                 <Paper square variant='outlined' sx={{ display: 'flex', flex: 1, p: 1, flexDirection: 'row', width: '100%' }}>
                     <Box sx={{ flex: 1, alignItems: 'center', mt: 0.5, px: 0.3 }} >
-                        <DeptSectionSelect em_id={em_id} value={deptSection} setValue={setDeptSection} />
+                        <ApprovalDeptSectSelection em_id={em_id} value={deptSection} setValue={setDeptSection} updateDeptSect={updateDeptSect} />
                     </Box>
                     <Box sx={{ display: 'flex', flex: 2 }}>
                         <CssVarsProvider>
@@ -248,8 +421,6 @@ const InchargeApproval = () => {
                         }}
                         rowHeight={30}
                         headerHeight={30}
-                    // rowStyle={rowStyle}
-                    // getRowStyle={getRowStyle}
                     />
                 </Paper>
             </Box>

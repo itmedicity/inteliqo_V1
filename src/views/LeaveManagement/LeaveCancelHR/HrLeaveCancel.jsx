@@ -57,8 +57,9 @@ const HrLeaveCancel = () => {
 
         if (radioBtnVal === '1') {
             //LEAVE REQUEST 
-            if (Object.keys(leaveRqList).length > 0) {
-                const leaveRequestList = await leaveRqList?.map((val) => {
+            const arr = leaveRqList.filter((val) => val.hr_apprv_status === 1)
+            if (Object.keys(arr).length > 0) {
+                const leaveRequestList = await arr?.map((val) => {
                     return {
                         slno: val.lve_uniq_no,
                         emno: val.em_no,
@@ -84,8 +85,9 @@ const HrLeaveCancel = () => {
             }
         } else if (radioBtnVal === '2') {
             //HALF DAY LEAVE REQUEST
-            if (Object.keys(halfdayRqList).length > 0) {
-                const leaveRequestList = await halfdayRqList?.map((val) => {
+            const arr = halfdayRqList.filter((val) => val.hf_hr_apprv_status === 1)
+            if (Object.keys(arr).length > 0) {
+                const leaveRequestList = await arr?.map((val) => {
                     return {
                         slno: val.half_slno,
                         emno: val.em_no,
@@ -112,8 +114,9 @@ const HrLeaveCancel = () => {
             }
         } else if (radioBtnVal === '3') {
             //NO PUNCH
-            if (Object.keys(nopunchRqList).length > 0) {
-                const leaveRequestList = await nopunchRqList?.map((val) => {
+            const arr = nopunchRqList.filter((val) => val.np_hr_apprv_status === 1)
+            if (Object.keys(arr).length > 0) {
+                const leaveRequestList = await arr?.map((val) => {
                     return {
                         slno: val.nopunch_slno,
                         emno: val.em_no,
@@ -140,8 +143,10 @@ const HrLeaveCancel = () => {
 
         } else if (radioBtnVal === '4') {
             //COMPANSATORY OFF
-            if (Object.keys(compOffRqList).length > 0) {
-                const leaveRequestList = await compOffRqList?.map((val) => {
+
+            const arr = compOffRqList.filter((val) => val.cf_hr_apprv_status === 1)
+            if (Object.keys(arr).length > 0) {
+                const leaveRequestList = await arr?.map((val) => {
                     return {
                         slno: val.cmp_off_reqid,
                         emno: val.em_no,
@@ -172,8 +177,9 @@ const HrLeaveCancel = () => {
 
     useEffect(() => {
         if (value === 1) {
-            if (Object.keys(leaveRqList).length > 0) {
-                const leaveRequestList = leaveRqList?.map((val) => {
+            const arr = leaveRqList.filter((val) => val.hr_apprv_status === 1)
+            if (Object.keys(arr).length > 0) {
+                const leaveRequestList = arr?.map((val) => {
                     return {
                         slno: val.lve_uniq_no,
                         emno: val.em_no,
@@ -191,15 +197,16 @@ const HrLeaveCancel = () => {
                         toDate: val.leavetodate
                     }
                 })
+
                 setTableData(leaveRequestList)
             }
             else {
                 setTableData([])
             }
         } else if (value === 2) {
-
-            if (Object.keys(halfdayRqList).length > 0) {
-                const leaveRequestList = halfdayRqList?.map((val) => {
+            const arr = halfdayRqList.filter((val) => val.hf_hr_apprv_status === 1)
+            if (Object.keys(arr).length > 0) {
+                const leaveRequestList = arr?.map((val) => {
                     return {
                         slno: val.half_slno,
                         emno: val.em_no,
@@ -224,8 +231,9 @@ const HrLeaveCancel = () => {
                 setTableData([])
             }
         } else if (value === 3) {
-            if (Object.keys(nopunchRqList).length > 0) {
-                const leaveRequestList = nopunchRqList?.map((val) => {
+            const arr = nopunchRqList.filter((val) => val.np_hr_apprv_status === 1)
+            if (Object.keys(arr).length > 0) {
+                const leaveRequestList = arr?.map((val) => {
                     return {
                         slno: val.nopunch_slno,
                         emno: val.em_no,
@@ -249,8 +257,9 @@ const HrLeaveCancel = () => {
                 setTableData([])
             }
         } else if (value === 4) {
-            if (Object.keys(compOffRqList).length > 0) {
-                const leaveRequestList = compOffRqList?.map((val) => {
+            const arr = compOffRqList.filter((val) => val.cf_hr_apprv_status === 1)
+            if (Object.keys(arr).length > 0) {
+                const leaveRequestList = arr?.map((val) => {
                     return {
                         slno: val.cmp_off_reqid,
                         emno: val.em_no,
@@ -286,7 +295,7 @@ const HrLeaveCancel = () => {
         { headerName: 'ID#', field: 'emno', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department Section', field: 'section', filter: true, minWidth: 200 },
-        { headerName: 'Status ', field: 'status', minWidth: 200 },
+        { headerName: 'Status ', field: 'status', minWidth: 200, filter: true },
         {
             headerName: 'Action',
             cellRenderer: params => {

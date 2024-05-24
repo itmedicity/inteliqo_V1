@@ -1,9 +1,10 @@
-import { FormControl, MenuItem, Select } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
+import { Option, Select } from '@mui/joy'
+import React, { memo, useState } from 'react'
 import { useEffect } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 
-const KraSelect = ({ value, setValue, style, label, setKraName }) => {
+const KraSelect = ({ value, setValue }) => {
+
     const [KraMast, setKraMast] = useState([])
     //getting Kra Details
     useEffect(() => {
@@ -12,49 +13,30 @@ const KraSelect = ({ value, setValue, style, label, setKraName }) => {
             const { success, data } = result.data
             if (success === 1) {
                 setKraMast(data)
-            }
-            else {
+            } else {
                 setKraMast([])
             }
         }
         getData()
     }, [])
-    const handleChange = (event) => {
-        setValue(event.target.value);
-        //setKraName(event.nativeEvent.target.textContent)
-    };
 
     return (
-        <Fragment>
-            <FormControl fullWidth sx={{
-                "&.MuiFormControl-root": {
-                    marginTop: '4px',
-                },
-            }} >
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={value}
-                    onChange={handleChange}
-                    // size="small"
-                    fullWidth
-                    displayEmpty
-                    variant='outlined'
-                    style={style}
-
-                >
-                    <MenuItem value='0' disabled>
-                        {label}
-                    </MenuItem>
-                    {
-                        KraMast && KraMast.map((val, index) => {
-                            return <MenuItem key={index} value={val.kra_slno}>{val.kra_desc}</MenuItem>
-                        })
-                    }
-                </Select>
-            </FormControl >
-        </Fragment>
+        <Select
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+            }}
+            size='md'
+            variant='outlined'
+        >
+            <Option disabled value={0}>Key Result Areas (KRA)</Option>
+            {
+                KraMast?.map((val, index) => {
+                    return <Option key={index} value={val.kra_slno}>{val.kra_desc}</Option>
+                })
+            }
+        </Select>
     )
 }
 
-export default KraSelect
+export default memo(KraSelect) 

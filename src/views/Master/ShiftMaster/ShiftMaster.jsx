@@ -21,7 +21,7 @@ const ShiftMaster = () => {
     const [checkIn, setCheckIn] = useState(new Date());
     const SetcheckInTime = (val) => {
         setCheckIn(val)
-        const result = subHours(new Date(val), 4)
+        const result = subHours(new Date(val), 8)
         setcheckInStart(result)
         const result2 = addHours(new Date(val), 4)
         setcheckInEnd(result2)
@@ -30,9 +30,9 @@ const ShiftMaster = () => {
     const [checkOut, setCheckOut] = useState(new Date());
     const SetcheckOutTime = (val) => {
         setCheckOut(val)
-        const result = subHours(new Date(val), 4)
+        const result = subHours(new Date(val), 2)
         setcheckOutStart(result)
-        const result2 = addHours(new Date(val), 4)
+        const result2 = addHours(new Date(val), 8)
         setcheckOutEnd(result2)
     }
     //use State For Check In Start

@@ -12,3 +12,4 @@ export const setDept = () => async (dispatch) => {
         dispatch({ type: FETCH_DEPARTMENT, payload: [], loadingStatus: false })
     }
 }
+

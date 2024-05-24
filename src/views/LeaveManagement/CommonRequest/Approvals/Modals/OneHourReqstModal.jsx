@@ -9,7 +9,8 @@ import moment from 'moment';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { employeeNumber } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
 
 const OneHourReqstModal = ({ open, setOpen, data, setCount, count, authority }) => {
 
@@ -33,17 +34,20 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount, count, authority }) 
             ceoComment: '',
             emid: '',
             checkInFlag: 0,
-            checkOutFlag: 0
+            checkOutFlag: 0,
+            increq: 0,
+            incaprv: 0
         }
     )
     const { slno, emno, name, section, status, reqDate, dutyDate, reason, shft_desc, checkIn, checkOut,
-        inchargeComment, hodComment, ceoComment, checkInFlag, checkOutFlag } = details;
+        inchargeComment, hodComment, ceoComment, checkInFlag, checkOutFlag, increq, incaprv, dept_sect_id
+    } = details;
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
             const { slno, emno, name, section, status, reqDate, dutyDate, shft_desc,
                 check_in, check_out, inchargeComment, hodComment, reason, ceoComment,
-                emid, checkInFlag, checkOutFlag } = data[0];
+                emid, checkInFlag, checkOutFlag, increq, incaprv } = data[0];
             const details = {
                 slno: slno,
                 emno: emno,
@@ -61,7 +65,9 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount, count, authority }) 
                 ceoComment: ceoComment,
                 emid: emid,
                 checkInFlag: checkInFlag,
-                checkOutFlag: checkOutFlag
+                checkOutFlag: checkOutFlag,
+                increq: increq,
+                incaprv: incaprv
             }
             setDetails(details)
         } else {
@@ -160,128 +166,202 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount, count, authority }) 
 
     const handleRejectRequest = async () => {
         if (authority === 1) {
-            const result = await axioslogin.patch('/CommonReqst/incharge/onehour', rejectData)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                const result = await axioslogin.patch('/CommonReqst/incharge/onehour', rejectData)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
-
         } else if (authority === 2) {
-            const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodReject)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodReject)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
-
         } else if (authority === 3) {
-            const result = await axioslogin.patch('/CommonReqst/ceo/ceoOnehour', ceoreject)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                const result = await axioslogin.patch('/CommonReqst/ceo/ceoOnehour', ceoreject)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         }
         else if (authority === 4) {
-            const result = await axioslogin.patch('/CommonReqst/hr/oneHour', hrReject)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                const result = await axioslogin.patch('/CommonReqst/hr/oneHour', hrReject)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         }
     }
 
     const handleApproverequest = async () => {
         if (authority === 1) {
-            setOpenBkDrop(true)
-            const result = await axioslogin.patch('/CommonReqst/incharge/onehour', approveData)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                setOpenBkDrop(true)
+                const result = await axioslogin.patch('/CommonReqst/incharge/onehour', approveData)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         } else if (authority === 2) {
-            setOpenBkDrop(true)
-            const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodApprove)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                if (increq === 1 && incaprv === 0) {
+                    setOpenBkDrop(true)
+                    const result = await axioslogin.patch('/CommonReqst/incharge/onehour', approveData)
+                    const { message, success } = result.data;
+                    if (success === 1) {
+                        const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodApprove)
+                        const { message, success } = result.data;
+                        if (success === 1) {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(count + 1)
+                            succesNofity(message)
+                        } else {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(count + 1)
+                            errorNofity(message)
+                        }
+                    } else {
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                        setCount(count + 1)
+                        errorNofity(message)
+                    }
+                } else {
+                    setOpenBkDrop(true)
+                    const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodApprove)
+                    const { message, success } = result.data;
+                    if (success === 1) {
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                        setCount(count + 1)
+                        succesNofity(message)
+                    } else {
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                        setCount(count + 1)
+                        errorNofity(message)
+                    }
+                }
             }
-
         } else if (authority === 3) {
-            setOpenBkDrop(true)
-            const result = await axioslogin.patch('/CommonReqst/ceo/ceoOnehour', ceoApprove)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity(message)
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity(message)
+                setOpenBkDrop(true)
+                const result = await axioslogin.patch('/CommonReqst/ceo/ceoOnehour', ceoApprove)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(count + 1)
+                    errorNofity(message)
+                }
             }
         } else if (authority === 4) {
-            setOpenBkDrop(true)
-            const result = await axioslogin.patch('/CommonReqst/hr/comment', hrApprove)
-            const { success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                succesNofity("HR Approved Successfully!")
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(count + 1)
-                errorNofity("Error Occured! Contact IT")
+                setOpenBkDrop(true)
+                const postDataForAttendaceMark = {
+                    month: format(startOfMonth(new Date()), 'yyyy-MM-dd'),
+                    section: dept_sect_id
+                }
+                const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postDataForAttendaceMark);
+                const { success, data } = checkPunchMarkingHr.data
+                if (success === 0 || success === 1) {
+                    const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(dutyDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                    const lastDay_month = format(lastDayOfMonth(new Date(dutyDate)), 'yyyy-MM-dd')
+                    if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                        warningNofity("Punch Marking Monthly Process Done !! Can't Approve Halfday Leave Request!!  ")
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                    } else {
+
+                        const result = await axioslogin.patch('/CommonReqst/hr/comment', hrApprove)
+                        const { success } = result.data;
+                        if (success === 1) {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(count + 1)
+                            succesNofity("HR Approved Successfully!")
+                        } else {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(count + 1)
+                            errorNofity("Error Occured! Contact IT")
+                        }
+                    }
+                } else {
+                    errorNofity("Error getting PunchMarkingHR ")
+                }
             }
         }
     }

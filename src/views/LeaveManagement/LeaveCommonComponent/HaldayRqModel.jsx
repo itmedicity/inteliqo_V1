@@ -1,115 +1,69 @@
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, FormControlLabel, Paper, Slide, TextField } from '@mui/material'
-import React, { Fragment, useEffect, useState } from 'react'
-import { ToastContainer } from 'react-toastify'
+import React, { Fragment, memo, useCallback, useState } from 'react'
 import { format } from 'date-fns';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import moment from 'moment'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { CssVarsProvider, Typography } from '@mui/joy';
-import _ from 'underscore';
 import { useSelector } from 'react-redux';
+// import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import Button from '@mui/joy/Button';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import { ModalDialog, Textarea } from '@mui/joy';
+import { Box } from '@mui/material';
+import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="left" ref={ref} {...props} />;
-});
-const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, slno }) => {
+const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcount }) => {
 
-    //redux data all halfday request
-    const halfdayRqData = useSelector((state) => state?.setAllLeaveApproval?.halfdayRqData?.halfdayRqList, _.isEqual)
-    const [formdata, setformData] = useState({
-        emp_name: '',
-        emp_id: '',
-        halfdayareason: '',
-        leavedate: '',
-        requestdate: '',
-        month: ''
-    })
-    const { emp_name, emp_id, halfdayareason, leavedate, requestdate, month } = formdata;
+    const { Employee_name, requestdate, leavedate, month, hf_reason, Emp_no, sect_name, SlNo,
+        planslno } = empData;
 
-    useEffect(() => {
-        if (Object.keys(halfdayRqData).length > 0) {
-            //filtering selected row from all halfday request
-            const array = halfdayRqData && halfdayRqData.filter((val) => val.half_slno === slno)
-            const { em_name, em_no, hf_reason, month, requestdate, leavedate } = array[0]
-            const formdata = {
-                emp_id: em_no,
-                emp_name: em_name,
-                halfdayareason: hf_reason,
-                requestdate: moment(new Date(requestdate)).format('DD-MM-YYYY'),
-                month: month,
-                leavedate: moment(new Date(leavedate)).format('DD-MM-YYYY'),
-            }
-            setformData(formdata)
-        }
-    }, [halfdayRqData, slno])
+    //login incharge id
+    const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
 
+    // const [openBkDrop, setOpenBkDrop] = useState(false)
     const [reason, setreason] = useState('')
-    const [status, setstatus] = useState({
-        apprv: false,
-        reject: false
-    })
-    const { apprv, reject } = status
-    const updateHalfdatereq = async (e) => {
-        const ob1 = {
-            apprv: false,
-            reject: false
-        }
-        const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-        setstatus({ ...ob1, [e.target.name]: value })
-    }
+    //redux data all halfday request
 
-    const submithaday = async () => {
+
+    const handleApproverequest = useCallback(async () => {
         const submhalfday = {
-            status: apprv === true && reject === false ? 1 : apprv === false && reject === true ? 2 : null,
+            status: 1,
             comment: reason,
-            slno: slno,
+            slno: SlNo,
             apprvdate: format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
             us_code: em_id
         }
         //incharge approval
         if (authority === 1) {
-            const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvhalf', submhalfday)
-            const { success, message } = result.data
-            if (success === 1) {
-                succesNofity(message)
-                const ob1 = {
-                    apprv: false,
-                    reject: false
-
+            if (reason === '') {
+                infoNofity("Please Add remark!")
+            } else {
+                const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvhalf', submhalfday)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                    setreason('')
+                    setcount(Math.random())
+                    handleClose()
+                } else {
+                    errorNofity(message)
                 }
-                setstatus(ob1)
-                setreason('')
-                setcount(count + 1)
-                handleClose()
             }
-            else if (success === 2) {
-                warningNofity(message)
-            }
-            else {
-                errorNofity(message)
-            }
-        }
-        //hod approval
+        }//hod approval
         else if (authority === 2) {
-            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${slno}`)
+            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${SlNo}`)
             const { success, data } = result.data;
             if (success === 1) {
                 const { hf_inc_apprv_req, hf_incapprv_status } = data[0]
                 if (hf_inc_apprv_req === 1 && hf_incapprv_status === 0) {
-                    const result = await axioslogin.patch('./LeaveRequestApproval/inchargeapprvhalf', submhalfday)
+                    const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprvhalf', submhalfday)
                     const { success } = result.data
                     if (success === 1) {
-                        const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlhalfday', submhalfday)
+                        const result = await axioslogin.patch('/LeaveRequestApproval/hodapprvlhalfday', submhalfday)
                         const { success, message } = result.data
                         if (success === 1) {
-                            const ob1 = {
-                                apprv: false,
-                                reject: false
-
-                            }
-                            setstatus(ob1)
                             setreason('')
-                            setcount(count + 1)
+                            setcount(Math.random())
                             succesNofity(message)
                             handleClose()
                         }
@@ -121,17 +75,11 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
                         }
                     }
                 } else {
-                    const result = await axioslogin.patch('./LeaveRequestApproval/hodapprvlhalfday', submhalfday)
+                    const result = await axioslogin.patch('/LeaveRequestApproval/hodapprvlhalfday', submhalfday)
                     const { success, message } = result.data
                     if (success === 1) {
-                        const ob1 = {
-                            apprv: false,
-                            reject: false
-
-                        }
-                        setstatus(ob1)
                         setreason('')
-                        setcount(count + 1)
+                        setcount(Math.random())
                         succesNofity(message)
                         handleClose()
                     }
@@ -144,209 +92,208 @@ const HaldayRqModel = ({ open, handleClose, authority, em_id, setcount, count, s
                 }
             }
         }
-        //ceo approval
-        else if (authority === 3) {
-            const result = await axioslogin.patch('./LeaveRequestApproval/Ceohalfday', submhalfday)
-            const { success, message } = result.data
-            if (success === 1) {
-                const ob1 = {
-                    apprv: false,
-                    reject: false
+    }, [reason, SlNo, em_id, handleClose, setcount, authority])
 
+
+    const handleRegectRequest = useCallback(async () => {
+        const submhalfday = {
+            status: 2,
+            comment: reason,
+            slno: SlNo,
+            apprvdate: format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
+            us_code: em_id,
+            hrm_cl_slno: planslno
+        }
+        //incharge approval
+        if (authority === 1) {
+            if (reason === '') {
+                infoNofity("Please Add remark!")
+            } else {
+                const result = await axioslogin.patch('/LeaveRequestApproval/inchargeRejectHalfday', submhalfday)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                    setreason('')
+                    setcount(Math.random())
+                    handleClose()
+                } else {
+                    errorNofity(message)
                 }
-                setstatus(ob1)
-                setreason('')
-                setcount(count + 1)
-                succesNofity(message)
-                handleClose()
-            }
-            else if (success === 2) {
-                warningNofity(message)
-            }
-            else {
-                errorNofity(message)
             }
         }
-        // else if (authority === 5) {
-        //     const result = await axioslogin.patch('./LeaveRequestApproval/halfdaycancelReq', submhalfday)
-        //     const { success, message } = result.data
-        //     if (success === 1) {
-        //         succesNofity(message)
-        //         Hrhalfdayrequest(arraydepsect).then((val) => {
-        //             setleavereq(val)
-        //         })
-        //         handleClose()
-        //     }
-        //     else if (success === 2) {
-        //         warningNofity(message)
-        //     }
-        //     else {
-        //         errorNofity(message)
-        //     }
-        // }
-    }
+        //hod approval
+        else if (authority === 2) {
+            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${SlNo}`)
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { hf_inc_apprv_req, hf_incapprv_status } = data[0]
+                if (hf_inc_apprv_req === 1 && hf_incapprv_status === 0) {
+                    const result = await axioslogin.patch('/LeaveRequestApproval/inchargeRejectHalfday', submhalfday)
+                    const { success } = result.data
+                    if (success === 1) {
+                        const result = await axioslogin.patch('/LeaveRequestApproval/HodRejectHalfday', submhalfday)
+                        const { success, message } = result.data
+                        if (success === 1) {
+                            setreason('')
+                            setcount(Math.random())
+                            succesNofity(message)
+                            handleClose()
+                        }
+                        else if (success === 2) {
+                            warningNofity(message)
+                        }
+                        else {
+                            errorNofity(message)
+                        }
+                    }
+                } else {
+                    const result = await axioslogin.patch('/LeaveRequestApproval/HodRejectHalfday', submhalfday)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        setreason('')
+                        setcount(Math.random())
+                        succesNofity(message)
+                        handleClose()
+                    }
+                    else if (success === 2) {
+                        warningNofity(message)
+                    }
+                    else {
+                        errorNofity(message)
+                    }
+                }
+            }
+        }
+    }, [reason, SlNo, authority, handleClose, setcount, em_id, planslno])
+
+
     return (
         <Fragment>
-            <ToastContainer />
-            <Dialog
+            {/* <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" /> */}
+            <Modal
+                aria-labelledby="modal-title"
+                aria-describedby="modal-desc"
                 open={open}
-                TransitionComponent={Transition}
-                fullWidth
-                maxWidth='sm'
+                onClose={() => setOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
-                <DialogContent sx={{ width: '100%', height: 'auto' }}>
-                    <Paper square variant="outlined" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }} >
-                        <Box sx={{ width: "100%", overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                <CssVarsProvider>
-                                    <Typography fontSize="xl" level="body1">Halfday Request Approval </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Paper square variant="outlined" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }} >
-                                <Box sx={{ display: "flex", width: "100%" }} >
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Emp. ID</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {emp_id}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Name</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", textTransform: "capitalize" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {emp_name}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box>
-                                <Box sx={{ display: "flex", width: "100%" }} >
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Request Date</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {requestdate}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Leave Type</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">: Casual leave</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box>
-                                <Box sx={{ display: "flex", width: "100%" }} >
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Leave Date</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">: {leavedate}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">Month of Leave</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {month}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box>
-                                <Box sx={{ display: "flex", width: "100%" }} >
-                                    <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> Leave Reason</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left" }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1"> : {halfdayareason}</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box>
-                            </Paper>
-                            <Box sx={{ width: "100%", display: 'flex', flexDirection: 'row', pt: 0.5, justifyContent: 'space-between' }}>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row-reverse' }}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                name="apprv"
-                                                color="primary"
-                                                value={apprv}
-                                                checked={apprv}
-                                                onChange={(e) =>
-                                                    updateHalfdatereq(e)
-                                                }
-                                            />
-                                        }
-                                        label="Halfday Request Approve"
-                                    />
-                                </Box>
-
-                                <Box sx={{ width: '100%', }}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                name="reject"
-                                                color="primary"
-                                                value={reject}
-                                                checked={reject}
-
-                                                className="ml-2 "
-                                                onChange={(e) =>
-                                                    updateHalfdatereq(e)
-                                                }
-                                            />
-                                        }
-                                        label="Halfday Request Reject"
-                                    />
-                                </Box>
-                            </Box>
-                            <Box sx={{ width: "100%", pt: 1, display: 'flex', flexDirection: 'row' }}>
-                                <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                                    <CssVarsProvider>
-                                        <Typography level="body1"> Remark</Typography>
-                                    </CssVarsProvider>
-                                </Box>
-                                <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left" }} >
-                                    <TextField
-                                        id="fullWidth"
-                                        size="small"
-                                        type="text"
-                                        fullWidth
-                                        value={reason}
-                                        name="reasonautho"
-                                        onChange={(e) => setreason(e.target.value)}
-                                    />
-                                </Box>
-                            </Box>
+                <ModalDialog size="lg"  >
+                    <ModalClose
+                        variant="outlined"
+                        sx={{
+                            top: 'calc(-1/4 * var(--IconButton-size))',
+                            right: 'calc(-1/4 * var(--IconButton-size))',
+                            boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
+                            borderRadius: '50%',
+                            bgcolor: 'background.body',
+                        }}
+                    />
+                    <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
+                        <Typography
+                            fontSize="xl2"
+                            lineHeight={1}
+                            startDecorator={
+                                <EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />
+                            }
+                            sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
+                        >
+                            {Employee_name}
+                        </Typography>
+                        <Typography
+                            lineHeight={1}
+                            component="h3"
+                            id="modal-title"
+                            level="h5"
+                            textColor="inherit"
+                            fontWeight="md"
+                            // mb={1}
+                            endDecorator={<Typography
+                                level="h6"
+                                justifyContent="center"
+                                alignItems="center"
+                                alignContent='center'
+                                lineHeight={1}
+                            >
+                                {Emp_no}
+                            </Typography>}
+                            sx={{ color: 'neutral.400', display: 'flex', }}
+                        >
+                            {`employee ID #`}
+                        </Typography>
+                        <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Request Date</Typography>
+                            </CssVarsProvider>
                         </Box>
-                        <DialogActions>
-                            <Button color="primary" onClick={submithaday} >SAVE</Button>
-                            <Button onClick={handleClose} color="primary" >CLOSE</Button>
-                        </DialogActions>
-                    </Paper>
-                </DialogContent >
-            </Dialog >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {requestdate}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Leave Type</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: Casual leave</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Leave Date</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {leavedate}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">Month of Leave</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> : {month}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Leave Reason</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {hf_reason}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ pt: 0.5 }} >
+                        <Textarea name="Outlined" placeholder="Reason For Approve/Reject The Request here…"
+                            variant="outlined" onChange={(e) => setreason(e.target.value)} />
+                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
+                            <Button variant="solid" color="success" onClick={handleApproverequest}>
+                                Halfday Approve
+                            </Button>
+                            <Button variant="solid" color="danger" onClick={handleRegectRequest}>
+                                halfday Reject
+                            </Button>
+                        </Box>
+                    </Box>
+                </ModalDialog>
+            </Modal>
         </Fragment >
     )
 }
 
-export default HaldayRqModel
+export default memo(HaldayRqModel) 

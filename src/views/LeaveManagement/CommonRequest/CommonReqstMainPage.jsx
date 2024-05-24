@@ -1,4 +1,4 @@
-import { Button, CssVarsProvider } from '@mui/joy';
+import { Button, CssVarsProvider, Tooltip } from '@mui/joy';
 import { Box, FormControl, MenuItem, Paper, Select, TextField, } from '@mui/material';
 import React, { Fragment, memo, Suspense, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,6 +25,7 @@ const CommonReqstMainPage = () => {
     const [employee, setEmployee] = useState(0)//select employee
     const [deptSection, setDeptSection] = useState(0);//select dept section
     const [selectedEmp, setSelectedEmp] = useState(0)
+    const [count, setCount] = useState(0)
 
     const [show, setShow] = useState(0)
 
@@ -45,10 +46,10 @@ const CommonReqstMainPage = () => {
     }, [em_id, dispatch, selectedEmp, hod, incharge])
 
     const reqstArray = [
-        { reqNo: 1, name: 'Enable Miss Punch for OT' },
+        //{ reqNo: 1, name: 'Enable Miss Punch for OT' },
         { reqNo: 2, name: 'On Duty Request' },
         { reqNo: 3, name: 'One Hour Request' },
-        { reqNo: 4, name: 'General Request' },
+        //{ reqNo: 4, name: 'General Request' },
     ]
 
     useEffect(() => {
@@ -172,17 +173,19 @@ const CommonReqstMainPage = () => {
                         </Box>
                         <Box sx={{ display: "flex", p: 0.2 }} >
                             <CssVarsProvider>
-                                <Button
-                                    aria-label="Like"
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={requestEntry}
-                                    sx={{
-                                        // color: 'green',
-                                    }}
-                                >
-                                    <AddCircleOutlineIcon />
-                                </Button>
+                                <Tooltip title="Show Data" followCursor placement='top' arrow >
+                                    <Button
+                                        aria-label="Like"
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={requestEntry}
+                                        sx={{
+                                            // color: 'green',
+                                        }}
+                                    >
+                                        <AddCircleOutlineIcon />
+                                    </Button>
+                                </Tooltip>
                             </CssVarsProvider>
                         </Box>
                     </Paper>
@@ -190,11 +193,11 @@ const CommonReqstMainPage = () => {
                         {
                             show === 1 ? <MissPunchrequest /> :
                                 show === 2 ? <OnDutyRequest /> :
-                                    show === 3 ? <OneHourRequest /> :
+                                    show === 3 ? <OneHourRequest count={count} setCount={setCount} /> :
                                         show === 4 ? <Generalrequest /> : null
                         }
                     </Suspense>
-                    <TableViewPage show={show} />
+                    <TableViewPage show={show} count={count} setCount={setCount} />
 
                 </Box>
             </CustomLayout>

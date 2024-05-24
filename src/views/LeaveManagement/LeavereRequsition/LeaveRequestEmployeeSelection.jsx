@@ -1,202 +1,206 @@
-import { Paper, TextField } from '@mui/material'
+import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useState } from 'react'
 import { useMemo } from 'react'
 import { memo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { getCommonLeaveData } from 'src/redux/actions/LeaveReqst.action'
-import _ from 'underscore'
-import DepartmentSection from './Func/DepartmentSection'
-import EmployeeAgainSection from './Func/EmployeeAgainSection'
+import { getEmployeeApprovalLevel } from 'src/redux/actions/LeaveReqst.action'
 import LeaveRequestType from './Func/LeaveRequestType'
-import { Actiontypes } from 'src/redux/constants/action.type'
-import { Button, CssVarsProvider } from '@mui/joy'
+import { Button, CssVarsProvider, Tooltip } from '@mui/joy'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { lazy } from 'react'
+import { Suspense } from 'react'
+import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun'
+import LinearProgress from '@mui/joy/LinearProgress';
+import {
+    getEmployeeInformation,
+    getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
+    getCreitedCompansatoryOffLeave, getCreditedEarnLeave,
+} from 'src/redux/actions/LeaveReqst.action';
+import { getannualleave } from 'src/redux/actions/Profile.action'
 
-const LeaveRequestEmployeeSelection = () => {
-    const dispatch = useDispatch();
+const NormalEmployeeLeveReqPage = lazy(() => import('./NormalEmployeeLeveReqPage'))
+const HrRoleBasedDepartmentAndSection = lazy(() => import('./Func/DepartmentBasedSection'))
 
-    const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
+const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
+    const dispatch = useDispatch()
 
-    //get the employee details for taking the HOd and Incharge Details
-    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
-    const singleLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState, _.isEqual);
+    // const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
 
-    const singleLevFormData = useMemo(() => singleLeaveTypeFormData, [singleLeaveTypeFormData])
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    const [levReq, setLevReq] = useState(0); //LEAVE REQUEST TYPE SELECTION STATE
 
-    const { formSubmit } = singleLevFormData;
-    const { hod, incharge, em_no, em_name, sect_name, em_dept_section } = employeeProfileDetl;
+    const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
+    const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
+    const { hod, incharge, em_no, em_id, em_department, em_dept_section, } = empInformationFromRedux;
 
-    const [deptSection, setDeptSection] = useState(0);
-    const [employeeID, setEmployeeID] = useState(0);
-    const [levReq, setLevReq] = useState(0);
-
-    const onSubmitLeaveRequestEntry = (e) => {
-
-        if (hod === 1 || incharge === 1) {
-            // this employee is a hod or incharge
-            if (deptSection === 0) {
-                warningNofity("Section Not Selected")
-            } else if (employeeID === 0) {
-                warningNofity("Employee Not Selected")
-            } else if (levReq === 0) {
-                warningNofity("Request Type Not Selected")
-            } else {
-                let empDetl = {
-                    deptSection: deptSection,
-                    empNo: employeeID,
-                    requestType: levReq
-                }
-                dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl });
-                //console.log(` emp selectio hod ${em_no} `)
-                // dispatch(getCommonLeaveData(em_no));
-            }
-
-        } else {
-            // normal employee
-            if (levReq === 0) {
-                warningNofity("Request Type Not Selected")
-            } else {
-                let empDetl = {
-                    deptSection: em_dept_section,
-                    empNo: em_no,
-                    requestType: levReq
-                }
-                dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl })
-                dispatch(getCommonLeaveData(em_no));
-            }
+    // POST DATA FOR EMPLOYE IS NOT A HOD AOR INCHARGE
+    const employeePostData = useMemo(() => {
+        return {
+            emNo: em_no,
+            emID: em_id,
+            deptID: em_department,
+            sectionID: em_dept_section
         }
-    }
+    }, [em_no, em_id, em_department, em_dept_section])
 
-    const changeForm = () => {
-        let requestType = { requestType: 0 };
-        dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
-        dispatch({ type: LEAVE_REQ_DEFAULT })
-    }
+    // Leave request user User States
+    const [requestUser, setRequestUser] = useState({
+        deptID: 0,
+        sectionID: 0,
+        emNo: 0,
+        emID: 0
+    })
+    const userPostData = useMemo(() => requestUser, [requestUser])
+
+
+    // HANDLE CLICK THE LEAVE REQUST PROCESS BUTTON
+    const handleProcessLeveRequest = useCallback(async () => {
+        const isInchargeOrHOD = (hod === 1 || incharge === 1) ? true : false //IF TRUE IS (HOD OR INCHARGE ) OR NORMAL USER
+        setRequestType(levReq)
+        /* levReq -> state change the request form following
+         * 1 -> Leave Request form
+         * 2 -> Half Day Leave Request Form
+         * 3 -> Miss punch Request foprm
+         * 4 -> Compansatory Leave request Form
+         */
+
+        // CHECK THE EMPLOYEE IS HOD OR INCHARGE
+        const postData = isInchargeOrHOD === true ? { ...userPostData } : { ...employeePostData }
+
+        const { sectionID, emNo, emID } = postData;
+
+        if (sectionID === 0 || emNo === 0 || emID === 0) {
+            warningNofity("Please Check for Any Selection")
+        } else {
+            //  GET ALL ELIGIBLE LEAVES INFORMATION FROM DATA BASE
+            dispatch(getCreditedCasualLeave(emNo)); //GET ALL CASUAL LEAVES 
+            dispatch(getCreitedCommonLeave(emNo)); //GET COMMON LEAVES
+            dispatch(getCreitedHolidayLeave(emNo)); // GET ALL HOLIDAYS LEAVES
+            dispatch(getCreitedCompansatoryOffLeave(emID)); // GET COMPANSATORY OFF LEAVES
+            dispatch(getCreditedEarnLeave(emNo)); // GET ALL EARN LEAVES
+            dispatch(getannualleave(emID))  //GET ALL LEAVES COUNT
+            dispatch(getEmployeeInformation(emID)) // LEAVE REQUESTED EMPLOYEE PERSONAL INFORMATION
+            dispatch(getEmployeeApprovalLevel(emID))
+            // dispatch(getEmpCoffData(postData)) // 
+        }
+
+    }, [levReq, setRequestType, userPostData, hod, incharge, employeePostData, dispatch])
+
+
+    /****************************** */
+
+
+
+    // //get the employee details for taking the HOd and Incharge Details
+    // const employeeState = useSelector((state) => state.getProfileData.ProfileData,);
+    // const singleLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState);
+
+    // const commonSettings = useSelector((state) => state?.getCommonSettings)
+    // const { group_slno } = commonSettings;
+
+
+    // const singleLevFormData = useMemo(() => singleLeaveTypeFormData, [singleLeaveTypeFormData])
+    // const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+
+    // const { formSubmit } = singleLevFormData;
+    // const { hod, incharge, em_no, em_name, sect_name, em_dept_section } = employeeProfileDetl;
+
+
+    // const onSubmitLeaveRequestEntry = (e) => {
+
+    //     if (hod === 1 || incharge === 1) {
+    //         // this employee is a hod or incharge
+    //         if (deptSection === 0) {
+    //             warningNofity("Section Not Selected")
+    //         } else if (employeeID === 0) {
+    //             warningNofity("Employee Not Selected")
+    //         } else if (levReq === 0) {
+    //             warningNofity("Request Type Not Selected")
+    //         } else {
+    //             let empDetl = {
+    //                 deptSection: deptSection,
+    //                 empNo: employeeID,
+    //                 requestType: levReq
+    //             }
+    //             dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl });
+    //             // dispatch(getCommonLeaveData(em_no));
+    //         }
+
+    //     } else {
+    //         // normal employee
+    //         if (levReq === 0) {
+    //             warningNofity("Request Type Not Selected")
+    //         } else {
+    //             let empDetl = {
+    //                 deptSection: em_dept_section,
+    //                 empNo: em_no,
+    //                 requestType: levReq
+    //             }
+    //             dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl })
+    //             dispatch(getCommonLeaveData(em_no));
+    //         }
+    //     }
+    // }
+
+    // const changeForm = () => {
+    //     let requestType = { requestType: 0 };
+    //     dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
+    //     dispatch({ type: LEAVE_REQ_DEFAULT })
+    // }
+
 
     return (
-        <Paper variant="outlined" sx={{ display: "flex", p: 0.3, mb: 0.5, alignItems: 'center', }} >
-            {
-                (hod === 1 || incharge === 1) ?
-                    <Box sx={{
-                        display: 'flex',
-                        flex: 1,
-                        alignItems: 'center',
-                        mt: 0.5, px: 0.3
-                    }} >
-                        <DepartmentSection
-                            setSection={setDeptSection}
-                            sectionVal={deptSection}
-                            formSubmit={formSubmit}
-                        />
-                    </Box> :
-                    <Box sx={{
-                        display: 'flex',
-                        flex: 1,
-                        alignItems: 'center',
-                        mt: 0.5, px: 0.3
-                    }} >
-                        <TextField
-                            variant="outlined"
-                            fullWidth
-                            size="small"
-                            value={sect_name}
-                            sx={{ display: 'flex', mt: 0.5 }}
-                            disabled
-                        />
-                    </Box>
-            }
-
-            {
-                (hod === 1 || incharge === 1) ?
-                    <Box sx={{
-                        display: 'flex',
-                        flex: 1,
-                        alignItems: 'center',
-                        mt: 0.5, px: 0.3
-                    }}>
-                        <EmployeeAgainSection
-                            section={deptSection}
-                            setEmployeeId={setEmployeeID}
-                            employeeId={employeeID}
-                            formSubmit={formSubmit}
-                        />
-                    </Box> :
-                    <Box sx={{
-                        display: 'flex',
-                        flex: 1,
-                        alignItems: 'center',
-                        mt: 0.5, px: 0.3
-                    }}>
-                        <TextField
-                            variant="outlined"
-                            fullWidth
-                            value={em_name}
-                            size="small"
-                            sx={{ display: 'flex', mt: 0.5 }}
-                            disabled
-                        />
-                    </Box>
-            }
-            <Box sx={{
-                display: 'flex',
-                flex: 1,
-                alignItems: 'center',
-                mt: 0.5, px: 0.3
-            }}>
-                <TextField
-                    variant="outlined"
-                    fullWidth
-                    size="small"
-                    disabled
-                    value={(hod === 1 || incharge === 1) ? employeeID : em_no}
-                    sx={{ display: 'flex', mt: 0.5 }}
-                />
+        <Paper variant="outlined" sx={{ display: "flex", alignItems: 'center', flexWrap: 'wrap' }} >
+            <Box display={'flex'} sx={{ flexGrow: 1, }} >
+                <Suspense fallback={<LinearProgress variant="outlined" />} >
+                    {
+                        (hod === 1 || incharge === 1)
+                            ? <HrRoleBasedDepartmentAndSection state={requestUser} setState={setRequestUser} formChange={setRequestType} />
+                            : <NormalEmployeeLeveReqPage />
+                    }
+                </Suspense>
             </Box>
             <Box sx={{
                 display: 'flex',
-                flex: 1,
                 alignItems: 'center',
-                mt: 0.5, px: 0.3
+                width: '20%',
+                px: 0.3
             }}>
                 <LeaveRequestType
-                    empstatus={employeeID}
                     onChange={setLevReq}
                     onChangeVal={levReq}
                 />
             </Box>
-            <Box sx={{ display: "flex", p: 0.2 }} >
+            <Box sx={{ display: "flex", px: 0.3, }} >
                 <CssVarsProvider>
-                    <Button
-                        aria-label="Like"
-                        variant="outlined"
-                        color="primary"
-                        onClick={onSubmitLeaveRequestEntry}
-                        sx={{
-                            // color: 'green',
-                        }}
-                    >
-                        <AddCircleOutlineIcon />
-                    </Button>
+                    <Tooltip title="Process" followCursor placement='top' arrow >
+                        <Button
+                            aria-label="Like"
+                            variant="outlined"
+                            color="danger"
+                            onClick={handleProcessLeveRequest}
+                            size='sm'
+                        >
+                            <AddCircleOutlineIcon />
+                        </Button>
+                    </Tooltip>
                 </CssVarsProvider>
             </Box>
-            <Box sx={{ display: "flex", p: 0.2 }} >
+            <Box sx={{ display: "flex", px: 0.3, }} >
                 <CssVarsProvider>
                     <Button
                         aria-label="Like"
                         variant="outlined"
-                        color="primary"
-                        onClick={() => changeForm()}
-                        sx={{
-                            // color: 'green',
-                        }}
+                        color="success"
+                        onClick={() => setRequestType(10)}
+                        size='sm'
+                        className='refreshButton'
                     >
-                        <RefreshIcon />
+                        <RefreshIcon className='rotating-icon' />
                     </Button>
                 </CssVarsProvider>
             </Box>

@@ -52,11 +52,6 @@ const Employeerecord = [
         name: 'Earning/Deduction',
         to: '/Home/EmpEarnDeduction',
     },
-    // {
-    //     component: CNavItem,
-    //     name: 'Bulk Updation',
-    //     to: '/homes',
-    // },
     {
         men_slno: 130,
         component: CNavItem,
@@ -79,7 +74,6 @@ const Employeerecord = [
         men_slno: 128,
         component: CNavItem,
         name: 'Probation End List',
-        //to: '/Home/Probation_end_details',
         to: '/Home/ProbationEnd'
     },
     {
@@ -88,12 +82,6 @@ const Employeerecord = [
         name: 'Contract End List',
         to: '/Home/Contract_end_details',
     },
-    // {
-    //     men_slno: 129,
-    //     component: CNavItem,
-    //     name: 'Approved Contract Renew',
-    //     to: '/Home/ContractRenewApprovalList',
-    // },
     {
         men_slno: 202,
         component: CNavItem,
@@ -106,7 +94,12 @@ const Employeerecord = [
         name: 'Pre Employment Health Checkup Form',
         to: '/Home/HealthCheckUp',
     },
-
+    {
+        men_slno: 152,
+        component: CNavItem,
+        name: 'Department Section Change',
+        to: '/Home/DeptSecChange',
+    },
 
 ]
 

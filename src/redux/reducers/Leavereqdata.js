@@ -17,7 +17,16 @@ const {
     FETCH_CREDITED_COMPENSATORY_OFF_LEAVE,
     FETCH_CREDITED_EARNLEAVE_OFF_LEAVE,
     FETCH_DUTY_PLANNED_SHIFT_HALF_DAY,
-    GET_SELECTED_EMPLOYEE_LEAVE_REQUEST
+    GET_SELECTED_EMPLOYEE_LEAVE_REQUEST,
+    FETCH_EMP_COFF_DATA,
+    FETCH_EACH_EMP_LEAVE_REQUEST,
+    FETCH_EACH_EMP_HALFDAY_REQUEST,
+    FETCH_EACH_EMP_MISSPUNCH_REQUEST,
+    FETCH_EACH_EMP_COFF_REQUEST,
+    FETCH_SECTION_BASED_LEAVE_REQUEST,
+    FETCH_SECTION_BASED_HALFDAY_REQUEST,
+    FETCH_SECTION_BASED_MISSPUNCH_REQUEST,
+    FETCH_SECTION_BASED_COFF_REQUEST
 } = Actiontypes;
 
 const Leavestate = [];
@@ -277,6 +286,132 @@ export const leaveRequestSelectedEmployee = (state = leaveRequestSelectedEmpId, 
     switch (type) {
         case GET_SELECTED_EMPLOYEE_LEAVE_REQUEST:
             return { ...state, em_no: payload.em_no, em_id: payload.em_id }
+        default:
+            return state
+    }
+}
+
+
+const empCompensatoryData = {
+    coffData: [],
+    coffStatus: false
+}
+
+export const getEmpCoffData = (state = empCompensatoryData, { type, payload }) => {
+    switch (type) {
+        case FETCH_EMP_COFF_DATA:
+            return { ...state, coffData: payload, coffStatus: true }
+        default:
+            return state
+    }
+}
+
+
+const empLeaveRequests = {
+    leaveRequest: [],
+    leaveStatus: false
+}
+export const getLeaveRequests = (state = empLeaveRequests, { type, payload }) => {
+    switch (type) {
+        case FETCH_EACH_EMP_LEAVE_REQUEST:
+            return { ...state, leaveRequest: payload, leaveStatus: true }
+        default:
+            return state
+    }
+}
+
+const empMisspunchRequest = {
+    misspunchRequests: [],
+    misspunchStatus: false
+}
+
+export const getMisspunchRequests = (state = empMisspunchRequest, { type, payload }) => {
+    switch (type) {
+        case FETCH_EACH_EMP_MISSPUNCH_REQUEST:
+            return { ...state, misspunchRequests: payload, misspunchStatus: true }
+        default:
+            return state
+    }
+}
+
+const empHalfdayRequests = {
+    halfdayRequest: [],
+    halfdayStatus: false
+}
+
+export const getHalfdayRequests = (state = empHalfdayRequests, { type, payload }) => {
+    switch (type) {
+        case FETCH_EACH_EMP_HALFDAY_REQUEST:
+            return { ...state, halfdayRequest: payload, halfdayStatus: true }
+        default:
+            return state
+    }
+}
+
+const sectionLeaveRequests = {
+    sectLeaves: [],
+    sectStatus: false
+}
+
+export const getSectLeaveRequests = (state = sectionLeaveRequests, { type, payload }) => {
+    switch (type) {
+        case FETCH_SECTION_BASED_LEAVE_REQUEST:
+            return { ...state, sectLeaves: payload, sectStatus: true }
+        default:
+            return state
+    }
+}
+
+const sectionHalfdayRequests = {
+    sectHalfday: [],
+    secthaldaystatus: false
+}
+
+export const getSectHalfdayRequests = (state = sectionHalfdayRequests, { type, payload }) => {
+    switch (type) {
+        case FETCH_SECTION_BASED_HALFDAY_REQUEST:
+            return { ...state, sectHalfday: payload, secthaldaystatus: true }
+        default:
+            return state
+    }
+}
+
+const sectionMisspunchRequests = {
+    sectMisspunch: [],
+    sectMisspunchStatus: false
+}
+
+export const getSectMisspunchRequests = (state = sectionMisspunchRequests, { type, payload }) => {
+    switch (type) {
+        case FETCH_SECTION_BASED_MISSPUNCH_REQUEST:
+            return { ...state, sectMisspunch: payload, sectMisspunchStatus: true }
+        default:
+            return state
+    }
+}
+
+const sectionCoffRequests = {
+    sectCoff: [],
+    sectCoffStatus: false
+}
+export const getSectCoffRequests = (state = sectionCoffRequests, { type, payload }) => {
+    switch (type) {
+        case FETCH_SECTION_BASED_COFF_REQUEST:
+            return { ...state, sectCoff: payload, sectCoffStatus: true }
+        default:
+            return state
+    }
+}
+
+const empCoffRequests = {
+    empCoff: [],
+    empCoffstatus: false
+}
+
+export const getEmpCoffRequests = (state = empCoffRequests, { type, payload }) => {
+    switch (type) {
+        case FETCH_EACH_EMP_COFF_REQUEST:
+            return { ...state, empCoff: payload, empCoffstatus: true }
         default:
             return state
     }

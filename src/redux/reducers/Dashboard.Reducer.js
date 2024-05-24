@@ -31,7 +31,7 @@ const {
 
 const dashBoadNotify = {
     //for leave request
-    133: { slno: 133, name: "Leave Request", count: 0, status: true },
+    133: { slno: 133, name: "Leave Request HR", count: 0, status: true },
     134: { slno: 134, name: "Leave Request User", count: 0, status: true },
     135: { slno: 135, name: "Leave Request Incharge", count: 0, status: true },
     136: { slno: 136, name: "Leave Request HOD", count: 0, status: true },
@@ -90,7 +90,7 @@ export const getDashboardNotification = (state = dashBoadNotify, { type, payload
         case FETCH_LEAVE_REQ_COUNT_CEO:
             return { ...state, 137: { slno: 137, name: "Leave Request CEO", count: payload, status: false } }
         case FETCH_GET_LEAVE_REQ_COUNT_HR:
-            return { ...state, 133: { slno: 133, name: "Leave Request", count: payload, status: false } }
+            return { ...state, 133: { slno: 133, name: "Leave Request HR", count: payload, status: false } }
         case FETCH_LEAVE_REQ_COUNT_USER:
             return { ...state, 134: { slno: 134, name: "Leave Request User", count: payload, status: false } }
         case FETCH_RESIGN_REQ_COUNT_INCHARGE:

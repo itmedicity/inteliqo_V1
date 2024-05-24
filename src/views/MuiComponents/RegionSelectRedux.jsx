@@ -1,34 +1,37 @@
-import { FormControl, MenuItem, Select } from '@mui/material'
-import React, { useMemo } from 'react'
+import { Option, Select } from '@mui/joy'
+import React, { memo, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 
 const RegionSelectRedux = ({ value, setValue }) => {
 
+<<<<<<< HEAD
     const pinwiseRegion = useSelector((state) => state.getPinWiseRegionData.pinWiseRegionList, _.isEqual)
+=======
+    const pinwiseRegion = useSelector((state) => state?.getPinWiseRegionData?.pinWiseRegionList, _.isEqual)
+
+>>>>>>> 7ad37fa93368e00bc77e9a77b66b68a8e3882983
     const reigionList = useMemo(() => pinwiseRegion, [pinwiseRegion]);
 
     return (
-        <FormControl fullWidth
-            size='small'   >
-            <Select
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                size="small"
-                fullWidth
-                variant='outlined'
-            >
-                <MenuItem value={0} disabled>
-                    Select Region
-                </MenuItem>
-                {
-                    reigionList && reigionList.map((val, ind) => {
-                        return <MenuItem key={ind} value={val.reg_slno} >{val.reg_name}</MenuItem>
-                    })
-                }
-            </Select>
-        </FormControl>
+        <Select
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+            }}
+            size='md'
+            variant='outlined'
+            sx={{ width: '100%' }}
+        >
+            <Option disabled value={0}> Select Region</Option>
+            {
+                reigionList?.map((val, index) => {
+                    return <Option key={index} value={val.reg_slno}>{val.reg_name}</Option>
+                })
+            }
+        </Select>
+
     )
 }
 
-export default RegionSelectRedux
+export default memo(RegionSelectRedux) 

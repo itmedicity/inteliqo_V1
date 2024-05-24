@@ -7,13 +7,13 @@ import { Form } from 'react-bootstrap';
 import { Button, CssVarsProvider, Textarea, Tooltip, Typography as Typo } from '@mui/joy';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
-import { add, differenceInCalendarDays, eachDayOfInterval, format } from 'date-fns';
+import { add, differenceInCalendarDays, eachDayOfInterval, format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import moment from 'moment';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useCallback } from 'react';
 import { useState } from 'react';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { getleaverequest } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { Actiontypes } from 'src/redux/constants/action.type'
@@ -23,7 +23,7 @@ import { fetchleaveInformationFun } from './Func/LeaveFunction';
 import {
     getEmployeeInformation,
     getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
-    getCreitedCompansatoryOffLeave, getCreditedEarnLeave,
+    getCreitedCompansatoryOffLeave, getCreditedEarnLeave, getEmpCoffData,
 } from 'src/redux/actions/LeaveReqst.action';
 // lazy import 
 // const MultiLeaveTypeSelectCmp = lazy(() => import('./Func/MultiLeaveTypeSelectCmp'));
@@ -53,11 +53,13 @@ const MultiLeaveRequestForm = () => {
     const getEmployeeInformations = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
     const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
     const singleLeaveTypeData = useSelector((state) => state.getEmpLeaveData.commonLeave, _.isEqual);
+    const commonState = useSelector((state) => state.getCommonSettings, _.isEqual);
 
     const selectedEmployeeDetl = useMemo(() => getEmployeeInformations, [getEmployeeInformations])
 
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const CommonLeaveType = useMemo(() => singleLeaveTypeData, [singleLeaveTypeData]);
+    const commonSetting = useMemo(() => commonState, [commonState])
 
     const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
 
@@ -67,7 +69,6 @@ const MultiLeaveRequestForm = () => {
         hod: empHodStat,
         //incharge: empInchrgStat
     } = selectedEmployeeDetl?.[0];
-
 
     useEffect(() => {
         if (hod === 0 && incharge === 0) {
@@ -80,7 +81,12 @@ const MultiLeaveRequestForm = () => {
             dispatch(getannualleave(em_id))
             dispatch(getEmployeeInformation(em_id))
         }
-    }, [incharge, hod, dispatch, em_id])
+        const postData = {
+            count: commonSetting?.comp_day_count,
+            em_id: em_id
+        }
+        dispatch(getEmpCoffData(postData))
+    }, [incharge, hod, dispatch, em_id, commonSetting])
 
     useEffect(() => {
         getleaverequest().then((val) => setLevRequestNo(val))
@@ -114,7 +120,6 @@ const MultiLeaveRequestForm = () => {
         setnewData(leaveSelectedData)
     }, [fromDate, toDate]);
 
-
     //allowed leave type 
 
     // const state = useSelector((state) => state.getPrifileDateEachEmp.empLeaveData);
@@ -125,7 +130,6 @@ const MultiLeaveRequestForm = () => {
     //leave request selection
 
     const handleChangeLeaveRequest = useCallback(async (leveTypeData, leaveDetl) => {
-
         //filter the leaves for duplication and get the post data
         const duplicateLeaveSelection = newData?.map((val) => val.selectedLveSlno).includes(leaveDetl?.selectedLveSlno);
         const duplicateLeaveSelections = newData?.map((val) => val.lveTypeName).includes(leaveDetl?.lveTypeName);
@@ -139,28 +143,34 @@ const MultiLeaveRequestForm = () => {
                     return {
                         ...val,
                         "leaveTypeSlno": leveTypeData?.leaveType,
-                        "leaveTypeName": leveTypeData?.leaveTypeName,
+                        "leaveTypeName": leaveDetl?.lveTypeName,
                         "singleLeave": leveTypeData?.singleLeave,
                         "selectedLveSlno": 0,
-                        "selectedLeaveTypeName": '',
+                        "selectedLeaveTypeName": leaveDetl?.lveTypeName,
                         "leaveDate": '',
                         "selectedLeaveName": '',
                     }
                 } else if (val?.index === leaveDetl?.index) {
                     return {
                         ...val,
-                        "selectedLveSlno": leaveDetl?.selectedLveSlno,
+                        "leaveTypeName": leaveDetl?.lveTypeName,
+                        "selectedLveSlno": parseInt(leaveDetl?.selectedLveSlno),
                         "selectedLeaveTypeName": leaveDetl?.lveTypeName,
                         "leaveDate": leaveDetl?.lveDate,
                         "selectedLeaveName": leaveDetl?.leave,
                     }
                 } else {
-                    return val
+                    return {
+                        ...val,
+
+                    }
+
                 }
             })
             setnewData(newSelectedLeaveData)
         }
     }, [newData])
+
 
     // multi leave request  submit function
     const leaveRequestSubmitFun = useCallback(async () => {
@@ -177,6 +187,7 @@ const MultiLeaveRequestForm = () => {
             em_dept_section: em_dept_section,
             leavefrom_date: fromDate,
             leavetodate: toDate,
+            attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
             rejoin_date: format(add(new Date(toDate), { days: 1 }), "yyyy-MM-dd"),
             request_status: 1,
             inc_apprv_req:
@@ -218,28 +229,18 @@ const MultiLeaveRequestForm = () => {
         const checkIfSelectedLeveReqType = newData?.filter((val) => val.leaveTypeSlno === 0 && val.singleLeave === 1);
         const checkIfSelectedLeve = newData?.filter((val) => val.selectedLveSlno === 0 && val.singleLeave === 0);
         const checkIfAnyLeaveSelected = newData?.filter((val) => val.leaveTypeSlno === 0 && val.selectedLveSlno === 0);
-        const CheckIfCasualLeave = newData?.filter((val) => val.leaveTypeSlno === '1' && val.singleLeave === 0);
-        const CheckIfEarnLeave = newData?.filter((val) => val.leaveTypeSlno === '8' && val.singleLeave === 0);
+        // const CheckIfCasualLeave = newData?.filter((val) => val.leaveTypeSlno === '1' && val.singleLeave === 0);
+        // const CheckIfEarnLeave = newData?.filter((val) => val.leaveTypeSlno === '8' && val.singleLeave === 0);
 
-        const sickLeave = newData?.some(key => key.leaveTypeSlno === '7') && (newData?.some(key => key.leaveTypeSlno === '1')
-            || newData?.some(key => key.leaveTypeSlno === '8') || newData?.some(key => key.leaveTypeSlno === '3')
-            || newData?.some(key => key.leaveTypeSlno === '4') || newData?.some(key => key.leaveTypeSlno === '6'));
-
+        // const sickLeave = newData?.some(key => key.leaveTypeSlno === '7') && (newData?.some(key => key.leaveTypeSlno === '1')
+        //     || newData?.some(key => key.leaveTypeSlno === '8') || newData?.some(key => key.leaveTypeSlno === '3')
+        //     || newData?.some(key => key.leaveTypeSlno === '4') || newData?.some(key => key.leaveTypeSlno === '6'));
 
         if (checkIfSelectedLeveReqType?.length > 0 || checkIfSelectedLeve?.length > 0 || checkIfAnyLeaveSelected?.length > 0) {
             warningNofity("Leave Type OR Name not selected OR Duplicate Leave Selected")
             setDropOpen(false)
         } else if (reason === '') {
             warningNofity("Leave Request Reason is Blank")
-            setDropOpen(false)
-        } else if (CheckIfCasualLeave.length === numberOfDays) {
-            warningNofity("Casual Leave Max 3 Days Not Possible!!")
-            setDropOpen(false)
-        } else if (CheckIfEarnLeave.length === numberOfDays) {
-            warningNofity("Earn Leave Max 3 Days Not Possible!!")
-            setDropOpen(false)
-        } else if (sickLeave === true) {
-            warningNofity("Sick Leave Can't be Clubbed with any other leaves!!")
             setDropOpen(false)
         }
         else {
@@ -287,25 +288,45 @@ const MultiLeaveRequestForm = () => {
                         })
 
                         // insert the single leave request 
-                        const result = await axioslogin.post('/LeaveRequest', postData);
-                        const { success, message } = await result.data;
-                        if (success === 1) {
-                            // insert the leave request detailed table
-                            const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
-                            const { success, message } = await insertDetlTable.data;
-                            if (success === 1) {
-                                succesNofity(message);
-                                changeForm()
+
+                        const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                        const dateCheck = {
+                            month: monthStartDate,
+                            section: em_dept_section
+                        }
+
+                        const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
+                        const { success, data } = checkPunchMarkingHr.data
+                        if (success === 0 || success === 1) {
+                            const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+                            const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                            if (lastUpdateDate === lastDay_month) {
+                                warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                                 setDropOpen(false)
                             } else {
-                                warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
-                                changeForm()
-                                setDropOpen(false)
+                                const result = await axioslogin.post('/LeaveRequest', postData);
+                                const { success, message } = await result.data;
+                                if (success === 1) {
+                                    // insert the leave request detailed table
+                                    const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
+                                    const { success, message } = await insertDetlTable.data;
+                                    if (success === 1) {
+                                        succesNofity(message);
+                                        changeForm()
+                                        setDropOpen(false)
+                                    } else {
+                                        warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                                        changeForm()
+                                        setDropOpen(false)
+                                    }
+                                } else {
+                                    warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                                    changeForm()
+                                    setDropOpen(false)
+                                }
                             }
                         } else {
-                            warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
-                            changeForm()
-                            setDropOpen(false)
+                            errorNofity("Error getting PunchMarkingHR ")
                         }
                     }
 
@@ -331,33 +352,109 @@ const MultiLeaveRequestForm = () => {
                     }
                 })
 
-                // insert the single leave request 
-                const result = await axioslogin.post('/LeaveRequest', postData);
-                const { success, message } = await result.data;
-                if (success === 1) {
-                    //insert the leave request detailed table
-                    const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
-                    const { success, message } = await insertDetlTable.data;
-                    if (success === 1) {
-                        succesNofity(message);
-                        changeForm()
+
+                //insert the single leave request
+                const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                const dateCheck = {
+                    month: monthStartDate,
+                    section: em_dept_section
+                }
+
+                const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
+                const { success, data } = checkPunchMarkingHr.data
+                if (success === 0 || success === 1) {
+                    const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+                    const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+                    if (lastUpdateDate === lastDay_month) {
+                        warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                         setDropOpen(false)
-                        fetchleaveInformationFun(dispatch, em_id)
                     } else {
-                        warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
-                        changeForm()
-                        setDropOpen(false)
+                        const result = await axioslogin.post('/LeaveRequest', postData);
+                        const { success, message } = await result.data;
+                        if (success === 1) {
+                            //insert the leave request detailed table
+                            const insertDetlTable = await axioslogin.post('/LeaveRequest/createdetlleave', postDetailedData);
+                            const { success, message } = await insertDetlTable.data;
+                            if (success === 1) {
+                                succesNofity(message);
+                                changeForm()
+                                setDropOpen(false)
+                                fetchleaveInformationFun(dispatch, em_id)
+                            } else {
+                                warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                                changeForm()
+                                setDropOpen(false)
+                            }
+                        } else {
+                            warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
+                            changeForm()
+                            setDropOpen(false)
+                        }
                     }
                 } else {
-                    warningNofity(`Contact EDP - ${JSON.stringify(message)}`)
-                    changeForm()
-                    setDropOpen(false)
+                    errorNofity("Error getting PunchMarkingHR ")
                 }
             }
         }
     }, [newData, multiLeaveTypeData, reason, em_id, em_no, levRequestNo, changeForm,
         em_department, em_dept_section, numberOfDays, authorization_hod, authorization_incharge, dispatch,
         empHodStat, hod, incharge, CommonLeaveType])
+
+    const [select, setSelect] = useState(0)
+    const [casualLeve, setCasualLeave] = useState([]);
+    const casulLeves = useSelector((state) => state.getCreditedCasualLeave, _.isEqual);
+    const casualLve = useMemo(() => casulLeves, [casulLeves])
+
+    useEffect(() => {
+        const { casualLeave } = casualLve;
+        const nohalfcasual = casualLeave.filter(val => val.cl_bal_leave !== 0.5)
+        const array = nohalfcasual.map((val) => {
+            const obj = {
+                ...val, checkValue: 0
+            }
+            return obj
+        })
+        setCasualLeave(array);
+    }, [casualLve])
+
+    const [earnLeave, setEarnLeave] = useState([]);
+    //const [status, setStatus] = useState(false);
+
+    const earnLeaves = useSelector((state) => state.getCreditedEarnLeave, _.isEqual);
+    const earnLve = useMemo(() => earnLeaves, [earnLeaves]);
+
+    useEffect(() => {
+        const { earnLeave } = earnLve;
+        const array = earnLeave.map((val) => {
+            const obj = {
+                ...val, checkValue: 0
+            }
+            return obj
+        })
+        // setCasualLeave(array);
+        setEarnLeave(array);
+    }, [earnLve])
+
+    const [coff, setCoff] = useState([]);
+    // const [status, setStatus] = useState(false);
+
+    const copansatoryOff = useSelector((state) => state?.getEmpCoffData, _.isEqual);
+
+    const compOff = useMemo(() => copansatoryOff, [copansatoryOff]);
+
+
+    useEffect(() => {
+        const { coffData } = compOff;
+        const array = coffData.map((val) => {
+            const obj = {
+                ...val, checkValue: 0
+            }
+            return obj
+        })
+        setCoff(array);
+    }, [compOff])
+
+
 
     return (
         <Paper
@@ -402,6 +499,14 @@ const MultiLeaveRequestForm = () => {
                     data={val}
                     index={index}
                     handleChange={handleChangeLeaveRequest}
+                    select={select}
+                    setSelect={setSelect}
+                    casualLeve={casualLeve}
+                    setCasualLeave={setCasualLeave}
+                    earnLeave={earnLeave}
+                    setEarnLeave={setEarnLeave}
+                    coff={coff}
+                    setCoff={setCoff}
                 />)}
             </Box>
             <Paper

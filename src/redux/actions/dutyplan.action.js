@@ -21,3 +21,15 @@ export const getempdetails = (postDataa) => async (dispatch) => {
         dispatch({ type: FETCH_EMP_DETAILS, payload: data })
     }
 }
+
+export const getSectionShift = (postData) => async (dispatch) => {
+    const result = await axioslogin.post('/departmentshift/SectionShift', postData)
+    const { success, data } = await result.data;
+    if (success === 1) {
+        const { shft_code } = data[0]
+        const obj = JSON.parse(shft_code)
+        dispatch({ type: FETCH_DEPT_SHIFT_DATA, payload: obj })
+    } else {
+        dispatch({ type: FETCH_DEPT_SHIFT_DATA, payload: [] })
+    }
+}

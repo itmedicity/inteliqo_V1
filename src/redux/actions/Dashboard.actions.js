@@ -45,7 +45,8 @@ export const getResignCount = () => async (dispatch) => {
 }
 
 export const getcontractCloseCount = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/contractcloseCount/list')
+    //  const result = await axioslogin.get('/Count/contractcloseCount/list')
+    const result = await axioslogin.get('/Performance/contractclosed')
     const { success, data } = result.data
     if (success === 1) {
         dispatch({ type: FETCH_CONTRACT_CLOSE, payload: data.length, status: false })
@@ -110,7 +111,7 @@ export const getovertimeCountUser = (em_id) => async (dispatch) => {
 }
 
 export const getleavereqCountIncharge = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/LeaveReqInchargeCount')
+    const result = await axioslogin.get('/Count/LeaveReqInchargeCount/all')
     const { success, data } = result.data
     if (success === 1) {
         const { leaveinchargecount } = data[0]
@@ -143,7 +144,7 @@ export const getleavereqCountCEO = () => async (dispatch) => {
 }
 
 export const getleavereqCountHR = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/LeaveReqHrCount')
+    const result = await axioslogin.get('/Count/LeaveReqHrCount/all')
     const { success, data } = result.data
     if (success === 1) {
         const { leavehrcount } = data[0]
@@ -198,7 +199,8 @@ export const getresignreqCountCEO = () => async (dispatch) => {
 }
 
 export const getContractRenewalCount = () => async (dispatch) => {
-    const result = await axioslogin.get('/Count/contractcount/list')
+    // const result = await axioslogin.get('/Count/contractcount/list')
+    const result = await axioslogin.get('/empcat/contract/detl')
     const { success, data } = result.data
     if (success === 1) {
         dispatch({ type: FETCH_CONTRACT_RENEW_COUNT, payload: data.length, status: true })

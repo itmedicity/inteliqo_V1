@@ -1,19 +1,19 @@
-import { CssVarsProvider } from '@mui/joy'
+import { CssVarsProvider, Textarea } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
-import { Box, Paper, TextareaAutosize } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import IconButton from '@mui/joy/IconButton';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import KraSelect from './Jobdesccomponent/KraSelect';
 import { infoNofity, succesNofity, errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { ToastContainer } from 'react-toastify';
 import { memo } from 'react';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
+import { IconButton as OpenIcon } from '@mui/material';
 
 const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, selectDeptSection }) => {
     const [Kra, setKra] = useState(0)
@@ -49,10 +49,16 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
         { headerName: 'Slno', field: 'slno', width: 50, },
         { headerName: 'Key Result Area ', field: 'kra_desc', },
         { headerName: 'Competency Description', field: 'competency_desc', autoHeight: true, wrapText: true, minWidth: 200, },
-        //{ headerName: 'Department', field: 'dept_name', width: 60, },
-        //{ headerName: 'Designation', field: 'desg_name', width: 60, },
-        { headerName: 'Edit', width: 20, cellRenderer: params => <EditIcon onClick={() => EditData(params)} /> },
-        { headerName: 'Delete', width: 20, cellRenderer: params => <DeleteIcon onClick={() => DeleteItem(params)} /> },
+        {
+            headerName: 'Edit', width: 20, cellRenderer: params => <OpenIcon sx={{ mb: 1 }} size='sm' color='primary' onClick={() => EditData(params)}>
+                <EditIcon />
+            </OpenIcon>
+        },
+        {
+            headerName: 'Delete', width: 20, cellRenderer: params => <OpenIcon sx={{ mb: 1 }} size='sm' color='primary' onClick={() => DeleteItem(params)}>
+                <DeleteIcon />
+            </OpenIcon>
+        },
     ])
 
     const checkData = useMemo(() => {
@@ -203,64 +209,40 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
 
         <Fragment>
             <ToastContainer />
-            {/* Job Specification : Performance  */}
-            <Box sx={{ p: 1, display: "flex" }} >
+            <Box sx={{ flex: 1 }} >
                 <CssVarsProvider>
-                    <Typography
-                        startDecorator={<DragIndicatorOutlinedIcon color='success' />}
-                        level="body2"
-                        sx={{ flex: 2 }}
-                    >
+                    <Typography startDecorator={<DragIndicatorOutlinedIcon />} textColor="neutral.400" sx={{ display: 'flex', }} >
                         Job Specification : competency
                     </Typography>
                 </CssVarsProvider>
-                {/* <Box sx={{ flex: 0 }} >
-                    <IconButton variant="outlined" size='sm'
-                        //onClick={saveJobSpecification} 
-                        sx={{ color: 'green' }}>
-                        <LibraryAddCheckOutlinedIcon />
-                    </IconButton>
-                </Box> */}
             </Box>
-
-            {/* Peformance & Competency descriptive table */}
             <Paper square elevation={3} sx={{ p: 1, display: "flex", flexDirection: "column", width: "100%" }} >
                 <Box sx={{ display: "flex", alignItems: "center", }} >
-                    <Box sx={{ flex: 3, width: "40%" }} >
-                        <KraSelect label="Key Result Areas (KRA)" value={Kra} setValue={setKra} style={SELECT_CMP_STYLE}
-                        //setKraName={setKraName} 
-                        />
+                    <Box sx={{ flex: 3, }} >
+                        <KraSelect value={Kra} setValue={setKra} />
                     </Box>
-                    {/* <Box sx={{ display: "flex", alignItems: "center", py: 0.1, flexDirection: "row" }} > */}
-                    <Box sx={{ flex: 4, pl: 1, width: "60%", }}
-                    // style={{ p: 0, height: 20, lineHeight: 2, m: 0 }}
-                    >
-                        <TextareaAutosize
-                            style={{ width: 800, height: 33, display: "flex", borderRadius: 4, borderColor: "#c4c4c4", paddingLeft: 13, pt: 3 }}
-                            minRows={1}
+                    <Box sx={{ flex: 4, pl: 1, width: "60%", }} >
+                        <Textarea
+                            label="Outlined"
                             placeholder="Competency"
-                            name="competency_desc"
+                            variant="outlined"
+                            size="lg"
+                            minRows={1}
+                            maxRows={2}
+                            name='competency_desc'
                             value={competency_desc}
                             onChange={(e) => updatKeyPerformance(e)}
+                            sx={{ flex: 1 }}
                         />
                     </Box>
-                    <Box sx={{ flex: 1, px: 2 }} >
-                        <IconButton variant="outlined" size='sm'
-                            onClick={AddCompetencyToTable}
-                            //</Box>onChange={AddKra}
-                            sx={{ color: 'blue' }} >
-                            <AddToPhotosIcon />
+                    <Box sx={{ flex: 0, px: 0.5 }} >
+                        <IconButton variant="outlined" size='sm' onClick={AddCompetencyToTable} sx={{ color: 'green' }}>
+                            <LibraryAddCheckOutlinedIcon />
                         </IconButton>
                     </Box>
-
                 </Box >
             </Paper >
-            <Paper square elevation={0} sx={{
-                pt: 1,
-                mt: 0.5,
-                display: 'flex',
-                flexDirection: "column"
-            }} >
+            <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                 <CommonAgGrid columnDefs={columnDef}
                     tableData={TableValues}
                     sx={{
@@ -268,10 +250,7 @@ const CompetencyWithAgGrid = ({ selectDesignation, selectedDept, jobedit, select
                         width: "100%"
                     }} rowHeight={30} headerHeight={30} />
             </Paper>
-
         </Fragment >
-
-
     )
 }
 

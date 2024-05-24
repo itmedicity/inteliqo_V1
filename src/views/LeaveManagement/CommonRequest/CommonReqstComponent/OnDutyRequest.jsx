@@ -2,6 +2,7 @@ import { Button, CssVarsProvider, Typography } from '@mui/joy'
 import { Box, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { lastDayOfMonth, startOfMonth } from 'date-fns'
 import moment from 'moment'
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { useMemo } from 'react'
@@ -96,6 +97,7 @@ const OnDutyRequest = () => {
                 in_time: val.inValue === true ? 1 : 0,
                 out_time: val.outValue === true ? 1 : 0,
                 onduty_reason: remark,
+                attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
                 incharge_req_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
                     (authorization_incharge === 1 && incharge === 0) ? 1 :
                         (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
@@ -123,35 +125,47 @@ const OnDutyRequest = () => {
             return obj
         })
 
-        const postData = {
-            fromdate: moment(fromDate).format('YYYY-MM-DD'),
-            todate: moment(toDate).format('YYYY-MM-DD'),
-            em_no: em_no
+        const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+        const dateCheck = {
+            month: monthStartDate,
+            section: em_dept_section
         }
 
-        const result = await axioslogin.post('/CommonReqst/check/attendance', postData)
-        const { data } = result.data
-        if (data.length === 0) {
-            const result = await axioslogin.post('/CommonReqst/onduty/create', postArray)
-            const { message, success } = result.data;
-            if (success === 1) {
-                succesNofity(message)
-                setFromDate(moment(new Date()))
-                setToDate(moment(new Date()))
-                setViewTable(0)
-                setRemark('')
-                setSelectedShift(0)
-            } else {
-                errorNofity(message)
-                setFromDate(moment(new Date()))
-                setToDate(moment(new Date()))
-                setViewTable(0)
-                setRemark('')
-                setSelectedShift(0)
-            }
+        if (remark === '') {
+            warningNofity("Please Add Remark!")
         } else {
-            warningNofity("Attendance Marking Is Done, Contact HRD!!")
+            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
+            const { success, data } = checkPunchMarkingHr.data
+            if (success === 0 || success === 1) {
+                const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
+                const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+
+                if (lastUpdateDate === lastDay_month) {
+                    warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
+                } else {
+                    const result = await axioslogin.post('/CommonReqst/onduty/create', postArray)
+                    const { message, success } = result.data;
+                    if (success === 1) {
+                        succesNofity(message)
+                        setFromDate(moment(new Date()))
+                        setToDate(moment(new Date()))
+                        setViewTable(0)
+                        setRemark('')
+                        setSelectedShift(0)
+                    } else {
+                        errorNofity(message)
+                        setFromDate(moment(new Date()))
+                        setToDate(moment(new Date()))
+                        setViewTable(0)
+                        setRemark('')
+                        setSelectedShift(0)
+                    }
+                }
+            } else {
+                errorNofity("Error getting PunchMarkingHR ")
+            }
         }
+
     }
     return (
         <Fragment>

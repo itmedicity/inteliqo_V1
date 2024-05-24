@@ -19,7 +19,8 @@ import {
     getCreitedCompansatoryOffLeave,
     getCreditedEarnLeave,
     getDutyPlannedShift,
-    leaveRequestSelectedEmployee
+    leaveRequestSelectedEmployee,
+    getEmpCoffData
 } from '../reducers/Leavereqdata'
 import { getDepartmentList } from '../reducers/DepartmentReducer'
 import { getDeprtSection } from '../reducers/DepartSecReducer'
@@ -93,9 +94,18 @@ import { getEmpUnderDeptsecList } from './EmpUnderDeptSec.Reducer'
 import { getPinWiseRegionData } from './RegionReducers'
 import { setCommonreqstAll } from './CommonReqst.Reducer'
 import { setStatutoryInfo } from './LeaveProcess.Reducer'
+import { gettrainingData } from './Training.Reducer'
 import { setVaccinationemp } from './VaccinationReducers'
 import { getemp } from './EmployeeReducers'
 import { getInterviewquestion } from './Interview.Reducer'
+import { getLeaveReport } from './LeaveReportReducers'
+import { getLeaveRequests } from './Leavereqdata'
+import { getMisspunchRequests } from './Leavereqdata'
+import {
+    getHalfdayRequests, getSectLeaveRequests, getSectHalfdayRequests,
+    getSectMisspunchRequests, getEmpCoffRequests, getSectCoffRequests
+} from './Leavereqdata'
+
 const reducer = combineReducers({
     changeState,
     getProfileData,
@@ -196,11 +206,22 @@ const reducer = combineReducers({
     getPinWiseRegionData,
     setCommonreqstAll,
     setStatutoryInfo,
+    gettrainingData,
     selectedEarnData,
     setVaccinationemp,
     setEmployeeType,
     getemp,
-    getInterviewquestion
+    getInterviewquestion,
+    getEmpCoffData,
+    getLeaveReport,
+    getLeaveRequests,
+    getMisspunchRequests,
+    getHalfdayRequests,
+    getSectLeaveRequests,
+    getSectHalfdayRequests,
+    getSectMisspunchRequests,
+    getEmpCoffRequests,
+    getSectCoffRequests
 })
 
 export default reducer;

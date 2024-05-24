@@ -59,7 +59,7 @@ const MarkingComponent = ({ value }) => {
                 <TableCell align="center">{value.em_name}</TableCell>
                 <TableCell align="center">{
                     <JoyCheckbox
-                        label='Incharge'
+                        // label='Incharge'
                         checked={value.coassign === 1 && cosetup === 0 ? true : assign.coassign}
                         name="coassign"
                         onchange={(e) => updateAssign(e)}

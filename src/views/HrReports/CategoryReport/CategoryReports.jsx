@@ -115,9 +115,6 @@ const CategoryReports = () => {
         }
     }, [serialslno, dispatch])
 
-
-
-
     return (
         <Fragment>
             <ToastContainer />

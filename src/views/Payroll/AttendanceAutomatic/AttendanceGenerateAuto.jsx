@@ -1,17 +1,24 @@
 import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material'
-import React, { useEffect, useMemo, useState, memo } from 'react'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
+import React, { useEffect, useMemo, useState, memo, useCallback } from 'react'
 import _ from 'underscore'
-import { ToastContainer } from 'react-toastify'
 import { CssVarsProvider, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import AttendanceMainCard from './AttendanceMainCard'
-import { infoNofity, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity, succesNofity, errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from "src/views/Axios/Axios";
 import { useDispatch, useSelector } from 'react-redux'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
+import CustomInnerHeigtComponent from 'src/views/Component/MuiCustomComponent/CustomInnerHeigtComponent'
+import { useHistory } from 'react-router-dom'
+import { Exportfile } from '../AttendanceUpdation/ExportToExcel';
 
 const AttendanceGenerateAuto = () => {
+
+    const history = useHistory();
+
+    const toRedirectToHome = () => {
+        history.push(`/Home`)
+    }
 
     const [fromdate, setfromdate] = useState('')
     const [todate, setTodate] = useState('')
@@ -55,34 +62,54 @@ const AttendanceGenerateAuto = () => {
                         const empwise = data.filter((value) => {
                             return value.emp_id === val.em_id ? 1 : 0
                         })
+                       
+
                         const total = empwise.length
-                        const actual = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HP' || val.duty_desc === 'HFD' || val.duty_desc === 'EG' || val.duty_desc === 'LC')).length
-                        const calculated = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HP')).length
-                        const offdays = (empwise.filter(val => val.duty_desc === 'OFF')).length
-                        const leaves = (empwise.filter(val => val.leave_status === 1)).length
-                        const holidayworked = (empwise.filter(val => val.duty_desc === 'HP')).length
-                        const lossofpay = (empwise.filter(val => val.leave_status === 0 && val.duty_status === 0)).length
+                        //const actual = (empwise.filter(val => val.duty_desc === 'P' || val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
+                        const present_days = (empwise.filter(val => val.duty_desc === 'P' )).length
+                        const offdays = (empwise.filter(val => val.duty_desc === 'OFF' || val.duty_desc === 'NOFF')).length
+                        const nofhfd = (empwise.filter(val => val.duty_desc === 'HFD' || val.duty_desc === 'EHFD')).length
+                        const leaves = (empwise.filter(val => val.duty_desc === 'LV')).length
+                        const halday_leaves=(empwise.filter(val => val.duty_desc === 'HDL')).length
                         const holiday = (empwise.filter(val => val.holiday_status === 1)).length
-                        const calculatedlop = (empwise.filter(val => val.duty_desc === 'A' && val.leave_status === 0)).length
-                        const lwp = (empwise.filter(val => val.duty_desc === 'A' && val.leave_status === 1)).length
-                        const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves - lwp - lossofpay :
-                            calculated + offdays + holiday + leaves - lwp - lossofpay
+                        const calculatedlop = (empwise.filter(val => val.duty_desc === 'LC')).length
+
+                        const workdays=present_days+(nofhfd*0.5)+leaves+halday_leaves+calculatedlop+holiday
+
+                        const calculated_workdays=workdays===0?0:workdays+offdays
+
+                        const holidayworked = (empwise.filter(val => val.duty_desc === 'HP')).length
+                        const lossofpay = (empwise.filter(val => val.duty_desc === 'A'||val.duty_desc === 'ESI')).length
+                        const lwp = (empwise.filter(val => val.duty_desc === 'LWP')).length
+                        const LCcount = (empwise.filter(val => val.duty_desc === 'LC')).length
+
+                        const total_lop=LCcount > commonSettings?.max_late_day_count ? lossofpay+lwp+(nofhfd*0.5) + ((LCcount - commonSettings?.max_late_day_count) / 2) : lossofpay+lwp+(nofhfd*0.5) 
+
+                        // const total_pay_day = val.gross_salary < commonSettings.salary_above ? calculated + offdays + holiday + holidayworked + leaves + (nofhfd / 2) - lwp :
+                        //     calculated + offdays + holiday + leaves + (nofhfd / 2) - lwp
+
+                        // const totalday = LCcount > commonSettings?.max_late_day_count ? total_pay_day + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : total_pay_day + LCcount
+                        const totalday=calculated_workdays===0?0:total-total_lop
+                       // const totalpay = LCcount > commonSettings?.max_late_day_count ? totalday + commonSettings?.max_late_day_count + ((LCcount - commonSettings?.max_late_day_count) / 2) : totalday + LCcount
+                       
 
                         const obj = {
                             em_id: val.em_id,
                             em_no: val.em_no,
                             em_name: val.em_name,
                             total: total,
-                            actual: actual,
+                            actual: present_days,
                             lossofpay: lossofpay,
                             lwp: lwp,
-                            leaves: leaves,
+                            leaves: leaves+halday_leaves,
                             holidayworked: holidayworked,
                             holiday: holiday,
                             offdays: offdays,
-                            calculated: calculated,
+                            calculated: calculated_workdays,
                             calculatedlop: calculatedlop,
-                            paydays: total_pay_day
+                           paydays: totalday,
+                            nofhfd: nofhfd,
+                            calculatedhalfday:nofhfd*0.5
                         }
                         return obj
                     })
@@ -139,42 +166,73 @@ const AttendanceGenerateAuto = () => {
             }
             return obje
         })
-        const result = await axioslogin.post("/payrollprocess/check/dateexist", checkData)
-        const { success } = result.data
-        if (success === 1) {
-            infoNofity("Attendance is already processed for this month!")
+        if (dept === 0 || deptSec === 0) {
+            warningNofity("Please Select Department || Department Section")
         } else {
-            const result = await axioslogin.post("/payrollprocess/create/manual", array1)
-            const { success, message } = result.data
+            const result = await axioslogin.post("/payrollprocess/check/dateexist", checkData)
+            const { success } = result.data
             if (success === 1) {
-                const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
-                const { success } = result1.data
-                if (success === 1) {
-                    succesNofity("Attendance Marking Done")
-                }
-                else {
-                    errorNofity("Error occure in duty plan lock")
-                }
-
+                infoNofity("Attendance is already processed for this month!")
             } else {
-                errorNofity(message)
+                const result = await axioslogin.post("/payrollprocess/create/manual", array1)
+                const { success, message } = result.data
+                if (success === 1) {
+                    const result1 = await axioslogin.patch("/payrollprocess/dutyPlanLock", dutyLock)
+                    const { success } = result1.data
+                    if (success === 1) {
+                        succesNofity("Attendance Marking Done")
+                    }
+                    else {
+                        errorNofity("Error occure in duty plan lock")
+                    }
+
+                } else {
+                    errorNofity(message)
+                }
             }
         }
     }
 
-    return (
-        <CustomLayout title="Attendance Marking - Automatic" displayClose={true} >
-            <ToastContainer />
-            <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column', width: '100%' }}>
 
-                {/* HeaderCard */}
+    const downloadFormat = useCallback(() => {
+        const fileName = "attendance"
+        if (final.length === 0) {
+            warningNofity("please Select Department Department Section");
+        } else {
+            const array = final.map((val) => {
+                return {
+                    "EmpID": val.em_no,
+                    "Name": val.em_name,
+                    "Total Days": val.total,
+                    "Actual Worked": val.actual,
+                    "Calculated Worked": val.calculated,
+                    "OFF Days": val.offdays,
+                    "Leaves": val.leaves,
+                    "Leave Without Pay": val.lwp,
+                    "Loss Of Pay": val.lossofpay,
+                    "Calculated LOP ": val.calculatedlop,
+                    "Holiday": val.holiday,
+                    "Holiday Worked": val.holidayworked,
+                    "Total Pay Day": val.paydays
+                }
+            })
+            Exportfile(array, fileName)
+        }
+
+    }, [final])
+
+    return (
+
+        <CustomInnerHeigtComponent title="Attendance Marking - Automatic" toClose={toRedirectToHome}>
+            <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column', width: '100%' }}>
                 <AttendanceMainCard setfromdate={setfromdate} setTodate={setTodate}
                     setdept={setdept}
                     setDeptsec={setDeptsec}
                     getData={getData}
                     saveData={saveData}
-                    setEmpdata={setEmpdata} empData={empData} />
-
+                    setEmpdata={setEmpdata} empData={empData}
+                    downloadFormat={downloadFormat}
+                />
                 <Paper square variant='outlined' elevation={0} sx={{ display: "flex", alignItems: "center", }}  >
                     <Box sx={{ flex: 1 }} >
                         <CssVarsProvider>
@@ -184,7 +242,6 @@ const AttendanceGenerateAuto = () => {
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-
                 <Paper square variant="outlined" sx={{ display: 'flex', p: 0.5, flex: 1 }}>
                     {/* employee Name Section */}
                     <Box sx={{ width: '100%' }}>
@@ -209,22 +266,38 @@ const AttendanceGenerateAuto = () => {
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
-                                                Actual Worked
+                                                Calculated Worked 
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
-                                                Calculated Worked
+                                                Present Days (P)
                                             </Box>
                                         </TableCell>
+                                     
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
-                                                OFF Days
+                                                OFF Days (WOFF/NOFF)
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
                                                 Leaves
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
+                                                No of Half day
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
+                                                Holiday
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
+                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
+                                                Holiday Worked
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
@@ -242,14 +315,10 @@ const AttendanceGenerateAuto = () => {
                                                 Calculated LOP
                                             </Box>
                                         </TableCell>
+                                      
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
                                             <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
-                                                Holiday
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
-                                            <Box component={Grid} item sx={{ minHeight: 50, maxHeight: 50, p: 0.2 }}>
-                                                Holiday Worked
+                                                Calculated Halfday
                                             </Box>
                                         </TableCell>
                                         <TableCell align="center" sx={{ p: 0, backgroundColor: '#F5F5F6', border: 0.1, borderColor: '#E1E6E1' }}>
@@ -287,17 +356,18 @@ const AttendanceGenerateAuto = () => {
                                             <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
-                                                        {val.actual}
+                                                        {val.calculated}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
                                             <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
-                                                        {val.calculated}
+                                                        {val.actual}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
+                                           
                                             <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
@@ -309,6 +379,27 @@ const AttendanceGenerateAuto = () => {
                                                 <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
                                                         {val.leaves}
+                                                    </Typography>
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
+                                                <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
+                                                    <Typography variant="body2" gutterBottom noWrap={true}>
+                                                        {val.nofhfd}
+                                                    </Typography>
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1', backgroundColor: '#F4EEEE' }}>
+                                                <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
+                                                    <Typography variant="body2" gutterBottom noWrap={true}>
+                                                        {val.holiday}
+                                                    </Typography>
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1', backgroundColor: '#F4EEEE' }}>
+                                                <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
+                                                    <Typography variant="body2" gutterBottom noWrap={true}>
+                                                        {val.holidayworked}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
@@ -333,17 +424,11 @@ const AttendanceGenerateAuto = () => {
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
+                                           
                                             <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
-                                                <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
+                                                <Box component={Grid} item sx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
                                                     <Typography variant="body2" gutterBottom noWrap={true}>
-                                                        {val.holiday}
-                                                    </Typography>
-                                                </Box>
-                                            </TableCell>
-                                            <TableCell component="th" align="center" scope="row" sx={{ py: 0, px: 0.5, width: 100, border: 0.1, borderColor: '#E1E6E1' }}>
-                                                <Box component={Grid} itemsx={{ minHeight: 25, maxHeight: 25, p: 0.2, fontWeight: 'normal', textOverflow: 'ellipsis', width: 100, }}>
-                                                    <Typography variant="body2" gutterBottom noWrap={true}>
-                                                        {val.holidayworked}
+                                                        {val.calculatedhalfday}
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
@@ -364,7 +449,7 @@ const AttendanceGenerateAuto = () => {
                     </Box>
                 </Paper>
             </Box>
-        </CustomLayout>
+        </CustomInnerHeigtComponent>
     )
 }
 

@@ -17,7 +17,7 @@ const MultiLeaveTypeSelectCmp = ({ index, onChange, leaveTypeChange }) => {
 
     //filter the allowed leave type based on type === 0 (means not credited || only filter the credited leave type) 
     useEffect(() => {
-        const allowedLeaveType = allowedLeaveData?.filter((val) => val.type !== 0).map((val) => {
+        const allowedLeaveType = allowedLeaveData?.filter((val) => val.type !== 0 && val.type !== 3 && val.type !== 4).map((val) => {
             return { "type": val.type, "typeleve": val.typeleve }
         })
         setLeveType(allowedLeaveType)
@@ -37,7 +37,6 @@ const MultiLeaveTypeSelectCmp = ({ index, onChange, leaveTypeChange }) => {
             'singleLeave': singleLeave
         }, null)
     }, [index, onChange, leaveTypeChange])
-
 
     return (
         <Form.Select

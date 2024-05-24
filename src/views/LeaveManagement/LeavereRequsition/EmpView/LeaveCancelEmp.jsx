@@ -22,22 +22,23 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
 
     //DISPLAY THE DATA 
     const { slno, emno, name, section, reqDate, fromDate, toDate, leaveid } = data;
-    //GET THE DETAILED TABLE DATA USING API
-    const getLeaveReqDetl = async (slno) => {
-        const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${slno}`);
-        const { success, data } = resultdel?.data;
-        if (success === 1) {
-            setReqDetl(data)
-        } else {
-            setReqDetl([])
-        }
-    }
+
 
     useEffect(() => {
-        if (slno !== null && slno !== undefined) {
-            getLeaveReqDetl(slno)
+        //GET THE DETAILED TABLE DATA USING API
+        const getLeaveReqDetl = async (slno) => {
+            const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${leaveid}`);
+            const { success, data } = resultdel?.data;
+            if (success === 1) {
+                setReqDetl(data)
+            } else {
+                setReqDetl([])
+            }
         }
-    }, [slno])
+        if (leaveid !== null && leaveid !== undefined) {
+            getLeaveReqDetl(leaveid)
+        }
+    }, [leaveid])
 
     const Canceldata = useMemo(() => {
         return {
@@ -45,10 +46,9 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
             comment: reason,
             apprvdate: moment(new Date()).format('YYYY-MM-DD HH:mm'),
             us_code: emno,
-            slno: leaveid
+            slno: slno
         }
-    }, [emno, reason, leaveid])
-
+    }, [emno, reason, slno])
 
     const Cancelrequest = useCallback(async () => {
         //CASUAL LEAVE 
@@ -290,7 +290,7 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
                                 Request From
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
-                                {moment(fromDate).format('DD-MM-YYYY')}
+                                {fromDate}
                             </Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flex: 1, pr: 1, justifyContent: 'space-between' }} >

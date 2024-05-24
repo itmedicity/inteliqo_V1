@@ -39,7 +39,7 @@ import AccordionGroup from '@mui/joy/AccordionGroup';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/joy'
 
 
-const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
+// const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'))
 const CommonLeaveTable = React.lazy(() => import('./CommonLeavesCard'))
 const CreditedLeaveTable = React.lazy(() => import('./CreditedLeavesCard'))
@@ -232,7 +232,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       em_prob_end_date, ecat_prob, ecat_training, probation_status)
 
     if (contractStatus.status === true) {
-      console.log(processedLveDetl);
+     
       //   // 4->
       if (processedLveDetl.newProcess === true) {
         //NEW PROCESS --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
@@ -426,7 +426,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
                           </Suspense>
                         </AccordionDetails>
                       </Accordion>
-                      <Accordion
+                      {/* <Accordion
                         expanded={index === 2}
                         onChange={(event, expanded) => {
                           setIndex(expanded ? 2 : null);
@@ -441,7 +441,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
                             />
                           </Suspense>
                         </AccordionDetails>
-                      </Accordion>
+                      </Accordion> */}
                       <Accordion
                         expanded={index === 3}
                         onChange={(event, expanded) => {
