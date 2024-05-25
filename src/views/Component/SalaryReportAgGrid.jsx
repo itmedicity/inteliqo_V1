@@ -78,4 +78,4 @@ const SalaryReportAgGrid = ({ columnDefMain, tableDataMain, sx }) => {
     )
 }
 
-export default SalaryReportAgGrid
+export default memo(SalaryReportAgGrid) 

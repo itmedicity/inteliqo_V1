@@ -5,22 +5,17 @@ import { addMonths, endOfMonth, format, getDaysInMonth, isValid, startOfMonth, s
 import React, { memo, useMemo, useState } from 'react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { setDepartment } from 'src/redux/actions/Department.action';
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import RotateRightIcon from '@mui/icons-material/RotateRight';
-import Table from '@mui/joy/Table';
 import { useCallback } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { calculateDutyDesc } from './SalaryProcessFun'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout'
 import { Paper } from '@mui/material'
-import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne'
 import SalaryReportAgGrid from 'src/views/Component/SalaryReportAgGrid'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import { setDept } from 'src/redux/actions/Dept.Action'
