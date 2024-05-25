@@ -174,7 +174,6 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                     })
                                 ).then(async (element) => {
                                     const { value } = element[0];
-                                    console.log(value);
                                     const resultdel = await axioslogin.patch(`/LeaveRequestApproval/Hrhalfday`, value);
                                     const { success, message } = await resultdel.data;
                                     if (success === 1) {
