@@ -495,7 +495,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                                 level="body1"
                                 justifyContent="center"
                             >
-                                Request From
+                                Leave From
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
                                 {moment(fromDate).format('DD-MM-YYYY')}
@@ -506,7 +506,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                                 level="body1"
                                 justifyContent="center"
                             >
-                                Request To
+                                Leave To
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
                                 {moment(toDate).format('DD-MM-YYYY')}
