@@ -13,7 +13,6 @@ import moment from 'moment';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { employeeNumber } from 'src/views/Constant/Constant';
 import { getContractClosedata } from 'src/redux/reduxFun/reduxHelperFun';
-import { getPunchMasterData } from 'src/redux/actions/Common.Action';
 
 const EXistContractDetl = React.lazy(() => import('./EXistContractDetl'))
 const AttendanceDetails = React.lazy(() => import('./AttendanceDetails'))
@@ -232,7 +231,7 @@ const ContractRenewalProcess = () => {
     }
   }, [contstatus, contractrenew, newempId, permanentEmpNo, newCatgeory, permanetDOJ, newDesign,
     updateSlno, no, doj, email, contractEnddate, contractStartDate, dutyplanData,
-    punchmast, id, oldCategory, contractend, oldContarctStatus, oldDesignation])
+    punchmast, id, oldCategory, contractend, oldContarctStatus, oldDesignation, punchslno])
 
   //function for saving new contract
   const RenewOldContract = useCallback(async (e) => {
