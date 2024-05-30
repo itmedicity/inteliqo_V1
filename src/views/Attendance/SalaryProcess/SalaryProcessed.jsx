@@ -65,6 +65,10 @@ const SalaryProcessed = () => {
             const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
             const { succes, dataa: employeeData } = result1.data
             if (succes === 1 && isValid(value) && value !== null) {
+
+                const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
+                const { data: deductData } = result1.data
+
                 const arr = employeeData && employeeData.map((val) => val.em_id)
                 const postdata = {
                     emp_id: arr,
@@ -82,6 +86,8 @@ const SalaryProcessed = () => {
                         const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
                         const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD')).length
                         const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
+
+                        const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0));
 
                         const npsamount = val.nps === 1 ? val.npsamount : 0
                         const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
@@ -131,6 +137,7 @@ const SalaryProcessed = () => {
                             npsamount: npsamount,
                             lwfamount: lwfamount,
                             holidaySalary: Math.round(holidaysalary / 10) * 10,
+                            deductValue: deductValue,
                             totalSalary: Math.round(totalSalary / 10) * 10,
                         }
                     })
