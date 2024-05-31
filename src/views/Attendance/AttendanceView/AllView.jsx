@@ -109,7 +109,7 @@ const AllView = ({ em_id }) => {
                             totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
                             totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF").length ?? 0,
                             totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
-                            totalHD: empArray?.filter(el => el.lvereq_desc === "CHD" || el.lvereq_desc === "HD").length ?? 0,
+                            totalHD: empArray?.filter(el => el.lvereq_desc === "CHD" || el.lvereq_desc === "HD" || el.lvereq_desc === "EGHD").length ?? 0,
                             totalA: empArray?.filter(el => el.lvereq_desc === "A").length ?? 0,
                             totalLV: empArray?.filter(el => el.lvereq_desc === "COFF" || el.lvereq_desc === "CL" || el.lvereq_desc === "EL" || el.lvereq_desc === "SL").length ?? 0,
                             totalHDL: (empArray?.filter(el => el.lvereq_desc === "HCL").length ?? 0) * 1,

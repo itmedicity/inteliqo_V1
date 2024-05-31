@@ -19,6 +19,10 @@ import { Paper } from '@mui/material'
 import SalaryReportAgGrid from 'src/views/Component/SalaryReportAgGrid'
 import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
 import { setDept } from 'src/redux/actions/Dept.Action'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { getHolidayList } from 'src/redux/actions/LeaveProcess.action'
+import { DeptWiseAttendanceViewFun } from '../AttendanceView/Functions'
+import { ExporttoExcel } from 'src/views/HrReports/DayWiseAttendence/ExportToExcel'
 
 const SalaryProcessed = () => {
 
@@ -29,14 +33,16 @@ const SalaryProcessed = () => {
     const [deptSection, setDeptSection] = useState(0)
     const [all, setAll] = useState(false)
     const [mainArray, setArray] = useState([])
+    const [processBtn, setProcessBtn] = useState(false)
+
 
     useEffect(() => {
         dispatch(setDepartment());
         dispatch(setDeptWiseSection());
         dispatch(setCommonSetting());
         dispatch(setDept())
+        dispatch(getHolidayList());
     }, [dispatch])
-
 
     //Common settings
     const commonState = useSelector((state) => state.getCommonSettings);
@@ -45,16 +51,12 @@ const SalaryProcessed = () => {
     const departments = useSelector((state) => state?.getdept?.departmentlist)
     const allDept = useMemo(() => departments, [departments])
     const allSection = useMemo(() => deptSect, [deptSect])
+    const holiday = useSelector((state) => state.getHolidayList);
+    const holidayList = useMemo(() => holiday, [holiday]);
 
 
     const onClickProcess = useCallback(async () => {
-        const monthStartDate = format(subDays(startOfMonth(new Date(value)), 6), 'yyyy-MM-dd');
-        const endOfMonthDate = format(endOfMonth(new Date(value)), 'yyyy-MM-dd');
-        const postDate = {
-            fromDate: monthStartDate,
-            toDate: endOfMonthDate
-        }
-
+        setProcessBtn(true)
         if (all === true) {
             const deptArray = allDept?.map(val => val.dept_id)
             const sectArray = allSection?.map(val => val.sect_id)
@@ -112,8 +114,9 @@ const SalaryProcessed = () => {
                         const totalDays = getDaysInMonth(new Date(value))
                         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0
                         const totalPayday = workday === 0 ? 0 : (totalDays + totalHP) - totallopCount
+                        const lopamount = totallopCount * (val.gross_salary / totalDays);
                         const paydaySalay = (val.gross_salary / totalDays) * totalPayday
-                        const totalSalary = paydaySalay + holidaysalary - npsamount - lwfamount
+                        const totalSalary = val.gross_salary - npsamount - lwfamount - deductValue - lopamount
 
                         return {
                             em_no: val.em_no,
@@ -138,7 +141,7 @@ const SalaryProcessed = () => {
                             lwfamount: lwfamount,
                             holidaySalary: Math.round(holidaysalary / 10) * 10,
                             deductValue: deductValue,
-                            totalSalary: Math.round(totalSalary / 10) * 10,
+                            totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary / 10) * 10,
                         }
                     })
                     setArray(finalDataArry)
@@ -205,8 +208,9 @@ const SalaryProcessed = () => {
                         const totalDays = getDaysInMonth(new Date(value))
                         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0
                         const totalPayday = workday === 0 ? 0 : (totalDays + totalHP) - totallopCount
+                        const lopamount = totallopCount * (val.gross_salary / totalDays);
                         const paydaySalay = (val.gross_salary / totalDays) * totalPayday
-                        const totalSalary = paydaySalay + holidaysalary - npsamount - lwfamount
+                        const totalSalary = val.gross_salary - npsamount - lwfamount - deductValue - lopamount
 
                         return {
                             em_no: val.em_no,
@@ -231,7 +235,7 @@ const SalaryProcessed = () => {
                             lwfamount: lwfamount,
                             holidaySalary: Math.round(holidaysalary / 10) * 10,
                             deductValue: deductValue,
-                            totalSalary: Math.round(totalSalary / 10) * 10,
+                            totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary / 10) * 10,
                         }
                     })
                     setArray(finalDataArry)
@@ -273,7 +277,7 @@ const SalaryProcessed = () => {
 
 
 
-    }, [value, all, dept, deptSection, commonSettings])
+    }, [value, all, dept, deptSection, commonSettings, allDept, allSection])
 
     const [column] = useState([
         { headerName: 'ID', field: 'em_no' },
@@ -283,30 +287,160 @@ const SalaryProcessed = () => {
         { headerName: 'Department Section ', field: 'sect_name', minWidth: 250 },
         { headerName: 'Category ', field: 'ecat_name', minWidth: 250 },
         { headerName: 'Institution ', field: 'inst_emp_type', minWidth: 250 },
-        { headerName: 'Gross Salary ', field: 'empSalary' },
+
         { headerName: 'Account Number', field: 'em_account_no' },
         { headerName: 'Total Days ', field: 'totalDays' },
         { headerName: 'Leave Count', field: 'totalLeaves' },
         { headerName: 'Holiday Count ', field: 'totalHoliday' },
-        { headerName: 'Holiday Worked ', field: 'holidayworked' },
+
         // { headerName: 'LOP Days ', field: 'lopDays' },
         { headerName: 'No Of Half Day LOP(HD)', field: 'totalHD', minWidth: 250 },
         { headerName: 'No Of LC Count', field: 'totalLC' },
         { headerName: 'Total LOP', field: 'totallopCount' },
         { headerName: 'Total Pay Day', field: 'paydays' },
         { headerName: 'LOP Amount ', field: 'lopAmount' },
-        { headerName: 'Holiday Amount ', field: 'holidaySalary' },
         { headerName: 'NPS Amount', field: 'npsamount' },
         { headerName: 'LWF Amount', field: 'lwfamount' },
         { headerName: 'Deduction Amount', field: 'deductValue' },
+        { headerName: 'Gross Salary ', field: 'empSalary' },
         { headerName: 'Total Salary', field: 'totalSalary' },
+        { headerName: 'Holiday Worked ', field: 'holidayworked' },
+        { headerName: 'Holiday Amount ', field: 'holidaySalary' },
     ])
 
+    const downloadFormat = useCallback(async () => {
+        if (processBtn === false) {
+            warningNofity("Please Select Any Option!!")
+        }
+        else if (processBtn === true && all === true) {
+            const deptArray = allDept?.map(val => val.dept_id)
+            const sectArray = allSection?.map(val => val.sect_id)
+            const getEmpData = {
+                em_department: deptArray,
+                em_dept_section: sectArray,
+            }
+            const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
+            const { succes, dataa: employeeData } = result1.data
+            if (succes === 1 && isValid(value) && value !== null) {
 
+                const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
+                const { data: deductData } = result1.data
+
+                const arr = employeeData && employeeData.map((val) => val.em_id)
+                const postdata = {
+                    emp_id: arr,
+                    from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                    to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                }
+                const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
+                const { success, data } = result.data
+                if (success === 1) {
+                    const finalDataArry = employeeData?.map((val) => {
+                        const empwise = data.filter((value) => value.emp_id === val.em_id)
+                        return {
+                            em_no: val.em_no,
+                            em_name: val.em_name,
+                            dept_name: val.dept_name,
+                            sect_name: val.sect_name,
+                            arr: empwise
+                        }
+                    })
+                    DeptWiseAttendanceViewFun(format(startOfMonth(new Date(value)), 'yyyy-MM-dd'), holidayList).then((values) => {
+                        const fileName = "Attendance_Report";
+                        const headers = ["Name", "Emp Id", "Department", "Department Section", ...values.map(val => val.date)];
+                        const days = ["Days", "", "", "", ...values.map(val => val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days)];
+                        // Rows for Excel file
+                        const rows = finalDataArry.map(row => {
+                            const rowData = [
+                                row.em_name,
+                                row.em_no,
+                                row.dept_name,
+                                row.sect_name,
+                                ...row.arr.map(val => val.lvereq_desc)
+                            ];
+                            return rowData;
+                        });
+
+                        // Prepare data for Excel export
+                        const excelData = [headers, days, ...rows];
+
+                        // Call ExporttoExcel function
+                        ExporttoExcel(excelData, fileName);
+
+                    })
+
+                }
+                else {
+                    warningNofity("No Punch Details")
+                }
+            } else {
+                warningNofity("Error While Fetching data!")
+            }
+
+        } else {
+            const getEmpData = {
+                em_department: dept,
+                em_dept_section: deptSection,
+            }
+            const result1 = await axioslogin.post("/payrollprocess/getEmpNoDeptWise", getEmpData);
+            const { succes, dataa: employeeData } = result1.data
+            if (succes === 1 && isValid(value) && value !== null) {
+
+                const arr = employeeData?.map((val) => val.em_id)
+                const postdata = {
+                    emp_id: arr,
+                    from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                    to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                }
+                const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
+                const { success, data } = result.data
+                if (success === 1) {
+                    const finalDataArry = employeeData?.map((val) => {
+                        const empwise = data.filter((value) => value.emp_id === val.em_id)
+                        return {
+                            em_no: val.em_no,
+                            em_name: val.em_name,
+                            dept_name: val.dept_name,
+                            sect_name: val.sect_name,
+                            arr: empwise
+                        }
+                    })
+
+                    DeptWiseAttendanceViewFun(format(startOfMonth(new Date(value)), 'yyyy-MM-dd'), holidayList).then((values) => {
+                        const fileName = "Attendance_Report";
+                        const headers = ["Name", "Emp Id", "Department", "Department Section", ...values.map(val => val.date)];
+                        const days = ["Days", "", "", "", ...values.map(val => val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days)];
+                        // Rows for Excel file
+                        const rows = finalDataArry.map(row => {
+                            const rowData = [
+                                row.em_name,
+                                row.em_no,
+                                row.dept_name,
+                                row.sect_name,
+                                ...row.arr.map(val => val.lvereq_desc)
+                            ];
+                            return rowData;
+                        });
+
+                        // Prepare data for Excel export
+                        const excelData = [headers, days, ...rows];
+
+                        // Call ExporttoExcel function
+                        ExporttoExcel(excelData, fileName);
+
+                    })
+                } else {
+                    warningNofity("No Punch Details or Not a Valid date")
+                }
+            } else {
+                warningNofity("No Employee Under this Department || Department Section")
+            }
+        }
+    }, [value, all, dept, deptSection, commonSettings, allDept, allSection, processBtn])
 
 
     return (
-        <ReportLayout title="Salary Reports" data={[]} displayClose={true} >
+        <ReportLayout title="Salary Reports" data={mainArray} displayClose={true} >
             <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
                 <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
                     <Box sx={{ flex: 1, px: 0.5 }} >
@@ -353,6 +487,20 @@ const SalaryProcessed = () => {
                                 startDecorator={<RotateRightIcon />}
                                 endDecorator={'Process'}
                                 onClick={onClickProcess}
+                            >
+
+                            </Button>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ px: 1, display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, justifyContent: 'flex-start' }} >
+                        <CssVarsProvider>
+                            <Button aria-label="Like" variant="outlined" color='primary'
+                                sx={{
+                                    // color: '#90caf9'
+                                }}
+                                startDecorator={<ArrowDownwardIcon />}
+                                endDecorator={'Download Attendance Format'}
+                                onClick={downloadFormat}
                             >
 
                             </Button>
