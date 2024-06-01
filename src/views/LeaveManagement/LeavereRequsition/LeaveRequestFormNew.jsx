@@ -377,7 +377,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
         <Box sx={{ mb: 0.5 }}>
             <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
             <LeaveRequestDocModal open={modalOpen} data={leaveDetails} setOpen={setModalOpen}
-                setTable={setTable} setReason={setReason} setRequestType={setRequestType} />
+                setTable={setTable} setReason={setReason} setRequestType={setRequestType} setDropOpen={setDropOpen} />
             <Paper variant="outlined" sx={{ mt: 0.5 }} >
                 <Box sx={{ display: 'flex', flexDirection: 'row', p: 0.5 }} >
                     <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }} >

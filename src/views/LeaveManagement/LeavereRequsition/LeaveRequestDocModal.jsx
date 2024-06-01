@@ -11,7 +11,7 @@ import { Paper } from '@mui/material';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 
-const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setRequestType }) => {
+const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setRequestType, setDropOpen }) => {
     const { detlPostSata, masterPostData } = data;
 
     const submitRequest = useCallback(async () => {
@@ -19,7 +19,7 @@ const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setReq
         const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', data);
         const { success } = submitLeaveRequet.data;
         if (success === 1) {
-            // setDropOpen(false)
+            setDropOpen(false)
             setOpen(false)
             setTable([])
             setReason('')
@@ -27,7 +27,7 @@ const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setReq
             succesNofity("Leave request submited Successfully")
             // console.log(submitLeaveRequet)
         } else {
-            //setDropOpen(false)
+            setDropOpen(false)
             setTable([])
             setReason('')
             setRequestType(0)
