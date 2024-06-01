@@ -74,6 +74,7 @@ const SalaryProcessed = () => {
                 const arr = employeeData && employeeData.map((val) => val.em_id)
                 const postdata = {
                     emp_id: arr,
+                    // emp_id: [168],
                     from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
                     to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
                 }
@@ -89,7 +90,7 @@ const SalaryProcessed = () => {
                         const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD')).length
                         const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
 
-                        const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0));
+                        const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
 
                         const npsamount = val.nps === 1 ? val.npsamount : 0
                         const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
@@ -112,11 +113,11 @@ const SalaryProcessed = () => {
                         const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
 
                         const totalDays = getDaysInMonth(new Date(value))
-                        const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0
-                        const totalPayday = workday === 0 ? 0 : (totalDays + totalHP) - totallopCount
+                        const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
+                        const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
                         const lopamount = totallopCount * (val.gross_salary / totalDays);
                         const paydaySalay = (val.gross_salary / totalDays) * totalPayday
-                        const totalSalary = val.gross_salary - npsamount - lwfamount - deductValue - lopamount
+                        const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
 
                         return {
                             em_no: val.em_no,
@@ -131,17 +132,17 @@ const SalaryProcessed = () => {
                             totalDays: getDaysInMonth(new Date(value)),
                             totalLeaves: totalLV,
                             totalHoliday: totalH,
-                            totallopCount: totallopCount,
+                            totallopCount: totalPayday === 0 ? getDaysInMonth(new Date(value)) : totallopCount,
                             holidayworked: totalHP,
                             totalHD: totalHD,
                             totalLC: totalLC,
                             paydays: totalPayday,
-                            lopAmount: Math.round((onedaySalary * totallopCount) / 10) * 10,
+                            lopAmount: Math.round(onedaySalary * totallopCount),
                             npsamount: npsamount,
                             lwfamount: lwfamount,
-                            holidaySalary: Math.round(holidaysalary / 10) * 10,
+                            holidaySalary: Math.round(holidaysalary),
                             deductValue: deductValue,
-                            totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary / 10) * 10,
+                            totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary),
                         }
                     })
                     setArray(finalDataArry)
@@ -163,14 +164,13 @@ const SalaryProcessed = () => {
             if (succes === 1 && isValid(value) && value !== null) {
                 const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
                 const { data: deductData } = result1.data
-
-
                 const arr = employeeData?.map((val) => val.em_id)
                 const postdata = {
                     emp_id: arr,
                     from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
                     to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
                 }
+
                 const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
                 const { success, data } = result.data
                 if (success === 1) {
@@ -183,7 +183,7 @@ const SalaryProcessed = () => {
                         const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD')).length
                         const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
 
-                        const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0));
+                        const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
 
                         const npsamount = val.nps === 1 ? val.npsamount : 0
                         const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
@@ -206,11 +206,11 @@ const SalaryProcessed = () => {
                         const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
 
                         const totalDays = getDaysInMonth(new Date(value))
-                        const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0
-                        const totalPayday = workday === 0 ? 0 : (totalDays + totalHP) - totallopCount
+                        const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
+                        const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
                         const lopamount = totallopCount * (val.gross_salary / totalDays);
                         const paydaySalay = (val.gross_salary / totalDays) * totalPayday
-                        const totalSalary = val.gross_salary - npsamount - lwfamount - deductValue - lopamount
+                        const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
 
                         return {
                             em_no: val.em_no,
@@ -230,12 +230,12 @@ const SalaryProcessed = () => {
                             totalHD: totalHD,
                             totalLC: totalLC,
                             paydays: totalPayday,
-                            lopAmount: Math.round((onedaySalary * totallopCount) / 10) * 10,
+                            lopAmount: Math.round(onedaySalary * totallopCount),
                             npsamount: npsamount,
                             lwfamount: lwfamount,
-                            holidaySalary: Math.round(holidaysalary / 10) * 10,
+                            holidaySalary: Math.round(holidaysalary),
                             deductValue: deductValue,
-                            totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary / 10) * 10,
+                            totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary),
                         }
                     })
                     setArray(finalDataArry)
