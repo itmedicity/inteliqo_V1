@@ -202,7 +202,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
         } else {
             infoNofity("No Punch Details")
         }
-    }, [em_no, value])
+    }, [em_no, value, salary_above])
 
 
     const getColor = (val) => val === 'A' ? '#ff5630' : val === 'ESI' ? '#ff5630' : val === 'LWP' ? '#ff5630' : val === 'LC' ? '#00b8d9' : val === 'EG' ? '#00b8d9' : val === 'HD' ? '#bf7d19' : '#344767'

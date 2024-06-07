@@ -6,7 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import GroupSelection from 'src/views/CommonCode/GroupSelection'
-import ModuleSelection from 'src/views/CommonCode/ModuleSelection'
+// import ModuleSelection from 'src/views/CommonCode/ModuleSelection'
 import DeptSectionOnlySelect from 'src/views/MuiComponents/JoyComponent/DeptSectionOnlySelect'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoySectionEmployee from 'src/views/MuiComponents/JoyComponent/JoySectionEmployee'
@@ -145,7 +145,7 @@ const MdleUserRightMast = () => {
                             <JoySectionEmployee value={empno} setValue={setEmpno} deptSect={deptSect} />
                         </Box>
                         <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
-                            <ModuleSelection value={groupName} setValue={setGroupName} />
+                            <GroupSelection value={groupName} setValue={setGroupName} />
                         </Box>
                         <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
                             <GroupSelection value={modulegrp} setValue={setmodulegrp} />
