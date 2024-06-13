@@ -363,6 +363,7 @@ const Personaldetails = () => {
             emp_yeargae: age,
             em_region: region1,
             hrm_region2: region2,
+            em_gender: gender,
             create_user: employeeNumber()
         }
 
