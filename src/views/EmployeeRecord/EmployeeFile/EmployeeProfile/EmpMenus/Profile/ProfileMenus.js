@@ -222,14 +222,14 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                                 <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
                             </CssVarsProvider>
                             <Box sx={{ display: 'flex', width: '50%', textTransform: "capitalize" }}>
-                                {emp.presAddress.toLowerCase()}{emp.pincode === false ? '' :
+                                {emp?.presAddress?.toLowerCase()}{emp.pincode === false ? '' :
                                     <Box sx={{ display: 'flex', px: 1 }}>
                                         <Box sx={{ display: 'flex', textTransform: "capitalize", alignItems: "center" }}>
                                             <MyLocationOutlinedIcon color='primary' fontSize="small" />
                                         </Box>
                                         <Tooltip title="Postal Pincode" followCursor placement='top' arrow >
                                             <Box sx={{ display: 'flex', stextTransform: "capitalize", px: 1 }}>
-                                                {emp.pincode}
+                                                {emp?.pincode}
                                             </Box>
                                         </Tooltip>
                                     </Box>
@@ -238,7 +238,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                             <Tooltip title="Region Name" followCursor placement='top' arrow >
                                 <Box sx={{ display: 'flex', width: '30%', textTransform: "capitalize", alignItems: "center" }}>
                                     <LocationOnOutlinedIcon color='primary' fontSize="small" />
-                                    {emp.region.toLowerCase()}
+                                    {emp?.region?.toLowerCase()}
                                 </Box>
                             </Tooltip>
                         </Box>
@@ -255,7 +255,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                                 <Typography endDecorator={<ArrowRightOutlinedIcon />} ></Typography>
                             </CssVarsProvider>
                             <Box sx={{ display: 'flex', width: '50%', textTransform: "capitalize" }}>
-                                {emp.permAddress.toLowerCase()}{emp.pincode === false ? '' :
+                                {emp?.permAddress?.toLowerCase()}{emp.pincode === false ? '' :
                                     <Box sx={{ display: 'flex', px: 1 }}>
                                         <Box sx={{ display: 'flex', textTransform: "capitalize", alignItems: "center" }}>
                                             <MyLocationOutlinedIcon color='primary' fontSize="small" />
@@ -271,7 +271,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
                             <Tooltip title="Region Name" followCursor placement='top' arrow >
                                 <Box sx={{ display: 'flex', width: '30%', textTransform: "capitalize", alignItems: "center" }}>
                                     <LocationOnOutlinedIcon color='primary' fontSize="small" />
-                                    {emp.region.toLowerCase()}
+                                    {emp?.region?.toLowerCase()}
                                 </Box>
                             </Tooltip>
                         </Box>
