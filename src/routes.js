@@ -284,6 +284,7 @@ const CompensatoryRequest = React.lazy(() => import('./views/LeaveManagement/Com
 const AttendenceReports = React.lazy(() => import('./views/HrReports/AttendenceReport/AttendenceReport'))
 const DayWiseAttendenceReports = React.lazy(() => import('./views/HrReports/DayWiseAttendence/DayWiseAttendence'))
 const DutyplanforIncharge = React.lazy(() => import('./views/Attendance/DutyPlan/InchargeDutyplan'))
+const DutyplanReport = React.lazy(() => import('./views/HrReports/DutyplanReport/DutyPlanReport'))
 
 
 
@@ -504,21 +505,12 @@ const routes = [
   { path: '/Home/ExperienceSummary', exact: true, name: 'Employee Experience Summary Report', component: ExperienceSummary },
   { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },
   { path: '/Home/EmployeeActiveHR', exact: true, name: 'Employee Active HR', component: EmployeeActiveHR },
-
-
-  //QR CODE
-  // { path: '/Home/PreTest', exact: true, name: 'Pre Test', component: PreTest },
   { path: '/OnlinePreTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Pre Test', component: OnlinePreTest },
   { path: '/OnlineTraining/:id/:emId', exact: true, name: 'Online Training', component: QROnlineTraining },
   { path: '/OnlinePostTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Post Test', component: OnlinePostTest },
-  // { path: '/Home/PostTest', exact: true, name: 'Post Test', component: PostTest },
   { path: '/Home/OnlineTraining', exact: true, name: 'Online Training', component: OnlineTraining },
-
-  //Retest
   { path: '/Home/EmpDashboardPage', exact: true, name: 'Employee Dashboard', component: EmployeeDashboard },
   { path: '/OnlineReTest/:slno/:emId/:tslno/:qcount', exact: true, name: 'Online Retest', component: OnlineRetest },
-
-  //Departmental Training Report
   { path: '/Home/DepartmentalTrainingReport', exact: true, name: 'Departmental Training Report', component: DepartmentalTrainingReport },
   { path: '/Home/DepartmentalCalender', exact: true, name: 'Monthly Report', component: DepartmentalCalender },
   { path: '/Home/DepartmentalTrainingReportDetails', exact: true, name: 'Departmental Training Report Details', component: DepartmentalTrainingReportDetails },
@@ -527,8 +519,6 @@ const routes = [
   { path: '/Home/TrainingCompletionEmpReport', exact: true, name: 'Departmental Training Completion Employee Reports', component: TrainingCompletionEmpReport },
   { path: '/Home/TrainingPendingReport', exact: true, name: 'Departmental Training Pending Employee Reports', component: TrainingPendingReport },
   { path: '/Home/TrainingRetestEmpReport', exact: true, name: 'Departmental Training Retest Employee Reports', component: TrainingRetestEmpReport },
-
-  //CommonPreTest
   { path: '/Home/CommonPreTestPage', exact: true, name: 'Common PreTest', component: CommonPreTestPage },
   { path: '/PreLogInpage/:topic_slno', exact: true, name: 'PreTest LogIn', component: PreLogInpage },
   { path: '/Home/CommonPostTestPage', exact: true, name: 'Common PostTest', component: CommonPostTestPage },
@@ -563,6 +553,7 @@ const routes = [
   { path: '/Home/AttendenceReports', exact: true, name: 'Attendence Reports', component: AttendenceReports },
   { path: '/Home/DayWiseAttendence', exact: true, name: 'Day Wise Attendence Reports', component: DayWiseAttendenceReports },
   { path: '/Home/DutyplanforIncharge', exact: true, name: 'Dutyplan for Incharge', component: DutyplanforIncharge },
+  { path: '/Home/DutyplanReport', exact: true, name: 'Dutyplan Report', component: DutyplanReport },
 ]
 
 export default routes
