@@ -20,6 +20,7 @@ import { useCallback } from 'react';
 import Table from '@mui/joy/Table';
 import LeaveDescription from './LeaveDescription';
 import { useSelector } from 'react-redux';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
 
 const isOdd = (number) => number % 2 !== 0
 
@@ -202,7 +203,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
         } else {
             infoNofity("No Punch Details")
         }
-    }, [em_no, value])
+    }, [em_no, value, salary_above])
 
 
     const getColor = (val) => val === 'A' ? '#ff5630' : val === 'ESI' ? '#ff5630' : val === 'LWP' ? '#ff5630' : val === 'LC' ? '#00b8d9' : val === 'EG' ? '#00b8d9' : val === 'HD' ? '#bf7d19' : '#344767'
@@ -237,13 +238,14 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
 
     return (
         <CustomLayout title="Attendance View" displayClose={true} >
-            <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}>
+            <ToastContainer />
+            <Paper sx={{ display: 'flex', height: screenInnerHeight * 83 / 100, flexDirection: 'column', width: '100%' }}>
                 {
                     self === true ? <>
                         <Paper
                             square
                             variant="outlined"
-                            sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
+                            sx={{ display: 'flex', flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
                         >
                             <ToastContainer />
                             <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
@@ -466,14 +468,9 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                         :
 
                         <>
-                            <Paper
-                                square
-                                variant="outlined"
-                                sx={{ display: 'flex', flex: 1, flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
+                            <Paper square variant="outlined"
+                                sx={{ display: 'flex', flexDirection: 'row', p: 0.5, alignItems: 'center', mb: 0.5 }}
                             >
-                                <ToastContainer />
-
-                                {/* <CustomBackDrop open={open} text="Please Wait" /> */}
                                 <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -688,7 +685,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                             </Box>
                         </>
                 }
-            </Box>
+            </Paper>
         </CustomLayout >
     )
 }

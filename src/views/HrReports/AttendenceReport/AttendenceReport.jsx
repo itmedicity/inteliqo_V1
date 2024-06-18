@@ -150,7 +150,7 @@ const AttendenceReport = () => {
                                         duty_status: getAttendanceStatus?.duty_status,
                                         holiday_status: val.holiday_status,
                                         leave_status: val.leave_status,
-                                        lvereq_desc: getAttendanceStatus?.lvereq_desc,
+                                        lvereq_desc: val?.leave_status === 1 ? val?.lvereq_desc : getAttendanceStatus?.lvereq_desc,
                                         duty_desc: val?.leave_status === 1 ? val?.duty_desc : getAttendanceStatus?.duty_desc,
                                         lve_tble_updation_flag: val.lve_tble_updation_flag,
                                         name: val?.em_name,
@@ -268,7 +268,7 @@ const AttendenceReport = () => {
         { headerName: 'Hours Worked', field: 'worked', wrapText: true, minWidth: 200 },
         { headerName: 'Late In', field: 'late', wrapText: true, minWidth: 100 },
         { headerName: 'Early Go', field: 'early', wrapText: true, minWidth: 100 },
-        { headerName: 'Attendence', field: 'duty_desc', wrapText: true, minWidth: 200 }
+        { headerName: 'Attendence', field: 'lvereq_desc', wrapText: true, minWidth: 200 }
 
     ])
 

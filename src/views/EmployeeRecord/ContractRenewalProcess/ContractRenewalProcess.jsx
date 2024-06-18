@@ -128,8 +128,6 @@ const ContractRenewalProcess = () => {
 
   useEffect(() => {
 
-    console.log(contractStartDate);
-
     const getDutyplan = {
       emp_id: no,
       start_date: contstatus === 1 && contractrenew === true ? moment(new Date(contractStartDate)).format('YYYY-MM-DD') : moment(new Date(permanetDOJ)).format('YYYY-MM-DD'),
@@ -142,12 +140,11 @@ const ContractRenewalProcess = () => {
       to: moment(lastDayOfMonth(new Date(contractStartDate))).format('YYYY-MM-DD')
     }
 
-
     const dutyplandata = async (getDutyplan) => {
       const insertDutyPlainIntDB = await axioslogin.post("/plan/getplan", getDutyplan)
-      const { success } = insertDutyPlainIntDB.data;
+      const { success, dta } = insertDutyPlainIntDB.data;
       if (success === 1) {
-        const planslno = insertDutyPlainIntDB.data.data?.map(val => val.plan_slno)
+        const planslno = insertDutyPlainIntDB.data.dta?.map(val => val.plan_slno)
         setDutyplanData(planslno)
       } else {
         setDutyplanData([])
@@ -172,11 +169,10 @@ const ContractRenewalProcess = () => {
       const result = await axioslogin.post("/payrollprocess/getPunchAboveSelectedDate", postdata);
       const { success, data } = result.data
       if (success === 1) {
-        console.log(data);
         const punchslno = data?.map(val => val.slno)
         setPunchSlno(punchslno)
       } else {
-        setPunchMast([])
+        setPunchSlno([])
       }
     }
 
@@ -192,7 +188,7 @@ const ContractRenewalProcess = () => {
         const { emp_slno } = data
         setUpdateSlno(emp_slno)
       } else {
-        setUpdateSlno(0)
+        setUpdateSlno([])
       }
     }
     getLoginDetails(id)
@@ -258,6 +254,7 @@ const ContractRenewalProcess = () => {
         warningNofity("Employee ID Already Exist")
       }
       else {
+
         const result = await axioslogin.patch('/empcontract/update/contract', updateempMast)
         const { success, message } = result.data
         if (success === 1) {
