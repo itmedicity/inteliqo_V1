@@ -232,9 +232,10 @@ export const getAttendanceCalculation = async (
             const isBeforeHafDayInTime = isBefore(punch_In, halfDayStartTime); //for check -> punch in before half day start in time
             const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime)
 
-            const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) > 6;
+            const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 6;
             const halfDayWorkingHour = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 4;
             //  isBeforeHafDayInTime === true ==> punch in time greater than half in time (full day not half day)
+            //console.log(holidayStatus);
             if (holidayStatus === 0) {
                 // HOLIDAY === NO
 
@@ -247,7 +248,7 @@ export const getAttendanceCalculation = async (
                 return earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
                     { duty_status: 1, duty_desc: 'P', lvereq_desc: 'P', duty_remark: 'Present' } :
 
-                    earlyOut === 0 && lateIn > cmmn_grace_period && lateIn < maximumLateInTime ?
+                    earlyOut === 0 && lateIn > cmmn_grace_period && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true ?
                         { duty_status: 1, duty_desc: 'LC', lvereq_desc: 'LC', duty_remark: 'Late Coming' } :
 
                         // { out time == 0 minit  ~~ intime greater than 30 minits ~~  in time before half day in time === true  } 
