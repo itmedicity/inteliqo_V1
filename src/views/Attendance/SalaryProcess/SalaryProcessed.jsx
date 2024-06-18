@@ -1,7 +1,7 @@
 import { Box, Button, CssVarsProvider, Input } from '@mui/joy'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { addMonths, endOfMonth, format, getDaysInMonth, isValid, startOfMonth, subDays } from 'date-fns'
+import { addMonths, endOfMonth, format, getDaysInMonth, isValid, startOfMonth } from 'date-fns'
 import React, { memo, useMemo, useState } from 'react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -116,7 +116,7 @@ const SalaryProcessed = () => {
                         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
                         const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
                         const lopamount = totallopCount * (val.gross_salary / totalDays);
-                        const paydaySalay = (val.gross_salary / totalDays) * totalPayday
+                        // const paydaySalay = (val.gross_salary / totalDays) * totalPayday
                         const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
 
                         return {
@@ -209,7 +209,7 @@ const SalaryProcessed = () => {
                         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
                         const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
                         const lopamount = totallopCount * (val.gross_salary / totalDays);
-                        const paydaySalay = (val.gross_salary / totalDays) * totalPayday
+                        //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
                         const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
 
                         return {
@@ -323,8 +323,8 @@ const SalaryProcessed = () => {
             const { succes, dataa: employeeData } = result1.data
             if (succes === 1 && isValid(value) && value !== null) {
 
-                const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
-                const { data: deductData } = result1.data
+                // const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
+                // const { data: deductData } = result1.data
 
                 const arr = employeeData && employeeData.map((val) => val.em_id)
                 const postdata = {
@@ -436,7 +436,7 @@ const SalaryProcessed = () => {
                 warningNofity("No Employee Under this Department || Department Section")
             }
         }
-    }, [value, all, dept, deptSection, commonSettings, allDept, allSection, processBtn])
+    }, [value, all, dept, deptSection, commonSettings, allDept, allSection, processBtn, holidayList])
 
 
     return (

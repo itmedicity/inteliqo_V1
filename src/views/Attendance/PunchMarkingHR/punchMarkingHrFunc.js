@@ -232,9 +232,10 @@ export const getAttendanceCalculation = async (
             const isBeforeHafDayInTime = isBefore(punch_In, halfDayStartTime); //for check -> punch in before half day start in time
             const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime)
 
-            const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) > 6;
+            const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 6;
             const halfDayWorkingHour = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 4;
             //  isBeforeHafDayInTime === true ==> punch in time greater than half in time (full day not half day)
+            //console.log(holidayStatus);
             if (holidayStatus === 0) {
                 // HOLIDAY === NO
 
