@@ -456,7 +456,10 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                             Requested Leave Information.
                         </Typography>
                     </Box>
-                    <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
+                    <Paper variant="outlined" square sx={{
+                        p: 0.5, mb: 0.8,
+                        overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+                    }} >
                         {
                             details?.map((val, idx) => {
                                 return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >
@@ -479,7 +482,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                         </Chip>
                     </Divider>
                     <Box sx={{ pt: 0.5 }} >
-                        <Textarea name="Outlined" placeholder="Reason For Reject The Request here…" variant="outlined" onChange={(e) => setreason(e.target.value)} />
+                        <Textarea name="Outlined" placeholder="Reason For Approve/Reject The Request here…" variant="outlined" onChange={(e) => setreason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                             <Button variant="solid" color="success" onClick={handleApproverequest}>
                                 Leave Request Approve

@@ -115,7 +115,7 @@ const BankMaster = () => {
   const [columnDef] = useState([
     { headerName: 'Sl No', field: 'bank_slno' },
     { headerName: 'Bank Name', field: 'bankmast_name', filter: true, width: 150 },
-    { headerName: 'Branch Name', field: 'bank_name', filter: true, width: 150 },
+    { headerName: 'Branch Name', field: 'bank_name', filter: true, width: 250 },
     { headerName: 'IFSC', field: 'bank_ifsc', filter: true, width: 150 },
     { headerName: 'Status ', field: 'status', width: 100 },
     {
@@ -141,7 +141,7 @@ const BankMaster = () => {
   }, [])
 
   return (
-    <MasterLayout title="Board Master" displayClose={true} >
+    <MasterLayout title="Bank Master" displayClose={true} >
       <ToastContainer />
       <SessionCheck />
       <Box sx={{ width: "100%" }} >
@@ -152,7 +152,7 @@ const BankMaster = () => {
             </Box>
             <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
               <InputComponent
-                placeholder={'Bank Name*'}
+                placeholder={'Branch Name*'}
                 type="text"
                 size="sm"
                 name="bank_name"

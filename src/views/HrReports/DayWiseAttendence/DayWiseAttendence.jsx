@@ -176,7 +176,7 @@ const DayWiseAttendence = () => {
                                             duty_status: getAttendanceStatus?.duty_status,
                                             holiday_status: val.holiday_status,
                                             leave_status: val.leave_status,
-                                            lvereq_desc: getAttendanceStatus?.lvereq_desc,
+                                            lvereq_desc: val?.leave_status === 1 ? val?.lvereq_desc : getAttendanceStatus?.lvereq_desc,
                                             duty_desc: val?.leave_status === 1 ? val?.duty_desc : getAttendanceStatus?.duty_desc,
                                             lve_tble_updation_flag: val.lve_tble_updation_flag,
                                             name: val?.em_name,
@@ -319,7 +319,7 @@ const DayWiseAttendence = () => {
                 row.em_no,
                 row.dept_name,
                 row.sect_name,
-                ...row.arr.map(val => val.duty_desc)
+                ...row.arr.map(val => val.lvereq_desc)
             ];
             return rowData;
         });
@@ -512,20 +512,27 @@ const DayWiseAttendence = () => {
                                                 <Box sx={{ textAlign: "center", }}> {row.sect_name}</Box>
                                             </td>
                                             {row.arr.map((val, index) => (
+
                                                 <td key={index} style={{
 
-                                                    backgroundColor: val.duty_desc === "LC" ? "#F6FDC3" :
-                                                        val.duty_desc === "A" ? "#FAD4D4" :
-                                                            val.duty_desc === "LV" ? "#FFDEFA" :
-                                                                val.duty_desc === "HD" ? "#CDF5FD" :
-                                                                    val.duty_desc === "HDL" ? "#89CFF3" : null
+                                                    backgroundColor: val.lvereq_desc === "LC" ? "#F6FDC3" :
+                                                        val.lvereq_desc === "A" ? "#FAD4D4" :
+                                                            val.lvereq_desc === "CL" ? "#FFDEFA" :
+                                                                val.lvereq_desc === "HD" ? "#CDF5FD" :
+                                                                    val.lvereq_desc === "COFF" ? "#89CFF3" :
+                                                                        val.lvereq_desc === "SL" ? "#FAD4D4" :
+                                                                            val.lvereq_desc === "ODP" ? "#BAFFB4" :
+                                                                                val.lvereq_desc === "OHP" ? "#A3F7BF" :
+                                                                                    val.lvereq_desc === "EL" ? "#F0FFC2" :
+                                                                                        val.lvereq_desc === "EGHD" ? "#B5EAEA" : null
                                                 }}>
                                                     <Box sx={{
                                                         textAlign: "center",
                                                         color: val.duty_desc === "LC" ? "ORANGE" :
                                                             val.duty_desc === "A" ? "RED" : null
                                                     }}>
-                                                        {val.duty_desc}
+                                                        {val.lvereq_desc}
+
                                                     </Box>
                                                 </td>
                                             ))}

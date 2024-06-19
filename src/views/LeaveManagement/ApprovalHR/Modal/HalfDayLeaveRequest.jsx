@@ -174,7 +174,6 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                     })
                                 ).then(async (element) => {
                                     const { value } = element[0];
-                                    console.log(value);
                                     const resultdel = await axioslogin.patch(`/LeaveRequestApproval/Hrhalfday`, value);
                                     const { success, message } = await resultdel.data;
                                     if (success === 1) {
@@ -357,7 +356,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                         </Chip>
                     </Divider>
                     <Box sx={{ pt: 0.5 }} >
-                        <Textarea name="Outlined" placeholder="Reason For Reject The Request here…"
+                        <Textarea name="Outlined" placeholder="Reason For Approve/Reject The Request here…"
                             variant="outlined" onChange={(e) => setReason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                             <Button variant="solid" color="success" onClick={handleApproverequest}>

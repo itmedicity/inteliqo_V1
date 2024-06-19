@@ -245,7 +245,7 @@ export const getLeaveReqApprovalLevel = (state) => {
 
 export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno) => {
 
-    // console.log(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno);
+    //console.log(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno);
 
     const deptLevelApprove = (deptApprovalLevel === 3) ? // 3 -> hod and incharge
         {
@@ -299,7 +299,7 @@ export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprova
                     usCode_hod: null
                 }
 
-
+    //console.log(deptLevelApprove);
 
     return (masterGroupStatus === true) ?
         {
@@ -336,7 +336,7 @@ export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprova
                     inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
                     usCode_inch: loginEmno,
                     hod_apr: deptLevelApprove.hod_apr === 1 ? 1 : 0,
-                    hod_stat: deptLevelApprove.hod_apr === 1 ? 0 : 1,
+                    hod_stat: deptLevelApprove.hod_stat === 1 ? 1 : 0,
                     hod_cmnt: deptLevelApprove.hod_apr === 1 ? '' : 'DIRECT',
                     hod_apr_time: deptLevelApprove.hod_apr === 1 ? null : format(new Date(), 'yyyy-MM-dd H:m:s'),
                     usCode_hod: deptLevelApprove.hod_apr === 1 ? null : loginEmno
@@ -344,12 +344,12 @@ export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprova
                 :
                 {
                     inc_apr: deptLevelApprove.inc_apr === 1 ? 1 : 0,
-                    inc_stat: deptLevelApprove.inc_apr === 1 ? 0 : 1,
+                    inc_stat: deptLevelApprove.inc_stat === 1 ? 1 : 0,
                     inc_cmnt: deptLevelApprove.inc_apr === 1 ? '' : 'DIRECT',
                     inc_apr_time: deptLevelApprove.inc_apr === 1 ? null : format(new Date(), 'yyyy-MM-dd H:m:s'),
                     usCode_inch: deptLevelApprove.inc_apr === 1 ? null : loginEmno,
                     hod_apr: deptLevelApprove.hod_apr === 1 ? 1 : 0,
-                    hod_stat: deptLevelApprove.hod_apr === 1 ? 0 : 1,
+                    hod_stat: deptLevelApprove.hod_stat === 1 ? 1 : 0,
                     hod_cmnt: deptLevelApprove.hod_apr === 1 ? '' : 'DIRECT',
                     hod_apr_time: deptLevelApprove.hod_apr === 1 ? null : format(new Date(), 'yyyy-MM-dd H:m:s'),
                     usCode_hod: deptLevelApprove.hod_apr === 1 ? null : loginEmno
@@ -789,6 +789,8 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
     const sectionWisehalfdayRequest = state?.getSectHalfdayRequests?.sectHalfday
     const sectionWiseMisspunchRequest = state?.getSectMisspunchRequests?.sectMisspunch
 
+    // console.log(sectionWiseMisspunchRequest);
+
     if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
         const newList = sectionWiseLeaveRequest?.map((val) => {
             return {
@@ -862,10 +864,11 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                     (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
                         (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
                             (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-                                (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0) ? 'HOD Approved' :
-                                    (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
-                                        (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
-                                            (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Approval Pending',
+                                (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected' :
+                                    (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected' :
+                                        (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' :
+                                            (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' :
+                                                (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
                 code: 3,
                 reqDate: val.creteddate,
                 fromDate: new Date(val.nopunchdate),

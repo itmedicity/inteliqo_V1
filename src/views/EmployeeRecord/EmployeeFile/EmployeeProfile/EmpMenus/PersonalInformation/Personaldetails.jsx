@@ -1,10 +1,9 @@
-import { Button, CssVarsProvider, Typography } from '@mui/joy'
-import { Box, Checkbox, FormControl, Grid, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip } from '@mui/material'
+import { Button, CssVarsProvider, Typography, Select, Option, } from '@mui/joy'
+import { Box, Checkbox, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material'
 import React, { Fragment, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import ReligionSelectRedux from 'src/views/MuiComponents/ReligionSelectRedux';
-import BankSelectredux from 'src/views/MuiComponents/BankSelectredux';
 import BloodgrpSelectRedux from 'src/views/MuiComponents/BloodgrpSelectRedux';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useParams } from 'react-router-dom';
@@ -20,6 +19,9 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ToastContainer } from 'react-toastify';
 import SaveIcon from '@mui/icons-material/Save';
+import BankSelection from 'src/views/Master/BankMaster/BankSelection';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
+import BankBranchselection from 'src/views/Master/BankMaster/BankBranchselection';
 
 const Personaldetails = () => {
 
@@ -77,6 +79,8 @@ const Personaldetails = () => {
     const [arabic_write, setArabci_write] = useState(false)
     const [arabic_speak, setArabic_speak] = useState(false)
 
+    const [bankBranch, setBannkBranch] = useState(0)
+
     const dispatch = useDispatch();
 
     const pinValue = useMemo(() => presnt_pin, [presnt_pin])
@@ -117,7 +121,7 @@ const Personaldetails = () => {
                     em_email, addressPermnt1, addressPermnt2, hrm_pin1, em_region, addressPresent1,
                     addressPresent2, hrm_pin2, hrm_region2, blood_slno, hrm_religion, em_bank,
                     em_account_no, em_ifsc, em_license_no, em_adhar_no, em_pan_no, em_passport_no,
-                    salarytype, em_maritalstatus,
+                    salarytype, em_maritalstatus, em_bank_branch
                 } = data[0]
                 setPermanent_addr1(addressPermnt1)
                 setaddressPermnt2(addressPermnt2)
@@ -125,25 +129,26 @@ const Personaldetails = () => {
                 setcontactaddress1(addressPresent1)
                 setcontactaddress2(addressPresent2)
                 setPermnt_pin(hrm_pin2)
-                setGender(em_gender)
+                setGender(em_gender === null ? 0 : parseInt(em_gender))
                 setmobile(em_mobile)
                 setland_no(em_phone)
                 setpassp_no(em_passport_no)
                 setlicense(em_license_no)
                 setadhar_no(em_adhar_no)
                 setemail(em_email)
-                setReligion(hrm_religion)
-                setMarital_status(em_maritalstatus)
+                setReligion(hrm_religion === null ? 0 : parseInt(hrm_religion))
+                setMarital_status(em_maritalstatus === null ? 0 : parseInt(em_maritalstatus))
                 setBank(em_bank)
                 setaccountno(em_account_no)
-                setsalaryType(salarytype)
-                setBlood(blood_slno)
+                setsalaryType(salarytype === null ? 0 : parseInt(salarytype))
+                setBlood(blood_slno === null ? 0 : parseInt(blood_slno))
                 setdob(em_dob)
                 setage(em_age_year)
                 setifsc(em_ifsc)
                 setpanmum(em_pan_no)
-                setRegion1(em_region)
-                setRegion2(hrm_region2)
+                setRegion1(em_region === null ? 0 : parseInt(em_region))
+                setRegion2(hrm_region2 === null ? 0 : parseInt(hrm_region2))
+                setBannkBranch(em_bank_branch === 0 ? 0 : em_bank_branch)
             } else {
                 setPermanent_addr1('')
                 setaddressPermnt2('')
@@ -168,6 +173,7 @@ const Personaldetails = () => {
                 setpanmum('')
                 setRegion1(0)
                 setRegion2(0)
+                setBannkBranch(0)
             }
         }
         getemployeedetails()
@@ -227,9 +233,9 @@ const Personaldetails = () => {
 
     //getting banl serial number for finding ifsc code
     useEffect(() => {
-        if (bank !== 0) {
+        if (bankBranch !== 0) {
             const getbankIfsc = async (e) => {
-                const result = await axioslogin.get(`/bank/${bank}`)
+                const result = await axioslogin.get(`/bank/${bankBranch}`)
                 const { success, data } = result.data
                 if (success === 1) {
                     setifsc(data[0].bank_ifsc)
@@ -240,7 +246,7 @@ const Personaldetails = () => {
             }
             getbankIfsc()
         }
-    }, [bank])
+    }, [bankBranch])
 
     const getFamilyDetails = async () => {
         let uppercasetext = mrdnumber.toUpperCase();
@@ -327,6 +333,7 @@ const Personaldetails = () => {
             em_region: region1,
             hrm_region2: region2,
             salarytype: salarytype,
+            em_bank_branch: bankBranch,
             create_user: employeeNumber()
         }
 
@@ -356,8 +363,11 @@ const Personaldetails = () => {
             emp_yeargae: age,
             em_region: region1,
             hrm_region2: region2,
+            em_gender: gender,
             create_user: employeeNumber()
         }
+
+
         const resultemployee = await axioslogin.post('/personaldetl', submitpersonal);
         const { success, message } = resultemployee.data;
         if (success === 1) {
@@ -392,6 +402,12 @@ const Personaldetails = () => {
         }
 
     }
+
+    const salaryType = [
+        { slno: 1, name: "Account" },
+        { slno: 2, name: "Cash" },
+        { slno: 3, name: "Cheque" }
+    ]
 
 
     return (
@@ -445,41 +461,38 @@ const Personaldetails = () => {
                                 </CssVarsProvider>
                                 <Tooltip title="Present House Name" followCursor placement='top' arrow >
                                     <Box sx={{ pt: 0.5 }}>
-                                        <TextField
-                                            fullWidth
-                                            placeholder='Address 1'
-                                            size="small"
-                                            id='permanent_addr1'
-                                            value={permanent_addr1}
+                                        <InputComponent
+                                            type="text"
+                                            size="sm"
+                                            placeholder="Address 1"
                                             name="permanent_addr1"
-                                            onChange={(e) => setPermanent_addr1(e.target.value)}
+                                            value={permanent_addr1}
+                                            onchange={(e) => setPermanent_addr1(e.target.value)}
                                         />
                                     </Box>
                                 </Tooltip>
                                 <Tooltip title="Permanent Street Name" followCursor placement='top' arrow >
-                                    <Box sx={{ pt: 1 }}>
-                                        <TextField
-                                            fullWidth
-                                            placeholder='Address 2'
-                                            size="small"
-                                            id='addressPermnt2'
-                                            value={addressPermnt2}
+                                    <Box sx={{ pt: 0.5 }}>
+                                        <InputComponent
+                                            type="text"
+                                            size="sm"
+                                            placeholder="Address 2"
                                             name="addressPermnt2"
-                                            onChange={(e) => setaddressPermnt2(e.target.value)}
+                                            value={addressPermnt2}
+                                            onchange={(e) => setaddressPermnt2(e.target.value)}
                                         />
                                     </Box>
                                 </Tooltip>
                                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", py: 1 }}>
                                     <Tooltip title="Present Pincode" followCursor placement='top' arrow >
                                         <Box sx={{ flex: 1 }}>
-                                            <TextField
-                                                fullWidth
-                                                placeholder='Pincode'
-                                                size="small"
-                                                id='permnt_pin'
-                                                value={permnt_pin}
+                                            <InputComponent
+                                                type="text"
+                                                size="sm"
+                                                placeholder="Pincode"
                                                 name="permnt_pin"
-                                                onChange={(e) => setPermnt_pin(e.target.value)}
+                                                value={permnt_pin}
+                                                onchange={(e) => setPermnt_pin(e.target.value)}
                                             />
                                         </Box>
                                     </Tooltip>
@@ -505,27 +518,25 @@ const Personaldetails = () => {
                                 </CssVarsProvider>
                                 <Tooltip title="Present-House Name" followCursor placement='top' arrow >
                                     <Box sx={{ pt: 0.5 }}>
-                                        <TextField
-                                            fullWidth
-                                            placeholder='Address 1'
-                                            size="small"
-                                            id='contactaddress1'
-                                            value={contactaddress1}
+                                        <InputComponent
+                                            type="text"
+                                            size="sm"
+                                            placeholder="Address 1"
                                             name="contactaddress1"
-                                            onChange={(e) => setcontactaddress1(e.target.value)}
+                                            value={contactaddress1}
+                                            onchange={(e) => setcontactaddress1(e.target.value)}
                                         />
                                     </Box>
                                 </Tooltip>
                                 <Tooltip title="Present-Street Name" followCursor placement='top' arrow >
-                                    <Box sx={{ pt: 1 }}>
-                                        <TextField
-                                            fullWidth
-                                            placeholder='Address 2'
-                                            size="small"
-                                            id='contactaddress2'
-                                            value={contactaddress2}
+                                    <Box sx={{ pt: 0.5 }}>
+                                        <InputComponent
+                                            type="text"
+                                            size="sm"
+                                            placeholder="Address 2"
                                             name="contactaddress2"
-                                            onChange={(e) => setcontactaddress2(e.target.value)}
+                                            value={contactaddress2}
+                                            onchange={(e) => setcontactaddress2(e.target.value)}
                                         />
                                     </Box>
                                 </Tooltip>
@@ -533,14 +544,13 @@ const Personaldetails = () => {
 
                                     <Tooltip title="Present Pincode" followCursor placement='top' arrow >
                                         <Box sx={{ flex: 1 }}>
-                                            <TextField
-                                                fullWidth
-                                                placeholder='Pincode'
-                                                size="small"
-                                                id='presnt_pin'
-                                                value={presnt_pin}
+                                            <InputComponent
+                                                type="text"
+                                                size="sm"
+                                                placeholder="Pincode"
                                                 name="presnt_pin"
-                                                onChange={(e) => setPresent_pin(e.target.value)}
+                                                value={presnt_pin}
+                                                onchange={(e) => setPresent_pin(e.target.value)}
                                             />
                                         </Box>
                                     </Tooltip>
@@ -563,226 +573,201 @@ const Personaldetails = () => {
                     <Box sx={{ display: "flex", flexDirection: "column", px: 0.5, py: 0.5, width: "100%" }}>
                         <Box sx={{ display: "flex", flexDirection: "row", width: "100%" }}>
                             <Box sx={{ flex: 1 }} >
-                                <FormControl fullWidth
-                                    size='small'   >
-                                    <Select
-                                        value={gender}
-                                        onChange={(e) => setGender(e.target.value)}
-                                        size="small"
-                                        fullWidth
-                                        variant='outlined'
-                                    >
-                                        <MenuItem value={0} >
-                                            Select Gender
-                                        </MenuItem>
-                                        <MenuItem value="1">Male</MenuItem>
-                                        <MenuItem value="2">Female</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                <Select
+                                    value={gender}
+                                    onChange={(event, newValue) => {
+                                        setGender(newValue);
+                                    }}
+                                    size='md'
+                                    variant='outlined'
+                                >
+                                    <Option value={0} disabled>Select Gender</Option>
+                                    <Option value={1}>Male</Option>
+                                    <Option value={2}>Female</Option>
+                                </Select>
                             </Box>
                             <Tooltip title="Mobile No" followCursor placement='top' arrow >
                                 <Box sx={{ flex: 1 }} >
-                                    <TextField
-                                        fullWidth
-                                        placeholder='Mobile No'
-                                        size="small"
-                                        id='mobile'
-                                        value={mobile}
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Mobile No"
                                         name="mobile"
-                                        onChange={(e) => setmobile(e.target.value)}
+                                        value={mobile}
+                                        onchange={(e) => setmobile(e.target.value)}
                                     />
                                 </Box>
                             </Tooltip>
                             <Tooltip title="Landline" followCursor placement='top' arrow >
                                 <Box sx={{ flex: 1, }} >
-                                    <TextField
-                                        fullWidth
-                                        placeholder='Land Phone No'
-                                        size="small"
-                                        id='land_no'
-                                        value={land_no}
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Land Phone No"
                                         name="land_no"
-                                        onChange={(e) => setland_no(e.target.value)}
+                                        value={land_no}
+                                        onchange={(e) => setland_no(e.target.value)}
                                     />
                                 </Box>
                             </Tooltip>
                             <Tooltip title="Passport No" followCursor placement='top' arrow >
                                 <Box sx={{ flex: 1, }} >
-                                    <TextField
-                                        fullWidth
-                                        placeholder='Passsport Number'
-                                        size="small"
-                                        id='passp_no'
-                                        value={passp_no}
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Passsport Number"
                                         name="passp_no"
-                                        onChange={(e) => setpassp_no(e.target.value)}
+                                        value={passp_no}
+                                        onchange={(e) => setpassp_no(e.target.value)}
                                     />
                                 </Box>
                             </Tooltip>
                             <Tooltip title="License No" followCursor placement='top' arrow >
                                 <Box sx={{ flex: 1, }} >
-                                    <TextField
-                                        fullWidth
-                                        placeholder='Driving License'
-                                        size="small"
-                                        id='license'
-                                        value={license}
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Driving License"
                                         name="license"
-                                        onChange={(e) => setlicense(e.target.value)}
+                                        value={license}
+                                        onchange={(e) => setlicense(e.target.value)}
                                     />
                                 </Box>
                             </Tooltip>
                             <Tooltip title="Aadhar No" followCursor placement='top' arrow >
                                 <Box sx={{ flex: 1 }} >
-                                    <TextField
-                                        fullWidth
-                                        placeholder='Adhaar No'
-                                        size="small"
-                                        id='adhar_no'
-                                        value={adhar_no}
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Adhaar No"
                                         name="adhar_no"
-                                        onChange={(e) => setadhar_no(e.target.value)}
+                                        value={adhar_no}
+                                        onchange={(e) => setadhar_no(e.target.value)}
                                     />
                                 </Box>
                             </Tooltip>
                         </Box>
                         <Box sx={{ display: "flex", flexDirection: "row", pt: 1, width: "100%" }}>
                             <Box sx={{ flex: 1 }}>
-                                <TextField
-                                    variant='outlined'
-                                    placeholder='email'
-                                    size='small'
-                                    id='email'
-                                    value={email}
+                                <InputComponent
+                                    type="text"
+                                    size="sm"
+                                    placeholder="Email"
                                     name="email"
-                                    onChange={(e) => setemail(e.target.value)}
+                                    value={email}
+                                    onchange={(e) => setemail(e.target.value)}
                                 />
                             </Box>
                             <Box sx={{ flex: 1 }}>
                                 <ReligionSelectRedux value={religion} setValue={setReligion} />
                             </Box>
-                            <Box sx={{ flex: 1, pl: 0.3 }}>
-                                <FormControl fullWidth
-                                    size='small'   >
-                                    <Select
-                                        value={marital_status}
-                                        onChange={(e) => setMarital_status(e.target.value)}
-                                        size="small"
-                                        fullWidth
-                                        variant='outlined'
-                                    >
-                                        <MenuItem value={0} >
-                                            Select Marital Status
-                                        </MenuItem>
-                                        <MenuItem value="1">Married</MenuItem>
-                                        <MenuItem value="2">UnMarried</MenuItem>
-                                        <MenuItem value="3">Widow</MenuItem>
-                                        <MenuItem value="4">Divorcee</MenuItem>
-                                    </Select>
-                                </FormControl>
+                            <Box sx={{ flex: 1 }}>
+                                <Select
+                                    value={marital_status}
+                                    onChange={(event, newValue) => {
+                                        setMarital_status(newValue);
+                                    }}
+                                    size='md'
+                                    variant='outlined'
+                                >
+                                    <Option value={0} disabled>Select Marital Status</Option>
+                                    <Option value={1}>Married</Option>
+                                    <Option value={2}>UnMarried</Option>
+                                    <Option value={3}>Widow</Option>
+                                    <Option value={4}>Divorcee</Option>
+                                </Select>
                             </Box>
-                            <Box sx={{ flex: 1, pl: 0.3 }}>
-                                <BankSelectredux value={bank} setValue={setBank} />
+                            <Box sx={{ flex: 1 }}>
+                                <BankSelection value={bank} setValue={setBank} />
                             </Box>
                             <Tooltip title="Account No" followCursor placement='top' arrow >
-                                <Box sx={{ flex: 1, pl: 0.3 }}>
-                                    <TextField
-                                        variant='outlined'
-                                        placeholder='Account No'
-                                        size='small'
-                                        id='accountno'
-                                        value={accountno}
+                                <Box sx={{ flex: 1 }}>
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Account No"
                                         name="accountno"
-                                        onChange={(e) => setaccountno(e.target.value)}
+                                        value={accountno}
+                                        onchange={(e) => setaccountno(e.target.value)}
                                     />
                                 </Box>
                             </Tooltip>
                             <Box sx={{ flex: 1 }}>
-                                <FormControl
-                                    fullWidth
-                                    size='small'   >
-                                    <Select
-                                        value={salarytype}
-                                        onChange={(e) => setsalaryType(e.target.value)}
-                                        size="small"
-                                        fullWidth
-                                        variant='outlined'
-                                    >
-                                        <MenuItem value={0} >
-                                            Select Salary Type
-                                        </MenuItem>
-                                        <MenuItem value="1">Account</MenuItem>
-                                        <MenuItem value="2">Cash</MenuItem>
-                                        <MenuItem value="3">Cheque</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                <Select
+                                    value={salarytype}
+                                    onChange={(event, newValue) => {
+                                        setsalaryType(newValue);
+                                    }}
+                                    size='md'
+                                    variant='outlined'
+                                >
+                                    <Option value={0} disabled>Select Salary Type</Option>
+                                    {
+                                        salaryType?.map((val, ind) => {
+                                            return <Option key={ind} value={val.slno}>{val.name}</Option>
+                                        })
+                                    }
+                                </Select>
                             </Box>
                         </Box>
-                        <Box sx={{ display: "flex", flexDirection: "row", width: "100%", pt: 1 }}>
-                            <Box sx={{ display: "flex", flexDirection: "row", flex: 1 }}>
-                                <Box sx={{ flex: 1, }}>
-                                    <BloodgrpSelectRedux value={blood} setValue={setBlood} />
+                        <Box sx={{ display: "flex", flexDirection: "row", pt: 1, width: "100%" }}>
+                            <Box sx={{ flex: 1 }}>
+                                <BloodgrpSelectRedux value={blood} setValue={setBlood} />
+                            </Box>
+                            <Tooltip title="DOB" followCursor placement='top' arrow >
+                                <Box sx={{ flex: 1 }}>
+                                    <InputComponent
+                                        disabled={true}
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Date Of Birth"
+                                        name="dob"
+                                        value={dob}
+                                    />
                                 </Box>
-                                <Tooltip title="DOB" followCursor placement='top' arrow >
-                                    <Box sx={{ flex: 1, pl: 0.3 }}>
-                                        <TextField
-                                            variant='outlined'
-                                            placeholder='Date Of Birth'
-                                            size='small'
-                                            id='dob'
-                                            value={dob}
-                                            name="dob"
-                                            disabled={true}
-                                        />
-                                    </Box>
-                                </Tooltip>
-                                <Tooltip title="Age" followCursor placement='top' arrow >
-                                    <Box sx={{ flex: 1 }}>
-                                        <TextField
-                                            variant='outlined'
-                                            placeholder='Age as of Now'
-                                            size='small'
-                                            id='age'
-                                            value={age}
-                                            name="age"
-                                            disabled={true}
-                                        />
-                                    </Box>
-                                </Tooltip>
+                            </Tooltip>
+                            <Tooltip title="Age" followCursor placement='top' arrow >
+                                <Box sx={{ flex: 1 }}>
+                                    <InputComponent
+                                        disabled={true}
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Age as of Now"
+                                        name="age"
+                                        value={age}
+                                    />
+                                </Box>
+                            </Tooltip>
+                            <Box sx={{ flex: 1 }}>
+                                <BankBranchselection value={bankBranch} setValue={setBannkBranch} />
                             </Box>
-                            <Box sx={{ display: "flex", flexDirection: "row", flex: 1, width: '100%' }}>
-                                <Tooltip title="IFSC" followCursor placement='top' arrow >
-                                    <Box sx={{ flex: 1 }}>
-                                        <TextField
-                                            fullWidth
-                                            variant='outlined'
-                                            placeholder='IFSC'
-                                            size='small'
-                                            id='ifsc'
-                                            value={ifsc}
-                                            name="ifsc"
-                                            disabled={true}
-                                        />
-                                    </Box>
-                                </Tooltip>
-                                <Tooltip title="Pan No" followCursor placement='top' arrow >
-                                    <Box sx={{ flex: 1, pl: 0.3 }}>
-                                        <TextField
-                                            fullWidth
-                                            variant='outlined'
-                                            placeholder='PAN NO'
-                                            size='small'
-                                            id='panmum'
-                                            value={panmum}
-                                            name="panmum"
-                                            onChange={(e) => setpanmum(e.target.value)}
-                                        />
-                                    </Box>
-                                </Tooltip>
-                            </Box>
+                            <Tooltip title="IFSC" followCursor placement='top' arrow >
+                                <Box sx={{ flex: 1 }}>
+                                    <InputComponent
+                                        disabled={true}
+                                        type="text"
+                                        size="sm"
+                                        placeholder="IFSC"
+                                        name="ifsc"
+                                        value={ifsc}
+                                    />
+                                </Box>
+                            </Tooltip>
+                            <Tooltip title="Pan No" followCursor placement='top' arrow >
+                                <Box sx={{ flex: 1 }}>
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="PAN NO"
+                                        name="panmum"
+                                        value={panmum}
+                                        onchange={(e) => setpanmum(e.target.value)}
+                                    />
+                                </Box>
+                            </Tooltip>
                         </Box>
                     </Box>
-                </Paper>
+                </Paper >
 
 
                 <Box sx={{ display: "flex", flexDirection: "row", }}>
@@ -796,38 +781,31 @@ const Personaldetails = () => {
                         </Box>
                         <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
                             <Box sx={{ flex: 1 }}>
-                                <FormControl
-                                    fullWidth
-                                    size='small'   >
-                                    <Select
-                                        value={relation}
-                                        onChange={(e) => setRelation(e.target.value)}
-                                        size="small"
-                                        fullWidth
-                                        variant='outlined'
-                                    >
-                                        <MenuItem value={0} >
-                                            Select Relation
-                                        </MenuItem>
-                                        {
-                                            relationAray?.map((val, ind) => {
-                                                return <MenuItem key={ind} value={val.rel_slno}>{val.name}</MenuItem>
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
+                                <Select
+                                    value={relation}
+                                    onChange={(event, newValue) => {
+                                        setRelation(newValue);
+                                    }}
+                                    size='md'
+                                    variant='outlined'
+                                >
+                                    <Option value={0} disabled>Select Relation</Option>
+                                    {
+                                        relationAray?.map((val, ind) => {
+                                            return <Option key={ind} value={val.rel_slno}>{val.name}</Option>
+                                        })
+                                    }
+                                </Select>
                             </Box>
                             <Tooltip title="MRD NO" followCursor placement='top' arrow >
                                 <Box sx={{ flex: 1 }}>
-                                    <TextField
-                                        fullWidth
-                                        variant='outlined'
-                                        placeholder='Hospital MRD No'
-                                        size='small'
-                                        id='mrdnumber'
-                                        value={mrdnumber}
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Hospital MRD No"
                                         name="mrdnumber"
-                                        onChange={(e) => setMrdnumber(e.target.value)}
+                                        value={mrdnumber}
+                                        onchange={(e) => setMrdnumber(e.target.value)}
                                     />
                                 </Box>
                             </Tooltip>

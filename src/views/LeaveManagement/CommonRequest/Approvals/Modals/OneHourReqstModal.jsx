@@ -488,7 +488,7 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount, count, authority }) 
                                         Check In Time:
                                     </Typography>
                                     <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                        {moment(checkIn).format('HH:mm')} PM
+                                        {moment(checkIn).format('HH:mm')}
                                     </Typography>
                                 </Box>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
@@ -496,7 +496,7 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount, count, authority }) 
                                         Check Out Time:
                                     </Typography>
                                     <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                        {moment(checkOut).format('HH:mm')} PM
+                                        {moment(checkOut).format('HH:mm')}
                                     </Typography>
                                 </Box>
                             </Box>

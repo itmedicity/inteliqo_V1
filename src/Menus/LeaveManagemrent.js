@@ -123,6 +123,12 @@ const Leavemanagement = [
         name: 'Common Request HR View',
         to: '/Home/CommonReqstHrView',
     },
+    {
+        men_slno: 290,
+        component: CNavItem,
+        name: 'On Observation Request',
+        to: '/Home/OnObservationRequest',
+    },
 
 ]
 
