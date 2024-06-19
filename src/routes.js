@@ -283,6 +283,7 @@ const SalaryProcessReports = React.lazy(() => import('./views/Attendance/SalaryP
 const CompensatoryRequest = React.lazy(() => import('./views/LeaveManagement/CompOffRequest/CompensatoryRequest'))
 const AttendenceReports = React.lazy(() => import('./views/HrReports/AttendenceReport/AttendenceReport'))
 const DayWiseAttendenceReports = React.lazy(() => import('./views/HrReports/DayWiseAttendence/DayWiseAttendence'))
+const TrainingInductionCalender = React.lazy(() => import('./views/TrainingDevelopment/TrainingCalender/InductionCalenderFormat'))
 
 
 
@@ -562,6 +563,7 @@ const routes = [
   { path: '/Home/CompensatoryRequest', exact: true, name: 'Compensatory Off Request', component: CompensatoryRequest },
   { path: '/Home/AttendenceReports', exact: true, name: 'Attendence Reports', component: AttendenceReports },
   { path: '/Home/DayWiseAttendence', exact: true, name: 'Day Wise Attendence Reports', component: DayWiseAttendenceReports },
+  { path: '/Home/TrainingInductionCalender', exact: true, name: 'Training Induction Calender', component: TrainingInductionCalender },
 ]
 
 export default routes

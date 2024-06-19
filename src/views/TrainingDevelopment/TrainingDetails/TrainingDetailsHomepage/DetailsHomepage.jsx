@@ -156,7 +156,6 @@ const DetailsHomepage = () => {
             const result = await axioslogin.get(`/TrainingDetails/getDeptEmp/${Emp_ID}`)
             const { success, data } = result.data;
             if (success === 2) {
-                const filterArr = data?.find((val) => val.em_no !== 0)
                 SetDeptData(data)
                 Setcount(count + 1)
                 SetEmp_ID(0)
