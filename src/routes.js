@@ -283,8 +283,9 @@ const SalaryProcessReports = React.lazy(() => import('./views/Attendance/SalaryP
 const CompensatoryRequest = React.lazy(() => import('./views/LeaveManagement/CompOffRequest/CompensatoryRequest'))
 const AttendenceReports = React.lazy(() => import('./views/HrReports/AttendenceReport/AttendenceReport'))
 const DayWiseAttendenceReports = React.lazy(() => import('./views/HrReports/DayWiseAttendence/DayWiseAttendence'))
-
-
+// const TDVerification = React.lazy(() => import('./views/TrainingDevelopment/TDVerification/TDVerificationMainPage'))
+const TDVerification = React.lazy(() => import('./views/TrainingDevelopment/TDVerification/TnDVerification'))
+const TopicQuestionMaster = React.lazy(() => import('./views/TrainingDevelopment/TrainingTopicQuestion/QuestionTopicMainPage'))
 
 
 const routes = [
@@ -562,6 +563,9 @@ const routes = [
   { path: '/Home/CompensatoryRequest', exact: true, name: 'Compensatory Off Request', component: CompensatoryRequest },
   { path: '/Home/AttendenceReports', exact: true, name: 'Attendence Reports', component: AttendenceReports },
   { path: '/Home/DayWiseAttendence', exact: true, name: 'Day Wise Attendence Reports', component: DayWiseAttendenceReports },
+  { path: '/Home/TDVerification', exact: true, name: 'T and D Verification', component: TDVerification },
+  { path: '/Home/TopicQuestionMaster', exact: true, name: 'Topic Question Master', component: TopicQuestionMaster },
+
 ]
 
 export default routes

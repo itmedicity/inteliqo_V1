@@ -76,8 +76,8 @@ export const PdfTranning = (selected, ShowData, HODSign) => {
                                 { text: 'Trainers', fontSize: 10, bold: true, font: 'Roboto', alignment: 'center' },
                                 { text: 'HOD (sign)', fontSize: 10, bold: true, font: 'Roboto', alignment: 'center' },
                                 { text: 'Remark', fontSize: 10, font: 'Roboto', bold: true, alignment: 'center' },],
-                            ].concat(ShowData && ShowData.map((val) => [
-                                { text: val.Dept_slno, fontSize: 10, font: 'Roboto', alignment: 'center' },
+                            ].concat(ShowData && ShowData.map((val, ndx) => [
+                                { text: ndx + 1, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 { text: val.date, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 { text: val.training_topic_name, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 { text: val.hours, fontSize: 10, font: 'Roboto', alignment: 'center' },

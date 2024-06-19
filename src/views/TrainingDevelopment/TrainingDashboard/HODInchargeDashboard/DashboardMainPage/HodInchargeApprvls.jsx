@@ -10,7 +10,6 @@ const HodInchargeApprvls = ({ em_id }) => {
     const [TrainerInductPending, SetTrainerInductPending] = useState(0)
     const [HodInductApproved, SetHodInductApproved] = useState(0)
     const [HodInductPending, SetHodInductPending] = useState(0)
-
     const [TrainerDeptApproved, SetDeptTrainerApproved] = useState(0)
     const [TrainerDeptPending, SetTrainerDeptPending] = useState(0)
     const [HodDeptApproved, SetHodDeptApproved] = useState(0)
@@ -81,7 +80,6 @@ const HodInchargeApprvls = ({ em_id }) => {
                 const HodPending = displayData.filter(val => val.training_apprvl_status === 1 && val.training_hod_apprvls_status === 0);
                 const HodPendinglen = HodPending?.length
                 SetHodDeptPending(HodPendinglen);
-
             }
             else {
                 SetDeptTrainerApproved(0);
@@ -112,7 +110,6 @@ const HodInchargeApprvls = ({ em_id }) => {
                                     </Box>
                                 </Box>
                             </Tooltip>
-
                             <Tooltip title="Pending Count">
                                 <Box sx={{ mt: 1 }}>
                                     <Box sx={{ width: 50, border: 1, borderRadius: 10, borderColor: "#153462", backgroundColor: "#153462", textAlign: "center" }} >
@@ -122,7 +119,6 @@ const HodInchargeApprvls = ({ em_id }) => {
                             </Tooltip>
                         </Box>
                     </Box>
-
                     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
                         <Box sx={{ flex: 1, mt: 1 }}> <VerifiedOutlinedIcon color="secondary" /> Departmental Wise</Box>
                         <Box sx={{ display: "flex", flexDirection: "row", gap: 2, flex: 1, justifyContent: "space-between" }}>
@@ -144,9 +140,6 @@ const HodInchargeApprvls = ({ em_id }) => {
                         </Box>
                     </Box>
                 </Box>
-
-
-
                 <Box sx={{ mt: 3 }}>
                     <Typography sx={{ mt: 2 }}><u>Trainer Approvals</u></Typography>
                     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
@@ -169,7 +162,6 @@ const HodInchargeApprvls = ({ em_id }) => {
                             </Tooltip>
                         </Box>
                     </Box>
-
                     <Box sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
                         <Box sx={{ flex: 1, mt: 1 }}> <VerifiedOutlinedIcon color="secondary" /> Departmental Wise</Box>
                         <Box sx={{ display: "flex", flexDirection: "row", gap: 2, flex: 1, justifyContent: "space-between" }}>

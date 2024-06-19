@@ -1,30 +1,23 @@
-import React, { Fragment, memo, useCallback, useMemo } from 'react'
+import React, { Fragment, memo, useCallback } from 'react'
 import { Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { Paper } from '@mui/material';
-import { QRCodeSVG } from 'qrcode.react';
-import { QR_URL } from '../../Constant/Static'
 
-const InductionQRModal = ({ QRdata, QRmodal, setQRmodal }) => {
-
-    const data = useMemo(() => QRdata, [QRdata])
-    const { topic_slno, slno } = data;
-
+const ViewFileModal = ({ setopen, open, uploads, Reset }) => {
     const handleClose = useCallback(() => {
-        setQRmodal(false);
-    }, [setQRmodal]);
-
-    const loginpage = `${QR_URL}/InductLogInpage/${topic_slno}/${slno}`
+        setopen(false);
+        Reset();
+    }, [setopen, Reset]);
 
     return (
         <Fragment>
             <Modal
                 aria-labelledby="modal-title"
                 aria-describedby="modal-desc"
-                open={QRmodal}
+                open={open}
                 onClose={handleClose}
                 sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
-                <ModalDialog size='lg'>
+                <ModalDialog size="lg">
                     <ModalClose
                         variant="outlined"
                         sx={{
@@ -35,19 +28,18 @@ const InductionQRModal = ({ QRdata, QRmodal, setQRmodal }) => {
                             bgcolor: 'background.body',
                         }}
                     />
-                    <Paper sx={{ px: 1, p: 2 }}>
-                        <QRCodeSVG
-                            value={loginpage}
-                            size={200}
-                            level='Q'
-                            style={{ marginLeft: 7 }}
+                    <Paper>
+                        <img
+                            src={uploads}
+                            height={400}
+                            alt='Error'
+                            style={{ maxWidth: '100%', maxHeight: '100%' }}
                         />
                     </Paper>
                 </ModalDialog>
             </Modal>
         </Fragment>
-    )
-}
+    );
+};
 
-
-export default memo(InductionQRModal)
+export default memo(ViewFileModal) 

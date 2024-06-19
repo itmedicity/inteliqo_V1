@@ -33,12 +33,12 @@ const HodDeptQRPage = ({ em_department }) => {
         <Fragment>
             {PreTopics?.length !== 0 ?
                 <Paper elevation={0} sx={{
-                    height: 150, flex: 1,
-                    p: 1, boxShadow: 4, backgroundColor: "#FFFFFF", overflow: "auto", '&::-webkit-scrollbar': { display: "none" }
+                    flex: 1,
+                    p: 1, boxShadow: 4, backgroundColor: "#FFFFFF",
                 }}>
-                    <h5>Departmental Online Test   </h5>
+                    <h5>Departmental Online Test  </h5>
                     <Box sx={{ p: 1 }}>
-                        <Table stickyFooter >
+                        <Table stickyHeader >
                             <thead>
                                 <tr style={{}}>
                                     <th style={{ width: "15%", textAlign: "center" }}>SlNo</th>
@@ -47,7 +47,7 @@ const HodDeptQRPage = ({ em_department }) => {
 
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style={{ height: 50, overflow: "auto", '&::-webkit-scrollbar': { display: "none" } }}>
                                 {PreTopics?.map((val, index) => (
                                     <tr key={index}>
                                         <td style={{ width: "15%", textAlign: "center" }}>{val.sno}</td>

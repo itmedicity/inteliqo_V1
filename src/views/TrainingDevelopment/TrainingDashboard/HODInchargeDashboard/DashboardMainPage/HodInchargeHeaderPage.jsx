@@ -61,8 +61,6 @@ const HodInchargeHeaderPage = ({ em_department, DeptComplt, SetDeptComplt, DeptP
             }
         }
         HODInchargeDeptTrainings()
-
-
     }, [em_department, SetDeptPndg, SetDeptComplt, SetDeptRetest, SetDeptTotal, SetDeptNext])
 
     return (
@@ -70,7 +68,6 @@ const HodInchargeHeaderPage = ({ em_department, DeptComplt, SetDeptComplt, DeptP
             <Paper elevation={0} sx={{ width: "100%", boxShadow: 4, backgroundColor: "#FFFFFF" }}>
                 <Box sx={{ p: 1, display: "flex", mx: "auto", flexDirection: "row", flexWrap: "wrap" }}>
                     <Box sx={{ width: "80%", p: 1, display: "flex", mx: "auto", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-evenly" }}>
-
                         <Box sx={{ display: "flex", flexDirection: "row" }}>
                             <Box>
                                 <Box sx={{ mx: "auto" }}>
@@ -105,10 +102,8 @@ const HodInchargeHeaderPage = ({ em_department, DeptComplt, SetDeptComplt, DeptP
                                 <h6>{DeptPndg !== null ? DeptPndg : 0}</h6>
                             </Box>
                         </Box>
-
                     </Box>
                 </Box>
-
             </Paper>
         </Fragment >
     )

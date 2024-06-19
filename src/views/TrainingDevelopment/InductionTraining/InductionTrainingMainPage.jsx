@@ -28,8 +28,8 @@ const InductionTrainingMainPage = () => {
     const dispatch = useDispatch()
 
     const [dept, setDept] = useState(0)
-    const [fromdate, Setfromdate] = useState('')
-    const [todate, Settodate] = useState('')
+    const [fromdate, Setfromdate] = useState(new Date())
+    const [todate, Settodate] = useState(new Date())
     const [tabledata, setTableData] = useState([])
     const [empselect, SetEmpSelect] = useState([])
     const [type, setType] = useState(0)
@@ -164,6 +164,7 @@ const InductionTrainingMainPage = () => {
                                                 < DatePicker
                                                     views={['day']}
                                                     value={fromdate}
+                                                    inputFormat="dd-MM-yyyy"
                                                     size="small"
                                                     onChange={(e) => {
                                                         Setfromdate(moment(e).format("YYYY-MM-DD HH:mm:ss"));
@@ -185,6 +186,7 @@ const InductionTrainingMainPage = () => {
                                                 < DatePicker
                                                     views={['day']}
                                                     value={todate}
+                                                    inputFormat="dd-MM-yyyy"
                                                     size="small"
                                                     onChange={(e) => {
                                                         Settodate(moment(e).format("YYYY-MM-DD HH:mm:ss"));
@@ -272,6 +274,7 @@ const InductionTrainingMainPage = () => {
                                                         <th style={{ width: "8%", textAlign: "center" }}>
                                                             check
                                                         </th>
+                                                        <th>Emp ID</th>
                                                         <th>Joining Date</th>
                                                         <th>Name</th>
                                                         <th>Department Section</th>
@@ -290,6 +293,7 @@ const InductionTrainingMainPage = () => {
                                                                     }}
                                                                 />
                                                             </td>
+                                                            <td>{row?.em_no}</td>
                                                             <td>{row?.datefmt}</td>
                                                             <td>{row?.em_name}</td>
                                                             <td>{row?.sect_name}</td>

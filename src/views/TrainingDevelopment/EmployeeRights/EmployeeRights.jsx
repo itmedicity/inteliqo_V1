@@ -46,10 +46,11 @@ const EmployeeRights = () => {
     return (
         <Fragment>
             {
-                rights === 1 ? <TndDashboardView /> : null
+                rights === 1 ? <TndDashboardView /> :
+                    <TrainingCalender rights={rights} hod={hod} incharge={incharge} />
             }
 
-            <TrainingCalender rights={rights} hod={hod} incharge={incharge} />
+
         </Fragment>
     )
 }

@@ -76,8 +76,8 @@ export const PdfInductionTrannings = (selected, ShowData, HODSign) => {
                                 { text: 'Trainers', fontSize: 10, bold: true, font: 'Roboto', alignment: 'center' },
                                 { text: 'HOD (sign)', fontSize: 10, bold: true, font: 'Roboto', alignment: 'center' },
                                 { text: 'Remark', fontSize: 10, font: 'Roboto', bold: true, alignment: 'center' },],
-                            ].concat(ShowData && ShowData.map((val) => [
-                                { text: val.Induct_slno, fontSize: 10, font: 'Roboto', alignment: 'center' },
+                            ].concat(ShowData && ShowData.map((val, ndx) => [
+                                { text: ndx + 1, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 { text: val.date, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 { text: val.training_topic_name, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 { text: val.hours, fontSize: 10, font: 'Roboto', alignment: 'center' },
@@ -85,7 +85,9 @@ export const PdfInductionTrannings = (selected, ShowData, HODSign) => {
                                 { text: val.induct_post_mark, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 { text: val.trainer_name, fontSize: 10, font: 'Roboto', alignment: 'center' },
                                 {
-                                    image: val.induct_post_mark >= 2 && val.training_induct_hod_aprvl_status === 1 ? 'picUrl' : 'Nosign', alignment: 'center', fit: [45, 60]
+                                    // image: val.induct_post_mark >= 2 && val.training_induct_hod_aprvl_status === 1 ? 'picUrl' : 'Nosign', alignment: 'center', fit: [45, 60]
+                                    image: val.induct_post_mark >= 2 && val.training_iduct_tnd_verify_status === 1 ? 'picUrl' : 'Nosign', alignment: 'center', fit: [45, 60]
+
                                 },
                                 { text: val.Remark, fontSize: 10, font: 'Roboto', alignment: 'center' },
 

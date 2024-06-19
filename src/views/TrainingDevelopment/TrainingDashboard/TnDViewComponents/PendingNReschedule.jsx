@@ -1,4 +1,4 @@
-import React, { Fragment, memo } from 'react'
+import React, { Fragment, memo, useMemo } from 'react'
 import { useCallback } from 'react';
 import { Typography, Box, Modal, ModalDialog, Sheet, Table } from '@mui/joy';
 import { useState } from 'react';
@@ -14,8 +14,6 @@ import { Button, Checkbox, CssVarsProvider, Input, } from '@mui/joy';
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
 import { setDepartment } from 'src/redux/actions/Department.action'
 import { useDispatch, useSelector } from 'react-redux'
-import { InductionNewJoinees } from 'src/redux/actions/Training.Action'
-import _ from 'underscore'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
@@ -26,14 +24,16 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import ViewNEditPage from '../../InductionTraining/ViewNEditPage';
 import AddInductionTopics from '../../InductionTraining/AddInductionTopics';
+import { getJoineesData } from './TnDFunctions';
+import { axioslogin } from 'src/views/Axios/Axios';
 
 const PendingNReschedule = ({ openmodal, setopenmodal }) => {
 
     const dispatch = useDispatch()
 
     const [dept, setDept] = useState(0)
-    const [fromdate, Setfromdate] = useState('')
-    const [todate, Settodate] = useState('')
+    const [fromdate, Setfromdate] = useState(new Date())
+    const [todate, Settodate] = useState(new Date())
     const [tabledata, setTableData] = useState([])
     const [empselect, SetEmpSelect] = useState([])
     const [type, setType] = useState(0)
@@ -58,17 +58,68 @@ const PendingNReschedule = ({ openmodal, setopenmodal }) => {
     }, [setDept, Setfromdate, Settodate, SetEmpSelect, setType, setdatas, SetCheckAll, setTableData, setmsg, setopenmodal])
 
     useEffect(() => {
-        if (fromdate !== '' && todate !== '') {
-            const obj = {
-                fromdate: moment(fromdate).format("YYYY-MM-DD HH:mm:ss"),
-                todate: moment(todate).format("YYYY-MM-DD HH:mm:ss")
-            }
-            dispatch(InductionNewJoinees(obj))
-        }
         dispatch(setDepartment());
-    }, [dispatch, todate, fromdate])
+        updateEmpSelect(datas);
+    }, [dispatch, datas])
 
-    const newjoinees = useSelector((state) => state?.gettrainingData?.NewJoinees?.NewJoineesList, _.isEqual);
+    const newjoineesData = useSelector((state) => getJoineesData(state))
+    const newjoinees = useMemo(() => newjoineesData, [newjoineesData])
+
+    const HandleCheckbox = useCallback((e, row) => {
+        let arr = datas?.map((item) => item.em_id === row.em_id ? { ...item, "em_no": item.em_no, "datefmt": item.datefmt, "em_name": item.em_name, "sect_name": item.sect_name, "desg_name": item.desg_name, inValue: e } : item)
+        setdatas([...arr]);
+    }, [datas])
+
+    const updateEmpSelect = (datas) => {
+        const filterarray = datas?.filter((val) => val.inValue === true);
+        SetEmpSelect(filterarray);
+    };
+
+    const SearchBtn = useCallback(async () => {
+        const obj = {
+            fromdate: moment(fromdate).format("YYYY-MM-DD HH:mm:ss"),
+            todate: moment(todate).format("YYYY-MM-DD HH:mm:ss"),
+            dept: dept
+        }
+        if (dept !== 0) {
+            const result = await axioslogin.post(`/InductionTraining/getDeptWiseEmployee/List`, obj)
+            const { data, success } = result.data
+            if (success === 2) {
+                setTableData(data)
+            } else {
+                setTableData([])
+            }
+        }
+        else {
+            const result = await axioslogin.post(`/InductionTraining/getEmps`, obj)
+            const { data, success } = result.data
+            if (success === 2) {
+                setTableData(data)
+            } else {
+                setTableData([])
+            }
+        }
+    }, [fromdate, dept, todate]);
+
+    const NextModal = useCallback(() => {
+        if (fromdate !== '' && todate !== '' && empselect.length !== 0) {
+            setOpen(true)
+        }
+        else {
+            setopenmodal(false)
+            warningNofity("Select Date Range and Candidates")
+        }
+    }, [setOpen, setopenmodal, fromdate, empselect, todate])
+
+    //open view and edit page
+    const ViewAndEdit = useCallback(() => {
+        setviewModal(true)
+    }, [setviewModal])
+
+    const Handleclose = useCallback((e) => {
+        setopenmodal(false)
+    }, [setopenmodal])
+
     useEffect(() => {
         if (tabledata.length !== 0 && checkAll === false) {
             const mapArry = tabledata?.map((item) => {
@@ -110,55 +161,6 @@ const PendingNReschedule = ({ openmodal, setopenmodal }) => {
         }
     }, [checkAll, tabledata])
 
-    const HandleCheckbox = useCallback((e, row) => {
-        let arr = datas?.map((item) => item.em_id === row.em_id ? { ...item, "em_no": item.em_no, "datefmt": item.datefmt, "em_name": item.em_name, "sect_name": item.sect_name, "desg_name": item.desg_name, inValue: e } : item)
-        setdatas([...arr]);
-    }, [datas])
-
-    useEffect(() => {
-        const filterarray = datas?.filter((val) => {
-            return val.inValue === true
-        })
-        SetEmpSelect(filterarray);
-    }, [datas])
-
-    const SearchBtn = useCallback(() => {
-        if (dept === 0 && fromdate === '' && todate === '') {
-            warningNofity("Please Select FROM & TO dates For Searching")
-        }
-        else if (dept !== 0) {
-            const deptwise = newjoinees?.filter((val) => val.dept_id === dept)
-            setTableData(deptwise);
-        }
-        else if (dept === 0 || fromdate !== '' && todate !== '') {
-            const datewise = newjoinees?.filter((val) => (moment(val.joining_date).format("YYYY-MM-DD") > fromdate && moment(val.joining_date).format("YYYY-MM-DD") < todate))
-            setTableData(datewise);
-        }
-        else {
-            setTableData([]);
-        }
-    }, [dept, setTableData, newjoinees, fromdate, todate])
-
-    const NextModal = useCallback(() => {
-        if (fromdate !== '' && todate !== '') {
-            setOpen(true)
-        }
-        else {
-            warningNofity("Please Enter From & To date")
-        }
-    }, [setOpen, fromdate, todate])
-
-    //open view and edit page
-    const ViewAndEdit = useCallback(() => {
-        setviewModal(true)
-    }, [setviewModal])
-
-
-
-    const Handleclose = useCallback((e) => {
-        setopenmodal(false)
-    }, [setopenmodal])
-
     return (
         <Fragment>
             {viewModal === true ? <ViewNEditPage setopenmodal={setopenmodal} setviewModal={setviewModal} viewModal={viewModal} count={count} setcount={setcount} />
@@ -197,10 +199,6 @@ const PendingNReschedule = ({ openmodal, setopenmodal }) => {
                                         >
                                             Pending & Schedule
                                         </Typography>
-
-
-
-                                        {/* <Box varient="outlined" sx={{ p: 1, width: "100%", height: screenInnerHeight - 120 }}> */}
                                         <Paper elevation={0} sx={{ backgroundColor: "#EEEEEE", p: 2, mt: 1 }}>
                                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1, p: 0.3, flexWrap: "wrap" }}>
                                                 <Box sx={{ flex: 1, mt: 1, display: "flex", flexDirection: "row", gap: 0.5 }} >
@@ -210,6 +208,7 @@ const PendingNReschedule = ({ openmodal, setopenmodal }) => {
                                                             views={['day']}
                                                             value={fromdate}
                                                             size="small"
+                                                            inputFormat="dd-MM-yyyy"
                                                             onChange={(e) => {
                                                                 Setfromdate(moment(e).format("YYYY-MM-DD HH:mm:ss"));
                                                             }}
@@ -231,6 +230,7 @@ const PendingNReschedule = ({ openmodal, setopenmodal }) => {
                                                             views={['day']}
                                                             value={todate}
                                                             size="small"
+                                                            inputFormat="dd-MM-yyyy"
                                                             onChange={(e) => {
                                                                 Settodate(moment(e).format("YYYY-MM-DD HH:mm:ss"));
                                                             }}
@@ -246,7 +246,6 @@ const PendingNReschedule = ({ openmodal, setopenmodal }) => {
                                                     </LocalizationProvider>
                                                 </Box>
                                                 <Box sx={{ flex: 1, mt: 1, }} >
-
                                                     <JoyDepartment sx={{ p: 1 }} deptValue={dept} getDept={setDept} />
                                                 </Box>
                                                 <Tooltip title="Search">
@@ -305,7 +304,6 @@ const PendingNReschedule = ({ openmodal, setopenmodal }) => {
                                                 </Box>
                                             </Tooltip>
                                         </Box>
-                                        {/* <Paper variant="outlined"> */}
                                         {datas?.length !== 0 ?
                                             <Sheet sx={{
                                                 mt: 3,
