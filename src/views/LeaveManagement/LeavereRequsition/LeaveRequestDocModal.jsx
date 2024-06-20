@@ -34,7 +34,7 @@ const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setReq
             errorNofity('Error Submitting Leave Request')
             setOpen(false)
         }
-    }, [data, setOpen, setTable, setReason, setRequestType])
+    }, [data, setOpen, setTable, setReason, setRequestType, setDropOpen])
 
     const closeRequest = useCallback(() => {
         setOpen(false)

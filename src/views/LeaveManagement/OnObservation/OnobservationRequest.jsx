@@ -1,6 +1,6 @@
 import { Box, Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy'
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import React, { memo, useCallback, useEffect, useState } from 'react'
+import { useDispatch, } from 'react-redux';
 import { setDepartment } from 'src/redux/actions/Department.action';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
@@ -17,6 +17,7 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { IconButton as OpenIcon } from '@mui/material';
 import ObservationModal from './ObservationModal';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const OnobservationRequest = () => {
     const [department, setDept] = useState(0)
@@ -51,6 +52,7 @@ const OnobservationRequest = () => {
                 setTableData(data)
 
             } else {
+                warningNofity("There is no new joinees under this department!")
                 setTableData([])
             }
         } else {
@@ -63,6 +65,7 @@ const OnobservationRequest = () => {
             if (success === 1) {
                 setTableData(data)
             } else {
+                warningNofity("No new joinees between the dates!!.")
                 setTableData([])
             }
         }
@@ -167,8 +170,8 @@ const OnobservationRequest = () => {
                             height: 600,
                             width: "100%"
                         }}
-                        rowHeight={30}
-                        headerHeight={30}
+                        rowHeight={40}
+                        headerHeight={40}
                     />
                 </Paper>
             </Box>

@@ -1,4 +1,4 @@
-import { addDays, addHours, addMinutes, differenceInHours, differenceInMinutes, format, isAfter, isBefore, isValid, max, min, subDays, subHours } from "date-fns";
+import { addDays, addHours, addMinutes, differenceInHours, differenceInMinutes, format, isAfter, isBefore, isEqual, isValid, max, min, subDays, subHours } from "date-fns";
 import { axioslogin } from "src/views/Axios/Axios";
 
 export const processPunchMarkingHrFunc = async (
@@ -229,8 +229,8 @@ export const getAttendanceCalculation = async (
         if (isValid(punch_In) === true && isValid(punch_out) === true) {
             // *****EMPLOYEE HAVE BOTH THE PUNCH******
 
-            const isBeforeHafDayInTime = isBefore(punch_In, halfDayStartTime); //for check -> punch in before half day start in time
-            const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime)
+            const isBeforeHafDayInTime = isBefore(punch_In, halfDayStartTime) || isEqual(punch_In, halfDayStartTime); //for check -> punch in before half day start in time
+            const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime) || isEqual(punch_out, halfDayStartTime);
 
             const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 6;
             const halfDayWorkingHour = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 4;
