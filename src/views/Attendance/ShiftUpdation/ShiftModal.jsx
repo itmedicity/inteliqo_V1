@@ -10,13 +10,14 @@ import { Box } from '@mui/material';
 import { Chip, Option, Select } from '@mui/joy';
 import { addDays, addHours, format, isValid, subHours } from 'date-fns';
 import moment from 'moment';
-import { errorNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity, } from 'src/views/CommonCode/Commonfunc';
 import { useCallback } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 // import { Actiontypes } from 'src/redux/constants/action.type';
 import { memo } from 'react';
 import EmailIcon from '@mui/icons-material/Email';
 import { getAttendanceCalculation, getLateInTimeIntervel } from '../PunchMarkingHR/punchMarkingHrFunc';
+import ReportIcon from '@mui/icons-material/Report';
 
 const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }) => {
 
@@ -29,6 +30,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
     const [inTime, setInTime] = useState(null)
     const [outTime, setOutTime] = useState(null)
     const [message, setMessage] = useState(false)
+    const [disable, setDisable] = useState(false)
     // console.log(punchData)
     // console.log(data)
     // console.log(punchMast)
@@ -122,6 +124,9 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
         const shift_out = new Date(shiftOut)
         const holidayStatus = data?.holiday_status;
         const shiftId = data?.shift_id
+        const leave_status = data?.leave_status
+
+        console.log(data);
 
 
         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_In, punch_out, shift_out)
@@ -131,7 +136,11 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
         if (inTime === outTime) {
             setMessage(true)
             // console.log(data)
-        } else {
+        } else if (leave_status === 1) {
+            setDisable(true)
+        }
+        else {
+
             if (isValid(punch_In) === true && isValid(punch_out) === true) {
                 // console.log(data)
                 const getAttendance = await getAttendanceCalculation(
@@ -213,6 +222,12 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
                     color="danger"
                     startDecorator={<EmailIcon />}
                 >Both the Selected times are same</Chip>}
+                {disable && <Chip
+                    size="sm"
+                    variant="outlined"
+                    color="danger"
+                    startDecorator={<ReportIcon />}
+                >An approved Request is exist this Day!</Chip>}
                 <Box sx={{ display: 'flex', flex: 1, py: 1 }} >
                     <Box sx={{ display: 'flex', flex: 1, alignContent: 'center' }} ><Typography textColor="text.tertiary">Punch In Time</Typography></Box>
                     <Box sx={{ flex: 2 }} >
@@ -246,7 +261,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
                 <Box sx={{ display: 'flex', flex: 1, py: 1 }} >
                     <Box sx={{ flex: 2 }} ></Box>
                     <Box sx={{ flex: 1 }}>
-                        <Button fullWidth onClick={updatePunchInOutData} size="sm">Update</Button>
+                        <Button disabled={disable} fullWidth onClick={updatePunchInOutData} size="sm">Update</Button>
                     </Box>
                 </Box>
             </Sheet>
