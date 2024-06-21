@@ -54,7 +54,7 @@ const DepartmentSecChange = () => {
     const patchData = useMemo(() => {
         return {
             em_department: newDept !== 0 ? newDept : em_department,
-            em_dept_section: newDeptSect !== 0 ? newDeptSect : em_dept_section,
+            em_dept_section: newDeptSect !== undefined ? newDeptSect : em_dept_section,
             em_designation: designation !== 0 ? designation : em_designation,
             saturday_weekoff: weekoff === true ? 1 : 0,
             em_id: emply.em_id,
@@ -69,7 +69,7 @@ const DepartmentSecChange = () => {
             com_dept: em_department,
             com_deptsec: em_dept_section,
             dept_new: newDept,
-            deptsect_new: newDeptSect
+            deptsect_new: newDeptSect !== undefined ? newDeptSect : 0
         }
     }, [newDept, newDeptSect, weekoff, em_department, em_dept_section, desgChangeDtae, deptChangeDate,
         emply, em_branch, designation, em_designation, em_no])

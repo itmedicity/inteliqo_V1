@@ -168,7 +168,7 @@ const SalaryReport = () => {
                         //No. of days in a month
                         const totalDays = getDaysInMonth(new Date(value))
                         //No of OFF days in month
-                        const offdays = (empwise?.filter(val => val.duty_desc === 'WOFF' || val.duty_desc === 'NOFF')).length
+                        //const offdays = (empwise?.filter(val => val.duty_desc === 'WOFF' || val.duty_desc === 'NOFF')).length
                         //No of holidays in a month
                         const holiday = (empwise?.filter(val => val.holiday_status === 1)).length
                         //No of LOP days

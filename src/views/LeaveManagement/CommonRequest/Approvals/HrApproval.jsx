@@ -89,6 +89,7 @@ const HrApproval = () => {
                         ceo_apprv: val.ceo_approval_status,
                         hrreq: val.hr_req_status,
                         hr_apprv: val.hr_approval_status,
+                        dept_sect_id: val.dept_sect_id,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                             (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Rejected' :
                                 (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
@@ -120,7 +121,6 @@ const HrApproval = () => {
             }
         } else if (selectValue === 3) {
             if (Object.keys(oneHourData).length > 0) {
-
                 const arr = oneHourData?.map((val) => {
                     return {
                         reqsttype: 3,
@@ -136,6 +136,7 @@ const HrApproval = () => {
                         ceo_apprv: val.ceo_approval_status,
                         hrreq: val.hr_req_status,
                         hr_apprv: val.hr_approval_status,
+                        dept_sect_id: val.dept_sect_id,
                         status: (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
                             (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Rejected' :
                                 (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :

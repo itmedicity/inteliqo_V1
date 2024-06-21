@@ -6,8 +6,9 @@ import { QR_URL } from '../../Constant/Static'
 
 const QRCodeModalPage = ({ QRdata, QRmodal, setQRmodal }) => {
 
-    const { question_count, topic_slno, slno, em_id
-    } = QRdata[0]
+    const data = useMemo(() => QRdata, [QRdata])
+
+    const { question_count, topic_slno, slno, em_id } = data;
 
     const handleClose = useCallback(() => {
         setQRmodal(false);

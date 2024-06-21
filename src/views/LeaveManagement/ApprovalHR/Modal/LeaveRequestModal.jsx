@@ -84,162 +84,178 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                 setOpen(false)
             } else {
 
-                //UPDATE LEAVE MASTER TABLE
-                const resultdel = await axioslogin.patch(`/LeaveRequestApproval/hrLeaveapprv`, formData);
-                const { success } = await resultdel.data;
-                if (success === 1) {
-                    /**** UPDATE LEAVE TABLES****/
-                    //UPDATE CASUAL LEAVE TABLE
-                    const casualLeavePromise = new Promise(async (resolve, reject) => {
-                        if (casualLev?.length > 0) {
-                            const resultcl = await axioslogin.post(`/LeaveRequestApproval/updateCasualLeaveTable`, casualLev);
-                            const { success, message } = resultcl.data;
-                            if (success === 1) {
-                                resolve('Casual Leave Request Updated')
-                            } else {
-                                reject(`CL Updation ! Error ${message}`)
-                            }
+                /**** UPDATE LEAVE TABLES****/
+                //UPDATE CASUAL LEAVE TABLE
+                const casualLeavePromise = new Promise(async (resolve, reject) => {
+                    if (casualLev?.length > 0) {
+                        const resultcl = await axioslogin.post(`/LeaveRequestApproval/updateCasualLeaveTable`, casualLev);
+                        const { success, message } = resultcl.data;
+                        if (success === 1) {
+                            resolve('Casual Leave Request Updated')
                         } else {
-                            resolve(1)
+                            reject(`CL Updation ! Error ${message}`)
+                        }
+                    } else {
+                        resolve(1)
+                    }
+                })
+
+                //UPDATE HOLIDAY 
+                const holidayLeavePromise = new Promise(async (resolve, reject) => {
+                    if (Holiday?.length > 0) {
+                        const resulthl = await axioslogin.post(`/LeaveRequestApproval/updateHolidayLeaveTable`, Holiday);
+                        const { success, message } = resulthl.data;
+                        if (success === 1) {
+                            resolve('Holiday Leave Request updated')
+                        } else {
+                            reject(`HL Updation ! Error ${message}`)
+                        }
+                    } else {
+                        resolve(1)
+                    }
+                })
+
+                //EARN LEAVE 
+                const earnLeavePromise = new Promise(async (resolve, reject) => {
+                    if (earnLeave?.length > 0) {
+                        const resultel = await axioslogin.post(`/LeaveRequestApproval/updateEarnLeaveTable`, earnLeave);
+                        const { success, message } = resultel.data;
+                        if (success === 1) {
+                            resolve('Earn Leave Request updated')
+                        } else {
+                            reject(`EL Updation ! Error ${message}`)
+                        }
+                    } else {
+                        resolve(1)
+                    }
+                })
+
+                //COFF UPDATION
+                const coffLeavePromise = new Promise(async (resolve, reject) => {
+                    if (compansatoryOff?.length > 0) {
+                        const resultcoff = await axioslogin.post(`/LeaveRequestApproval/updatecOffTable`, compansatoryOff);
+                        const { success, message } = resultcoff.data;
+                        if (success === 1) {
+                            resolve('COFF Request Approved')
+                        } else {
+                            reject(`COFF Updation ! Error ${message}`)
+                        }
+                    } else {
+                        resolve(1)
+                    }
+                })
+
+                /**** UPDATE PUNCH MASTER TABLE ****/
+                const esiLeave = reqDetl?.filter(val => val.leave_typeid === 6)?.map(val => {
+                    return { ...val, emno: emno }
+                });
+                const lwfLeave = reqDetl?.filter(val => val.leave_typeid === 5)?.map(val => {
+                    return { ...val, emno: emno }
+                });
+                const withOutesilwf = reqDetl?.filter(val => val.leave_typeid !== 5 && val.leave_typeid !== 6)?.map(val => {
+                    return { ...val, emno: emno }
+                });
+
+                //UPDATE PUNCH MASTER TABLE ESI LEAVE
+                const updateEsiLeavePunchMaster = new Promise(async (resolve, reject) => {
+                    if (esiLeave?.length > 0) {
+                        const esiPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateEsiLeave`, esiLeave);
+                        const { success, message } = esiPunchMasterUpdate.data;
+                        if (success === 1) {
+                            resolve('ESI Leave Updated')
+                        } else {
+                            reject(`Esi Punch Master Updation ! Error ${message}`)
+                        }
+                    } else {
+                        resolve(1)
+                    }
+                })
+
+                //UPDATE PUNCH MASTER TABLE LWP LEAVE 
+                const updateLwpPunchMaster = new Promise(async (resolve, reject) => {
+                    if (lwfLeave?.length > 0) {
+                        const lwfPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateLwfLeave`, lwfLeave);
+                        const { success, message } = lwfPunchMasterUpdate.data;
+                        if (success === 1) {
+                            resolve('LWP Leave Updated')
+                        } else {
+                            reject(`LWP Punch Master Updation ! Error ${message}`)
+                        }
+                    } else {
+                        resolve(1)
+                    }
+                })
+
+                //UPDATE PUNCH MASTER TABLE BALANCE ALL LEAVE 
+                const updateLeavePunchMasterTable = new Promise(async (resolve, reject) => {
+                    const arr = withOutesilwf?.map((val) => {
+                        return {
+                            ...val,
+                            duty_status: val.leave_typeid === 1 && val.leaveCount === 0.5 ? 0.5 : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 0.5 : 1,
+                            lvereq_desc: val.leave_typeid === 11 ? 'COFF' : val.leave_typeid === 7 && val.leaveCount !== 0.5 ? 'SL' : val.leave_typeid === 8 ? 'EL' : val.leave_typeid === 1 && val.leaveCount !== 0.5 ? 'CL' : val.leave_typeid === 1 && val.leaveCount === 0.5 ? 'HCL' : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 'HSL' : 'ML',
+                            duty_desc: val.leave_typeid === 11 ? 'COFF' : val.leave_typeid === 7 && val.leaveCount !== 0.5 ? 'SL' : val.leave_typeid === 8 ? 'EL' : val.leave_typeid === 1 && val.leaveCount !== 0.5 ? 'CL' : val.leave_typeid === 1 && val.leaveCount === 0.5 ? 'HCL' : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 'HSL' : 'ML',
+                            leave_dates: format(new Date(val.leave_dates), 'yyyy-MM-dd ')
                         }
                     })
 
-                    //UPDATE HOLIDAY 
-                    const holidayLeavePromise = new Promise(async (resolve, reject) => {
-                        if (Holiday?.length > 0) {
-                            const resulthl = await axioslogin.post(`/LeaveRequestApproval/updateHolidayLeaveTable`, Holiday);
-                            const { success, message } = resulthl.data;
-                            if (success === 1) {
-                                resolve('Holiday Leave Request updated')
-                            } else {
-                                reject(`HL Updation ! Error ${message}`)
-                            }
+                    if (withOutesilwf?.length > 0) {
+                        const leaveUpdationPunchMaster = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateLeave`, arr);
+                        const { success, message } = leaveUpdationPunchMaster.data;
+                        if (success === 1) {
+                            resolve('Leave Updation')
                         } else {
-                            resolve(1)
+                            reject(`Leave Updation with OUT ESI and LWP Updation ! Error ${message}`)
                         }
-                    })
+                    } else {
+                        resolve(1)
+                    }
+                })
 
-                    //EARN LEAVE 
-                    const earnLeavePromise = new Promise(async (resolve, reject) => {
-                        if (earnLeave?.length > 0) {
-                            const resultel = await axioslogin.post(`/LeaveRequestApproval/updateEarnLeaveTable`, earnLeave);
-                            const { success, message } = resultel.data;
-                            if (success === 1) {
-                                resolve('Earn Leave Request updated')
-                            } else {
-                                reject(`EL Updation ! Error ${message}`)
-                            }
-                        } else {
-                            resolve(1)
-                        }
-                    })
-
-                    //COFF UPDATION
-                    const coffLeavePromise = new Promise(async (resolve, reject) => {
-                        if (compansatoryOff?.length > 0) {
-                            const resultcoff = await axioslogin.post(`/LeaveRequestApproval/updatecOffTable`, compansatoryOff);
-                            const { success, message } = resultcoff.data;
-                            if (success === 1) {
-                                resolve('COFF Request Approved')
-                            } else {
-                                reject(`COFF Updation ! Error ${message}`)
-                            }
-                        } else {
-                            resolve(1)
-                        }
-                    })
-
-                    /**** UPDATE PUNCH MASTER TABLE ****/
-                    const esiLeave = reqDetl?.filter(val => val.leave_typeid === 6)?.map(val => {
-                        return { ...val, emno: emno }
-                    });
-                    const lwfLeave = reqDetl?.filter(val => val.leave_typeid === 5)?.map(val => {
-                        return { ...val, emno: emno }
-                    });
-                    const withOutesilwf = reqDetl?.filter(val => val.leave_typeid !== 5 && val.leave_typeid !== 6)?.map(val => {
-                        return { ...val, emno: emno }
-                    });
-
-                    //UPDATE PUNCH MASTER TABLE ESI LEAVE
-                    const updateEsiLeavePunchMaster = new Promise(async (resolve, reject) => {
-                        if (esiLeave?.length > 0) {
-                            const esiPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateEsiLeave`, esiLeave);
-                            const { success, message } = esiPunchMasterUpdate.data;
-                            if (success === 1) {
-                                resolve('ESI Leave Updated')
-                            } else {
-                                reject(`Esi Punch Master Updation ! Error ${message}`)
-                            }
-                        } else {
-                            resolve(1)
-                        }
-                    })
-
-                    //UPDATE PUNCH MASTER TABLE LWP LEAVE 
-                    const updateLwpPunchMaster = new Promise(async (resolve, reject) => {
-                        if (lwfLeave?.length > 0) {
-                            const lwfPunchMasterUpdate = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateLwfLeave`, lwfLeave);
-                            const { success, message } = lwfPunchMasterUpdate.data;
-                            if (success === 1) {
-                                resolve('LWF Leave Updated')
-                            } else {
-                                reject(`LWP Punch Master Updation ! Error ${message}`)
-                            }
-                        } else {
-                            resolve(1)
-                        }
-                    })
-
-                    //UPDATE PUNCH MASTER TABLE BALANCE ALL LEAVE 
-                    const updateLeavePunchMasterTable = new Promise(async (resolve, reject) => {
-                        if (withOutesilwf?.length > 0) {
-                            const leaveUpdationPunchMaster = await axioslogin.post(`/LeaveRequestApproval/punchMasterUpdateLeave`, withOutesilwf);
-                            const { success, message } = leaveUpdationPunchMaster.data;
-                            if (success === 1) {
-                                resolve('Leave Updation')
-                            } else {
-                                reject(`Leave Updation with OUT ESI and LWP Updation ! Error ${message}`)
-                            }
-                        } else {
-                            resolve(1)
-                        }
-                    })
-
-                    Promise.all([
-                        casualLeavePromise,
-                        holidayLeavePromise,
-                        earnLeavePromise,
-                        coffLeavePromise,
-                        updateEsiLeavePunchMaster,
-                        updateLwpPunchMaster,
-                        updateLeavePunchMasterTable
-                    ]).then(result => {
-                        if (result) {
+                Promise.all([
+                    casualLeavePromise,
+                    holidayLeavePromise,
+                    earnLeavePromise,
+                    coffLeavePromise,
+                    updateEsiLeavePunchMaster,
+                    updateLwpPunchMaster,
+                    updateLeavePunchMasterTable
+                ]).then(async (result) => {
+                    if (result) {
+                        const resultdel = await axioslogin.patch(`/LeaveRequestApproval/hrLeaveapprv`, formData);
+                        const { success } = await resultdel.data;
+                        if (success === 1) {
                             setOpenBkDrop(false)
                             setCount(Math.random())
                             succesNofity('Leave Request Approved')
                             setOpen(false)
                         }
-                    }).catch(error => {
-                        setCount(Math.random())
-                        errorNofity('Error Updating Leave Request')
-                        const errorLog = {
-                            error_log_table: 'punch_master,leave_request,leave_reqdetl',
-                            error_log: error,
-                            em_no: emno,
-                            formName: 'Leave Approval Modal Approval HR Page'
+                        else {
+                            setCount(Math.random())
+                            errorNofity('Error Updating Leave Request')
+                            setOpenBkDrop(false)
+                            setOpen(false)
                         }
-                        axioslogin.post(`/common/errorLog`, errorLog);
-                        setOpenBkDrop(false)
-                        setOpen(false)
-                    })
-                }
+                    }
+                }).catch(error => {
+                    setCount(Math.random())
+                    errorNofity('Error Updating Leave Request')
+                    const errorLog = {
+                        error_log_table: 'punch_master,leave_request,leave_reqdetl',
+                        error_log: error,
+                        em_no: emno,
+                        formName: 'Leave Approval Modal Approval HR Page'
+                    }
+                    axioslogin.post(`/common/errorLog`, errorLog);
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                })
+
             }
         } else {
             errorNofity("Error getting PunchMarkingHR ")
         }
 
-    }, [slno, reqDetl, emno, reason, setCount, setOpen, dept_section])
+    }, [slno, reqDetl, emno, reason, setCount, setOpen, dept_section, fromDate])
 
     const LeaveRejectdata = useMemo(() => {
         return {
@@ -348,9 +364,9 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                 const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCasualyLeave`, commonLeaves);
                 const { success, message } = resultcl.data;
                 if (success === 1) {
-                    resolve('Casual Leave Request Updated')
+                    resolve('Common Leave Request Updated')
                 } else {
-                    reject(`CL Updation ! Error ${message}`)
+                    reject(`Common Leave Updation ! Error ${message}`)
                 }
             } else {
                 resolve(1)
@@ -479,7 +495,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                                 level="body1"
                                 justifyContent="center"
                             >
-                                Request From
+                                Leave From
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
                                 {moment(fromDate).format('DD-MM-YYYY')}
@@ -490,7 +506,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                                 level="body1"
                                 justifyContent="center"
                             >
-                                Request To
+                                Leave To
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
                                 {moment(toDate).format('DD-MM-YYYY')}
@@ -506,7 +522,10 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                             Requested Leave Information.
                         </Typography>
                     </Box>
-                    <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
+                    <Paper variant="outlined" square sx={{
+                        p: 0.5, mb: 0.8,
+                        overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+                    }} >
                         {
                             reqDetl?.map((val, idx) => {
                                 return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >
@@ -529,7 +548,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                         </Chip>
                     </Divider>
                     <Box sx={{ pt: 0.5 }} >
-                        <Textarea name="Outlined" placeholder="Reason For Reject The Request here…" variant="outlined" onChange={(e) => setReason(e.target.value)} />
+                        <Textarea name="Outlined" placeholder="Reason For Approve/Reject The Request here…" variant="outlined" onChange={(e) => setReason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                             <Button variant="solid" color="success" onClick={handleApproverequest}>
                                 Leave Request Approve

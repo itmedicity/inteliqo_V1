@@ -31,6 +31,7 @@ const EarnDeduction = () => {
     const [flag, setflag] = useState(0)
     const [slno, setslno] = useState(0)
     const [LastWage, setlastWage] = useState(0)
+    const [grossSalary, setGrossSalary] = useState(0)
     //Initializing
     const [wageType, setWageType] = useState({
         earning_type_name: '',
@@ -88,7 +89,22 @@ const EarnDeduction = () => {
             }
             getWageType()
         }
-    }, [wage]);
+        console.log(no);
+        const getGrossSalary = async (no) => {
+            console.log(no);
+            const result = await axioslogin.get(`/common/getgrossSalary/${no}`);
+            const { dataa, success } = await result.data;
+            console.log(dataa);
+            if (success === 1) {
+                const { gross_salary } = dataa[0]
+                setGrossSalary(gross_salary)
+            } else {
+                setGrossSalary(0)
+            }
+        }
+
+        getGrossSalary(no)
+    }, [wage, no]);
 
 
     //moment start month
@@ -425,6 +441,25 @@ const EarnDeduction = () => {
                     </Box>
                 </Paper>
                 <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5 }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", px: 20, width: '100%', pt: 1 }}>
+                        <Box sx={{ display: 'flex', width: '20%' }}>
+                            <CssVarsProvider>
+                                <Typography textColor="text.secondary" >
+                                    Employee Salary
+                                </Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', width: '30%', }} >
+                            <InputComponent
+                                type="text"
+                                size="sm"
+                                placeholder="Salary"
+                                name="grossSalary"
+                                value={grossSalary}
+                                disabled={true}
+                            />
+                        </Box>
+                    </Box>
                     <Box sx={{ display: "flex", flexDirection: "row", px: 20, width: '100%', pt: 1 }}>
                         <Box sx={{ display: 'flex', width: '20%' }}>
                             <CssVarsProvider>

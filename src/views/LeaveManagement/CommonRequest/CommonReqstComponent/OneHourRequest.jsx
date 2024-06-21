@@ -188,7 +188,7 @@ const OneHourRequest = ({ count, setCount }) => {
                     (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
             incharge_approval_date: (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
                 (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
             hod_req_status: (authorization_hod === 1 && hod === 1) ? 1 :
                 (authorization_hod === 1 && hod === 0) ? 1 :
                     (authorization_hod === 0 && hod === 1) ? 1 : 0,
@@ -197,7 +197,7 @@ const OneHourRequest = ({ count, setCount }) => {
             hod_approval_comment: (authorization_hod === 1 && hod === 1) ? "DIRECT" :
                 (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
             hod_approval_date: (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
+                (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
             ceo_req_status: empHodStat === 1 ? 1 : 0,
             hr_req_status: 1
         }

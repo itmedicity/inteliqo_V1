@@ -9,9 +9,10 @@ import moment from 'moment';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { employeeNumber } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
+import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
 
 const OndutyReqstModal = ({ open, setOpen, data, setCount, count, authority }) => {
 
@@ -37,7 +38,7 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount, count, authority }) =
         }
     )
     const { slno, emno, name, section, status, reqDate, dutyDate, reason, shft_desc,
-        inchargeComment, hodComment, ceoComment } = details;
+        inchargeComment, hodComment, ceoComment, dept_sect_id } = details;
 
     const [shiftData, setShiftData] = useState({})
 
@@ -310,19 +311,41 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount, count, authority }) =
                 infoNofity("Please Add Remarks!")
             } else {
                 setOpenBkDrop(true)
-                const result = await axioslogin.patch('/CommonReqst/hr/onduty/comment', hrApprove)
-                const { message, success } = result.data;
-                if (success === 1) {
-                    setOpenBkDrop(false)
-                    setOpen(false)
-                    setCount(count + 1)
-                    succesNofity(message)
-                } else {
-                    setOpenBkDrop(false)
-                    setOpen(false)
-                    setCount(count + 1)
-                    errorNofity(message)
+
+                const postDataForAttendaceMark = {
+                    month: format(startOfMonth(new Date()), 'yyyy-MM-dd'),
+                    section: dept_sect_id
                 }
+
+                const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postDataForAttendaceMark);
+                const { success, data } = checkPunchMarkingHr.data
+                if (success === 0 || success === 1) {
+                    const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(dutyDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                    const lastDay_month = format(lastDayOfMonth(new Date(dutyDate)), 'yyyy-MM-dd')
+                    if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                        warningNofity("Punch Marking Monthly Process Done !! Can't Approve Halfday Leave Request!!  ")
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                    } else {
+                        const result = await axioslogin.patch('/CommonReqst/hr/onduty/comment', hrApprove)
+                        const { message, success } = result.data;
+                        if (success === 1) {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(count + 1)
+                            succesNofity(message)
+                        } else {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(count + 1)
+                            errorNofity(message)
+                        }
+                    }
+                } else {
+                    errorNofity("Error getting PunchMarkingHR ")
+                }
+
+
             }
         }
     }

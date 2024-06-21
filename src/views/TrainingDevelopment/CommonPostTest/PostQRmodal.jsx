@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useCallback } from 'react'
+import React, { Fragment, memo, useCallback, useMemo } from 'react'
 import { Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { Paper } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
@@ -6,8 +6,9 @@ import { QR_URL } from '../../Constant/Static'
 
 const PostQRmodal = ({ QRdata, QRmodal, setQRmodal }) => {
 
-    const { topic_slno
-    } = QRdata[0]
+    const data = useMemo(() => QRdata, [QRdata])
+
+    const { topic_slno } = data;
 
     const handleClose = useCallback(() => {
         setQRmodal(false);

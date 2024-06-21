@@ -1,4 +1,4 @@
-import { addDays, addHours, addMinutes, differenceInHours, differenceInMinutes, format, isAfter, isBefore, isValid, max, min, subDays, subHours } from "date-fns";
+import { addDays, addHours, addMinutes, differenceInHours, differenceInMinutes, format, isAfter, isBefore, isEqual, isValid, max, min, subDays, subHours } from "date-fns";
 import { axioslogin } from "src/views/Axios/Axios";
 
 export const processPunchMarkingHrFunc = async (
@@ -210,7 +210,10 @@ export const processPunchMarkingHrFunc = async (
 export const getAttendanceCalculation = async (
     punch_In, shift_in, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, defaultShift, NAShift, NightOffShift, WoffShift, salaryLimit, maximumLateInTime
 ) => {
-    const { hrsWorked, lateIn, earlyOut } = getLateInTime;
+    const {
+        // hrsWorked, 
+        lateIn,
+        earlyOut } = getLateInTime;
 
     //SHIFT ID CHECKING
     // ( !== default shift , !== not applicable shift , !== Night off , !== week off) 
@@ -226,20 +229,26 @@ export const getAttendanceCalculation = async (
         if (isValid(punch_In) === true && isValid(punch_out) === true) {
             // *****EMPLOYEE HAVE BOTH THE PUNCH******
 
-            const isBeforeHafDayInTime = isBefore(punch_In, halfDayStartTime); //for check -> punch in before half day start in time
-            const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime)
+            const isBeforeHafDayInTime = isBefore(punch_In, halfDayStartTime) || isEqual(punch_In, halfDayStartTime); //for check -> punch in before half day start in time
+            const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime) || isEqual(punch_out, halfDayStartTime);
 
-            const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) > 6;
+            const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 6;
             const halfDayWorkingHour = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 4;
             //  isBeforeHafDayInTime === true ==> punch in time greater than half in time (full day not half day)
+            //console.log(holidayStatus);
             if (holidayStatus === 0) {
                 // HOLIDAY === NO
+
+                // console.log("earlyOut", earlyOut);
+                // console.log("lateIn", lateIn);
+                // console.log("isBeforeHafDayInTime", isBeforeHafDayInTime);
+                // console.log("maximumLateInTime", maximumLateInTime);
 
                 // { out time == 0 minit  ~~ intime <= 30 minits ~~  in time before half day in time === true  } 
                 return earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
                     { duty_status: 1, duty_desc: 'P', lvereq_desc: 'P', duty_remark: 'Present' } :
 
-                    earlyOut === 0 && lateIn > cmmn_grace_period && lateIn < maximumLateInTime ?
+                    earlyOut === 0 && lateIn > cmmn_grace_period && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true ?
                         { duty_status: 1, duty_desc: 'LC', lvereq_desc: 'LC', duty_remark: 'Late Coming' } :
 
                         // { out time == 0 minit  ~~ intime greater than 30 minits ~~  in time before half day in time === true  } 
@@ -252,7 +261,7 @@ export const getAttendanceCalculation = async (
 
                                 // { out time greater than 0 minit  ~~ early out less than 30 minits ~~ intime lessthan or equal to 30  ~~ intime  and outtime should be before and after half day in time  } 
                                 (earlyOut > 0 && earlyOut <= maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
-                                    { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'HD', duty_remark: 'Early going Half day' } :
+                                    { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'EGHD', duty_remark: 'Early going Half day' } :
 
                                     // { outtime greater than 0 minit  ~~ early out less than 30 minits ~~ intime greater than 30  ~~ intime  and outtime should be before and after half day in time  } 
                                     (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
@@ -260,7 +269,7 @@ export const getAttendanceCalculation = async (
 
                                         // { outtime greater than 0 minit  ~~ early out greater than 30 minits ~~ intime greater than or equal 30  ~~ intime  and outtime should be before and after half day in time  } 
                                         (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
-                                            { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'HD', duty_remark: 'Early going Half day latein and late out' } :
+                                            { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'EGHD', duty_remark: 'Early going Half day latein and late out' } :
 
                                             (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
                                                 { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'in and out less tha half day time' } :
@@ -375,7 +384,7 @@ export const getAttendanceCalculation = async (
 
 //GET THE LATEIN 
 export const getLateInTimeIntervel = async (punch_In, shift_in, punch_out, shift_out) => {
-    // console.log(punch_In, shift_in, punch_out, shift_out)
+    //console.log(punch_In, shift_in, punch_out, shift_out)
 
     if ((punch_In !== null && punch_In !== undefined && isValid(punch_In) === true) && (punch_out !== null && punch_out !== undefined && isValid(punch_out) === true)) {
         //HOURS WORKED
@@ -628,5 +637,57 @@ const weekOffStatus = async (e, idx, array, weekoff_policy_max_count, weekoff_po
         return await filterBasedOnDutyDesc > policyLimit ? 'A' : 'WOFF'
     } else {
         return e.duty_desc
+    }
+}
+
+export const punchInOutChecking = async (shiftMergedPunchMaster, employeeBasedPunchData) => {
+
+    const crossDay = shiftMergedPunchMaster?.shft_cross_day;
+    const shiftInTime = `${format(new Date(shiftMergedPunchMaster?.duty_day), 'yyyy-MM-dd')} ${format(new Date(shiftMergedPunchMaster?.shift_in), 'HH:mm')}`;
+    const shiftOutTime = crossDay === 0 ? `${format(new Date(shiftMergedPunchMaster?.duty_day), 'yyyy-MM-dd')} ${format(new Date(shiftMergedPunchMaster?.shift_out), 'HH:mm')}` :
+        `${format(addDays(new Date(shiftMergedPunchMaster?.duty_day), crossDay), 'yyyy-MM-dd')} ${format(new Date(shiftMergedPunchMaster?.shift_out), 'HH:mm')}`;
+
+    //SHIFT MASTER DATA    
+    const shiftIn = new Date(shiftMergedPunchMaster?.shift_in);
+    const shiftOut = new Date(shiftMergedPunchMaster?.shift_out);
+    const shiftInStart = new Date(shiftMergedPunchMaster?.shft_chkin_start);
+    const shiftInEnd = new Date(shiftMergedPunchMaster?.shft_chkin_end);
+    const shiftOutStart = new Date(shiftMergedPunchMaster?.shft_chkout_start);
+    const shiftOutEnd = new Date(shiftMergedPunchMaster?.shft_chkout_end);
+
+    //Diffrence in Check IN time Intervel in Hours
+    const shiftInStartDiffer = differenceInHours(shiftIn, shiftInStart);
+    const shiftInEndDiffer = differenceInHours(shiftInEnd, shiftIn);
+
+    //Diffrence in Check OUT time Intervel in Hours
+    const shiftOutStartDiffer = differenceInHours(shiftOut, shiftOutStart);
+    const shiftOutEndDiffer = differenceInHours(shiftOutEnd, shiftOut);
+
+    const checkInTIme = new Date(shiftInTime);
+    const checkOutTime = new Date(shiftOutTime);
+
+    const checkInStartTime = subHours(checkInTIme, shiftInStartDiffer);
+    const checkInEndTime = addHours(checkInTIme, shiftInEndDiffer);
+
+    const checkOutStartTime = subHours(checkOutTime, shiftOutStartDiffer)
+    const checkOutEndTime = addHours(checkOutTime, shiftOutEndDiffer);
+
+    const empPunchData = employeeBasedPunchData?.map((e) => new Date(e.punch_time));
+
+    const inTimesArray = empPunchData?.filter((e) => (e >= checkInStartTime && e <= checkInEndTime))
+    const outTimeArray = empPunchData?.filter((e) => (e >= checkOutStartTime && e <= checkOutEndTime))
+    const inPunch = min(inTimesArray)
+    const outPunch = max(outTimeArray)
+
+    return {
+        ...shiftMergedPunchMaster,
+        punch_in: isValid(inPunch) === true ? format(inPunch, 'yyyy-MM-dd HH:mm') : null,
+        punch_out: isValid(outPunch) === true ? format(outPunch, 'yyyy-MM-dd HH:mm') : null,
+        shift_in: checkInTIme,
+        shift_out: checkOutTime,
+        shiftInStart: checkInStartTime,
+        shiftInEnd: checkInEndTime,
+        shiftOutStart: checkOutStartTime,
+        shiftOutEnd: checkOutEndTime
     }
 }

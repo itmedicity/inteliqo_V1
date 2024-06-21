@@ -5,7 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Box, Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy'
 import { Paper } from '@mui/material'
 import { useState } from 'react';
-import { format, isValid, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { useSelector } from 'react-redux';
 import { getCaualLeaveDetl, getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
@@ -147,6 +147,7 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
                             hr_aprrv_requ: 1,
                             ceo_req_status: 0,
                             resonforleave: reson,
+                            halfDayStat: halfDayStat,
                             dutyPlanSlno: plan_slno // duty plan table slno 
                         }
 
@@ -187,6 +188,7 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
                                 <DatePicker
                                     views={['day']}
                                     //minDate={startOfMonth(new Date())}
+                                    inputFormat="dd-MM-yyyy"
                                     value={fromDate}
                                     size="small"
                                     onChange={(newValue) => setFromDate(newValue)}
