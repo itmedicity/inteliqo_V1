@@ -436,7 +436,7 @@ const SalaryProcessed = () => {
                 warningNofity("No Employee Under this Department || Department Section")
             }
         }
-    }, [value, all, dept, deptSection, commonSettings, allDept, allSection, processBtn, holidayList])
+    }, [value, all, dept, deptSection, allDept, allSection, processBtn, holidayList])
 
 
     return (

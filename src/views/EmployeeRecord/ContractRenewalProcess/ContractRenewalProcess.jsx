@@ -142,7 +142,7 @@ const ContractRenewalProcess = () => {
 
     const dutyplandata = async (getDutyplan) => {
       const insertDutyPlainIntDB = await axioslogin.post("/plan/getplan", getDutyplan)
-      const { success, dta } = insertDutyPlainIntDB.data;
+      const { success } = insertDutyPlainIntDB.data;
       if (success === 1) {
         const planslno = insertDutyPlainIntDB.data.dta?.map(val => val.plan_slno)
         setDutyplanData(planslno)

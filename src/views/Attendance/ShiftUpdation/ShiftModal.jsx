@@ -17,6 +17,8 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { memo } from 'react';
 import EmailIcon from '@mui/icons-material/Email';
 import { getAttendanceCalculation, getLateInTimeIntervel } from '../PunchMarkingHR/punchMarkingHrFunc';
+import ReportIcon from '@mui/icons-material/Report';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }) => {
 
@@ -29,6 +31,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
     const [inTime, setInTime] = useState(null)
     const [outTime, setOutTime] = useState(null)
     const [message, setMessage] = useState(false)
+    const [disable, setDisable] = useState(false)
     // console.log(punchData)
     // console.log(data)
     // console.log(punchMast)
@@ -122,7 +125,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
         const shift_out = new Date(shiftOut)
         const holidayStatus = data?.holiday_status;
         const shiftId = data?.shift_id
-
+        const leave_status = data?.leave_status
 
         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_In, punch_out, shift_out)
         // console.log(getLateInTime)
@@ -131,7 +134,11 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
         if (inTime === outTime) {
             setMessage(true)
             // console.log(data)
-        } else {
+        } else if (leave_status === 1) {
+            setDisable(true)
+        }
+        else {
+
             if (isValid(punch_In) === true && isValid(punch_out) === true) {
                 // console.log(data)
                 const getAttendance = await getAttendanceCalculation(
@@ -170,6 +177,30 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
     }, [inTime, outTime, shiftIn, shiftOut, data, default_shift, notapplicable_shift, noff,
         week_off_day, salary_above, cmmn_late_in, cmmn_grace_period, setOpen, setTableArray])
 
+    const deletePunch = useCallback(async () => {
+        const postData = {
+            punch_in: null,
+            punch_out: null,
+            hrs_worked: 0,
+            late_in: 0,
+            early_out: 0,
+            duty_status: 0,
+            duty_desc: 'A',
+            lvereq_desc: 'A',
+            punch_slno: data?.punch_slno,
+        }
+        let result = await axioslogin.post("/attendCal/deletePunchMasterSingleRow", postData);
+        const { success } = result.data;
+        if (success === 1) {
+            setTableArray([])
+            succesNofity('Punch Data Cleared')
+            setOpen(false)
+        } else {
+            errorNofity('Punch Data Not Updated ! Contact HR/IT')
+            setOpen(false)
+        }
+    }, [data, setOpen, setTableArray])
+
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -202,7 +233,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
                     id="modal-title"
                     level="h5"
                     textColor="inherit"
-                    fontWeight="sm"
+                    fontWeight="md"
                     mb={1}
                 >
                     Punch In and Punch Out Time Marking On {moment(data.duty_day).format('DD-MM-YYYY')}
@@ -213,6 +244,21 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
                     color="danger"
                     startDecorator={<EmailIcon />}
                 >Both the Selected times are same</Chip>}
+                {disable && <Chip
+                    size="sm"
+                    variant="outlined"
+                    color="danger"
+                    startDecorator={<ReportIcon />}
+                >An approved Request is exist this Day!</Chip>}
+                <Box sx={{ display: 'flex', flex: 1, py: 1 }} >
+                    <Box sx={{ flex: 1 }} ><Typography textColor='danger.500'>Remove Existing Attendance</Typography></Box>
+                    <Box sx={{ flex: 1 }}>
+                        <Button color='danger' variant="outlined" onClick={deletePunch} size="sm">
+
+                            <DeleteIcon />
+                        </Button>
+                    </Box>
+                </Box>
                 <Box sx={{ display: 'flex', flex: 1, py: 1 }} >
                     <Box sx={{ display: 'flex', flex: 1, alignContent: 'center' }} ><Typography textColor="text.tertiary">Punch In Time</Typography></Box>
                     <Box sx={{ flex: 2 }} >
@@ -246,7 +292,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
                 <Box sx={{ display: 'flex', flex: 1, py: 1 }} >
                     <Box sx={{ flex: 2 }} ></Box>
                     <Box sx={{ flex: 1 }}>
-                        <Button fullWidth onClick={updatePunchInOutData} size="sm">Update</Button>
+                        <Button disabled={disable} fullWidth onClick={updatePunchInOutData} size="sm">Update</Button>
                     </Box>
                 </Box>
             </Sheet>

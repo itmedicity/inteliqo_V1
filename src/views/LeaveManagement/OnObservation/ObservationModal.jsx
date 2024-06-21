@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, ButtonGroup, CardActions, CardContent, CardOverflow, Modal, ModalClose, ModalDialog, Typography } from '@mui/joy'
-import { addDays, format, isValid } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import React, { memo, useMemo } from 'react'
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -8,11 +8,11 @@ import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 
 const ObservationModal = ({ open, setOpen, empdata }) => {
 
-    const { em_id, em_no, em_name, em_doj, dept_name, sect_name } = empdata;
-    const state = useSelector((state) => state?.getCommonSettings)
-    const commonStates = useMemo(() => state, [state])
-    const { onobservation_days } = commonStates;
-    const obsLastDay = addDays(new Date(em_doj), onobservation_days)
+    const { em_id, em_no, em_name, em_doj, sect_name } = empdata;
+    // const state = useSelector((state) => state?.getCommonSettings)
+    // const commonStates = useMemo(() => state, [state])
+    // const { onobservation_days } = commonStates;
+    // const obsLastDay = addDays(new Date(em_doj), onobservation_days)
 
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData);
@@ -22,7 +22,7 @@ const ObservationModal = ({ open, setOpen, empdata }) => {
 
     const closeModal = useCallback(() => {
         setOpen(false)
-    }, [])
+    }, [setOpen])
 
     const submitData = useCallback(async () => {
         const postData = {
@@ -41,7 +41,7 @@ const ObservationModal = ({ open, setOpen, empdata }) => {
             errorNofity(message)
             setOpen(false)
         }
-    }, [em_id, em_doj, LoginEmpID])
+    }, [em_id, em_doj, LoginEmpID, setOpen])
 
     return (
         <Modal
