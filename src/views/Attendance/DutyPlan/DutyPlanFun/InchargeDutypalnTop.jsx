@@ -27,12 +27,10 @@ import { getHolidayList } from 'src/redux/actions/LeaveProcess.action'
 import _ from 'underscore'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
-import { CssVarsProvider, Button, Tooltip } from '@mui/joy'
+import { Button } from '@mui/joy'
 import SaveIcon from '@mui/icons-material/Save';
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action'
-import DepartmentSection from 'src/views/LeaveManagement/LeavereRequsition/Func/DepartmentSection'
 import { format, startOfMonth } from 'date-fns'
 import { dutyPlanInitialState, dutyPlanInsertFun, dutyPlanReducer, getEmployeeDetlDutyPlanBased, planInitialState } from './DutyPlanFun'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
@@ -44,7 +42,7 @@ const InchargeDutypalnTop = () => {
     const { GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT, FETCH_EMP_DETAILS } = Actiontypes;
 
     const reduxDispatch = useDispatch()
-    const { FROM_DATE, TO_DATE, DEPT_NAME, DEPT_SEC_NAME } = planInitialState
+    const { FROM_DATE, TO_DATE, DEPT_NAME, } = planInitialState
 
     const setDepartment = (deptSlno) => dispatch({ type: DEPT_NAME, deptSlno })
 
@@ -188,7 +186,7 @@ const InchargeDutypalnTop = () => {
             }
         }
     }, [em_department, em_dept_section, GET_SHIFT_PLAN_DETL, GET_SHIFT_DATE_FORMAT, FETCH_EMP_DETAILS,
-        calanderMaxDate, commonSettings, deptShift, holidayList, planState, reduxDispatch, toDate,
+        calanderMaxDate, commonSettings, deptShift, holidayList, reduxDispatch, toDate,
         fromDate])
 
     return (
