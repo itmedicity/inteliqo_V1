@@ -102,7 +102,18 @@ const TrainingAndDevelopment = [
         name: 'HOD Approvals',
         to: '/Home/HODApprovals',
     },
-
+    {
+        men_slno: 295,
+        component: CNavItem,
+        name: 'Training Verification',
+        to: '/Home/TDVerification',
+    },
+    {
+        men_slno: 296,
+        component: CNavItem,
+        name: 'Topic & Question Master',
+        to: '/Home/TopicQuestionMaster',
+    },
 
 ]
 

@@ -35,6 +35,7 @@ const Induction_test_login = () => {
             slno: parseInt(slno)
         }
     }, [EmpId, Mob, topic_slno, slno])
+
     //api call
     const LogInData = useCallback(async () => {
         if (EmpId !== '' && Mob !== '' && topic_slno !== 0) {
@@ -49,6 +50,9 @@ const Induction_test_login = () => {
                 }
                 else {
                     warningNofity("Training Not scheduled")
+                    setData([])
+                    Setcount(0);
+                    SetView(0)
                 }
             }
             GetData(postdata)

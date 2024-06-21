@@ -14,6 +14,7 @@ import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import { TrainingTypeWiseTopics } from 'src/redux/actions/Training.Action';
 import InductionTopicTable from './InductionTopicTable';
 import moment from 'moment';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, count, setcount, msg, setmsg }) => {
 
@@ -23,6 +24,7 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
     const [selected, setselected] = useState([])
     const [maparr, setMaparr] = useState([])
     const [ScheduleDate, SetScheduleDate] = useState('')
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -47,7 +49,9 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
     }, [setOpen, setType, SetScheduleDate])
 
     useEffect(() => {
+        setOpenBkDrop(true)
         if (empselect?.length !== 0 && topicData?.length !== 0) {
+            setOpenBkDrop(false)
             const mapArry = topicData?.map((item) => {
                 const obj = {
                     "topic": item.training_topic_name,
@@ -137,6 +141,8 @@ const AddInductionTopics = ({ open, setOpen, empselect, type, setType, reset, co
 
     return (
         <Fragment>
+            <CustomBackDrop open={openBkDrop} text="Please wait !" />
+
             <Modal
                 aria-labelledby="modal-title"
                 aria-describedby="modal-desc"

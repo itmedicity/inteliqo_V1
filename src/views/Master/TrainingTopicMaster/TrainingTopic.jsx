@@ -1,8 +1,7 @@
-import { Button, CssVarsProvider, Input } from '@mui/joy'
-import { Box, Paper, TextField, FormControlLabel, Checkbox, IconButton, Typography, Tooltip } from '@mui/material'
+import { Button, Checkbox, Chip, Input, Sheet, Table } from '@mui/joy'
+import { Box, Paper, IconButton, Typography, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useEffect, useMemo } from 'react'
 import { ToastContainer } from 'react-toastify'
-import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import SaveIcon from '@mui/icons-material/Save';
 import { useState } from 'react'
 import { useCallback } from 'react'
@@ -11,26 +10,23 @@ import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Co
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import EditIcon from '@mui/icons-material/Edit';
-import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import SelectTrainingName from 'src/views/MuiComponents/SelectTrainingName'
-import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
 import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
 import CloseIcon from '@mui/icons-material/Close'
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
-import ShowFile from './ShowFile';
 import JoyTrainerMultipleSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainerMultipleSelect';
 import { TrainerNames } from 'src/redux/actions/Training.Action';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-
+import JoyDeptWiseTrainingNames from 'src/views/MuiComponents/JoyDeptWiseTrainingNames';
+import ShowFile from './ShowFile';
+import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const TrainingTopic = () => {
 
     const dispatch = useDispatch()
 
-    const [dept_status, set_dept_status] = useState(false);
-    const [depttype, setdepttype] = useState(0);
     const [training_topic_name, setTraining_topic_name] = useState('');
     const [training_status, setTraining_status] = useState(false);
     const [tutorial_status, setTutorial_status] = useState(false);
@@ -42,10 +38,9 @@ const TrainingTopic = () => {
     const [offline_status, setOffline_status] = useState(false);
     const [both_status, setBoth_status] = useState(false);
     const [count, setCount] = useState(0);
-    const [tableData, setTabledata] = useState(0);
+    const [tableData, setTabledata] = useState([]);
     const [topic_slno, setTopic_slno] = useState(0);
     const [flag, setFlag] = useState(0);
-    const [dept_flag, setdept_Flag] = useState(0);
     const [trainingname, setTrainingname] = useState(0);
     const [hours, setHours] = useState('');
     const [videos, SetVideos] = useState('');
@@ -58,10 +53,11 @@ const TrainingTopic = () => {
     const [trainers, setTrainers] = useState([])
     const [edit_trainers, setEdit_trainers] = useState(0);
     const [trainer_names, SetTrainerNames] = useState([]);
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_id } = employeeProfileDetl;
+    const { em_id, em_department } = employeeProfileDetl;
 
     useEffect(() => {
         dispatch(TrainerNames())
@@ -78,9 +74,6 @@ const TrainingTopic = () => {
         setPost_test_status(false);
         setTrainingname(0);
         setHours(0);
-        set_dept_status(false);
-        setdepttype(0);
-        setdept_Flag(false)
         set_Online_status(false)
         setOffline_status(false)
         setBoth_status(false)
@@ -90,25 +83,14 @@ const TrainingTopic = () => {
         SetVideo_time(0);
         setTrainers([])
         SetTrainerNames([])
+        setOpenBkDrop(false)
     }, [])
-    //check dept
-    const checkDepartment = useCallback((e) => {
-        if (e.target.checked === true) {
-            set_dept_status(e.target.checked)
-            setdept_Flag(1);
-        }
-        else {
-            set_dept_status(false)
-            setdept_Flag(0);
-            setdepttype(0);
-        }
-    }, [setdept_Flag, set_dept_status])
 
     //postdata
     const postdata = useMemo(() => {
         return {
-            dept_status: dept_status === true ? 1 : 0,
-            training_dept: depttype,
+            dept_status: 1,
+            training_dept: em_department,
             training_topic_name: training_topic_name,
             training_name: trainingname,
             training_status: training_status === true ? 1 : 0,
@@ -126,13 +108,13 @@ const TrainingTopic = () => {
             video_time: video_time,
             trainers: trainers
         }
-    }, [depttype, videos, trainers, video_time, dept_status, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
+    }, [em_department, videos, trainers, video_time, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
 
     //patchdata
     const patchdata = useMemo(() => {
         return {
-            dept_status: dept_status === true ? 1 : 0,
-            training_dept: depttype,
+            dept_status: 1,
+            training_dept: em_department,
             training_topic_name: training_topic_name,
             training_name: trainingname,
             training_status: training_status === true ? 1 : 0,
@@ -151,11 +133,12 @@ const TrainingTopic = () => {
             video_time: video_time,
             trainers: trainers
         }
-    }, [dept_status, videos, trainers, video_time, depttype, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
+    }, [em_department, videos, trainers, video_time, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
 
     //view
     useEffect(() => {
         const getData = async () => {
+            setOpenBkDrop(true)
             const result = await axioslogin.get('TrainingTopic/select')
             const { success, data } = result.data;
             if (success === 2) {
@@ -174,31 +157,25 @@ const TrainingTopic = () => {
                         training_status: val.training_status,
                         training: val.training_status === 0 ? "NO" : "YES",
                         tutorial_status: val.tutorial_status,
-                        tutorial: val.tutorial_status === 0 ? "NO" : "YES",
                         medical_status: val.medical_status,
-                        medical: val.medical_status === 0 ? "NO" : "YES",
                         non_medical_status: val.non_medical_status,
-                        non_medical: val.non_medical_status === 0 ? "NO" : "YES",
                         pretest_status: val.pretest_status,
-                        pretest: val.pretest_status === 0 ? "NO" : "YES",
                         post_test_status: val.post_test_status,
-                        post_test: val.post_test_status === 0 ? "NO" : "YES",
                         online_status: val.online_status,
-                        online: val.online_status === 0 ? "NO" : "YES",
                         offline_status: val.offline_status,
-                        offline: val.offline_status === 0 ? "NO" : "YES",
                         both_status: val.both_status,
-                        both: val.both_status === 0 ? "NO" : "YES",
-                        video_link: val.video_link === '' ? "Nill" : val.video_link,
+                        video_link: val.video_link,
                         video_time: val.video_time,
-                        upload_status: val.upload_status === 1 ? "YES" : "NO",
-                        trainers: val.trainers,
+                        upload_status: val.upload_status,
+                        trainerss: val.trainers,
                         trainers_name: val.trainers_name
                     }
                     return obj;
                 })
+                setOpenBkDrop(false)
                 setTabledata(viewData);
                 setCount(0)
+
             } else {
                 setTabledata([]);
             }
@@ -206,15 +183,22 @@ const TrainingTopic = () => {
         getData()
     }, [count])
 
-    //ClickEdit
-    const getDataTable = useCallback(async (params) => {
+
+    useEffect(() => {
+        if (uploads !== null) {
+            SetEditFlag(1)
+        }
+        else {
+            SetEditFlag(0)
+        }
+    }, [SetEditFlag, uploads])
+
+
+    const getDataTable = useCallback(async (rowData) => {
         setFlag(1);
-        const data = params.api.getSelectedRows()
-        const { topic_slno, video_link, trainers_name, video_time, dept_status, dept_id, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status } = data[0]
-        setFlag(1);
-        setdepttype(dept_id)
-        set_dept_status(dept_status === 0 ? false : true)
-        setdept_Flag(dept_status === 0 ? 0 : 1)
+        const {
+            topic_slno, video_link, trainers_name, video_time, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, trainerss
+        } = rowData;
         setTraining_topic_name(training_topic_name);
         setTraining_status(training_status === 1 ? true : false);
         setTutorial_status(tutorial_status === 1 ? true : false);
@@ -232,35 +216,80 @@ const TrainingTopic = () => {
         SetVideo_time(video_time);
         setUploads([])
         SetTrainerNames(trainers_name)
+        setTrainers(trainerss)
 
-        //View uploads 
+        // View uploads
         const postData = {
-            topic_slno: topic_slno
+            topic_slno: topic_slno,
+        };
+
+        try {
+            const response = await axioslogin.post('/Training_topic_uploads/selectuploads', postData);
+            const { success, data } = response.data;
+
+            if (success === 1) {
+                const fileUrls = data.map((filename) => {
+                    return `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
+                });
+
+                setUploads(fileUrls);
+            } else {
+                infoNofity("No File uploads");
+            }
+        } catch (error) {
+            console.error("Error fetching uploads:", error);
+            infoNofity("Failed to fetch file uploads");
         }
-        const response = await axioslogin.post('/Training_topic_uploads/selectuploads', postData)
-        const { success } = response.data
-        if (success === 1) {
-            const data = response.data;
-            const fileNames = data.data
-            const fileUrls = fileNames?.map((filename) => {
-                const url = `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
-                return setUploads(url);
-            });
-            return fileUrls
-        } else {
-            infoNofity("No File uploads")
-        }
-    }, [setUploads])
+    }, [setUploads]);
 
 
-    useEffect(() => {
-        if (uploads !== null) {
-            SetEditFlag(1)
+
+
+    const HandleTraining = useCallback((e) => {
+        if (e.target.checked === true) {
+            setTraining_status(e.target.checked)
+            setTutorial_status(false);
         }
         else {
-            SetEditFlag(0)
+            setTraining_status(false)
+            setTutorial_status(false);
         }
-    }, [SetEditFlag, uploads])
+    }, [setTraining_status, setTutorial_status])
+
+    const HandleTutorial = useCallback((e) => {
+        if (e.target.checked === true) {
+            setTutorial_status(e.target.checked)
+            setTraining_status(false);
+            setOffline_status(false)
+        }
+        else {
+            setTutorial_status(false);
+            setTraining_status(false)
+            setOffline_status(false)
+        }
+    }, [setTraining_status, setTutorial_status, setOffline_status])
+
+    const handleMedical = useCallback((e) => {
+        if (e.target.checked === true) {
+            setMedical_status(e.target.checked)
+            set_Non_medical_status(false);
+        }
+        else {
+            setMedical_status(false);
+            set_Non_medical_status(false)
+        }
+    }, [setMedical_status, set_Non_medical_status])
+
+    const handleNonMedical = useCallback((e) => {
+        if (e.target.checked === true) {
+            set_Non_medical_status(e.target.checked)
+            setMedical_status(false);
+        }
+        else {
+            set_Non_medical_status(false);
+            setMedical_status(false)
+        }
+    }, [setMedical_status, set_Non_medical_status])
 
     const HandleOnline = useCallback((e) => {
         if (e.target.checked === true) {
@@ -281,11 +310,13 @@ const TrainingTopic = () => {
             setOffline_status(e.target.checked)
             set_Online_status(false);
             setBoth_status(false);
+            setTutorial_status(false);
         }
         else {
             set_Online_status(false)
             setOffline_status(false);
             setBoth_status(false);
+            setTutorial_status(false);
         }
     }, [set_Online_status, setOffline_status, setBoth_status])
 
@@ -383,7 +414,7 @@ const TrainingTopic = () => {
                         if (selectFile.length !== 0) {
                             handleUpload(insetId);
                         } else {
-                            succesNofity("Question inserted successfully");
+                            succesNofity("inserted successfully");
                             reset();
                             setCount(count + 1);
                         }
@@ -404,117 +435,61 @@ const TrainingTopic = () => {
         setopen(true);
     }, [])
 
-    const [columnDef] = useState([
-        { headerName: 'Sl.No ', field: 'topic_slno', filter: true, minWidth: 90 },
-        { headerName: 'Department', field: 'deptstatus', filter: true, minWidth: 150 },
-        { headerName: 'Topic Name', field: 'training_topic_name', filter: true, minWidth: 250 },
-        { headerName: 'Training Name', field: 'training_name', filter: true, minWidth: 150 },
-        { headerName: 'Training ', field: 'training', filter: true, minWidth: 150 },
-        { headerName: 'Tutorial ', field: 'tutorial', filter: true, minWidth: 150 },
-        { headerName: 'Medical', field: 'medical', filter: true, minWidth: 150 },
-        { headerName: 'Non-Med', field: 'non_medical', filter: true, minWidth: 150 },
-        { headerName: 'Pre-Test ', field: 'pretest', filter: true, minWidth: 150 },
-        { headerName: 'Post-Test ', field: 'post_test', filter: true, minWidth: 150 },
-        { headerName: 'Online', field: 'online', filter: true, minWidth: 150 },
-        { headerName: 'Offline ', field: 'offline', filter: true, minWidth: 150 },
-        { headerName: 'Both ', field: 'both', filter: true, minWidth: 150 },
-        { headerName: 'Video  ', field: 'video_link', filter: true, minWidth: 300 },
-        { headerName: 'Video Time(m) ', field: 'video_time', filter: true, minWidth: 200 },
-        { headerName: 'Pdf  ', field: 'upload_status', filter: true, minWidth: 200 },
-        { headerName: 'Taraining Hours ', field: 'hours', filter: true, minWidth: 150 },
-        { headerName: 'Trainers ', field: 'trainers_name', filter: true, minWidth: 150 },
-        {
-            headerName: 'Edit', minWidth: 150, cellRenderer: params =>
-                < Fragment >
-                    <IconButton sx={{ paddingY: 0.5 }} onClick={() => getDataTable(params)}>
-                        <EditIcon color='primary' />
-                    </IconButton>
-                </Fragment >
-        }
-    ])
-
-
     const EditTrainers = useCallback(() => {
         setEdit_trainers(1)
     }, [setEdit_trainers])
 
     return (
-        <CustomSettingsLayout title="Training Topic Master" displayClose={true} >
-            <ToastContainer />
-            <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
-                <Paper sx={{ display: "flex", flexDirection: "column" }}>
-                    <Box sx={{ display: "flex", flexDirection: "row", p: 1, gap: 1 }}>
-                        <Box >
-
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="dept_status"
-                                        color="primary"
-                                        value={dept_status}
-                                        checked={dept_status}
-                                        className="ml-1"
-                                        onChange={(e) => checkDepartment(e)}
-                                    />
-                                }
-                                label="Departmental"
-                            />
-
-                        </Box>
-                        {
-                            dept_flag === 1 ?
-                                <Box sx={{ flex: 1 }}>
-                                    <DeptSelectByRedux value={depttype} setValue={setdepttype} />
-                                </Box>
-                                : null
-                        }
-                        <Box sx={{ flex: 1 }}>
-                            <SelectTrainingName value={trainingname} setValue={setTrainingname} />
-                        </Box>
-                        <Box sx={{ flex: 1 }}>
-                            <TextField
-                                fullWidth
-                                placeholder='Training Subject Name'
-                                id='training_topic_name'
-                                size="small"
-                                value={training_topic_name}
-                                name="training_topic_name"
-                                onChange={(e) => setTraining_topic_name(e.target.value)}
-                            />
-                        </Box>
-                        {edit_trainers === 1 ?
-                            <Tooltip title="Add Trainers">
-                                <Box sx={{ px: 0.3, flex: 1 }} >
-                                    <JoyTrainerMultipleSelect value={trainers} setValue={setTrainers} />
-                                </Box>
-                            </Tooltip>
-                            : null}
-
-                        {flag === 1 && edit_trainers === 0 ?
-                            <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-                                <JoyInput
-                                    type="text"
-                                    value={trainer_names}
-                                    disabled />
-                                <Tooltip title="Add new trainers">
-                                    <Button>
-                                        <PublishedWithChangesIcon onClick={EditTrainers} />
-                                    </Button>
-                                </Tooltip>
-
+        <Fragment>
+            <CustomBackDrop open={openBkDrop} text="Please wait !" />
+            <CustomSettingsLayout title="Training Topic Master" displayClose={true} >
+                <ToastContainer />
+                <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
+                    <Paper sx={{ display: "flex", flexDirection: "column" }}>
+                        <Box sx={{ display: "flex", flexDirection: "row", p: 1, gap: 1, flexWrap: "wrap" }}>
+                            <Box sx={{ flex: 1 }}>
+                                {/* <SelectTrainingName value={trainingname} setValue={setTrainingname} /> */}
+                                <JoyDeptWiseTrainingNames value={trainingname} setValue={setTrainingname} dept={em_department} />
                             </Box>
-                            :
-                            null
-                        }
-                        {flag === 0 && edit_trainers === 0 ?
-                            <Tooltip title="Add Trainers">
-                                <Box sx={{ px: 0.3, flex: 1 }} >
-                                    <JoyTrainerMultipleSelect value={trainers} setValue={setTrainers} />
+                            <Box sx={{ flex: 1 }}>
+                                <Input
+                                    value={training_topic_name}
+                                    placeholder="Enter the Topic Name"
+                                    onChange={(e) => setTraining_topic_name(e.target.value)}
+                                />
+                            </Box>
+                            {edit_trainers === 1 ?
+                                <Tooltip title="Add Trainers">
+                                    <Box sx={{ px: 0.3, flex: 1 }} >
+                                        <JoyTrainerMultipleSelect value={trainers} setValue={setTrainers} />
+                                    </Box>
+                                </Tooltip>
+                                : null}
+
+                            {flag === 1 && edit_trainers === 0 ?
+                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                    <JoyInput
+                                        type="text"
+                                        value={trainer_names}
+                                        disabled />
+                                    <Tooltip title="Add new trainers">
+                                        <Button>
+                                            <PublishedWithChangesIcon onClick={EditTrainers} />
+                                        </Button>
+                                    </Tooltip>
                                 </Box>
-                            </Tooltip>
-                            : null}
-                        <Box>
-                            <Box sx={{ display: "flex", flexDirection: "row" }}>
+                                :
+                                null
+                            }
+                            {flag === 0 && edit_trainers === 0 ?
+                                <Tooltip title="Add Trainers">
+                                    <Box sx={{ px: 0.3, flex: 1 }} >
+                                        <JoyTrainerMultipleSelect value={trainers} setValue={setTrainers} />
+                                    </Box>
+                                </Tooltip>
+                                : null}
+
+                            <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
                                 <Typography sx={{ mt: 1 }}>Training Hours :</Typography>
                                 <Input
                                     type="number"
@@ -529,259 +504,302 @@ const TrainingTopic = () => {
                                 />
                             </Box>
                         </Box>
-                    </Box>
 
-                    <Box sx={{ display: "flex", flexDirection: "row", p: 1, gap: 1 }}>
-                        <Box>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={training_status}
-                                        checked={training_status}
-                                        className="ml-1"
-                                        onChange={(e) => setTraining_status(e.target.checked)}
-                                    />
-                                }
-                                label="Training"
-                            />
+                        <Box sx={{ display: "flex", flexDirection: "row", p: 1, width: "70%", justifyContent: "space-between", flexWrap: "wrap" }}>
+                            <Box>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={training_status}
+                                    className="ml-1"
+                                    onChange={(e) => HandleTraining(e)}
+                                    label="Training"
+                                />
+                            </Box>
+                            <Box>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={tutorial_status}
+                                    className="ml-1"
+                                    onChange={(e) => HandleTutorial(e)}
+                                    label="Tutorial"
+                                />
+
+                            </Box>
+                            <Box>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={medical_status}
+                                    className="ml-1"
+                                    onChange={(e) => handleMedical(e)}
+                                    label="Medical"
+                                />
+                            </Box>
+                            <Box>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={non_medical_status}
+                                    className="ml-1"
+                                    onChange={(e) => handleNonMedical(e)}
+                                    label="Non Medical"
+                                />
+                            </Box>
+                            <Box>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={pretest_status}
+                                    className="ml-1"
+                                    onChange={(e) => setPretest_status(e.target.checked)}
+                                    label="Pre-Test"
+                                />
+                            </Box>
+                            <Box>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={post_test_status}
+                                    className="ml-1"
+                                    onChange={(e) => setPost_test_status(e.target.checked)}
+                                    label="Post-Test"
+                                />
+                            </Box>
+                            <Box>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={online_status}
+                                    className="ml-1"
+                                    onChange={(e) => HandleOnline(e)}
+                                    label="Online"
+                                />
+                            </Box>
+                            <Box>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={offline_status}
+                                    className="ml-1"
+                                    onChange={(e) => HandleOffline(e)}
+                                    label="Offline"
+                                />
+                            </Box>
+                            <Box>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={both_status}
+                                    className="ml-1"
+                                    onChange={(e) => HandleBoth(e)}
+                                    label="Both"
+                                />
+                            </Box>
                         </Box>
-                        <Box>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={tutorial_status}
-                                        checked={tutorial_status}
-                                        className="ml-1"
-                                        onChange={(e) => setTutorial_status(e.target.checked)}
-                                    />
-                                }
-                                label="Tutorial"
-                            />
-                        </Box>
-                        <Box>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={medical_status}
-                                        checked={medical_status}
-                                        className="ml-1"
-                                        onChange={(e) => setMedical_status(e.target.checked)}
-                                    />
-                                }
-                                label="Medical"
-                            />
-                        </Box>
-                        <Box>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={non_medical_status}
-                                        checked={non_medical_status}
-                                        className="ml-1"
-                                        onChange={(e) => set_Non_medical_status(e.target.checked)}
-                                    />
-                                }
-                                label="Non medical"
-                            />
-                        </Box>
-                        <Box>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={pretest_status}
-                                        checked={pretest_status}
-                                        className="ml-1"
-                                        onChange={(e) => setPretest_status(e.target.checked)}
-                                    />
-                                }
-                                label="Pre-Test"
-                            />
-                        </Box>
-                        <Box>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={post_test_status}
-                                        checked={post_test_status}
-                                        className="ml-1"
-                                        onChange={(e) => setPost_test_status(e.target.checked)}
-                                    />
-                                }
-                                label="Post-Test"
-                            />
-                        </Box>
-                        <Box>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={online_status}
-                                        checked={online_status}
-                                        className="ml-1"
-                                        onChange={(e) => HandleOnline(e)}
-                                    />
-                                }
-                                label="Online"
-                            />
-                        </Box>
-                        <Box>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={offline_status}
-                                        checked={offline_status}
-                                        className="ml-1"
-                                        onChange={(e) => HandleOffline(e)}
-                                    />
-                                }
-                                label="Offline"
-                            />
-                        </Box>
-                        <Box>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="status"
-                                        color="primary"
-                                        value={both_status}
-                                        checked={both_status}
-                                        className="ml-1"
-                                        onChange={(e) => HandleBoth(e)}
-                                    />
-                                }
-                                label="Both"
-                            />
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-                        {
-                            both_status === true || online_status === true ?
-                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-                                    <Box sx={{ p: 1, mt: -1 }}>
-                                        <JoyInput
-                                            type='text'
-                                            name='video link'
-                                            id='videos'
-                                            placeholder="Enter Video Link"
-                                            value={videos}
-                                            onchange={(e) => SetVideos(e)}
-                                        />
-                                    </Box>
+                        <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                            {
+                                both_status === true || online_status === true ?
                                     <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-                                        <Box>
-                                            <Typography sx={{ mt: 1 }}>Video Time :</Typography>
-                                        </Box>
-                                        <Box>
+                                        <Box sx={{ p: 1, mt: -1 }}>
                                             <Input
-                                                type="number"
-                                                value={video_time}
-                                                onChange={(e) => SetVideo_time(e.target.value)}
+                                                type='text'
+                                                value={videos}
+                                                placeholder="Enter Video Link"
+                                                onChange={(e) => SetVideos(e.target.value)}
                                             />
                                         </Box>
+                                        <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                            <Box>
+                                                <Typography sx={{ mt: 1 }}>Video Time :</Typography>
+                                            </Box>
+                                            <Box>
+                                                <Input
+                                                    type="number"
+                                                    value={video_time}
+                                                    onChange={(e) => SetVideo_time(e.target.value)}
+                                                />
+                                            </Box>
+                                            <Box>
+                                                <Typography sx={{ mt: 1 }}>Minutes</Typography>
+                                            </Box>
+                                        </Box>
                                         <Box>
-                                            <Typography sx={{ mt: 1 }}>Minutes</Typography>
+                                            {
+                                                both_status === true || online_status === true && flag === 0 ?
+                                                    <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                                                        <Box>
+                                                            <Tooltip title="Upload file">
+                                                                <IconButton variant="outlined" component="label">
+                                                                    <UploadFileIcon style={{ color: "#4682A9", fontSize: 30, border: 1, borderRadius: 10 }} />
+                                                                    <Input
+                                                                        id="file-input"
+                                                                        type="file"
+                                                                        accept=".jpg, .jpeg, .png, .pdf"
+                                                                        style={{ display: 'none' }}
+                                                                        onChange={uploadFile}
+                                                                    />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </Box>
+                                                        <Box>
+
+                                                            {
+                                                                selectFile && selectFile.map((val, index) => {
+                                                                    return <Box sx={{ display: "flex", flexDirection: "row", ml: 1, pt: 1 }}
+                                                                        key={index} >
+                                                                        <Box >{val.name}</Box>
+                                                                        <Box sx={{ ml: .3 }}><CloseIcon sx={{ height: '18px', width: '20px', cursor: 'pointer' }}
+                                                                            onClick={() => handleRemoveFile(index)}
+                                                                        /></Box>
+
+                                                                    </Box>
+                                                                }
+                                                                )}
+                                                        </Box>
+                                                    </Box>
+                                                    : null
+                                            }
                                         </Box>
                                     </Box>
-                                    <Box>
-                                        {
-                                            both_status === true || online_status === true && flag === 0 ?
-                                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-                                                    <Box>
-                                                        <Tooltip title="Upload file">
-                                                            <IconButton variant="outlined" component="label">
-                                                                <UploadFileIcon style={{ color: "#4682A9", fontSize: 30, border: 1, borderRadius: 10 }} />
-                                                                <Input
-                                                                    id="file-input"
-                                                                    type="file"
-                                                                    accept=".jpg, .jpeg, .png, .pdf"
-                                                                    style={{ display: 'none' }}
-                                                                    onChange={uploadFile}
-                                                                />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Box>
-                                                    <Box>
+                                    : null
+                            }
 
-                                                        {
-                                                            selectFile && selectFile.map((val, index) => {
-                                                                return <Box sx={{ display: "flex", flexDirection: "row", ml: 1, pt: 1 }}
-                                                                    key={index} >
-                                                                    <Box >{val.name}</Box>
-                                                                    <Box sx={{ ml: .3 }}><CloseIcon sx={{ height: '18px', width: '20px', cursor: 'pointer' }}
-                                                                        onClick={() => handleRemoveFile(index)}
-                                                                    /></Box>
-
-                                                                </Box>
-                                                            }
-                                                            )}
-                                                    </Box>
-                                                </Box>
-                                                : null
-                                        }
+                            {
+                                flag === 1 && editflag === 1 ?
+                                    <Box sx={{ mt: 1 }}>
+                                        <Tooltip title="View file">
+                                            <IconButton onClick={(e) => ShowFlies(e)}>
+                                                <TouchAppSharpIcon
+                                                    sx={{ color: "#3876BF" }} />
+                                            </IconButton>
+                                        </Tooltip>
                                     </Box>
-                                </Box>
-                                : null
-                        }
-
-                        {
-                            flag === 1 && editflag === 1 ?
-                                <Box sx={{ mt: 1 }}>
-                                    <Tooltip title="View file">
-                                        <IconButton onClick={(e) => ShowFlies(e)}>
-                                            <TouchAppSharpIcon
-                                                sx={{ color: "#3876BF" }} />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Box>
-                                : null
-                        }
-                        <Box sx={{ p: 1 }}>
-                            <CssVarsProvider>
-                                <Button
-                                    variant="outlined"
-                                    component="label"
-                                    size="md"
-                                    color="primary"
-                                    onClick={submitTrainingTopic}
-                                >
-                                    <SaveIcon />
-                                </Button>
-                            </CssVarsProvider>
+                                    : null
+                            }
+                            <Box sx={{ p: 1 }}>
+                                <Tooltip title="Save">
+                                    <Button
+                                        variant='outlined'
+                                        onClick={submitTrainingTopic}>
+                                        <SaveIcon />
+                                    </Button>
+                                </Tooltip>
+                            </Box>
                         </Box>
-                    </Box>
-                </Paper>
-                <ShowFile setopen={setopen} open={open} uploads={uploads} reset={reset} />
-                <Paper sx={{ width: "100%" }}>
-                    <CommonAgGrid
-                        columnDefs={columnDef}
-                        tableData={tableData}
-                        sx={{
-                            height: 500,
-                            width: "100%"
-                        }}
-                        rowHeight={30}
-                        headerHeight={30}
-                    />
-                </Paper>
-            </Box >
-        </CustomSettingsLayout >
+                    </Paper>
+                    <ShowFile setopen={setopen} open={open} uploads={uploads} reset={reset} />
+
+                    <Sheet sx={{
+                        overflow: 'auto',
+                        '::-webkit-scrollbar': { display: "none" }, height: 600,
+                        width: "100%"
+                    }}>
+                        <Table borderAxis='both' stickyHeader>
+                            <thead style={{ backgroundColor: "blue" }}>
+                                <tr>
+                                    <th style={{ backgroundColor: "#638889", color: "white", width: '5%', p: 1, textAlign: 'center' }}>Sl.No</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", width: "10%", textAlign: 'center' }}>Topic Name</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", width: "10%", textAlign: 'center' }}>TrainingName</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", width: "10%", textAlign: 'center' }}>Trainers</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Hours</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Training</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Tutorial</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Medical</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Non-Med</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Pre</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Post</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Online</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Offline</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Both</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Pdf</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Video</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Vdo Time</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Edit</th>
+                                </tr>
+                            </thead>
+
+                            <tbody >
+                                {tableData?.map((row, ndx) => (
+                                    <tr key={ndx} >
+                                        <td style={{ textAlign: "center" }}>{ndx + 1}</td>
+                                        <td style={{ textTransform: "capitalize", flex: 1 }}>
+                                            {row?.training_topic_name.toLowerCase()}</td>
+                                        <td>{row?.training_name.toLowerCase()}</td>
+                                        <td style={{ textTransform: "capitalize" }}>
+                                            {row?.trainers_name}</td>
+                                        <td style={{ textAlign: "center" }}>{row?.hours}</td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.training_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.training_status === 0 ? "No" : "Yes"}</Chip>
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.tutorial_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.tutorial_status === 0 ? "No" : "Yes"}
+                                            </Chip>
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.medical_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.medical_status === 0 ? "No" : "Yes"}
+                                            </Chip>
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.non_medical_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.non_medical_status === 0 ? "No" : "Yes"}</Chip>
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.pretest_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.pretest_status === 0 ? "No" : "Yes"}
+                                            </Chip>
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.post_test_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.post_test_status === 0 ? "No" : "Yes"}
+                                            </Chip>
+                                        </td>
+
+
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.online_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.online_status === 0 ? "No" : "Yes"}</Chip>
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.offline_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.offline_status === 0 ? "No" : "Yes"}
+                                            </Chip>
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.both_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.both_status === 0 ? "No" : "Yes"}
+                                            </Chip>
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <Chip sx={{ backgroundColor: row.upload_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                                {row?.upload_status === 0 ? "No" : "Yes"}
+                                            </Chip>
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>{row?.video_link === '' ? "Nill" : row?.video_link}</td>
+                                        <td style={{ textAlign: "center" }}>{row?.video_time}</td>
+                                        <td>
+                                            <IconButton sx={{ paddingY: 0.5 }} onClick={() => getDataTable(row)}>
+                                                <EditIcon sx={{ color: "#640D6B" }} />
+                                            </IconButton>
+                                        </td>
+                                    </tr>
+                                ))}
+
+                            </tbody>
+
+                        </Table>
+                    </Sheet>
+                </Box >
+            </CustomSettingsLayout>
+        </Fragment >
     )
 }
 
 export default memo(TrainingTopic)
+
+
 

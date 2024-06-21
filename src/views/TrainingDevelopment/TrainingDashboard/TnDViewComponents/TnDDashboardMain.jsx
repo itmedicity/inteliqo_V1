@@ -31,13 +31,11 @@ const TnDDashboardMain = () => {
 
     const [openmodal, setopenmodal] = useState(false)
     const [pendingmodal, Setpendingmodal] = useState(false)
-
     const [inductComplt, SetInductComplt] = useState(0)
     const [inductPndg, SetInductPndg] = useState(0)
     const [inductNext, SetInductNext] = useState(0)
     const [InductRetest, SetInductRetest] = useState(0)
     const [InductTotal, SetInductTotal] = useState(0)
-
     const [DeptComplt, SetDeptComplt] = useState(0)
     const [DeptPndg, SetDeptPndg] = useState(0)
     const [DeptNext, SetDeptNext] = useState(0)
@@ -51,7 +49,6 @@ const TnDDashboardMain = () => {
     const PendingEmpView = useCallback(() => {
         Setpendingmodal(true)
     }, [Setpendingmodal])
-
 
     const joinees = useSelector((state) => state?.gettrainingData?.newJoiners?.newJoinersList, _.isEqual);
 
@@ -74,7 +71,6 @@ const TnDDashboardMain = () => {
 
                                     <TrainingOverviewPage
                                         inductComplt={inductComplt} inductPndg={inductPndg} inductNext={inductNext} InductRetest={InductRetest} InductTotal={InductTotal} />
-
                                 </Box>
                                 <Box sx={{ mt: 2, width: "100%", display: "flex", gap: 3, flexWrap: "wrap" }}>
                                     <TrainingLineChart />
@@ -107,7 +103,6 @@ const TnDDashboardMain = () => {
                                                 </Box>
                                             </Box>
                                         </Box>
-
                                     </Paper>
                                 </Box>
                                 <Box sx={{ mt: 2, width: "100%", }}>
@@ -123,7 +118,6 @@ const TnDDashboardMain = () => {
                             </Box>
                         </Box >
             }
-
         </Fragment >
     )
 }

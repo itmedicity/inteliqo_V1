@@ -283,6 +283,9 @@ const SalaryProcessReports = React.lazy(() => import('./views/Attendance/SalaryP
 const CompensatoryRequest = React.lazy(() => import('./views/LeaveManagement/CompOffRequest/CompensatoryRequest'))
 const AttendenceReports = React.lazy(() => import('./views/HrReports/AttendenceReport/AttendenceReport'))
 const DayWiseAttendenceReports = React.lazy(() => import('./views/HrReports/DayWiseAttendence/DayWiseAttendence'))
+// const TDVerification = React.lazy(() => import('./views/TrainingDevelopment/TDVerification/TDVerificationMainPage'))
+const TDVerification = React.lazy(() => import('./views/TrainingDevelopment/TDVerification/TnDVerification'))
+const TopicQuestionMaster = React.lazy(() => import('./views/TrainingDevelopment/TrainingTopicQuestion/QuestionTopicMainPage'))
 const TrainingInductionCalender = React.lazy(() => import('./views/TrainingDevelopment/TrainingCalender/InductionCalenderFormat'))
 const OnObservationRequest = React.lazy(() => import('./views/LeaveManagement/OnObservation/OnobservationRequest'))
 const DutyplanforIncharge = React.lazy(() => import('./views/Attendance/DutyPlan/InchargeDutyplan'))
@@ -554,10 +557,13 @@ const routes = [
   { path: '/Home/CompensatoryRequest', exact: true, name: 'Compensatory Off Request', component: CompensatoryRequest },
   { path: '/Home/AttendenceReports', exact: true, name: 'Attendence Reports', component: AttendenceReports },
   { path: '/Home/DayWiseAttendence', exact: true, name: 'Day Wise Attendence Reports', component: DayWiseAttendenceReports },
+  { path: '/Home/TDVerification', exact: true, name: 'T and D Verification', component: TDVerification },
+  { path: '/Home/TopicQuestionMaster', exact: true, name: 'Topic Question Master', component: TopicQuestionMaster },
   { path: '/Home/TrainingInductionCalender', exact: true, name: 'Training Induction Calender', component: TrainingInductionCalender },
   { path: '/Home/OnObservationRequest', exact: true, name: 'On Observation Request', component: OnObservationRequest },
   { path: '/Home/DutyplanforIncharge', exact: true, name: 'Dutyplan for Incharge', component: DutyplanforIncharge },
   { path: '/Home/DutyplanReport', exact: true, name: 'Dutyplan Report', component: DutyplanReport },
+
 ]
 
 export default routes
