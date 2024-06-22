@@ -9,7 +9,6 @@ import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlin
 import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import { Box, Button, Sheet, Table, Typography } from '@mui/joy';
 import FeedbackPage from './FeedbackPage';
-import { QR_URL } from 'src/views/Constant/Static';
 
 const EmpHomepage = ({ data }) => {
 
@@ -108,7 +107,7 @@ const EmpHomepage = ({ data }) => {
     return (
         <Fragment>
             <ToastContainer />
-            <FeedbackPage open={open} Setopen={Setopen} modalData={modalData} SetmodalData={SetmodalData} SetFedbk_flag={SetFedbk_flag} /> :
+            <FeedbackPage fedbk_flag={fedbk_flag} open={open} Setopen={Setopen} modalData={modalData} SetmodalData={SetmodalData} SetFedbk_flag={SetFedbk_flag} /> :
             <Paper>
                 <Paper variant="outlined" sx={{
                     px: 1
@@ -131,7 +130,7 @@ const EmpHomepage = ({ data }) => {
                                     endDecorator={<PersonOutlinedIcon color='primary' />}
                                     sx={{ textTransform: 'capitalize', fontFamily: "serif", }}
                                 >
-                                    {em_name.toLowerCase()}
+                                    {em_name?.toLowerCase()}
                                 </Typography>
                             </Box>
                             <Box sx={{ display: 'flex', mt: 1 }} >
@@ -146,7 +145,7 @@ const EmpHomepage = ({ data }) => {
                                     }
                                     sx={{ textTransform: 'capitalize', fontFamily: "serif", }}
                                 >
-                                    {desg_name.toLowerCase()}
+                                    {desg_name?.toLowerCase()}
                                 </Typography>
                                 <Typography textColor="text.secondary"
                                     startDecorator={
@@ -160,7 +159,7 @@ const EmpHomepage = ({ data }) => {
                                     px={1}
                                     sx={{ textTransform: 'capitalize', fontFamily: "serif", }}
                                 >
-                                    {dept_name.toLowerCase()}
+                                    {dept_name?.toLowerCase()}
                                 </Typography>
                                 <Typography textColor="text.secondary"
                                     sx={{ fontFamily: "serif" }}
@@ -215,7 +214,7 @@ const EmpHomepage = ({ data }) => {
                                     <thead>
                                         <tr>
                                             <th>Topic</th>
-                                            <th style={{ textTransform: "capitalize", }}> {training_topic_name.toLowerCase()}</th>
+                                            <th style={{ textTransform: "capitalize", }}> {training_topic_name?.toLowerCase()}</th>
                                         </tr>
                                         <tr>
                                             <th>Pre-Test</th>
@@ -261,7 +260,7 @@ const EmpHomepage = ({ data }) => {
                                         <thead>
                                             <tr>
                                                 <th>Topic</th>
-                                                <th style={{ textTransform: "capitalize", }}> {training_topic_name.toLowerCase()}</th>
+                                                <th style={{ textTransform: "capitalize", }}> {training_topic_name?.toLowerCase()}</th>
                                             </tr>
                                             <tr>
                                                 <th>Pre-Test</th>
@@ -287,7 +286,7 @@ const EmpHomepage = ({ data }) => {
                                     </Table>
                                 </Sheet>
                                 {
-                                    fedbk_topic === 0 ?
+                                    fedbk_flag === 0 || fedbk_topic === 0 ?
 
                                         <Box sx={{ display: "flex", justifyContent: "center", mt: 2, }}>
                                             <Button sx={{ backgroundColor: "blue", color: "white", width: "80%" }} onClick={handleFeedback}>
