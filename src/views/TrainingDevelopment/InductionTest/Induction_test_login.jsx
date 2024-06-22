@@ -49,7 +49,7 @@ const Induction_test_login = () => {
                     reset();
                 }
                 else {
-                    warningNofity("Training Not scheduled")
+                    warningNofity("Training Not scheduled For this Employee")
                     setData([])
                     Setcount(0);
                     SetView(0)
