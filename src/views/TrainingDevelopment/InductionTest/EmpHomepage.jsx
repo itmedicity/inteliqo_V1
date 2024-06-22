@@ -9,6 +9,7 @@ import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlin
 import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import { Box, Button, Sheet, Table, Typography } from '@mui/joy';
 import FeedbackPage from './FeedbackPage';
+import { QR_URL } from 'src/views/Constant/Static';
 
 const EmpHomepage = ({ data }) => {
 
@@ -35,14 +36,15 @@ const EmpHomepage = ({ data }) => {
         retest: 0,
         schedule_no: 0,
         induct_detail_date: '',
-        trainers: []
+        trainers: [],
+        fedbk_topic: 0
     });
 
-    const { dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark, schedule_no } = Viewdata;
+    const { fedbk_topic, dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark, schedule_no } = Viewdata;
 
     const updateViewData = (data, setViewData) => {
         if (Object.keys(data).length !== 0) {
-            const { dept_name, desg_name, em_mobile, postmark, em_name, sect_name, training_topic_name, topic_slno, em_no, em_id, question_count, Emslno, pretest_status, posttest_status, online_mode, mark, offline_mode, training_status, schedule_no, induct_detail_date, trainers } = data[0];
+            const { fedbk_topic, dept_name, desg_name, em_mobile, postmark, em_name, sect_name, training_topic_name, topic_slno, em_no, em_id, question_count, Emslno, pretest_status, posttest_status, online_mode, mark, offline_mode, training_status, schedule_no, induct_detail_date, trainers } = data[0];
             const obj = {
                 dept_name: dept_name,
                 desg_name: desg_name,
@@ -68,7 +70,8 @@ const EmpHomepage = ({ data }) => {
                 retest: postmark < 2 ? 1 : 0,
                 schedule_no: schedule_no,
                 induct_detail_date: induct_detail_date,
-                trainers: trainers
+                trainers: trainers,
+                fedbk_topic: fedbk_topic
             }
             setViewData(obj);
         }
@@ -93,13 +96,8 @@ const EmpHomepage = ({ data }) => {
 
     //close the tab
     const GotoLogin = useCallback(() => {
-        if (topic_slno !== 0 && schedule_no !== 0) {
-            history.push(`/InductLogInpage/${topic_slno}/${schedule_no}`)
-        }
-        else {
-        }
+        history.push(`/InductLogInpage/${topic_slno}/${schedule_no}`)
     }, [history, topic_slno, schedule_no])
-
 
     const handleFeedback = useCallback(() => {
         Setopen(true)
@@ -288,7 +286,7 @@ const EmpHomepage = ({ data }) => {
                                     </Table>
                                 </Sheet>
                                 {
-                                    fedbk_flag === 0 ?
+                                    fedbk_topic === 0 ?
 
                                         <Box sx={{ display: "flex", justifyContent: "center", mt: 2, }}>
                                             <Button sx={{ backgroundColor: "blue", color: "white", width: "80%" }} onClick={handleFeedback}>
