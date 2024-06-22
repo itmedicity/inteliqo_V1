@@ -77,6 +77,7 @@ const EmpHomepage = ({ data }) => {
         }
     }
 
+
     useEffect(() => {
         updateViewData(data, setViewData);
     }, [data, setViewData]);
