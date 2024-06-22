@@ -8,12 +8,9 @@ import moment from 'moment';
 import React, { memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import { useMemo } from 'react';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useDispatch, useSelector } from 'react-redux';
-import _ from 'underscore';
-import { useHistory } from 'react-router-dom';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { setDepartment } from 'src/redux/actions/Department.action';
@@ -26,7 +23,7 @@ const isOdd = (number) => number % 2 !== 0
 
 const AllView = ({ em_id }) => {
 
-    const history = useHistory();
+    // const history = useHistory();
     const dispatch = useDispatch();
 
     // dispatch the department data
@@ -34,22 +31,16 @@ const AllView = ({ em_id }) => {
         dispatch(setDepartment());
     }, [dispatch])
 
-    const toRedirectToHome = () => {
-        history.push(`/Home`)
-    }
     const [value, setValue] = useState(moment(new Date()));
     const [dept, setDept] = useState(0)
     const [deptSection, setDeptSection] = useState(0)
-    const [dateArray, setDateArray] = useState([])
-    const [empArray, setEmpArray] = useState([])
 
     const [tableArray, settableArray] = useState([])
     const [daysNum, setdaysNum] = useState([])
     const [daysStr, setdaysStr] = useState([])
 
-    // get holiday 
-    const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
-    const holidayList = useMemo(() => holiday, [holiday]);
+    const state = useSelector((state) => state?.getCommonSettings)
+    const { salary_above } = state;
 
     const getData = async () => {
         if (deptSection === 0) {
@@ -61,7 +52,7 @@ const AllView = ({ em_id }) => {
             }
             const result = await axioslogin.post('/empmast/getEmpDet', getEmpData)
             const { success, data, } = result.data
-            // console.log(result.data)
+            //console.log(result.data)
             if (success === 1 && data?.length > 0) {
                 const arr = data && data?.map(val => val.em_no)
                 const postdata = {
@@ -69,7 +60,7 @@ const AllView = ({ em_id }) => {
                     from: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD'),
                     to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
                 }
-                let empData = data;
+                // let empData = data;
                 const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
                 // console.log(result.data)
                 const { success, data: punchMasteData } = result.data
@@ -82,13 +73,15 @@ const AllView = ({ em_id }) => {
                     // console.log(punchMasteData)
 
                     const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
+                        // console.log(el);
                         const empArray = punchMasteData?.filter(e => e.em_no === el)
                         let emName = empArray?.find(e => e.em_no === el).em_name;
                         let emNo = empArray?.find(e => e.em_no === el).em_no;
                         let emId = empArray?.find(e => e.em_no === el).emp_id;
+                        let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
 
                         // console.log(dateRange)
-                        // console.log(empArray)
+                        // console.log(grossSalary)
                         return {
                             em_no: el,
                             emName: emName,
@@ -112,18 +105,18 @@ const AllView = ({ em_id }) => {
                                 }
                             }),
                             totalDays: dateRange?.length,
-                            totalP: empArray?.filter(el => el.lvereq_desc === "P").length ?? 0,
+                            totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC").length ?? 0,
                             totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
                             totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF").length ?? 0,
-                            totalLC: empArray?.filter(el => el.duty_desc === "LC").length ?? 0,
-                            totalHD: empArray?.filter(el => el.lvereq_desc === "HD").length ?? 0,
+                            totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
+                            totalHD: empArray?.filter(el => el.lvereq_desc === "CHD" || el.lvereq_desc === "HD" || el.lvereq_desc === "EGHD").length ?? 0,
                             totalA: empArray?.filter(el => el.lvereq_desc === "A").length ?? 0,
-                            totalLV: empArray?.filter(el => el.lvereq_desc === "LV").length ?? 0,
-                            totalHDL: (empArray?.filter(el => el.lvereq_desc === "HDL").length ?? 0) * 1,
+                            totalLV: empArray?.filter(el => el.lvereq_desc === "COFF" || el.lvereq_desc === "CL" || el.lvereq_desc === "EL" || el.lvereq_desc === "SL").length ?? 0,
+                            totalHDL: (empArray?.filter(el => el.lvereq_desc === "HCL").length ?? 0) * 1,
                             totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
                             totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                             totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
-                            totaHP: (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2,
+                            totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.lvereq_desc === "H").length ?? 0),
                         }
                     })
                     settableArray(resultss)
@@ -166,6 +159,8 @@ const AllView = ({ em_id }) => {
         { lvename: 'ODP', color: 'success', desc: "On Duty Present" },
         { lvename: 'MPP', color: 'success', desc: "Miss Punch Request Present" },
         { lvename: 'HP', color: 'success', desc: "Holiday Present" },
+        { lvename: 'ML', color: 'danger', desc: "Maternity Leave" },
+        { lvename: 'LC', color: 'danger', desc: "Late Coming" },
     ]
 
     return (
@@ -278,6 +273,7 @@ const AllView = ({ em_id }) => {
                                     <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
                                     <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
                                     <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                    <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
                                 </tr>
                                 <tr>
                                     <th style={{ zIndex: 5, backgroundColor: '#b1b9c0' }}> Days </th>
@@ -297,6 +293,7 @@ const AllView = ({ em_id }) => {
                                     <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > LV</th>
                                     <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > A</th>
                                     <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > ESI</th>
+                                    <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > Calc. Days</th>
                                     <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > Days</th>
                                 </tr>
                             </thead>
@@ -340,6 +337,7 @@ const AllView = ({ em_id }) => {
                                             <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
                                             <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
                                             <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
                                         </tr>
                                         <tr>
                                             {row.punchMaster.map((val, ind) => (
@@ -369,6 +367,7 @@ const AllView = ({ em_id }) => {
                                             <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalLV + row.totalHDL}</td>
                                             <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaLWP + row.totalA}</td>
                                             <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaESI}</td>
+                                            <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalP + row.totalWOFF + row.totalNOFF + row.totalLV + (row.totalHD * 0.5) + row.totaHP}</td>
                                             <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalDays}</td>
                                         </tr>
                                     </Fragment>

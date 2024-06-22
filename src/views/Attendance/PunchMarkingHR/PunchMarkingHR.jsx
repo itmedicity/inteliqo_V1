@@ -1,5 +1,5 @@
 // MAIN PAGE PUNCH MARKING HR 
-import React, { Fragment, useState, memo, useCallback } from 'react'
+import React, { Fragment, useState, memo } from 'react'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,8 +13,8 @@ import { addDays, addMonths, endOfMonth, format, getMonth, getYear, lastDayOfMon
 import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
-import { useHistory } from 'react-router-dom'
-import _ from 'underscore'
+// import { useHistory } from 'react-router-dom'
+// import _ from 'underscore'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import Table from '@mui/joy/Table';
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
@@ -25,7 +25,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 const PunchMarkingHR = () => {
 
     const dispatch = useDispatch();
-    const history = useHistory()
+    //const history = useHistory()
 
     //DEFINE STATES
     const [deptList, setDeptList] = useState([]);
@@ -33,7 +33,7 @@ const PunchMarkingHR = () => {
     const [value, setValue] = useState(moment(new Date()));
     const [holidayList, setHolidayList] = useState([]);
     const [empSalary, setEmpSalary] = useState([]);
-    const [empList, setEmpList] = useState([]);
+    //  const [empList, setEmpList] = useState([]);
 
     //GET REDUX stored information using useSelector
     const commonSettings = useSelector((state) => state?.getCommonSettings)
@@ -46,7 +46,7 @@ const PunchMarkingHR = () => {
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
     // get login empid 
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0])
-    const { em_id, em_no } = empData
+    const { em_no } = empData
 
     const monthStart = format(startOfMonth(new Date(value)), 'yyyy-MM-dd');
     const actSelectDate = format(new Date(value), 'yyyy-MM-dd');
@@ -239,7 +239,7 @@ const PunchMarkingHR = () => {
                         // console.log(dta.section)
                         // CALCULATE THE LATE COMMING BASED ON LATES  START HERE
                         const punch_data = await axioslogin.post("/attendCal/getPunchReportLCCount/", postData_getPunchData); // added on 27/06/2024 10:00 PM (Ajith)
-                        const { success: lcSuccess, message: lcMessage, data: lcData } = punch_data.data;
+                        const { success: lcSuccess, data: lcData } = punch_data.data;
                         if (lcSuccess === 1 && lcData !== null && lcData !== undefined && lcData.length > 0) {
                             // console.log(lcData)
                             const filterEMNO = [...new Set(lcData?.map((e) => e.em_no))]
@@ -272,7 +272,7 @@ const PunchMarkingHR = () => {
                                 })
                                 ?.map((e) => e.punMasterArray)
                                 ?.flat()
-                                ?.filter((e) => e.lvereq_desc === 'HD')
+                                ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
                                 ?.map((e) => e.punch_slno)
 
                             // console.log(filterLcData)
@@ -352,7 +352,7 @@ const PunchMarkingHR = () => {
                 // UPDATE DUTY PLAN SLNO
                 const dutyPlanSlno = shiftdetail?.map((e) => e.plan_slno)
                 const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDelStatDutyPlanTable/", dutyPlanSlno);
-                const { susc, message } = updateDutyPlanTable.data;
+                const { susc } = updateDutyPlanTable.data;
                 // console.log(susc, message)
                 if (susc === 1) {
                     // UPDATE PUNCH_MARKING_HR TABLE
@@ -382,9 +382,9 @@ const PunchMarkingHR = () => {
         }
     }
 
-    const handleView = useCallback(() => {
-        history.push('/Home/PunchDoneList');
-    }, [history])
+    // const handleView = useCallback(() => {
+    //     history.push('/Home/PunchDoneList');
+    // }, [history])
 
 
     return (

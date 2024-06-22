@@ -5,23 +5,25 @@ import ModalClose from '@mui/joy/ModalClose';
 import Typography from '@mui/joy/Typography';
 import Sheet from '@mui/joy/Sheet';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import { Chip, Option, Select } from '@mui/joy';
-import { addDays, addHours, differenceInMinutes, format, formatDuration, intervalToDuration, isValid, subDays, subHours } from 'date-fns';
+import { addDays, addHours, format, isValid, subHours } from 'date-fns';
 import moment from 'moment';
-import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc';
 import { useCallback } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { Actiontypes } from 'src/redux/constants/action.type';
+// import { Actiontypes } from 'src/redux/constants/action.type';
 import { memo } from 'react';
 import EmailIcon from '@mui/icons-material/Email';
 import { getAttendanceCalculation, getLateInTimeIntervel } from '../PunchMarkingHR/punchMarkingHrFunc';
+import ReportIcon from '@mui/icons-material/Report';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }) => {
 
-    const dispatch = useDispatch()
-    const { UPDATE_PUNCHMASTER_TABLE } = Actiontypes
+    // const dispatch = useDispatch()
+    //const { UPDATE_PUNCHMASTER_TABLE } = Actiontypes
 
     const selectedDate = format(new Date(data?.duty_day), 'yyyy-MM-dd');
 
@@ -29,6 +31,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
     const [inTime, setInTime] = useState(null)
     const [outTime, setOutTime] = useState(null)
     const [message, setMessage] = useState(false)
+    const [disable, setDisable] = useState(false)
     // console.log(punchData)
     // console.log(data)
     // console.log(punchMast)
@@ -41,7 +44,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
     const commonSettings = useSelector((state) => state?.getCommonSettings)
 
     const {
-        cmmn_early_out, // Early going time interval
+        // cmmn_early_out, // Early going time interval
         cmmn_grace_period, // common grace period for late in time
         cmmn_late_in, //Maximum Late in Time for punch in after that direct HALF DAY 
         salary_above, //Salary limit for calculating the holiday double wages
@@ -122,7 +125,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
         const shift_out = new Date(shiftOut)
         const holidayStatus = data?.holiday_status;
         const shiftId = data?.shift_id
-
+        const leave_status = data?.leave_status
 
         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_In, punch_out, shift_out)
         // console.log(getLateInTime)
@@ -131,7 +134,11 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
         if (inTime === outTime) {
             setMessage(true)
             // console.log(data)
-        } else {
+        } else if (leave_status === 1) {
+            setDisable(true)
+        }
+        else {
+
             if (isValid(punch_In) === true && isValid(punch_out) === true) {
                 // console.log(data)
                 const getAttendance = await getAttendanceCalculation(
@@ -167,7 +174,32 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
             }
         }
 
-    }, [inTime, outTime, selectedDate, shiftIn, shiftOut, data, default_shift, notapplicable_shift, noff, week_off_day, salary_above, cmmn_late_in])
+    }, [inTime, outTime, shiftIn, shiftOut, data, default_shift, notapplicable_shift, noff,
+        week_off_day, salary_above, cmmn_late_in, cmmn_grace_period, setOpen, setTableArray])
+
+    const deletePunch = useCallback(async () => {
+        const postData = {
+            punch_in: null,
+            punch_out: null,
+            hrs_worked: 0,
+            late_in: 0,
+            early_out: 0,
+            duty_status: 0,
+            duty_desc: 'A',
+            lvereq_desc: 'A',
+            punch_slno: data?.punch_slno,
+        }
+        let result = await axioslogin.post("/attendCal/deletePunchMasterSingleRow", postData);
+        const { success } = result.data;
+        if (success === 1) {
+            setTableArray([])
+            succesNofity('Punch Data Cleared')
+            setOpen(false)
+        } else {
+            errorNofity('Punch Data Not Updated ! Contact HR/IT')
+            setOpen(false)
+        }
+    }, [data, setOpen, setTableArray])
 
     return (
         <Modal
@@ -201,7 +233,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
                     id="modal-title"
                     level="h5"
                     textColor="inherit"
-                    fontWeight="sm"
+                    fontWeight="md"
                     mb={1}
                 >
                     Punch In and Punch Out Time Marking On {moment(data.duty_day).format('DD-MM-YYYY')}
@@ -212,6 +244,21 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
                     color="danger"
                     startDecorator={<EmailIcon />}
                 >Both the Selected times are same</Chip>}
+                {disable && <Chip
+                    size="sm"
+                    variant="outlined"
+                    color="danger"
+                    startDecorator={<ReportIcon />}
+                >An approved Request is exist this Day!</Chip>}
+                <Box sx={{ display: 'flex', flex: 1, py: 1 }} >
+                    <Box sx={{ flex: 1 }} ><Typography textColor='danger.500'>Remove Existing Attendance</Typography></Box>
+                    <Box sx={{ flex: 1 }}>
+                        <Button color='danger' variant="outlined" onClick={deletePunch} size="sm">
+
+                            <DeleteIcon />
+                        </Button>
+                    </Box>
+                </Box>
                 <Box sx={{ display: 'flex', flex: 1, py: 1 }} >
                     <Box sx={{ display: 'flex', flex: 1, alignContent: 'center' }} ><Typography textColor="text.tertiary">Punch In Time</Typography></Box>
                     <Box sx={{ flex: 2 }} >
@@ -245,7 +292,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
                 <Box sx={{ display: 'flex', flex: 1, py: 1 }} >
                     <Box sx={{ flex: 2 }} ></Box>
                     <Box sx={{ flex: 1 }}>
-                        <Button fullWidth onClick={updatePunchInOutData} size="sm">Update</Button>
+                        <Button disabled={disable} fullWidth onClick={updatePunchInOutData} size="sm">Update</Button>
                     </Box>
                 </Box>
             </Sheet>

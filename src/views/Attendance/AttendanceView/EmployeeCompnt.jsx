@@ -1,6 +1,6 @@
 import React, { Fragment, memo, useMemo, useState } from 'react'
-import { Box, Grid, Paper, } from '@mui/material'
-import { Button, CssVarsProvider, Input, Sheet, Tooltip, Typography } from '@mui/joy';
+import { Box, Paper, } from '@mui/material'
+import { Button, CssVarsProvider, Input, Sheet, Tooltip, } from '@mui/joy';
 import Table from '@mui/joy/Table'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { ToastContainer } from 'react-toastify';
@@ -10,11 +10,12 @@ import { addMonths, eachDayOfInterval, endOfMonth, format, startOfMonth } from '
 import moment from 'moment';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { AttendanceViewFun } from './Functions';
-import { useSelector } from 'react-redux';
-import _ from 'underscore';
+// import { AttendanceViewFun } from './Functions';
+//import { useSelector } from 'react-redux';
+// import _ from 'underscore';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc';
 import LeaveDescription from './LeaveDescription';
+import { useSelector } from 'react-redux';
 
 const isOdd = (number) => number % 2 !== 0
 
@@ -22,15 +23,18 @@ const EmployeeCompnt = ({ em_no }) => {
 
     const empNo = useMemo(() => em_no, [em_no]);
     const [value, setValue] = useState(moment(new Date()));
-    const [mainArray, setMainArray] = useState([])
+    // const [mainArray, setMainArray] = useState([])
 
     const [tableArray, settableArray] = useState([])
     const [daysNum, setdaysNum] = useState([])
     const [daysStr, setdaysStr] = useState([])
 
     // get holiday 
-    const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
-    const holidayList = useMemo(() => holiday, [holiday]);
+    //const holiday = useSelector((state) => state.getHolidayList, _.isEqual);
+    // const holidayList = useMemo(() => holiday, [holiday]);
+
+    const state = useSelector((state) => state?.getCommonSettings)
+    const { salary_above } = state;
 
     const getData = async () => {
 
@@ -51,6 +55,7 @@ const EmployeeCompnt = ({ em_no }) => {
                 let emName = empArray?.find(e => e.em_no === el).em_name;
                 let emNo = empArray?.find(e => e.em_no === el).em_no;
                 let emId = empArray?.find(e => e.em_no === el).emp_id;
+                let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
 
                 // console.log(dateRange)
                 // console.log(empArray)
@@ -77,18 +82,19 @@ const EmployeeCompnt = ({ em_no }) => {
                         }
                     }),
                     totalDays: dateRange?.length,
-                    totalP: empArray?.filter(el => el.lvereq_desc === "P").length ?? 0,
+                    totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC").length ?? 0,
                     totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
                     totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF").length ?? 0,
-                    totalLC: empArray?.filter(el => el.duty_desc === "LC").length ?? 0,
-                    totalHD: empArray?.filter(el => el.lvereq_desc === "HD").length ?? 0,
+                    totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
+                    totalHD: empArray?.filter(el => el.lvereq_desc === "CHD" || el.lvereq_desc === "HD" || el.lvereq_desc === "EGHD").length ?? 0,
                     totalA: empArray?.filter(el => el.lvereq_desc === "A").length ?? 0,
-                    totalLV: empArray?.filter(el => el.lvereq_desc === "LV").length ?? 0,
-                    totalHDL: (empArray?.filter(el => el.lvereq_desc === "HDL").length ?? 0) * 1,
+                    totalLV: empArray?.filter(el => el.lvereq_desc === "COFF" || el.lvereq_desc === "CL" || el.lvereq_desc === "EL" || el.lvereq_desc === "SL").length ?? 0,
+                    totalHDL: (empArray?.filter(el => el.lvereq_desc === "HCL").length ?? 0) * 1,
                     totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
                     totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                     totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
-                    totaHP: (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2,
+                    totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.lvereq_desc === "H").length ?? 0),
+                    // totalCalcDay:
                 }
             })
             settableArray(resultss)
@@ -126,6 +132,8 @@ const EmployeeCompnt = ({ em_no }) => {
         { lvename: 'ODP', color: 'success', desc: "On Duty Present" },
         { lvename: 'MPP', color: 'success', desc: "Miss Punch Request Present" },
         { lvename: 'HP', color: 'success', desc: "Holiday Present" },
+        { lvename: 'ML', color: 'danger', desc: "Maternity Leave" },
+        { lvename: 'LC', color: 'danger', desc: "Late Coming" },
     ]
 
     return (
@@ -249,6 +257,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                         <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
                                         <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
                                         <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
+                                        <th style={{ width: 60, backgroundColor: '#f4f6f8' }} ></th>
                                     </tr>
                                     <tr>
                                         <th style={{ zIndex: 5, backgroundColor: '#b1b9c0' }}> Days </th>
@@ -268,6 +277,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                         <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > LV</th>
                                         <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > A</th>
                                         <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > ESI</th>
+                                        <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > Calc. Days</th>
                                         <th style={{ textAlign: 'center', backgroundColor: '#f4f6f8', color: '#635bff' }} > Days</th>
                                     </tr>
                                 </thead>
@@ -311,6 +321,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: 'lightgray' }}></td>
                                             </tr>
                                             <tr>
                                                 {row.punchMaster.map((val, ind) => (
@@ -337,9 +348,10 @@ const EmployeeCompnt = ({ em_no }) => {
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalWOFF + row.totalNOFF}</td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaH}</td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaHP}</td>
-                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalLV + row.totalHDL}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalLV}</td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaLWP + row.totalA}</td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaESI}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalP + row.totalWOFF + row.totalNOFF + row.totalLV + (row.totalHD * 0.5) + row.totaHP}</td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalDays}</td>
                                             </tr>
                                         </Fragment>

@@ -39,19 +39,34 @@ const LeaveTableContainer = ({ count, setCount }) => {
                     const postData = {
                         sectIds: section
                     }
-                    dispatch(getSectionLeaveRequest(postData))
-                    dispatch(getSectionHaldayRequest(postData))
-                    dispatch(getSectionMisspunchRequest(postData))
-                    setCount(0)
+                    if (postData?.sectIds?.length > 0) {
+                        dispatch(getSectionLeaveRequest(postData))
+                        dispatch(getSectionHaldayRequest(postData))
+                        dispatch(getSectionMisspunchRequest(postData))
+                        setCount(0)
+                    } else {
+                        dispatch(getSectionLeaveRequest([]))
+                        dispatch(getSectionHaldayRequest([]))
+                        dispatch(getSectionMisspunchRequest([]))
+                        setCount(0)
+                    }
+
                 } else {
                     const sectArray = [...section, em_dept_section]
                     const postData = {
                         sectIds: sectArray
                     }
-                    dispatch(getSectionLeaveRequest(postData))
-                    dispatch(getSectionHaldayRequest(postData))
-                    dispatch(getSectionMisspunchRequest(postData))
-                    setCount(0)
+                    if (postData?.sectIds?.length > 0) {
+                        dispatch(getSectionLeaveRequest(postData))
+                        dispatch(getSectionHaldayRequest(postData))
+                        dispatch(getSectionMisspunchRequest(postData))
+                        setCount(0)
+                    } else {
+                        dispatch(getSectionLeaveRequest([]))
+                        dispatch(getSectionHaldayRequest([]))
+                        dispatch(getSectionMisspunchRequest([]))
+                        setCount(0)
+                    }
                 }
             }
             fetchData(em_id)
@@ -67,18 +82,32 @@ const LeaveTableContainer = ({ count, setCount }) => {
                     const postData = {
                         sectIds: sectArray
                     }
-                    dispatch(getSectionLeaveRequest(postData))
-                    dispatch(getSectionHaldayRequest(postData))
-                    dispatch(getSectionMisspunchRequest(postData))
-                    setCount(0)
+                    if (postData?.sectIds?.length > 0) {
+                        dispatch(getSectionLeaveRequest(postData))
+                        dispatch(getSectionHaldayRequest(postData))
+                        dispatch(getSectionMisspunchRequest(postData))
+                        setCount(0)
+                    } else {
+                        dispatch(getSectionLeaveRequest([]))
+                        dispatch(getSectionHaldayRequest([]))
+                        dispatch(getSectionMisspunchRequest([]))
+                        setCount(0)
+                    }
                 } else {
                     const postData = {
                         sectIds: section
                     }
-                    dispatch(getSectionLeaveRequest(postData))
-                    dispatch(getSectionHaldayRequest(postData))
-                    dispatch(getSectionMisspunchRequest(postData))
-                    setCount(0)
+                    if (postData?.sectIds?.length > 0) {
+                        dispatch(getSectionLeaveRequest(postData))
+                        dispatch(getSectionHaldayRequest(postData))
+                        dispatch(getSectionMisspunchRequest(postData))
+                        setCount(0)
+                    } else {
+                        dispatch(getSectionLeaveRequest([]))
+                        dispatch(getSectionHaldayRequest([]))
+                        dispatch(getSectionMisspunchRequest([]))
+                        setCount(0)
+                    }
                 }
             }
             fetchData(em_id)

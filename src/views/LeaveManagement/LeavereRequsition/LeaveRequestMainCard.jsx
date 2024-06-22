@@ -99,13 +99,11 @@ const LeaveRequestMainCard = () => {
                     </Box>
                 }>
                     <LeaveRequestEmployeeSelection setRequestType={setRequestType} />
-                    {/* <LeaveRequestFormNew /> */}
                     {
                         requestType === 1 ? <LeaveRequestFormNew setRequestType={setRequestType} /> :
                             // requestType === 1 ? <LeaveRequestFormPage em_id={{}} /> : 
                             requestType === 2 ? <HalfDayLeaveRequest setRequestType={setRequestType} setCount={setCount} /> :
                                 requestType === 3 ? <MissPunchRequest setRequestType={setRequestType} setCount={setCount} /> : null
-                        // requestType === 4 ? <CompansatoryOffMast setRequestType={setRequestType} /> 
                     }
                 </Suspense>
                 <LeaveTableContainer count={count} setCount={setCount} />

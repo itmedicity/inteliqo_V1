@@ -48,6 +48,7 @@ const ContractRenewalProcess = () => {
   const [fine, setFine] = useState(0)
   //const [contractstart, setContractStart] = useState('')
   const [graceperiod, setgraceperiod] = useState(0)
+  const [punchslno, setPunchSlno] = useState([])
 
 
   //getting data to save
@@ -126,36 +127,56 @@ const ContractRenewalProcess = () => {
 
 
   useEffect(() => {
-    const dutyplandata = async (id) => {
-      const postdata = {
-        em_no: id,
-        from: contstatus === 1 && contractrenew === true ? moment(new Date(contractStartDate)).format('YYYY-MM-DD') : moment(new Date(permanetDOJ)).format('YYYY-MM-DD'),
-        to: moment(lastDayOfMonth(new Date(contractStartDate))).format('YYYY-MM-DD')
-      }
 
-      const getDutyplan = {
-        emp_id: no,
-        start_date: contstatus === 1 && contractrenew === true ? moment(new Date(contractStartDate)).format('YYYY-MM-DD') : moment(new Date(permanetDOJ)).format('YYYY-MM-DD'),
-        end_date: moment(lastDayOfMonth(new Date(contractStartDate))).format('YYYY-MM-DD')
-      }
-      const insertDutyPlainIntDB = await axioslogin.post("/plan", getDutyplan)
+    const getDutyplan = {
+      emp_id: no,
+      start_date: contstatus === 1 && contractrenew === true ? moment(new Date(contractStartDate)).format('YYYY-MM-DD') : moment(new Date(permanetDOJ)).format('YYYY-MM-DD'),
+      end_date: moment(lastDayOfMonth(new Date(contractStartDate))).format('YYYY-MM-DD')
+    }
+
+    const postdata = {
+      em_no: id,
+      from: contstatus === 1 && contractrenew === true ? moment(new Date(contractStartDate)).format('YYYY-MM-DD') : moment(new Date(permanetDOJ)).format('YYYY-MM-DD'),
+      to: moment(lastDayOfMonth(new Date(contractStartDate))).format('YYYY-MM-DD')
+    }
+
+    const dutyplandata = async (getDutyplan) => {
+      const insertDutyPlainIntDB = await axioslogin.post("/plan/getplan", getDutyplan)
       const { success } = insertDutyPlainIntDB.data;
       if (success === 1) {
-        const planslno = insertDutyPlainIntDB.data.data?.map(val => val.plan_slno)
+        const planslno = insertDutyPlainIntDB.data.dta?.map(val => val.plan_slno)
         setDutyplanData(planslno)
-        const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
-        const { success, data } = result.data
-        if (success === 1) {
-          const punchslno = data?.map(val => val.punch_slno)
-          setPunchMast(punchslno)
-        } else {
-          setPunchMast([])
-        }
       } else {
         setDutyplanData([])
       }
     }
-    dutyplandata(id)
+    dutyplandata(getDutyplan)
+
+    const getPunchMasterData = async (getDutyplan) => {
+      const result = await axioslogin.post("/payrollprocess/getPunchmastAboveSelectedDate", getDutyplan);
+      const { success, data } = result.data
+      if (success === 1) {
+        const punchslno = data?.map(val => val.punch_slno)
+        setPunchMast(punchslno)
+      } else {
+        setPunchMast([])
+      }
+    }
+
+    getPunchMasterData(getDutyplan)
+
+    const getPunch = async (postdata) => {
+      const result = await axioslogin.post("/payrollprocess/getPunchAboveSelectedDate", postdata);
+      const { success, data } = result.data
+      if (success === 1) {
+        const punchslno = data?.map(val => val.slno)
+        setPunchSlno(punchslno)
+      } else {
+        setPunchSlno([])
+      }
+    }
+
+    getPunch(postdata)
 
   }, [id, no, contstatus, contractrenew, contractStartDate, newempId, permanentEmpNo, permanetDOJ])
 
@@ -167,7 +188,7 @@ const ContractRenewalProcess = () => {
         const { emp_slno } = data
         setUpdateSlno(emp_slno)
       } else {
-        setUpdateSlno(0)
+        setUpdateSlno([])
       }
     }
     getLoginDetails(id)
@@ -196,6 +217,7 @@ const ContractRenewalProcess = () => {
       create_user: employeeNumber(),
       dutyplanData: dutyplanData,
       punchmast: punchmast,
+      punchslno: punchslno,
       old_emno: id,
       old_cate: oldCategory,
       old_doj: doj,
@@ -205,7 +227,7 @@ const ContractRenewalProcess = () => {
     }
   }, [contstatus, contractrenew, newempId, permanentEmpNo, newCatgeory, permanetDOJ, newDesign,
     updateSlno, no, doj, email, contractEnddate, contractStartDate, dutyplanData,
-    punchmast, id, oldCategory, contractend, oldContarctStatus, oldDesignation])
+    punchmast, id, oldCategory, contractend, oldContarctStatus, oldDesignation, punchslno])
 
   //function for saving new contract
   const RenewOldContract = useCallback(async (e) => {
@@ -232,6 +254,7 @@ const ContractRenewalProcess = () => {
         warningNofity("Employee ID Already Exist")
       }
       else {
+
         const result = await axioslogin.patch('/empcontract/update/contract', updateempMast)
         const { success, message } = result.data
         if (success === 1) {

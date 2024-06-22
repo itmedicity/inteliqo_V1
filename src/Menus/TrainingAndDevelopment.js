@@ -66,6 +66,13 @@ const TrainingAndDevelopment = [
         to: '/Home/InductionCalender',
     },
     {
+        men_slno: 288,
+        component: CNavItem,
+        name: 'Training Calender',
+        to: '/Home/TrainingInductionCalender',
+    },
+
+    {
         men_slno: 274,
         component: CNavItem,
         name: 'Induction Online Test',
