@@ -725,57 +725,57 @@ const TrainingTopic = () => {
                                     <tr key={ndx} >
                                         <td style={{ textAlign: "center" }}>{ndx + 1}</td>
                                         <td style={{ textTransform: "capitalize", flex: 1 }}>
-                                            {row?.training_topic_name.toLowerCase()}</td>
-                                        <td>{row?.training_name.toLowerCase()}</td>
+                                            {row?.training_topic_name?.toLowerCase()}</td>
+                                        <td>{row?.training_name?.toLowerCase()}</td>
                                         <td style={{ textTransform: "capitalize" }}>
                                             {row?.trainers_name}</td>
                                         <td style={{ textAlign: "center" }}>{row?.hours}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.training_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.training_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.training_status === 0 ? "No" : "Yes"}</Chip>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.tutorial_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.tutorial_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.tutorial_status === 0 ? "No" : "Yes"}
                                             </Chip>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.medical_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.medical_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.medical_status === 0 ? "No" : "Yes"}
                                             </Chip>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.non_medical_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.non_medical_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.non_medical_status === 0 ? "No" : "Yes"}</Chip>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.pretest_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.pretest_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.pretest_status === 0 ? "No" : "Yes"}
                                             </Chip>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.post_test_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.post_test_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.post_test_status === 0 ? "No" : "Yes"}
                                             </Chip>
                                         </td>
 
 
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.online_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.online_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.online_status === 0 ? "No" : "Yes"}</Chip>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.offline_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.offline_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.offline_status === 0 ? "No" : "Yes"}
                                             </Chip>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.both_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.both_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.both_status === 0 ? "No" : "Yes"}
                                             </Chip>
                                         </td>
                                         <td style={{ textAlign: "center" }}>
-                                            <Chip sx={{ backgroundColor: row.upload_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
+                                            <Chip sx={{ backgroundColor: row?.upload_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.upload_status === 0 ? "No" : "Yes"}
                                             </Chip>
                                         </td>

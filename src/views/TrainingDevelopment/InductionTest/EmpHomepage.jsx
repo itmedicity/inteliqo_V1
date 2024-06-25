@@ -1,6 +1,5 @@
 import { Paper } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { ToastContainer } from 'react-toastify';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import NumbersOutlinedIcon from '@mui/icons-material/NumbersOutlined';
@@ -8,13 +7,9 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import { Box, Button, Sheet, Table, Typography } from '@mui/joy';
-import FeedbackPage from './FeedbackPage';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-const EmpHomepage = ({ data }) => {
-
-    const [open, Setopen] = useState(false)
-    const [modalData, SetmodalData] = useState([])
-    const [fedbk_flag, SetFedbk_flag] = useState(0)
+const EmpHomepage = ({ data, SetView }) => {
 
     const history = useHistory()
 
@@ -33,13 +28,13 @@ const EmpHomepage = ({ data }) => {
         mark: 0,
         postmark: 0,
         retest: 0,
-        schedule_no: 0,
+        slno: 0,
         induct_detail_date: '',
         trainers: [],
         fedbk_topic: 0
     });
 
-    const { fedbk_topic, dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark, schedule_no } = Viewdata;
+    const { dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark, slno } = Viewdata;
 
     const updateViewData = (data, setViewData) => {
         if (Object.keys(data).length !== 0) {
@@ -67,7 +62,7 @@ const EmpHomepage = ({ data }) => {
                 postmark: postmark === null ? "Not attend" : postmark,
                 mark: mark,
                 retest: postmark < 2 ? 1 : 0,
-                schedule_no: schedule_no,
+                slno: schedule_no,
                 induct_detail_date: induct_detail_date,
                 trainers: trainers,
                 fedbk_topic: fedbk_topic
@@ -96,18 +91,19 @@ const EmpHomepage = ({ data }) => {
 
     //close the tab
     const GotoLogin = useCallback(() => {
-        history.push(`/InductLogInpage/${topic_slno}/${schedule_no}`)
-    }, [history, topic_slno, schedule_no])
-
-    const handleFeedback = useCallback(() => {
-        Setopen(true)
-        SetmodalData(data)
-    }, [Setopen, SetmodalData, data])
+        if (topic_slno !== 0 && slno !== 0) {
+            SetView(0)
+            history.push(`/InductLogInpage/${topic_slno}/${slno}`)
+        }
+        else {
+            SetView(0)
+            history.push(`/InductLogInpage/${topic_slno}/${slno}`)
+        }
+    }, [history, SetView, topic_slno, slno])
 
     return (
         <Fragment>
             <ToastContainer />
-            <FeedbackPage fedbk_flag={fedbk_flag} open={open} Setopen={Setopen} modalData={modalData} SetmodalData={SetmodalData} SetFedbk_flag={SetFedbk_flag} /> :
             <Paper>
                 <Paper variant="outlined" sx={{
                     px: 1
@@ -285,21 +281,12 @@ const EmpHomepage = ({ data }) => {
                                         </thead>
                                     </Table>
                                 </Sheet>
-                                {
-                                    fedbk_flag === 0 || fedbk_topic === 0 ?
 
-                                        <Box sx={{ display: "flex", justifyContent: "center", mt: 2, }}>
-                                            <Button sx={{ backgroundColor: "blue", color: "white", width: "80%" }} onClick={handleFeedback}>
-                                                Drop your feedback
-                                            </Button>
-                                        </Box>
-                                        :
-                                        <Box sx={{ display: "flex", justifyContent: "center", mt: 2, }}>
-                                            <Button sx={{ backgroundColor: "blue", color: "white", width: "80%" }} onClick={GotoLogin}>
-                                                Close the Window
-                                            </Button>
-                                        </Box>
-                                }
+                                <Box sx={{ display: "flex", justifyContent: "center", mt: 2, }}>
+                                    <Button sx={{ backgroundColor: "blue", color: "white", width: "80%" }} onClick={GotoLogin}>
+                                        Close the Window
+                                    </Button>
+                                </Box>
 
                                 {retest === 1 ?
                                     <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 2 }}>

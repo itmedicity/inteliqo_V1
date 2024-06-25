@@ -5,8 +5,8 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import TnDDashboardMain from './TnDDashboardMain';
-import InductionCalender from '../../InductionTrainingCalender/InductionCalender';
 import DepartmentalCalender from '../../EmployeeRights/DepartmentalCalender';
+import InductionCalenderFormat from '../../TrainingCalender/InductionCalenderFormat';
 
 const TndDashboardView = () => {
     return (
@@ -34,23 +34,20 @@ const TndDashboardView = () => {
                 </TabList>
                 <TabPanel value={0}  >
                     <TnDDashboardMain />
-
                 </TabPanel>
                 <TabPanel value={1}  >
                     <Box sx={{
                         width: "100%", overflowX: 'auto',
                         '::-webkit-scrollbar': { display: "none" }
                     }}>
-                        <InductionCalender />
+                        <InductionCalenderFormat />
                     </Box>
-
                 </TabPanel>
                 <TabPanel value={2}>
                     <DepartmentalCalender />
                 </TabPanel>
             </Tabs>
         </Box>
-
     )
 }
 

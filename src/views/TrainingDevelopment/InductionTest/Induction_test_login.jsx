@@ -35,14 +35,13 @@ const Induction_test_login = () => {
             slno: parseInt(slno)
         }
     }, [EmpId, Mob, topic_slno, slno])
-
     //api call
     const LogInData = useCallback(async () => {
         if (EmpId !== '' && Mob !== '' && topic_slno !== 0) {
             const GetData = async () => {
                 const result = await axioslogin.post('/InductionTest/inductlogEmpDetails', postdata)
                 const { data } = result.data
-                if (data.length > 0) {
+                if (data?.length > 0) {
                     setData(data)
                     Setcount(count + 1);
                     SetView(1)
@@ -106,7 +105,7 @@ const Induction_test_login = () => {
                             </Box>
                         </Box>
                     </Paper>
-                    : <EmpHomepage data={data} />
+                    : <EmpHomepage data={data} SetView={SetView} />
             }
 
         </Fragment >

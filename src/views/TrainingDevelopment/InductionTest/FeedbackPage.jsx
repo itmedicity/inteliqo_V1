@@ -1,15 +1,27 @@
-import { Box, Button, IconButton, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
-import { Paper } from '@mui/material'
-import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
+import { Box, Button, IconButton, Sheet, Table, Textarea, Typography } from '@mui/joy'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import TagFacesIcon from '@mui/icons-material/TagFaces';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
+import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { ToastContainer } from 'react-toastify';
+import { Paper } from '@mui/material';
+import NumbersOutlinedIcon from '@mui/icons-material/NumbersOutlined';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 
-const FeedbackPage = ({ open, Setopen, modalData, SetmodalData, SetFedbk_flag }) => {
+const FeedbackPage = () => {
+
+    const [data, SetData] = useState([])
+    const [ViewFedbk, SetViewFedbk] = useState(0)
+
+    const { topic_no, schedule_no, EmId } = useParams()
+    const history = useHistory()
 
     const [feedback, SetFeedback] = useState('');
 
@@ -20,29 +32,80 @@ const FeedbackPage = ({ open, Setopen, modalData, SetmodalData, SetFedbk_flag })
         q4: 0,
     })
 
-    const [data, setData] = useState({
+    const PostData = useMemo(() => {
+        return {
+            topic_no: topic_no,
+            schedule_no: schedule_no,
+            EmId: EmId,
+        }
+    }, [topic_no, schedule_no, EmId])
+
+    useEffect(() => {
+        const GetData = async (PostData) => {
+            const result = await axioslogin.post('/InductionTest/GetEmpDetails_for_feedback', PostData)
+            const { success, data } = result.data
+            if (success === 2) {
+                SetData(data)
+            }
+
+            else {
+                SetData([])
+            }
+        }
+        GetData(PostData)
+
+    }, [PostData])
+
+    const [datas, setDatas] = useState({
         topic_slno: 0,
-        schedule_no: 0,
+        schedule_Slno: 0,
         induct_detail_date: '',
         trainers: [],
         em_id: 0,
+        question_count: 0,
+        pretest_status: 0,
+        posttest_status: 0,
+        online_mode: 0,
+        offline_mode: 0,
+        retest: 0,
+        training_topic_name: 0,
+        pretest_mark: 0,
+        post_mark: 0,
+        em_no: 0,
+        em_name: '',
+        dept_name: '',
+        desg_name: ''
     });
 
-    const { topic_slno, schedule_no, induct_detail_date, trainers, em_id } = data;
+    const { induct_detail_date, trainers, question_count, pretest_status, posttest_status, online_mode, offline_mode, training_topic_name, pretest_mark, post_mark, retest, em_no, em_name, dept_name, desg_name } = datas;
 
     useEffect(() => {
-        if (Object.keys(modalData).length !== 0) {
-            const { topic_slno, schedule_no, induct_detail_date, trainers, em_id } = modalData[0];
+        if (Object.keys(data).length !== 0) {
+            const { topic_slno, schedule_no, induct_detail_date, trainers, em_id, question_count, pretest_status, posttest_status, online_mode, offline_mode, retest, training_topic_name, pretest_mark, post_mark, em_no, em_name, dept_name, desg_name } = data[0];
             const obj = {
                 topic_slno: topic_slno,
-                schedule_no: schedule_no,
+                schedule_Slno: schedule_no,
                 induct_detail_date: induct_detail_date,
                 trainers: trainers,
                 em_id: em_id,
+                question_count: parseInt(question_count),
+                pretest_status: pretest_status,
+                posttest_status: posttest_status,
+                online_mode: online_mode,
+                offline_mode: offline_mode,
+                retest: retest,
+                training_topic_name: training_topic_name,
+                pretest_mark: pretest_mark,
+                post_mark: post_mark,
+                em_no: em_no,
+                em_name: em_name,
+                dept_name: dept_name,
+                desg_name: desg_name
+
             }
-            setData(obj);
+            setDatas(obj);
         }
-    }, [modalData, setData])
+    }, [data])
 
     const HandleSelection1 = (e, questionNumber) => {
 
@@ -80,63 +143,164 @@ const FeedbackPage = ({ open, Setopen, modalData, SetmodalData, SetFedbk_flag })
             q4: value === 1 ? 1 : value === 2 ? 2 : value === 3 ? 3 : value === 4 ? 4 : value === 5 ? 5 : 0,
         });
     };
-
-    const handleClose = useCallback(() => {
-        Setopen(false);
-        SetmodalData([])
-    }, [Setopen, SetmodalData]);
+    const GoFeedback = useCallback(() => {
+        SetViewFedbk(1)
+    }, [SetViewFedbk])
 
     const handleSubmit = useCallback(async () => {
         const obj = {
-            em_id: em_id,
-            topic: topic_slno,
-            schedule_no: schedule_no,
+            em_id: parseInt(EmId),
+            topic: parseInt(topic_no),
+            schedule_no: parseInt(schedule_no),
             induct_detail_date: induct_detail_date,
             trainers: trainers,
             feedback: feedback === '' ? null : feedback,
-            create_user: em_id,
+            create_user: parseInt(EmId),
             ...SelectedData
         }
         const result = await axioslogin.post('/TrainingFeedback/inductfeedback', obj)
         const { success, message } = result.data
         if (success === 1) {
             succesNofity(message)
-            Setopen(false)
-            SetmodalData([])
-            SetFedbk_flag(1)
+            history.push(`/InductLogInpage/${topic_no}/${schedule_no}`)
         }
         else {
             warningNofity(message)
-            Setopen(false)
-            SetmodalData([])
-            SetFedbk_flag(0)
+            setDatas([])
+            SetData([])
         }
-    }, [em_id, SelectedData, SetFedbk_flag, topic_slno, schedule_no, induct_detail_date, trainers, feedback, Setopen, SetmodalData])
+    }, [history, EmId, SelectedData, topic_no, schedule_no, induct_detail_date, trainers, feedback])
 
     return (
         <Fragment>
-            <Modal
-                aria-labelledby="modal-title"
-                aria-describedby="modal-desc"
-                open={open}
-                onClose={handleClose}
-            >
-                <ModalDialog size='lg'>
-                    <ModalClose
-                        variant="outlined"
-                        sx={{
-                            top: 'calc(-1/4 * var(--IconButton-size))',
-                            right: 'calc(-1/4 * var(--IconButton-size))',
-                            boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
-                            borderRadius: '50%',
-                            bgcolor: 'background.body',
-                        }}
-                    />
-                    <Paper varient='outlined'>
+            <Box sx={{}}>
+                <ToastContainer />
+                {ViewFedbk === 0 ?
+                    <Paper variant="outlined" sx={{
+                        px: 1
+                    }} >
+                        {ViewFedbk === 0 ?
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                fontFamily: "serif",
+
+                            }}>
+
+                                <Box sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    flex: 1
+
+                                }}>
+                                    <Box sx={{ display: "flex", py: 0.3, mt: 1 }} >
+                                        <Typography
+                                            fontSize="xl2"
+                                            lineHeight={0}
+                                            endDecorator={<PersonOutlinedIcon color='primary' />}
+                                            sx={{ textTransform: 'capitalize', fontFamily: "serif", }}
+                                        >
+                                            {em_name?.toLowerCase()}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', mt: 1 }} >
+                                        <Typography textColor="text.secondary"
+                                            startDecorator={
+                                                <ManageAccountsOutlinedIcon fontSize='md' color='primary' />
+                                            }
+                                            endDecorator={
+                                                <Typography>
+                                                    |
+                                                </Typography>
+                                            }
+                                            sx={{ textTransform: 'capitalize', fontFamily: "serif", }}
+                                        >
+                                            {desg_name?.toLowerCase()}
+                                        </Typography>
+                                        <Typography textColor="text.secondary"
+                                            startDecorator={
+                                                <LanOutlinedIcon fontSize='md' color='primary' />
+                                            }
+                                            endDecorator={
+                                                <Typography>
+                                                    |
+                                                </Typography>
+                                            }
+                                            px={1}
+                                            sx={{ textTransform: 'capitalize', fontFamily: "serif", }}
+                                        >
+                                            {dept_name?.toLowerCase()}
+                                        </Typography>
+                                        <Typography textColor="text.secondary"
+                                            sx={{ fontFamily: "serif" }}
+                                            startDecorator={<NumbersOutlinedIcon fontSize='md' color='primary' />}
+                                        >
+                                            {em_no}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            </Box>
+                            : null}
+                        {
+                            pretest_status === 1 && posttest_status === 1 && ViewFedbk === 0 ?
+                                <Box>
+                                    <Typography sx={{ mt: 1 }}>Online-Test Result</Typography>
+                                    <Sheet variant="outlined">
+                                        <Table variant="soft" borderAxis="bothBetween">
+                                            <thead>
+                                                <tr>
+                                                    <th>Topic</th>
+                                                    <th style={{ textTransform: "capitalize", }}> {training_topic_name?.toLowerCase()}</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Pre-Test</th>
+                                                    <th style={{ textTransform: "capitalize", }}> {pretest_status !== 0 ? "Yes" : "Not"}</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Pre-Test Mark (out of <b>{question_count !== 0 ? question_count : null}</b>)</th>
+                                                    <th style={{ textTransform: "capitalize" }}> {pretest_mark !== null ? pretest_mark : "Not Attended"}</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Post-Test</th>
+                                                    <th style={{ textTransform: "capitalize", }}> {posttest_status !== 0 ? "Yes" : "No"}</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Post-Test Mark (out of <b>{question_count}</b>)</th>
+                                                    <th style={{ textTransform: "capitalize", }}>{post_mark !== null ? post_mark : "Not Attended"}</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Training Mode</th>
+                                                    <th style={{ textTransform: "capitalize", }}> {online_mode !== 0 ? "Online" : offline_mode !== 0 ? "Offline" : null}</th>
+                                                </tr>
+                                            </thead>
+                                        </Table>
+                                    </Sheet>
+                                    <Box sx={{ display: "flex", justifyContent: "center", mt: 2, }}>
+                                        <Button sx={{ backgroundColor: "blue", color: "white", width: "80%" }} onClick={GoFeedback}>
+                                            Drop Your Feedbacks
+                                        </Button>
+                                    </Box>
+
+                                    {retest === 1 ?
+                                        <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 2 }}>
+                                            <Typography sx={{ fontFamily: "serif", fontSize: "sm" }}>Your have Retest On the Topic</Typography>
+                                            <Typography sx={{ fontFamily: "serif", color: "blue", fontWeight: "bold" }}>{training_topic_name} </Typography>
+                                        </Box>
+                                        : null
+                                    }
+                                </Box>
+                                : null}
+                    </Paper >
+                    : null}
+
+                {ViewFedbk === 1 ?
+                    <Box sx={{
+                        p: 0.5
+                    }}>
                         <Box sx={{ p: 1 }}>
                             <Box>
                                 <Typography level='6'>1.The Objectives of the training were clearly defined.</Typography>
-                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1 }}>
+                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1.5 }}>
                                     <Box sx={{ flex: 1 }}>
                                         <Box sx={{ textAlign: "center" }}>
                                             <IconButton value={1} onClick={(e) => HandleSelection1(e, 1)} >
@@ -187,9 +351,9 @@ const FeedbackPage = ({ open, Setopen, modalData, SetmodalData, SetFedbk_flag })
                                 </Box>
                             </Box>
 
-                            <Box sx={{ mt: 0.5, p: 0.5 }}>
+                            <Box sx={{ mt: 1.5, p: 0.5 }}>
                                 <Typography level='6'>2.The content was organised and easy to follow.</Typography>
-                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1 }}>
+                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1.5 }}>
                                     <Box sx={{ flex: 1 }}>
                                         <Box sx={{ textAlign: "center" }}>
                                             <IconButton value={1} onClick={(e) => HandleSelection2(e, 1)} >
@@ -240,9 +404,9 @@ const FeedbackPage = ({ open, Setopen, modalData, SetmodalData, SetFedbk_flag })
                                 </Box>
                             </Box>
 
-                            <Box sx={{ mt: 0.5, p: 0.5 }}>
+                            <Box sx={{ mt: 1.5, p: 0.5 }}>
                                 <Typography level='6'>3.Training Facilities were adequate.</Typography>
-                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1 }}>
+                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1.5 }}>
                                     <Box sx={{ flex: 1 }}>
                                         <Box sx={{ textAlign: "center" }}>
                                             <IconButton value={1} onClick={(e) => HandleSelection3(e, 1)} >
@@ -293,9 +457,9 @@ const FeedbackPage = ({ open, Setopen, modalData, SetmodalData, SetFedbk_flag })
                                 </Box>
                             </Box>
 
-                            <Box sx={{ mt: 0.5, p: 0.5 }}>
+                            <Box sx={{ mt: 1.5, p: 0.5 }}>
                                 <Typography level='6'>4.The training will be useful in my work.</Typography>
-                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1 }}>
+                                <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1.5 }}>
                                     <Box sx={{ flex: 1 }}>
                                         <Box sx={{ textAlign: "center" }}>
                                             <IconButton value={1} onClick={(e) => HandleSelection4(e, 1)} >
@@ -345,9 +509,10 @@ const FeedbackPage = ({ open, Setopen, modalData, SetmodalData, SetFedbk_flag })
                                     </Box>
                                 </Box>
                             </Box>
-                            <Box sx={{ mt: 0.5 }}>
+                            <Box sx={{ mt: 1.5 }}>
                                 <Textarea
-                                    maxRows={2}
+                                    minRows={2}
+                                    maxRows={4}
                                     name="Suggestions"
                                     placeholder="Suggestion if any"
                                     variant="outlined"
@@ -358,9 +523,10 @@ const FeedbackPage = ({ open, Setopen, modalData, SetmodalData, SetFedbk_flag })
                         <Box sx={{ textAlign: 'center', p: 0.5 }}>
                             <Button onClick={handleSubmit}>DONE</Button>
                         </Box>
-                    </Paper>
-                </ModalDialog>
-            </Modal>
+                    </Box>
+                    : null}
+            </Box>
+
         </Fragment >
     )
 }

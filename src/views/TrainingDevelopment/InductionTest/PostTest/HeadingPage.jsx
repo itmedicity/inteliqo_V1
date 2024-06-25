@@ -96,7 +96,7 @@ const HeadingPage = () => {
 
     useEffect(() => {
         if (Object.keys(Emp_Details).length !== 0) {
-            const { em_id, em_name, induction_slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id } = Emp_Details[0];
+            const { trainers, schedule_slno, em_id, em_name, induction_slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id } = Emp_Details[0];
             const obj = {
                 em_id: em_id,
                 em_name: em_name,
@@ -106,12 +106,15 @@ const HeadingPage = () => {
                 question_count: question_count,
                 dept_id: dept_id,
                 desg_slno: desg_slno,
-                sect_id: sect_id
+                sect_id: sect_id,
+                trainers: trainers,
+                schedule_no: schedule_slno,
             }
             setQuestcount(question_count)
             setDatas(obj);
         }
     }, [Emp_Details, setDatas, setQuestcount])
+
 
     //Next questn
     const HandleNextQuestion = useCallback((e) => {
@@ -246,7 +249,7 @@ const HeadingPage = () => {
                         </Box>
                 }
             </Box>
-            {open === true ? <SubmitModal id={id} open={open} setopen={setopen} tslno={tslno} /> : null}
+            {open === true ? <SubmitModal Empdatas={datas} id={id} open={open} setopen={setopen} tslno={tslno} /> : null}
         </Fragment >
     )
 }
