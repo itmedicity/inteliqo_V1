@@ -3,14 +3,12 @@ import { Box, Tab, TabList, TabPanel, Tabs, Typography } from '@mui/joy';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
-import StaffDeptCalender from '../TrainingDashboard/HODInchargeDashboard/DashboardDeptCalender/StaffDeptCalender';
-import EmployeeViewMainPage from '../TrainingDashboard/TrainingEmployeeView/EmployeeViewMainPage';
+import DeptDashboardCalenderMain from '../TrainingDashboard/HODInchargeDashboard/DashboardDeptCalender/DeptDashboardCalenderMain';
+import HODInchargeDashboardPage from '../TrainingDashboard/HODInchargeDashboard/DashboardMainPage/HODInchargeDashboardPage';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import EmpTrainingRecords from '../TrainingDashboard/TrainingEmployeeView/EmpTrainingRecords';
-import ArticleIcon from '@mui/icons-material/Article';
 import InductionCalenderFormat from '../TrainingCalender/InductionCalenderFormat';
 
-const TrainingCalender = () => {
+const HodInchargeDashboardView = () => {
     return (
         <Box sx={{ height: screenInnerHeight - 100 }}>
             <Box sx={{ backgroundColor: "pink" }}>
@@ -20,11 +18,6 @@ const TrainingCalender = () => {
                             <Box sx={{ textAlign: "center" }}>
                                 <Box><DashboardIcon /></Box>
                                 <Typography level='6'>Dashboard</Typography>
-                            </Box>
-                        </Tab><Tab disableIndicator sx={{ width: "30%", height: 80 }}>
-                            <Box sx={{ textAlign: "center" }}>
-                                <Box><ArticleIcon /></Box>
-                                <Typography level='6'>Employee Training Details</Typography>
                             </Box>
                         </Tab>
                         <Tab disableIndicator sx={{ width: "30%", height: 80 }}>
@@ -40,22 +33,18 @@ const TrainingCalender = () => {
                             </Box>
                         </Tab>
                     </TabList>
-                    <TabPanel value={0}>
-                        <EmployeeViewMainPage />
+                    <TabPanel value={0}  >
+                        <HODInchargeDashboardPage />
                     </TabPanel>
                     <TabPanel value={1}  >
-                        <EmpTrainingRecords />
-                    </TabPanel>
-                    <TabPanel value={2}  >
                         <InductionCalenderFormat />
                     </TabPanel>
-                    <TabPanel value={3}>
-                        <StaffDeptCalender />
+                    <TabPanel value={2}>
+                        <DeptDashboardCalenderMain />
                     </TabPanel>
                 </Tabs>
             </Box>
         </Box>
     )
 }
-
-export default memo(TrainingCalender) 
+export default memo(HodInchargeDashboardView) 

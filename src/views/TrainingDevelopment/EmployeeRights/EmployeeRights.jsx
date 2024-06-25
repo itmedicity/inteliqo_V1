@@ -5,6 +5,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import TrainingCalender from './TrainingCalender';
 import TndDashboardView from '../TrainingDashboard/TnDViewComponents/TndDashboardView';
+import HodInchargeDashboardView from './HodInchargeDashboardView';
 
 const EmployeeRights = () => {
     const dispatch = useDispatch();
@@ -47,7 +48,9 @@ const EmployeeRights = () => {
         <Fragment>
             {
                 rights === 1 ? <TndDashboardView /> :
-                    <TrainingCalender rights={rights} hod={hod} incharge={incharge} />
+                    hod === 1 || incharge === 1 ? <HodInchargeDashboardView /> :
+                        <TrainingCalender rights={rights} hod={hod} incharge={incharge} />
+                // <TrainingCalender rights={rights} hod={hod} incharge={incharge} />
             }
 
 
