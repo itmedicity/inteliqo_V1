@@ -118,15 +118,11 @@ const InductionCalenderFormat = () => {
         SetOpen(true)
     }, [])
 
-    //backgroundcolor-213555
     return (
         <Fragment>
             <Paper>
                 {open === true ? <CalenderDetails SetOpen={SetOpen} open={open} modalData={modalData} /> : null}
                 <Box sx={{ width: "100%", }}>
-                    {/* <Box sx={{ textAlign: "center", fontFamily: "initial" }}>
-                        <Typography level='h3' >Induction Training Calendar</Typography>
-                    </Box> */}
                     <Box sx={{
                         borderTopRightRadius: 10, borderTopLeftRadius: 10, color: "white", p: 0.3,
                         backgroundColor: "#526D82", display: "flex", flexDirection: "row", justifyContent: 'space-between'
@@ -161,8 +157,6 @@ const InductionCalenderFormat = () => {
                                         key={dayIndex}
                                         sx={{
                                             border: 0.4,
-                                            // margin: 1,
-                                            // height: 147,
                                             height: 140,
                                             width: "14.28%",
                                             p: 1,

@@ -395,8 +395,8 @@ const ShiftUpdation = () => {
                                 isWeekOff: (e.shift_id === week_off_day),
                                 isNOff: e.shift_id === noff,
                                 lvereq_desc: e.lvereq_desc,
-                                duty_desc: e.duty_desc
-
+                                duty_desc: e.duty_desc,
+                                leave_status: e.leave_status
                             }
                         })
                         const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
@@ -447,6 +447,8 @@ const ShiftUpdation = () => {
                         const { status, message, errorMessage, punchMastData } = result;
                         if (status === 1) {
 
+                            // console.log(punchMastData);
+
                             const tb = punchMastData?.map((e) => {
                                 // console.log(e)
                                 const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
@@ -484,7 +486,8 @@ const ShiftUpdation = () => {
                                     isNOff: e.shift_id === noff,
                                     holiday_status: e.holiday_status,
                                     lvereq_desc: e.lvereq_desc,
-                                    duty_desc: e.duty_desc
+                                    duty_desc: e.duty_desc,
+                                    leave_status: e.leave_status
                                 }
                             })
                             const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));

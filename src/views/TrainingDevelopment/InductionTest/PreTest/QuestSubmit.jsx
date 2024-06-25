@@ -63,21 +63,15 @@ const QuestSubmit = ({ data, id, emId, open, tslno, setopen }) => {
             const result = await axioslogin.patch('/InductionTest/update_offline', patchData)
             const { success } = result.data
             if (success === 1) {
-                Setoffline(1)
+                history.push(`/InductLogInpage/${topic_slno}/${id}`)
             }
             else {
                 warningNofity("Not updated")
                 Setoffline(0)
             }
         }
-    }, [online_status, Setoffline, offline_status, history, id, emId, setopen]);
+    }, [online_status, Setoffline, offline_status, history, topic_slno, id, emId, setopen]);
 
-    useEffect(() => {
-        if (offline_status === true && offline === 1) {
-            history.push(`/InductLogInpage/${topic_slno}/${id}`)
-        }
-
-    }, [history, offline_status, offline, id, topic_slno])
     return (
         <Fragment>
             <Modal

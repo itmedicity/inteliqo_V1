@@ -41,14 +41,17 @@ const Induction_test_login = () => {
             const GetData = async () => {
                 const result = await axioslogin.post('/InductionTest/inductlogEmpDetails', postdata)
                 const { data } = result.data
-                if (data.length > 0) {
+                if (data?.length > 0) {
                     setData(data)
                     Setcount(count + 1);
                     SetView(1)
                     reset();
                 }
                 else {
-                    warningNofity("Training Not scheduled")
+                    warningNofity("Training Not scheduled For this Employee")
+                    setData([])
+                    Setcount(0);
+                    SetView(0)
                 }
             }
             GetData(postdata)
@@ -102,7 +105,7 @@ const Induction_test_login = () => {
                             </Box>
                         </Box>
                     </Paper>
-                    : <EmpHomepage data={data} />
+                    : <EmpHomepage data={data} SetView={SetView} />
             }
 
         </Fragment >

@@ -1,12 +1,12 @@
 import React, { Fragment, memo, useEffect, useState } from 'react'
-import { axioslogin } from '../Axios/Axios';
 import { Option, Select } from '@mui/joy';
+import { axioslogin } from 'src/views/Axios/Axios';
 
-const SelectTrainingName = ({ value, setValue }) => {
+const JoyTopicByDeptWiseEntry = ({ value, setValue, dept }) => {
     const [view, setView] = useState([]);
     useEffect(() => {
         const selectData = async () => {
-            const result = await axioslogin.get('/TrainingSchedule/selecttrainingname')
+            const result = await axioslogin.get(`/TrainingTopic/topic_by_dept/${dept}`)
             const { success, data } = result.data;
             if (success === 2) {
                 setView(data);
@@ -15,7 +15,7 @@ const SelectTrainingName = ({ value, setValue }) => {
             }
         }
         selectData()
-    }, [])
+    }, [dept])
 
     return (
         <Fragment>
@@ -28,10 +28,10 @@ const SelectTrainingName = ({ value, setValue }) => {
                 size='md'
                 variant='outlined'
             >
-                <Option disabled value={0}>Select Training Names</Option>
+                <Option disabled value={0}>Select Training Topics</Option>
                 {
                     view?.map((val, index) => {
-                        return <Option key={index} value={val.name_slno}>{val.training_name}</Option>
+                        return <Option key={index} value={val.topic_slno}>{val.training_topic_name}</Option>
                     })
                 }
             </Select>
@@ -39,4 +39,4 @@ const SelectTrainingName = ({ value, setValue }) => {
     )
 }
 
-export default memo(SelectTrainingName)
+export default memo(JoyTopicByDeptWiseEntry) 

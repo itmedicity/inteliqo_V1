@@ -8,7 +8,11 @@ const JoyTrainingTopicByDept = ({ topic, setTopic, dept }) => {
 
     const dispatch = useDispatch()
 
-    useEffect(() => dispatch(TrainingTopicsByDept(dept)), [dispatch])
+    useEffect(() => {
+        if (dept !== 0) {
+            dispatch(TrainingTopicsByDept(dept))
+        }
+    }, [dispatch, dept])
 
     const topicData = useSelector((state) => state?.gettrainingData?.TrainingTopicByDept?.TrainingTopicByDeptList, _.isEqual)
     return (

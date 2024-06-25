@@ -326,13 +326,6 @@ const DetailsHomepage = () => {
         else {
             warningNofity("Please select any Training Type")
         }
-
-        // if (type === "1" && dept === 0 || deptSec === 0) {
-        //     warningNofity("Choose any searching Condition")
-        // }
-        // else if (type === "2" && dept === 0 || deptSec === 0) {
-        //     warningNofity("Choose any searching Condition")
-        // }
     }, [Emp_ID, dept, deptSec, count, Setcount, postdata, type])
 
 

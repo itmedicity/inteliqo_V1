@@ -2,10 +2,11 @@ import React, { Fragment, memo, useEffect, useState } from 'react'
 import { axioslogin } from '../Axios/Axios';
 import { Option, Select } from '@mui/joy';
 
-const SelectTrainingName = ({ value, setValue }) => {
+const JoyDeptWiseTrainingNames = ({ value, setValue, dept }) => {
     const [view, setView] = useState([]);
     useEffect(() => {
         const selectData = async () => {
+            // const result = await axioslogin.get(`/TrainingSchedule/training_names_by_dept/${dept}`)
             const result = await axioslogin.get('/TrainingSchedule/selecttrainingname')
             const { success, data } = result.data;
             if (success === 2) {
@@ -15,7 +16,7 @@ const SelectTrainingName = ({ value, setValue }) => {
             }
         }
         selectData()
-    }, [])
+    }, [dept])
 
     return (
         <Fragment>
@@ -39,4 +40,5 @@ const SelectTrainingName = ({ value, setValue }) => {
     )
 }
 
-export default memo(SelectTrainingName)
+
+export default memo(JoyDeptWiseTrainingNames) 
