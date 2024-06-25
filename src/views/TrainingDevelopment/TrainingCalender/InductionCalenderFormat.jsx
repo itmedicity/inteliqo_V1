@@ -188,7 +188,7 @@ const InductionCalenderFormat = () => {
                                                         key={index}
                                                     >
                                                         <Typography level='body-xs' noWrap style={{ color: "white" }}>
-                                                            {training.type_name.toLowerCase()}
+                                                            {training?.type_name?.toLowerCase()}
                                                         </Typography>
                                                     </Box>
                                                 ))}

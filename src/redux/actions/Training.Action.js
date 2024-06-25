@@ -58,7 +58,8 @@ const {
     FETCH_TRAINER_APPRVL_DATA,
     FETCH_TRAINER_APPRVL_INDUCT_DATA,
     FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA,
-    FETCH_CALENDER_DETAILS
+    FETCH_CALENDER_DETAILS,
+    FETCH_MONTHWISE_DEPT_SCHEDULE
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -657,3 +658,15 @@ export const InductionTrainingCalender = (obj) => async (dispatch) => {
         dispatch({ type: FETCH_CALENDER_DETAILS, payload: [], status: false })
     }
 }
+export const MonthWiseDeptSchedules = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingAfterJoining/GetMonthWiseDeptSchedules`, obj)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_MONTHWISE_DEPT_SCHEDULE, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_MONTHWISE_DEPT_SCHEDULE, payload: [], status: false })
+    }
+}
+
+

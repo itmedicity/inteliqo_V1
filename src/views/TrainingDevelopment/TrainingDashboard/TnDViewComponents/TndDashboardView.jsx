@@ -8,6 +8,7 @@ import TnDDashboardMain from './TnDDashboardMain';
 import InductionCalender from '../../InductionTrainingCalender/InductionCalender';
 import DepartmentalCalender from '../../EmployeeRights/DepartmentalCalender';
 import InductionCalenderFormat from '../../TrainingCalender/InductionCalenderFormat';
+import DeptTrainingCalendarMain from '../../TrainingCalender/DeptTrainingCalendar/DeptTrainingCalendarMain';
 
 const TndDashboardView = () => {
     return (
@@ -16,19 +17,19 @@ const TndDashboardView = () => {
                 <Box>
                     <Tabs >
                         <TabList >
-                            <Tab disableIndicator sx={{ width: "30%", height: 80 }}>
+                            <Tab disableIndicator sx={{ width: "30%", height: 75 }}>
                                 <Box sx={{ textAlign: "center" }}>
                                     <Box><DashboardIcon /></Box>
                                     <Typography>Dashboard</Typography>
                                 </Box>
                             </Tab>
-                            <Tab disableIndicator sx={{ width: "30%", height: 80 }}>
+                            <Tab disableIndicator sx={{ width: "30%", height: 75 }}>
                                 <Box sx={{ textAlign: "center" }}>
                                     <Box><CalendarMonthIcon /></Box>
                                     <Typography>Induction</Typography>
                                 </Box>
                             </Tab>
-                            <Tab disableIndicator sx={{ width: "30%", height: 80 }}>
+                            <Tab disableIndicator sx={{ width: "30%", height: 75 }}>
                                 <Box sx={{ textAlign: "center" }}>
                                     <Box><AppRegistrationIcon /></Box>
                                     <Typography>Departmental</Typography>
@@ -50,7 +51,8 @@ const TndDashboardView = () => {
 
                         </TabPanel>
                         <TabPanel value={2}>
-                            <DepartmentalCalender />
+                            {/* <DepartmentalCalender /> */}
+                            <DeptTrainingCalendarMain />
                         </TabPanel>
                     </Tabs>
                 </Box>

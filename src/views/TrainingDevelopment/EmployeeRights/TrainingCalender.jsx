@@ -12,6 +12,8 @@ import HODInchargeDashboardPage from '../TrainingDashboard/HODInchargeDashboard/
 import EmployeeViewMainPage from '../TrainingDashboard/TrainingEmployeeView/EmployeeViewMainPage';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import InductionCalenderFormat from '../TrainingCalender/InductionCalenderFormat';
+import HodInchargCalendarView from '../TrainingCalender/HodInchargeDeptCalendar/HodInchargCalendarView';
+import EmpDeptCalendarView from '../TrainingCalender/EmployeeDeptCalendar/EmpDeptCalendarView';
 
 const TrainingCalender = ({ rights, hod, incharge }) => {
     return (
@@ -72,8 +74,11 @@ const TrainingCalender = ({ rights, hod, incharge }) => {
                                 <DepartmentalCalender /> :
 
                                 (hod === 1 || incharge === 1) && rights === 0 ?
-                                    <DeptDashboardCalenderMain />
-                                    : <StaffDeptCalender />
+                                    // <DeptDashboardCalenderMain />
+                                    <HodInchargCalendarView />
+                                    :
+                                    // <StaffDeptCalender />
+                                    <EmpDeptCalendarView />
                             }
 
                         </TabPanel>
