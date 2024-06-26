@@ -948,7 +948,7 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                 }
             })
         const newNopunch = sectionWiseMisspunchRequest
-            ?.filter(val => val.dept_section !== em_dept_section)
+            ?.filter(val => val.em_dept_section !== em_dept_section)
             ?.concat(sectionWiseMisspunchRequest?.filter(e => checkStatus === true ? e.em_id === em_id : e))
             ?.map((val) => {
                 return {

@@ -1,6 +1,6 @@
 import { Box, Table } from '@mui/joy';
 import { Paper, Typography } from '@mui/material';
-import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { InductionPrePostTopics } from 'src/redux/actions/Training.Action';
 import _ from 'underscore';
@@ -10,6 +10,10 @@ import { IconButton as OpenIcon } from '@mui/material';
 import { Tooltip } from '@mui/material'
 
 const QRCodepage = () => {
+
+    const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
+    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    const { em_id } = employeeProfileDetl;
 
     const dispatch = useDispatch()
 
@@ -30,6 +34,7 @@ const QRCodepage = () => {
         setQRdata(data);
         setQRmodal(true)
     }, [setQRdata, setQRmodal])
+
     return (
         <Fragment>
             {PrePostTopics?.length !== 0 ?
@@ -69,7 +74,7 @@ const QRCodepage = () => {
                                 ))}
                             </tbody>
                         </Table>
-                        {QRmodal === true ? <InductionQRModal count={count} Setcount={Setcount} QRdata={QRdata} QRmodal={QRmodal} setQRmodal={setQRmodal} /> : null}
+                        {QRmodal === true ? <InductionQRModal em_id={em_id} count={count} Setcount={Setcount} QRdata={QRdata} QRmodal={QRmodal} setQRmodal={setQRmodal} /> : null}
                     </Box>
 
                 </Paper>

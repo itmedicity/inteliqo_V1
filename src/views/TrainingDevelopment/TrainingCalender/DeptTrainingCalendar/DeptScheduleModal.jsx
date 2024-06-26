@@ -41,7 +41,7 @@ const DeptScheduleModal = ({ Scheduledata, topic, setTopic, SetView, View, datef
         setTrainerName([])
         SetCount(0)
         SetDatefrmt('')
-    }, [SetView, SetCount, SetDatefrmt])
+    }, [SetView, setTopic, SetCount, SetDatefrmt])
 
     const handleText = useCallback((event) => {
         setRemark(event.target.value);
@@ -114,7 +114,6 @@ const DeptScheduleModal = ({ Scheduledata, topic, setTopic, SetView, View, datef
                         SetCount(count + 1);
                         reset();
                         setTable(0)
-
                     }
                     else {
                         warningNofity(message)
@@ -125,7 +124,6 @@ const DeptScheduleModal = ({ Scheduledata, topic, setTopic, SetView, View, datef
                     reset();
                     SetCount(0)
                     setTable(0)
-
                 }
             }
             InsertData(postData)
@@ -134,7 +132,7 @@ const DeptScheduleModal = ({ Scheduledata, topic, setTopic, SetView, View, datef
 
             warningNofity("Please Enter the given fields ")
         }
-    }, [postData, setTable, SetCount, count, dept, deptSec, year, newdata, trainer, topic, datefrmt, remark, reset, SetView])
+    }, [postData, setTable, SetCount, count, dept, deptSec, year, newdata, trainer, topic, datefrmt, remark, em_id, reset])
 
     const ShowallDept = useCallback((e) => {
         if (e.target.checked === true) {

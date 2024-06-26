@@ -41,7 +41,7 @@ const ScheduleEmployees = ({ Scheduledata, topic, setTopic, SetView, View, datef
         setTrainerName([])
         SetCount(0)
         SetDatefrmt('')
-    }, [SetView, SetCount, SetDatefrmt])
+    }, [SetView, SetCount, setTopic, SetDatefrmt])
 
     const handleText = useCallback((event) => {
         setRemark(event.target.value);
@@ -134,7 +134,7 @@ const ScheduleEmployees = ({ Scheduledata, topic, setTopic, SetView, View, datef
 
             warningNofity("Please Enter the given fields ")
         }
-    }, [postData, setTable, SetCount, count, dept, deptSec, year, newdata, trainer, topic, datefrmt, remark, reset, SetView])
+    }, [postData, setTable, SetCount, count, dept, deptSec, year, newdata, trainer, topic, datefrmt, remark, reset, em_id])
 
     const ShowallDept = useCallback((e) => {
         if (e.target.checked === true) {
@@ -153,7 +153,7 @@ const ScheduleEmployees = ({ Scheduledata, topic, setTopic, SetView, View, datef
         setRemark('');
         setTrainer([]);
         setshowTrainers(0)
-    }, [SetView, SetDatefrmt])
+    }, [SetView, setTopic, SetDatefrmt])
 
 
 

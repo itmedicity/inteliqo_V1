@@ -33,7 +33,7 @@ const DeptCalendarLayout = ({ count, SetCount, setTable, dept, deptSec, year, Em
         }
         dispatch(MonthWiseDeptSchedules(obj))
         SetCount(0)
-    }, [dispatch, currentMonth, count, dept, deptSec])
+    }, [dispatch, SetCount, currentMonth, count, dept, deptSec])
 
     const DepDatas = useSelector((state) => DeptRedux(state));
     const CalenderData = useMemo(() => DepDatas, [DepDatas]);

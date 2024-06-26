@@ -31,14 +31,16 @@ const EmpHomepage = ({ data, SetView }) => {
         slno: 0,
         induct_detail_date: '',
         trainers: [],
-        fedbk_topic: 0
+        fedbk_topic: 0,
+        topic_pre_status: 0,
+        topic_post_status: 0
     });
 
-    const { dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark, slno } = Viewdata;
+    const { dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark, slno, topic_pre_status, topic_post_status } = Viewdata;
 
     const updateViewData = (data, setViewData) => {
         if (Object.keys(data).length !== 0) {
-            const { fedbk_topic, dept_name, desg_name, em_mobile, postmark, em_name, sect_name, training_topic_name, topic_slno, em_no, em_id, question_count, Emslno, pretest_status, posttest_status, online_mode, mark, offline_mode, training_status, schedule_no, induct_detail_date, trainers } = data[0];
+            const { fedbk_topic, dept_name, desg_name, em_mobile, postmark, em_name, sect_name, training_topic_name, topic_slno, em_no, em_id, question_count, Emslno, pretest_status, posttest_status, online_mode, mark, offline_mode, training_status, schedule_no, induct_detail_date, trainers, topic_pre_status, topic_post_status } = data[0];
             const obj = {
                 dept_name: dept_name,
                 desg_name: desg_name,
@@ -65,12 +67,13 @@ const EmpHomepage = ({ data, SetView }) => {
                 slno: schedule_no,
                 induct_detail_date: induct_detail_date,
                 trainers: trainers,
-                fedbk_topic: fedbk_topic
+                fedbk_topic: fedbk_topic,
+                topic_pre_status: topic_pre_status,
+                topic_post_status: topic_post_status
             }
             setViewData(obj);
         }
     }
-
 
     useEffect(() => {
         updateViewData(data, setViewData);
@@ -168,6 +171,7 @@ const EmpHomepage = ({ data, SetView }) => {
 
                     </Box>
                 </Paper >
+
                 <Paper elevation={0} sx={{ p: 1 }}>
 
                     {/* pretest-start */}
@@ -303,7 +307,6 @@ const EmpHomepage = ({ data, SetView }) => {
                 </Paper >
 
             </Paper>
-
         </Fragment >
     )
 }

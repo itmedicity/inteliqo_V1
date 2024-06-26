@@ -1,5 +1,5 @@
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Box, Paper } from '@mui/material';
+import { Box } from '@mui/material';
 import { getYear, getMonth, subYears } from 'date-fns';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';

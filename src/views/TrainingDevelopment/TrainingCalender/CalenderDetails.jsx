@@ -1,4 +1,4 @@
-import { Box, Modal, ModalClose, ModalDialog, Table, Typography } from '@mui/joy'
+import { Box, Modal, ModalClose, ModalDialog, Sheet, Table, Typography } from '@mui/joy'
 import React, { memo, useCallback, useMemo } from 'react'
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
@@ -42,28 +42,34 @@ const CalenderDetails = ({ SetOpen, open, modalData, }) => {
                     Induction Training
                 </Typography>
                 <Box>
-                    <Table borderAxis="bothBetween" >
-                        <tbody >
-                            <tr>
-                                <th style={{ backgroundColor: "#5A639C", color: "white", width: "10%", textAlign: "center" }}>#</th>
-                                <th style={{ backgroundColor: "#5A639C", color: "white", textAlign: "center" }}>TOPICS</th>
-                                <th style={{ backgroundColor: "#5A639C", color: "white", textAlign: "center" }}>TRAINERS</th>
-                                <th style={{ backgroundColor: "#5A639C", color: "white", textAlign: "center" }}>DEPARTMENTS</th>
-                            </tr>
-
-
-                            {datas?.map((row, indx) => (
-                                <tr key={indx} >
-                                    <td style={{ backgroundColor: "#EEEEEE", textAlign: "center" }}><StarOutlineIcon /></td>
-                                    <td style={{ backgroundColor: "#EEEEEE", textAlign: "center" }}>{row?.topic}</td>
-                                    <td style={{ backgroundColor: "#EEEEEE", textAlign: "center" }}>{row?.trainer_name}</td>
-                                    <td style={{ backgroundColor: "#EEEEEE" }}>
-                                        <DeptCountPage topic={row?.topic_slno} SelectedDate={row?.induction_date} />
-                                    </td>
+                    <Sheet sx={{
+                        overflow: 'auto',
+                        '::-webkit-scrollbar': { display: "none" }, height: 400,
+                        width: "100%"
+                    }}>
+                        <Table borderAxis="bothBetween" stickyHeader >
+                            <tbody >
+                                <tr>
+                                    <th style={{ backgroundColor: "#5A639C", color: "white", width: "10%", textAlign: "center" }}>#</th>
+                                    <th style={{ backgroundColor: "#5A639C", color: "white", textAlign: "center" }}>TOPICS</th>
+                                    <th style={{ backgroundColor: "#5A639C", color: "white", textAlign: "center" }}>TRAINERS</th>
+                                    <th style={{ backgroundColor: "#5A639C", color: "white", textAlign: "center" }}>DEPARTMENTS</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+
+
+                                {datas?.map((row, indx) => (
+                                    <tr key={indx} >
+                                        <td style={{ backgroundColor: "#EEEEEE", textAlign: "center" }}><StarOutlineIcon /></td>
+                                        <td style={{ backgroundColor: "#EEEEEE", textAlign: "center" }}>{row?.topic}</td>
+                                        <td style={{ backgroundColor: "#EEEEEE", textAlign: "center" }}>{row?.trainer_name}</td>
+                                        <td style={{ backgroundColor: "#EEEEEE" }}>
+                                            <DeptCountPage topic={row?.topic_slno} SelectedDate={row?.induction_date} />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </Sheet>
                 </Box>
             </ModalDialog>
         </Modal >
