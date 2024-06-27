@@ -5,27 +5,28 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import TnDDashboardMain from './TnDDashboardMain';
-import DepartmentalCalender from '../../EmployeeRights/DepartmentalCalender';
 import InductionCalenderFormat from '../../TrainingCalender/InductionCalenderFormat';
+import DeptTrainingCalendarMain from '../../TrainingCalender/DeptTrainingCalendar/DeptTrainingCalendarMain';
 
 const TndDashboardView = () => {
     return (
+
         <Box sx={{ height: screenInnerHeight - 80 }}>
             <Tabs >
                 <TabList >
-                    <Tab disableIndicator sx={{ width: "30%", height: 80 }}>
+                    <Tab disableIndicator sx={{ width: "30%", height: 75 }}>
                         <Box sx={{ textAlign: "center" }}>
                             <Box><DashboardIcon /></Box>
                             <Typography>Dashboard</Typography>
                         </Box>
                     </Tab>
-                    <Tab disableIndicator sx={{ width: "30%", height: 80 }}>
+                    <Tab disableIndicator sx={{ width: "30%", height: 75 }}>
                         <Box sx={{ textAlign: "center" }}>
                             <Box><CalendarMonthIcon /></Box>
                             <Typography>Induction</Typography>
                         </Box>
                     </Tab>
-                    <Tab disableIndicator sx={{ width: "30%", height: 80 }}>
+                    <Tab disableIndicator sx={{ width: "30%", height: 75 }}>
                         <Box sx={{ textAlign: "center" }}>
                             <Box><AppRegistrationIcon /></Box>
                             <Typography>Departmental</Typography>
@@ -44,7 +45,7 @@ const TndDashboardView = () => {
                     </Box>
                 </TabPanel>
                 <TabPanel value={2}>
-                    <DepartmentalCalender />
+                    <DeptTrainingCalendarMain />
                 </TabPanel>
             </Tabs>
         </Box>

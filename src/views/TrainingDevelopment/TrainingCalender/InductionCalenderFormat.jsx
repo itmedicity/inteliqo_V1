@@ -169,7 +169,7 @@ const InductionCalenderFormat = () => {
                                         )}
                                         {day.trainingInfo && day.trainingInfo.length > 0 && (
                                             <Box sx={{ cursor: "pointer", }} onClick={() => handleModal(day)}>
-                                                {day.trainingInfo?.filter((e, i) => i <= 2)?.map((training, index) => (
+                                                {day.trainingInfo?.filter((e, i) => i <= 4)?.map((training, index) => (
                                                     <Box
                                                         sx={{
                                                             borderRadius: 1,
@@ -182,7 +182,7 @@ const InductionCalenderFormat = () => {
                                                         key={index}
                                                     >
                                                         <Typography level='body-xs' noWrap style={{ color: "white" }}>
-                                                            {training.type_name.toLowerCase()}
+                                                            {training?.type_name?.toLowerCase()}
                                                         </Typography>
                                                     </Box>
                                                 ))}

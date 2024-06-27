@@ -18,3 +18,27 @@ export const InductRedux = (state) => {
         return { status: 0, TrainingData: [] };
     }
 };
+
+export const DeptRedux = (state) => {
+    const trainingData = state?.gettrainingData?.MothWiseDeptSchedules?.MothWiseDeptSchedulesList;
+    if (trainingData?.length) {
+        const ResultArr = trainingData.map((item) => ({
+            dept_id: item.dept_id,
+            dept_name: item.dept_name,
+            training_date: moment(item.schedule_date).format('YYYY-MM-DD HH:mm:ss'),
+            schedule_slno: item.schedule_slno,
+            schedule_trainers: item.schedule_trainers,
+            schedule_year: item.schedule_year,
+            topic_slno: item.topic_slno,
+            traineer_name: item.traineer_name,
+            training_topic_name: item.training_topic_name,
+            sect_id: item.sect_id
+        }));
+        return { status: 1, TrainingData: ResultArr };
+    } else {
+        return { status: 0, TrainingData: [] };
+    }
+};
+
+
+

@@ -290,7 +290,9 @@ const TrainingInductionCalender = React.lazy(() => import('./views/TrainingDevel
 const OnObservationRequest = React.lazy(() => import('./views/LeaveManagement/OnObservation/OnobservationRequest'))
 const DutyplanforIncharge = React.lazy(() => import('./views/Attendance/DutyPlan/InchargeDutyplan'))
 const DutyplanReport = React.lazy(() => import('./views/HrReports/DutyplanReport/DutyPlanReport'))
+const DeptTrainingCalendar = React.lazy(() => import('./views/TrainingDevelopment/TrainingCalender/DeptTrainingCalendar/DeptTrainingCalendarMain'))
 const FeedbackPage = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/FeedbackPage'))
+const FeedbackPageWithoutTest = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/FeedbackWithoutTest'))
 
 
 const routes = [
@@ -563,7 +565,9 @@ const routes = [
   { path: '/Home/OnObservationRequest', exact: true, name: 'On Observation Request', component: OnObservationRequest },
   { path: '/Home/DutyplanforIncharge', exact: true, name: 'Dutyplan for Incharge', component: DutyplanforIncharge },
   { path: '/Home/DutyplanReport', exact: true, name: 'Dutyplan Report', component: DutyplanReport },
+  { path: '/Home/DeptTrainingCalendar', exact: true, name: 'Departmental Training Calendar', component: DeptTrainingCalendar },
   { path: '/FeedbackPage/:topic_no/:schedule_no/:EmId', exact: true, name: 'Feedback Page', component: FeedbackPage },
+  { path: '/FeedbackPageWithoutTest/:topic_no/:schedule_no/:EmId', exact: true, name: 'Feedback Page Without Test', component: FeedbackPageWithoutTest },
 
 ]
 

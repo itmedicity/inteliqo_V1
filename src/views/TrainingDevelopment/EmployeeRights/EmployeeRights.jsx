@@ -50,7 +50,6 @@ const EmployeeRights = () => {
                 rights === 1 ? <TndDashboardView /> :
                     hod === 1 || incharge === 1 ? <HodInchargeDashboardView /> :
                         <TrainingCalender rights={rights} hod={hod} incharge={incharge} />
-                // <TrainingCalender rights={rights} hod={hod} incharge={incharge} />
             }
 
 

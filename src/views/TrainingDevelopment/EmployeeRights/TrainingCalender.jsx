@@ -3,12 +3,12 @@ import { Box, Tab, TabList, TabPanel, Tabs, Typography } from '@mui/joy';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
-import StaffDeptCalender from '../TrainingDashboard/HODInchargeDashboard/DashboardDeptCalender/StaffDeptCalender';
 import EmployeeViewMainPage from '../TrainingDashboard/TrainingEmployeeView/EmployeeViewMainPage';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import EmpTrainingRecords from '../TrainingDashboard/TrainingEmployeeView/EmpTrainingRecords';
 import ArticleIcon from '@mui/icons-material/Article';
 import InductionCalenderFormat from '../TrainingCalender/InductionCalenderFormat';
+import EmpDeptCalendarView from '../TrainingCalender/EmployeeDeptCalendar/EmpDeptCalendarView';
 
 const TrainingCalender = () => {
     return (
@@ -50,7 +50,7 @@ const TrainingCalender = () => {
                         <InductionCalenderFormat />
                     </TabPanel>
                     <TabPanel value={3}>
-                        <StaffDeptCalender />
+                        <EmpDeptCalendarView />
                     </TabPanel>
                 </Tabs>
             </Box>

@@ -3,10 +3,10 @@ import { Box, Tab, TabList, TabPanel, Tabs, Typography } from '@mui/joy';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
-import DeptDashboardCalenderMain from '../TrainingDashboard/HODInchargeDashboard/DashboardDeptCalender/DeptDashboardCalenderMain';
 import HODInchargeDashboardPage from '../TrainingDashboard/HODInchargeDashboard/DashboardMainPage/HODInchargeDashboardPage';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import InductionCalenderFormat from '../TrainingCalender/InductionCalenderFormat';
+import HodInchargCalendarView from '../TrainingCalender/HodInchargeDeptCalendar/HodInchargCalendarView';
 
 const HodInchargeDashboardView = () => {
     return (
@@ -40,7 +40,7 @@ const HodInchargeDashboardView = () => {
                         <InductionCalenderFormat />
                     </TabPanel>
                     <TabPanel value={2}>
-                        <DeptDashboardCalenderMain />
+                        <HodInchargCalendarView />
                     </TabPanel>
                 </Tabs>
             </Box>

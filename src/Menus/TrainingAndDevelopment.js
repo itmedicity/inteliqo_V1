@@ -65,11 +65,17 @@ const TrainingAndDevelopment = [
         name: 'Induction Training Calender',
         to: '/Home/InductionCalender',
     },
+    // {
+    //     men_slno: 288,
+    //     component: CNavItem,
+    //     name: 'Training Calender',
+    //     to: '/Home/TrainingInductionCalender',
+    // },
     {
         men_slno: 288,
         component: CNavItem,
         name: 'Training Calender',
-        to: '/Home/TrainingInductionCalender',
+        to: '/Home/DeptTrainingCalendar',
     },
 
     {
