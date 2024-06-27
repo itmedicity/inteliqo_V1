@@ -116,7 +116,7 @@ const AllView = ({ em_id }) => {
                             totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
                             totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                             totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
-                            totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "H").length ?? 0),
+                            totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "HP").length ?? 0),
                         }
                     })
                     settableArray(resultss)
