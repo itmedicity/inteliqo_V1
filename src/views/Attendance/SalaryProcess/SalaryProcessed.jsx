@@ -98,7 +98,7 @@ const SalaryProcessed = () => {
                         const onedaySalary = val.gross_salary / getDaysInMonth(new Date(value))
 
                         // const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLOP + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLOP + (totalHD * 0.5)
-                        const totallopCount = totalLOP + (totalHD * 0.5)
+                        // const totallopCount = totalLOP + (totalHD * 0.5)
 
                         const workday =
                             (empwise?.filter(val => val.lvereq_desc === 'P' ||
@@ -108,17 +108,19 @@ const SalaryProcessed = () => {
                                 val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
                                 val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
                                 val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
-                                val.lvereq_desc === 'ODP')).length
+                                val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS')).length
 
                         const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
 
+
                         const totalDays = getDaysInMonth(new Date(value))
                         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
-                        const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
+                        const totalPayday = workday
+                        const totallopCount = totalDays - workday;
+                        // const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
                         const lopamount = totallopCount * (val.gross_salary / totalDays);
-                        // const paydaySalay = (val.gross_salary / totalDays) * totalPayday
+                        //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
                         const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
-
                         return {
                             em_no: val.em_no,
                             em_name: val.em_name,
@@ -191,7 +193,7 @@ const SalaryProcessed = () => {
                         const onedaySalary = val.gross_salary / getDaysInMonth(new Date(value))
 
                         // const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLOP + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLOP + (totalHD * 0.5)
-                        const totallopCount = totalLOP + (totalHD * 0.5)
+                        // const totallopCount = totalLOP + (totalHD * 0.5)
 
                         const workday =
                             (empwise?.filter(val => val.lvereq_desc === 'P' ||
@@ -201,13 +203,16 @@ const SalaryProcessed = () => {
                                 val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
                                 val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
                                 val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
-                                val.lvereq_desc === 'ODP')).length
+                                val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS')).length
 
                         const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
 
+
                         const totalDays = getDaysInMonth(new Date(value))
                         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
-                        const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
+                        const totalPayday = workday
+                        const totallopCount = totalDays - workday;
+                        // const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
                         const lopamount = totallopCount * (val.gross_salary / totalDays);
                         //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
                         const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
@@ -289,11 +294,10 @@ const SalaryProcessed = () => {
         { headerName: 'Institution ', field: 'inst_emp_type', minWidth: 250 },
 
         { headerName: 'Account Number', field: 'em_account_no' },
+        { headerName: 'IFSC Number', field: 'em_ifsc' },
         { headerName: 'Total Days ', field: 'totalDays' },
         { headerName: 'Leave Count', field: 'totalLeaves' },
         { headerName: 'Holiday Count ', field: 'totalHoliday' },
-
-        // { headerName: 'LOP Days ', field: 'lopDays' },
         { headerName: 'No Of Half Day LOP(HD)', field: 'totalHD', minWidth: 250 },
         { headerName: 'No Of LC Count', field: 'totalLC' },
         { headerName: 'Total LOP', field: 'totallopCount' },
