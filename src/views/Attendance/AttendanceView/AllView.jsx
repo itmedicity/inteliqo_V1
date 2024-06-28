@@ -161,6 +161,7 @@ const AllView = ({ em_id }) => {
         { lvename: 'HP', color: 'success', desc: "Holiday Present" },
         { lvename: 'ML', color: 'danger', desc: "Maternity Leave" },
         { lvename: 'LC', color: 'danger', desc: "Late Coming" },
+        { lvename: 'OBS', color: 'neutral', desc: "On Observation" },
     ]
 
     return (
