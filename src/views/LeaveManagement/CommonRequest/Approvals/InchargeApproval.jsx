@@ -56,7 +56,7 @@ const InchargeApproval = () => {
         { headerName: 'ID#', field: 'emno', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department Section', field: 'section', filter: true, minWidth: 200 },
-        { headerName: 'Request Date', field: 'section', filter: true, minWidth: 200 },
+        { headerName: 'Request Date', field: 'reqDate', filter: true, minWidth: 200 },
         { headerName: 'Status ', field: 'status', minWidth: 200, filter: true },
         {
             headerName: 'Action',
