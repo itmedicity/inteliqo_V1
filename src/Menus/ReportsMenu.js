@@ -8,11 +8,11 @@ export const hr_report_one = [
     { to: '/Home/InstitutionTypeReport', name: 'Employee Institution Type Report', slno: 169 },
     { to: '/Home/NoExperienceReport', name: 'Employee No Experience Report', slno: 218 },
     { to: '/Home/DepartmentalCalender', name: 'Department Wise Training Topic Scheduled  Report ', slno: 265 },
-    { to: '/Home/DepartmentalTrainingReportDetails', name: 'Departmental Training Reports', slno: 264 },
+    { to: '/Home/DepartmentalTrainingReportDetails', name: 'Departmental Training Report', slno: 264 },
     { to: '/Home/LeaveReports', name: 'Employee Leave Report', slno: 270 },
-    { to: '/Home/SalaryReport', name: 'Attendance Salary Report', slno: 272 },
-    { to: '/Home/DayWiseAttendence', name: 'Day Wise Attendence Reports', slno: 284 },
-
+    // { to: '/Home/SalaryReport', name: 'Attendance Salary Report', slno: 272 },
+    { to: '/Home/DayWiseAttendence', name: 'Employee Day Wise Attendence Report', slno: 284 },
+    { to: '/Home/OndutyReport', name: 'Employee On Duty Report', slno: 298 },
 
 ]
 export const hr_report_two = [
@@ -28,7 +28,7 @@ export const hr_report_two = [
     { to: '/Home/TrainingRetestEmpReport', name: 'Departmentat Wise Training Retest Employee Report', slno: 269 },
     { to: '/Home/InductionCalenderReport', name: 'Induction Calender Report', slno: 277 },
     { to: '/Home/EmpPunchReport', name: 'Employee Punch Data Report', slno: 271 },
-    { to: '/Home/EmpSaleryReport', name: 'Employee Salary Report', slno: 282 },
+    { to: '/Home/EmpSaleryReport', name: 'Employee Individual Salary Report', slno: 282 },
 
 ]
 export const hr_report_third = [
@@ -44,7 +44,7 @@ export const hr_report_third = [
     { to: '/Home/DeptPunchReport', name: 'Employee Processed Punch Report', slno: 257 },
     { to: '/Home/TrainingCompletionEmpReport', name: 'Department wise Training Completion Report', slno: 268 },
     { to: '/Home/TrainingPendingReport', name: 'Department Training Pending Report', slno: 266 },
-    { to: '/Home/AttendenceReports', name: 'Attendence Reports', slno: 283 },
+    { to: '/Home/AttendenceReports', name: 'Attendence Report', slno: 283 },
     { to: '/Home/DutyplanReport', name: 'Dutyplan Report Report', slno: 297 },
 
 

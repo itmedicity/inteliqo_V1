@@ -388,7 +388,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                 if (result) {
                     setOpenBkDrop(false)
                     setCount(Math.random())
-                    succesNofity('Leave Request Approved')
+                    succesNofity('Leave Request Rejected')
                     setOpen(false)
                 }
             }).catch(error => {
