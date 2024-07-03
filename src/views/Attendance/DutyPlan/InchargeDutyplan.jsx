@@ -14,7 +14,6 @@ import {
 } from '@mui/material'
 import { Box } from '@mui/system'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import DutyPlanTopCard from './DutyPlanTopCard'
 import ShiftSelect from './DutyPlanFun/ShiftSelect'
 import { ToastContainer } from 'react-toastify'
 import { useSelector } from 'react-redux'
