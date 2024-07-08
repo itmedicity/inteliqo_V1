@@ -4,7 +4,7 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { lastDayOfMonth, startOfMonth } from 'date-fns'
 import moment from 'moment'
-import React, { Fragment, memo, useEffect, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
@@ -55,25 +55,29 @@ const OnDutyRequest = () => {
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
 
-    const Displaydata = async () => {
-        var dateArray = [];
-        var currentDate = moment(fromDate);
-        var stopDate = moment(toDate);
-        while (currentDate <= stopDate) {
-            dateArray.push(moment(currentDate).format('YYYY-MM-DD'))
-            currentDate = moment(currentDate).add(1, 'days');
-        }
-        const arr = dateArray.map((val) => {
-            const obj = {
-                "date": val,
-                "inValue": false,
-                "outValue": false
+    const Displaydata = useCallback(async () => {
+        if (selectedShift === 0) {
+            warningNofity("Plaese select any shift")
+        } else {
+            var dateArray = [];
+            var currentDate = moment(fromDate);
+            var stopDate = moment(toDate);
+            while (currentDate <= stopDate) {
+                dateArray.push(moment(currentDate).format('YYYY-MM-DD'))
+                currentDate = moment(currentDate).add(1, 'days');
             }
-            return obj
-        })
-        setDates(arr)
-        setViewTable(1)
-    }
+            const arr = dateArray.map((val) => {
+                const obj = {
+                    "date": val,
+                    "inValue": false,
+                    "outValue": false
+                }
+                return obj
+            })
+            setDates(arr)
+            setViewTable(1)
+        }
+    }, [fromDate, selectedShift, toDate])
 
     const getValue = async (e, val) => {
         let arr = dates.map((item) => item.date === val.date ? { ...item, inValue: e } : item)
