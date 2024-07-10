@@ -99,8 +99,9 @@ const EmpPunchReport = () => {
                             new_field: correspondingFirstData.map(data => data.punch_time)
                         };
                     });
+                    const array = updatedSecondApiData.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
 
-                    setTableData(updatedSecondApiData)
+                    setTableData(array)
 
                 }
             }
@@ -149,7 +150,10 @@ const EmpPunchReport = () => {
                             new_field: correspondingFirstData.map(data => data.punch_time)
                         };
                     });
-                    setTableData(updatedSecondApiData)
+                    const array = updatedSecondApiData.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+
+                    setTableData(array)
+                    // setTableData(updatedSecondApiData)
 
                 }
             }
