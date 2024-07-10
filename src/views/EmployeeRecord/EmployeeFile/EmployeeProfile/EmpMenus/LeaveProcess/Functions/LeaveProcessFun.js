@@ -1,4 +1,4 @@
-import { addDays, compareAsc, differenceInDays, differenceInYears, eachMonthOfInterval, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
+import { addDays, compareAsc, differenceInDays, differenceInMonths, differenceInYears, eachMonthOfInterval, endOfYear, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { employeeNumber } from 'src/views/Constant/Constant'
@@ -794,9 +794,16 @@ export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gende
     }
 
     const arr = messagecommonleave.map((item) => item.lvetype_slno === 6 ? { ...item, ...obj } : item);
+    const newArr = arr.map((item) => item.lvetype_slno === 5 ? { ...item, ...obj } : item);
     // Filter the Maternity For the Male Employee
-    const filterCommonArray = arr.filter((val) => val.lvetype_slno !== 2);
-    const newCommonArray = em_gender === 1 ? filterCommonArray : arr;
+    const endMonth = endOfYear(new Date())
+    const sickCount = differenceInMonths(endMonth, new Date()) + 1
+    const sickObj = { leave_credit_policy_count: sickCount }
+
+    const sickArray = newArr.map((item) => item.lvetype_slno === 7 ? { ...item, ...sickObj } : item);
+
+    const filterCommonArray = sickArray.filter((val) => val.lvetype_slno !== 2);
+    const newCommonArray = em_gender === 1 ? filterCommonArray : sickArray;
     let commondata = newCommonArray.map((val) => {
       const commonleave = {
         em_no: em_no,
@@ -934,4 +941,72 @@ export const insertEarnLeaves = async (dateRange, lv_process_slno, em_doj, em_no
       message: errorMsg ?? 'Error Updating Earn Leave! Contact EDP, line-915',
     }
   }
+}
+
+export const incativeExistLeave = async (category, leaveProcess) => {
+  const { em_category } = category
+  const { lv_process_slno, category_slno } = leaveProcess
+
+  const leaveProcessSlnoObj = {
+    oldprocessslno: lv_process_slno,
+  }
+
+  let resultObj = {
+    success: 1, // 1 --> success 2 --> error
+    error: 0,
+  }
+
+  if (em_category !== category_slno) {
+    let casualLeaveUpdation = await axioslogin.post(
+      '/yearleaveprocess/updatecasualleaveupdateslno',
+      leaveProcessSlnoObj,
+    )
+    const { success } = casualLeaveUpdation.data
+    if (success === 2 || success === 1) {
+      resultObj = { ...resultObj }
+    } else {
+      resultObj = { ...resultObj, error: 1 }
+    }
+  }
+  //    holiday leaves update
+  if (em_category !== category_slno) {
+    const holidayLeaveUpdation = await axioslogin.post(
+      '/yearleaveprocess/updateholidayupdateslno',
+      leaveProcessSlnoObj,
+    )
+    const { success } = holidayLeaveUpdation.data
+    if (success === 2 || success === 1) {
+      resultObj = { ...resultObj }
+    } else {
+      resultObj = { ...resultObj, error: 1 }
+    }
+  }
+  // earn leave update
+  if (em_category !== category_slno) {
+    const earnLeaveUpdation = await axioslogin.post(
+      '/yearleaveprocess/updateeanleaveupdate',
+      leaveProcessSlnoObj,
+    )
+    const { success } = earnLeaveUpdation.data
+    if (success === 2 || success === 1) {
+      resultObj = { ...resultObj }
+    } else {
+      resultObj = { ...resultObj, error: 1 }
+    }
+  }
+  // common leave update
+  if (em_category !== category_slno) {
+    const earnLeaveUpdation = await axioslogin.post(
+      '/yearleaveprocess/updateCommonUpdateSlno',
+      leaveProcessSlnoObj,
+    )
+    const { success } = earnLeaveUpdation.data
+    if (success === 2 || success === 1) {
+      resultObj = { ...resultObj }
+    } else {
+      resultObj = { ...resultObj, error: 1 }
+    }
+  }
+
+  return resultObj
 }
