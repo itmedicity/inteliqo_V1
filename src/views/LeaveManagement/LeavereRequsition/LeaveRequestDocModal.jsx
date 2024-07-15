@@ -17,7 +17,7 @@ const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setReq
     const submitRequest = useCallback(async () => {
         // console.log(modifiedLveReq);
         const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', data);
-        const { success } = submitLeaveRequet.data;
+        const { success, message } = submitLeaveRequet.data;
         if (success === 1) {
             setDropOpen(false)
             setOpen(false)
@@ -31,7 +31,7 @@ const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setReq
             setTable([])
             setReason('')
             setRequestType(0)
-            errorNofity('Error Submitting Leave Request')
+            errorNofity(message)
             setOpen(false)
         }
     }, [data, setOpen, setTable, setReason, setRequestType, setDropOpen])

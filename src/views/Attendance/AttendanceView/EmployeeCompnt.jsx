@@ -93,7 +93,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
                     totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                     totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
-                    totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "H").length ?? 0),
+                    totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "HP").length ?? 0),
                     // totalCalcDay:
                 }
             })
@@ -134,6 +134,7 @@ const EmployeeCompnt = ({ em_no }) => {
         { lvename: 'HP', color: 'success', desc: "Holiday Present" },
         { lvename: 'ML', color: 'danger', desc: "Maternity Leave" },
         { lvename: 'LC', color: 'danger', desc: "Late Coming" },
+        { lvename: 'OBS', color: 'neutral', desc: "On Observation" },
     ]
 
     return (
@@ -351,7 +352,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalLV}</td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaLWP + row.totalA}</td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totaESI}</td>
-                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalP + row.totalWOFF + row.totalNOFF + row.totalLV + (row.totalHD * 0.5) + row.totaHP}</td>
+                                                <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalP + row.totalWOFF + row.totalNOFF + row.totalLV + (row.totalHD * 0.5) + row.totaHP + row.totaH}</td>
                                                 <td style={{ textAlign: 'center', height: 10, color: '#344767', fontWeight: 900, backgroundColor: isOdd(index) ? '#f4f6f8' : '#f4f6f8' }}>{row.totalDays}</td>
                                             </tr>
                                         </Fragment>

@@ -149,53 +149,97 @@ export const processPunchMarkingHrFunc = async (
                         }
                     })
 
+                    console.log(punchMasterFilterData);
+
                     // CALCULATION BASED ON WEEEK OF AND HOLIDAY 
                     return Promise.allSettled(
                         punchMasterFilterData?.flatMap((ele) => {
                             return ele?.data?.map(async (e, idx, array) => {
 
-                                let holidayStat = e.duty_desc === 'H' ? await holidayStatus(e, array, holiday_policy_count) : e.duty_desc;
+                                // console.log(array);
+                                // let holidayStat = e.duty_desc === 'H' ? await holidayStatus(e, array, holiday_policy_count) : e.duty_desc;
+                                // console.log(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate);
                                 let weekDayStat = e.duty_desc === 'WOFF' ? await weekOffStatus(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate) : e.duty_desc;
+
+                                // console.log(weekDayStat);
+
 
                                 return {
                                     ...e,
-                                    lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc,
-                                    duty_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
+                                    lvereq_desc: e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc,
+                                    duty_desc: e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
+                                    // lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc,
+                                    // duty_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
                                 }
                             })
                         })
 
                     ).then(async (results) => {
+                        const arr = punchMasterFilterData.map(filterObj => {
+                            let key = filterObj.em_no;
+                            return {
+                                em_no: key,
+                                data: results.filter(obj => obj.value.em_no === key)?.map((e) => e.value)
+                            }
+                        });
 
-                        const PunchMAsterPolicyBasedFilterResult = results?.map((e) => e.value)
-                        // console.log(PunchMAsterPolicyBasedFilterResult)
-                        // console.log(punchMaterDataBasedOnPunchSlno)
-                        const processedPostData = PunchMAsterPolicyBasedFilterResult?.filter((e) => punchMaterDataBasedOnPunchSlno?.some((el) => el === e.punch_slno))
-                        // console.log(processedPostData?.filter(e => e.em_no === 4516))
-                        const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedPostData);
-                        const { success, message } = updatePunchMaster.data;
-                        if (success === 1) {
-                            // PUNCH MARKING HR TABLE UPDATION
-                            // console.log(postData_getPunchData)
-                            const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postData_getPunchData);
-                            const { sus } = updatePunchMarkingHR.data;
-                            if (sus === 1) {
-                                // DUTY PLAN UPDATION
-                                const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
-                                const { susc, message } = updateDutyPlanTable.data;
-                                if (susc === 1) {
-                                    return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', dta: postData_getPunchData }
+                        return Promise.allSettled(
+                            arr?.flatMap((ele) => {
+                                return ele?.data?.map(async (e, idx, array) => {
+                                    let holidayStat = e.duty_desc === 'H' ? await holidayStatus(e, array, holiday_policy_count) : e.duty_desc;
+                                    // console.log(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate);
+                                    // let weekDayStat = e.duty_desc === 'WOFF' ? await weekOffStatus(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate) : e.duty_desc;
+
+                                    // console.log(e);
+
+
+                                    return {
+                                        ...e,
+                                        lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc,
+                                        duty_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc
+                                        // lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc,
+                                        // duty_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
+                                    }
+                                })
+                            })
+
+                        ).then(async (results) => {
+                            const PunchMAsterPolicyBasedFilterResult = results?.map((e) => e.value)
+                            // console.log(PunchMAsterPolicyBasedFilterResult)
+                            // console.log(punchMaterDataBasedOnPunchSlno)
+                            const processedPostData = PunchMAsterPolicyBasedFilterResult?.filter((e) => punchMaterDataBasedOnPunchSlno?.some((el) => el === e.punch_slno))
+                            // console.log(processedPostData?.filter(e => e.em_no === 4516))
+                            const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedPostData);
+                            const { success, message } = updatePunchMaster.data;
+                            if (success === 1) {
+                                // PUNCH MARKING HR TABLE UPDATION
+                                // console.log(postData_getPunchData)
+                                const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postData_getPunchData);
+                                const { sus } = updatePunchMarkingHR.data;
+                                if (sus === 1) {
+                                    // DUTY PLAN UPDATION
+                                    const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDutyPlanTable/", dutyPlanSlno);
+                                    const { susc, message } = updateDutyPlanTable.data;
+                                    if (susc === 1) {
+                                        return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', dta: postData_getPunchData }
+                                    } else {
+                                        return { status: 0, message: "Error Updating Duty Plan ! contact IT", errorMessage: message }
+                                    }
                                 } else {
-                                    return { status: 0, message: "Error Updating Duty Plan ! contact IT", errorMessage: message }
+                                    return { status: 0, message: "Error Updating PunchMaster HR  ! contact IT", errorMessage: message }
                                 }
                             } else {
-                                return { status: 0, message: "Error Updating PunchMaster HR  ! contact IT", errorMessage: message }
+                                return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
                             }
-                        } else {
-                            return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
-                        }
 
-                    });
+                        }).catch((error) => {
+                            return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: error } // if no return all updation
+                        })
+                    }).catch((error) => {
+                        return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: error } // if no return all updation
+                    })
+                }).catch((error) => {
+                    return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: error }// if no return all updation
                 })
                 // return { status: 1, message: "result", data: e }
             })
