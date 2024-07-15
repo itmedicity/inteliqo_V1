@@ -1,4 +1,4 @@
-import { endOfYear, format, subMonths } from "date-fns";
+import { endOfYear, format, getMonth, subMonths } from "date-fns";
 import moment from "moment";
 import { getDepartmentSectionBasedHod } from "src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction";
 
@@ -49,6 +49,7 @@ export const allLeavesConvertAnArray = (state) => {
     const compansatoryOff = state?.getCreitedCompansatoryOffLeave?.compansatory;
     const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
 
+
     // Push casual leaves to the array if available
     if (casualLeaves?.length > 0) {
         const newCasualLeavesAttay = casualLeaves?.map((e) => {
@@ -62,9 +63,10 @@ export const allLeavesConvertAnArray = (state) => {
                 count: leveCount,
                 lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
                 common_slno: 0,
-                cmn: 0
+                cmn: 0,
+                leaveMonth: e.cl_lv_year
             }
-        })?.filter((e) => e.lveRequest === 0) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+        })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
         creditedLeavesArray.data.push(...newCasualLeavesAttay)
     }
 

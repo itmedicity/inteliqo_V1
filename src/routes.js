@@ -294,7 +294,7 @@ const DeptTrainingCalendar = React.lazy(() => import('./views/TrainingDevelopmen
 const FeedbackPage = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/FeedbackPage'))
 const FeedbackPageWithoutTest = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/FeedbackWithoutTest'))
 const OndutyReport = React.lazy(() => import('./views/HrReports/OnDutyReport/OndutyReport'))
-
+const ManualRequest = React.lazy(() => import('./views/LeaveManagement/ManualRquest/ManualRequestMain'))
 
 
 const routes = [
@@ -571,6 +571,7 @@ const routes = [
   { path: '/FeedbackPage/:topic_no/:schedule_no/:EmId', exact: true, name: 'Feedback Page', component: FeedbackPage },
   { path: '/FeedbackPageWithoutTest/:topic_no/:schedule_no/:EmId', exact: true, name: 'Feedback Page Without Test', component: FeedbackPageWithoutTest },
   { path: '/Home/OndutyReport', exact: true, name: 'On Duty Report', component: OndutyReport },
+  { path: '/Home/ManualRequest', exact: true, name: 'Manual Request', component: ManualRequest }
 
 ]
 

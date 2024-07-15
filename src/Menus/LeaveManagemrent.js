@@ -129,6 +129,12 @@ const Leavemanagement = [
         name: 'On Observation Request',
         to: '/Home/OnObservationRequest',
     },
+    {
+        men_slno: 191,
+        component: CNavItem,
+        name: 'Manual Request',
+        to: '/Home/ManualRequest',
+    },
 
 ]
 
