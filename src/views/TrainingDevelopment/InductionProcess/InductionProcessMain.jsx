@@ -9,7 +9,7 @@ import NextPlanIcon from '@mui/icons-material/NextPlan';
 import { useDispatch, useSelector } from 'react-redux';
 import { BlwAvgEmpList, InductionCompleted, InductionToday, TrainingCalenderDetailsAll, inductPendingEmpDetails } from 'src/redux/actions/Training.Action';
 import moment from 'moment';
-import { addDays, endOfMonth } from 'date-fns';
+import { addDays, endOfMonth, format } from 'date-fns';
 import PendingIcon from '@mui/icons-material/Pending';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import TodayIcon from '@mui/icons-material/Today';
@@ -67,7 +67,7 @@ const InductionProcessMain = () => {
                 induction_date: val.induction_date,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                date: moment(val.induction_date).format('YYYY-MM-DD'),
+                date: format(new Date(val.induction_date), "dd-MM-yyyy"),
             }
             return object;
         })

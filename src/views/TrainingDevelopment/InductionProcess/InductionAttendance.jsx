@@ -9,8 +9,8 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { IconButton as OpenIcon } from '@mui/material';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import moment from 'moment';
 import SaveIcon from '@mui/icons-material/Save';
+import { format } from 'date-fns';
 
 const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => {
 
@@ -39,7 +39,7 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
                 em_id: val.em_id,
                 em_name: val.em_name,
                 em_no: val.em_no,
-                date: moment(val.induction_date).format('YYYY-MM-DD'),
+                date: format(new Date(val.induction_date), "dd-MM-yyyy"),
                 attandance_status: 0,
                 training_status: val.training_status,
                 topic_training: val.topic_training,
@@ -195,7 +195,7 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
                     }
                     sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                 >
-                    Training Attendance Marking
+                    Induction Training Attendance Marking
                 </Typography>
                 <Box sx={{ overflow: 'auto', mt: 1 }}>
                     <CommonAgGrid

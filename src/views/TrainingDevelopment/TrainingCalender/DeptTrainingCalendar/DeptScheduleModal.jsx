@@ -151,7 +151,7 @@ const DeptScheduleModal = ({ Scheduledata, topic, setTopic, SetView, View, datef
         setRemark('');
         setTrainer([]);
         setshowTrainers(0)
-    }, [SetView, SetDatefrmt])
+    }, [SetView, setTopic, SetDatefrmt])
 
 
 

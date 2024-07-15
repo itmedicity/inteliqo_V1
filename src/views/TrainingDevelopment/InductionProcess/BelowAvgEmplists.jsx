@@ -5,9 +5,9 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { IconButton as OpenIcon } from '@mui/material';
-import moment from 'moment';
 import DoneIcon from '@mui/icons-material/Done';
 import InductRetestSchedule from './InductRetestSchedule';
+import { format } from 'date-fns';
 
 const BelowAvgEmplists = ({ BelowAvgList, setShow, count, Setcount }) => {
 
@@ -29,7 +29,7 @@ const BelowAvgEmplists = ({ BelowAvgList, setShow, count, Setcount }) => {
                 pretest_status: val.pretest_status,
                 posttest_status: val.posttest_status,
                 induction_date: val.induction_date,
-                datefmt: moment(val.induction_date).format("YYYY-MM-DD"),
+                datefmt: format(new Date(val.induction_date), "dd-MM-yyyy"),
                 retest: val.retest,
                 em_id: val.em_id,
                 em_name: val.em_name,
@@ -80,7 +80,7 @@ const BelowAvgEmplists = ({ BelowAvgList, setShow, count, Setcount }) => {
 
     return (
         <Paper>
-            <CustomDashboardPage title="Below Average Employees" displayClose={true} setClose={setShow} >
+            <CustomDashboardPage title="Induction Below Average Employees" displayClose={true} setClose={setShow} >
                 {open === true ? <InductRetestSchedule Setopen={Setopen} open={open} getData={getData} tabledata={tabledata} count={count} Setcount={Setcount} />
                     :
                     <Box sx={{ width: "100%", overflow: 'auto' }}>
