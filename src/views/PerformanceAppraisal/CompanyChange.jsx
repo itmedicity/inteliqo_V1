@@ -22,6 +22,7 @@ import moment from 'moment'
 import JoyCategorySelect from '../MuiComponents/JoyComponent/JoyCategorySelect'
 import SaveIcon from '@mui/icons-material/Save';
 import { setDepartment } from 'src/redux/actions/Department.action'
+import PermannetCategorySelect from '../MuiComponents/PermannetCategorySelect'
 
 const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
 
@@ -256,7 +257,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                     <DragIndicatorOutlinedIcon />
                                     <CssVarsProvider>
                                         <Typography textColor="neutral.400" sx={{ display: 'flex', }} >
-                                            Company Information
+                                            Probation Confirmation
                                         </Typography>
                                     </CssVarsProvider>
                                 </Box>
@@ -279,18 +280,14 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                     {/* heading section end */}
                     <Paper variant='outlined' square elevation={0} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
                         <Box sx={{ flex: 1, pl: 20, fontWeight: 500, }} >
-                            <CssVarsProvider>
-                                <Typography textColor="text.secondary" >
-                                    Employee Number : {em_no}
-                                </Typography>
-                            </CssVarsProvider>
+                            <Typography textColor="text.secondary" >
+                                Employee Number : {em_no}
+                            </Typography>
                         </Box>
                         <Box sx={{ flex: 1, fontWeight: 500, }}>
-                            <CssVarsProvider>
-                                <Typography textColor="text.secondary" >
-                                    Employee Name : {empname}
-                                </Typography>
-                            </CssVarsProvider>
+                            <Typography textColor="text.secondary" >
+                                Employee Name : {empname}
+                            </Typography>
                         </Box>
                     </Paper>
 
@@ -302,21 +299,17 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                             {/* First row start */}
                             <Box sx={{ display: "flex", flexDirection: "row", width: "100" }}>
                                 <Box sx={{ width: "20%" }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Branch Name
-                                        </Typography>
-                                    </CssVarsProvider>
+                                    <Typography textColor="text.secondary" >
+                                        Branch Name
+                                    </Typography>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
                                     <JoyBranchSelect value={branch} setValue={setBranch} />
                                 </Box>
                                 <Box sx={{ width: "20%", pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Department Name
-                                        </Typography>
-                                    </CssVarsProvider>
+                                    <Typography textColor="text.secondary" >
+                                        Department Name
+                                    </Typography>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
                                     <JoyDepartment deptValue={dept} getDept={setDept} />
@@ -327,21 +320,17 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                             {/* second row start */}
                             <Box sx={{ display: "flex", flexDirection: "row", width: "100%", pt: 0.5 }}>
                                 <Box sx={{ width: "20%" }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Department Section Name
-                                        </Typography>
-                                    </CssVarsProvider>
+                                    <Typography textColor="text.secondary" >
+                                        Department Section Name
+                                    </Typography>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
                                     <JoyDepartmentSection sectValues={deptSection} getSection={setDeptSection} dept={dept} />
                                 </Box>
                                 <Box sx={{ width: "20%", pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Employee Institution
-                                        </Typography>
-                                    </CssVarsProvider>
+                                    <Typography textColor="text.secondary" >
+                                        Employee Institution
+                                    </Typography>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
                                     <JoyInstitutionSelect value={institute} setValue={setInstitute} />
@@ -351,21 +340,17 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                             {/* third row start */}
                             <Box sx={{ display: "flex", flexDirection: "row", width: "100%", pt: 0.5 }}>
                                 <Box sx={{ width: "20%" }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Designation
-                                        </Typography>
-                                    </CssVarsProvider>
+                                    <Typography textColor="text.secondary" >
+                                        Designation
+                                    </Typography>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
                                     <JoyDesignationSelect desgValue={empDesignation} getDesg={setEmpDesignation} />
                                 </Box>
                                 <Box sx={{ width: "20%", pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Designation Change Date
-                                        </Typography>
-                                    </CssVarsProvider>
+                                    <Typography textColor="text.secondary" >
+                                        Designation Change Date
+                                    </Typography>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
                                     <Input
@@ -387,21 +372,22 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                 display: "flex", flexDirection: "row", pt: 0.5, width: "100%"
                             }}>
                                 <Box sx={{ width: "20%" }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Employee Category
-                                        </Typography>
-                                    </CssVarsProvider>
+                                    <Typography textColor="text.secondary" >
+                                        Employee Category
+                                    </Typography>
                                 </Box>
                                 <Box sx={{ width: "30%" }}>
-                                    <JoyCategorySelect value={empcategory} setValue={setEmpCategory} />
+                                    <PermannetCategorySelect
+                                        disable={false}
+                                        value={empcategory}
+                                        setValue={setEmpCategory}
+                                    />
+                                    {/* / <JoyCategorySelect value={empcategory} setValue={setEmpCategory} /> */}
                                 </Box>
                                 <Box sx={{ width: "20%", pl: 0.5 }}>
-                                    <CssVarsProvider>
-                                        <Typography textColor="text.secondary" >
-                                            Category Change Date
-                                        </Typography>
-                                    </CssVarsProvider>
+                                    <Typography textColor="text.secondary" >
+                                        Category Change Date
+                                    </Typography>
                                 </Box>
                                 <Box sx={{ width: "30%" }} >
                                     <Input
@@ -422,22 +408,18 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                             {/* fourth row start */}
                             {
                                 disp === 2 ? <Box sx={{
-                                    display: "flex", flexDirection: "row", pt: 0.5, width: "100%"
+                                    display: "flex", flexDirection: "row", mt: 0.5, width: "100%"
                                 }}>
                                     <Box sx={{ width: "20%", fontWeight: 500, }}>
-                                        <CssVarsProvider>
-                                            <Typography textColor="text.secondary" >
+                                        <Typography textColor="text.secondary" >
 
-                                                Probation Start Date :  {p_startdate}
-                                            </Typography>
-                                        </CssVarsProvider>
+                                            Probation Start Date :  {p_startdate}
+                                        </Typography>
                                     </Box>
                                     <Box sx={{ width: "20%", pl: 0.5, fontWeight: 500, }}>
-                                        <CssVarsProvider>
-                                            <Typography textColor="text.secondary" >
-                                                Probation End Date :{p_enddate}
-                                            </Typography>
-                                        </CssVarsProvider>
+                                        <Typography textColor="text.secondary" >
+                                            Probation End Date :{p_enddate}
+                                        </Typography>
                                     </Box>
                                     <Box sx={{ width: "20%", pl: 0.5 }}>
                                         <CommonCheckBox
@@ -453,11 +435,9 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                             display: "flex", flexDirection: "row", pt: 0.5, width: "40%"
                                         }}>
                                             <Box sx={{ width: "50%" }}>
-                                                <CssVarsProvider>
-                                                    <Typography textColor="text.secondary" >
-                                                        Probation Extend Date
-                                                    </Typography>
-                                                </CssVarsProvider>
+                                                <Typography textColor="text.secondary" >
+                                                    Probation Extend Date
+                                                </Typography>
                                             </Box>
                                             <Box sx={{ width: "50%" }}>
                                                 <Input
@@ -476,11 +456,9 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                             display: "flex", flexDirection: "row", pt: 0.5, width: "40%"
                                         }}>
                                             <Box sx={{ width: "50%" }}>
-                                                <CssVarsProvider>
-                                                    <Typography textColor="text.secondary" >
-                                                        Probation Confirmation Date
-                                                    </Typography>
-                                                </CssVarsProvider>
+                                                <Typography textColor="text.secondary" >
+                                                    Probation Confirmation Date
+                                                </Typography>
                                             </Box>
                                             <Box sx={{ width: "50%" }}>
                                                 <Input
@@ -516,17 +494,15 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                 }}>
                     <Tooltip title="Save" followCursor placement='top' arrow>
                         <Box sx={{ display: "flex", pr: 1 }}>
-                            <CssVarsProvider>
-                                <Button
-                                    variant="outlined"
-                                    component="label"
-                                    size="sm"
-                                    color="primary"
-                                    onClick={submitCompany}
-                                >
-                                    <SaveIcon />
-                                </Button>
-                            </CssVarsProvider>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                size="sm"
+                                color="primary"
+                                onClick={submitCompany}
+                            >
+                                <SaveIcon />
+                            </Button>
                         </Box>
                     </Tooltip>
                 </Paper>
