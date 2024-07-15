@@ -4,8 +4,8 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage'
 import LaunchIcon from '@mui/icons-material/Launch';
 import { IconButton as OpenIcon } from '@mui/material';
-import moment from 'moment';
 import RescheduleModal from './RescheduleModal'
+import { format } from 'date-fns';
 
 const PendingList = ({ setShow, empdata, count, Setcount }) => {
     const [tabledata, SetTabledata] = useState([])
@@ -22,7 +22,7 @@ const PendingList = ({ setShow, empdata, count, Setcount }) => {
                 pretest_status: val.pretest_status,
                 question_count: val.question_count,
                 schedule_date: val.schedule_date,
-                datefmt: moment(val.schedule_date).format("YYYY-MM-DD"),
+                datefmt: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                 sn: val.sn,
                 slno: val.slno,
                 topic: val.topic,

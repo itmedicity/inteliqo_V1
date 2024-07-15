@@ -45,10 +45,12 @@ const OnlinePostWithQR = () => {
         question_count: 0,
         dept_id: 0,
         desg_slno: 0,
-        sect_id: 0
+        sect_id: 0,
+        scheduled_slno: 0,
+        schedule_date: ''
     });
 
-    const { em_id, dept_id, sect_id, desg_slno, topic_slno, slno, em_name } = datas;
+    const { em_id, dept_id, sect_id, desg_slno, topic_slno, slno, em_name, scheduled_slno, schedule_date } = datas;
 
     const dispatch = useDispatch()
 
@@ -96,7 +98,7 @@ const OnlinePostWithQR = () => {
 
     useEffect(() => {
         if (Object.keys(Emp_Details).length !== 0) {
-            const { em_id, em_name, slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id } = Emp_Details[0];
+            const { em_id, em_name, slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id, scheduled_slno, schedule_date } = Emp_Details[0];
             const obj = {
                 em_id: em_id,
                 em_name: em_name,
@@ -106,7 +108,9 @@ const OnlinePostWithQR = () => {
                 question_count: question_count,
                 dept_id: dept_id,
                 desg_slno: desg_slno,
-                sect_id: sect_id
+                sect_id: sect_id,
+                scheduled_slno: scheduled_slno,
+                schedule_date: schedule_date
             }
             setQuestcount(question_count)
             setDatas(obj);
@@ -145,9 +149,11 @@ const OnlinePostWithQR = () => {
             emp_topic: topic_slno,
             posttest_status: 1,
             mark: correct,
-            create_user: em_id
+            create_user: em_id,
+            scheduled_slno: scheduled_slno,
+            schedule_date: schedule_date
         }
-    }, [em_id, dept_id, sect_id, desg_slno, correct, topic_slno, slno])
+    }, [em_id, dept_id, sect_id, desg_slno, correct, topic_slno, slno, scheduled_slno, schedule_date])
 
     useEffect(() => {
         if (checkInsert === 1) {
@@ -246,7 +252,7 @@ const OnlinePostWithQR = () => {
                         </Box>
                 }
             </Box>
-            {open === true ? <QRShowModal id={id} open={open} setopen={setopen} tslno={tslno} /> : null}
+            {open === true ? <QRShowModal scheduled_slno={scheduled_slno} id={id} open={open} setopen={setopen} tslno={tslno} /> : null}
         </Fragment >
     )
 }

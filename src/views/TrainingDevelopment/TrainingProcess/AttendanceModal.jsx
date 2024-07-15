@@ -9,8 +9,8 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { IconButton as OpenIcon } from '@mui/material';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import moment from 'moment';
 import SaveIcon from '@mui/icons-material/Save';
+import { format } from 'date-fns';
 
 const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
 
@@ -36,7 +36,7 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
                 slno: val.slno,
                 topic: val.topic,
                 schedule_date: val.schedule_date,
-                date: moment(val.schedule_date).format('YYYY-MM-DD'),
+                date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                 topic_slno: val.topic_slno,
                 training_status: val.training_status,
                 training_topic_name: val.training_topic_name,

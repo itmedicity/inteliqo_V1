@@ -41,7 +41,7 @@ function App() {
           </Route>
           <Route path="/OnlineReTest/:slno/:emId/:tslno/:qcount" render={(props) => <RetestQuestions />}  >
           </Route>
-          <Route path="/PreLogInpage/:topic_slno" render={(props) => <PreLogInpage />}  >
+          <Route path="/PreLogInpage/:topic_slno/:slno" render={(props) => <PreLogInpage />}  >
           </Route>
           <Route path="/RetestEmpDetails/:emId/:tslno" render={(props) => <RetestEmpDetail />}  >
           </Route>

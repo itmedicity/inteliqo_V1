@@ -15,7 +15,6 @@ const ORScanmodalPage = ({ QRdata, QRmodal, setQRmodal }) => {
     }, [setQRmodal]);
 
     const Questlink = `${QR_URL}/OnlinePostTest/${slno}/${em_id}/${topic_slno}/${question_count}`
-
     return (
         <Fragment>
             <Modal

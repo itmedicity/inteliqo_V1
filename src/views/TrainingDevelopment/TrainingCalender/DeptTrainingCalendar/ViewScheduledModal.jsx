@@ -53,7 +53,7 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
 
     useEffect(() => {
         if (Object.keys(modalData).length !== 0) {
-            const { schedule_slno, training_date, traineer_name, training_topic_name, slno, topic_slno, dept_id, sect_id } = modalData;
+            const { schedule_slno, training_date, traineer_name, training_topic_name, topic_slno, dept_id, sect_id } = modalData;
             const obj = {
                 slno: schedule_slno,
                 date: training_date,

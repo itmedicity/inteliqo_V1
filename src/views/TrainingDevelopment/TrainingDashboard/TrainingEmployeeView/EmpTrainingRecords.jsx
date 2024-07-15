@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import _ from 'underscore';
 import { Checkbox, Sheet, Table, Typography } from '@mui/joy';
 import { axioslogin } from 'src/views/Axios/Axios';
+import { format } from 'date-fns';
 
 const EmpTrainingRecords = () => {
 
@@ -40,8 +41,13 @@ const EmpTrainingRecords = () => {
     const HandleDept = useCallback((e) => {
         if (e.target.checked === true) {
             SetDeprtmtl_flag(e.target.checked)
+            const obj = {
+                pre_id: em_id,
+                post_id: em_id,
+                emp_id: em_id
+            }
             const getDeptData = async () => {
-                const result = await axioslogin.get(`/TrainingRecord/getDeptTraining/${em_id}`)
+                const result = await axioslogin.post(`/TrainingRecord/getDeptTraining`, obj)
                 const { success, data } = result.data
                 if (success === 2) {
                     SetDeptdata(data)
@@ -49,6 +55,15 @@ const EmpTrainingRecords = () => {
                     SetDeptdata([])
                 }
             }
+            // const getDeptData = async () => {
+            //     const result = await axioslogin.get(`/TrainingRecord/getDeptTraining/${em_id}`)
+            //     const { success, data } = result.data
+            //     if (success === 2) {
+            //         SetDeptdata(data)
+            //     } else {
+            //         SetDeptdata([])
+            //     }
+            // }
             getDeptData()
             SetInductionFlag(false);
         }
@@ -57,7 +72,7 @@ const EmpTrainingRecords = () => {
             SetInductionFlag(false);
         }
     }, [SetDeprtmtl_flag, SetInductionFlag, SetDeptdata, em_id])
-
+    console.log(deptdata);
     return (
         <Paper elevation={0}>
             <Box sx={{ width: "100%" }}>
@@ -95,25 +110,25 @@ const EmpTrainingRecords = () => {
                                 <Table borderAxis='both' stickyHeader>
                                     <thead>
                                         <tr style={{ background: "#F6F5F5" }} >
-                                            <th >Slno</th>
-                                            <th style={{ width: '20%' }}>Topic</th>
-                                            <th>Pre-Test Mark</th>
-                                            <th>Post-Test Mark</th>
-                                            <th>Duration (hr)</th>
+                                            <th style={{ width: '5%', textAlign: "center" }}>Slno</th>
+                                            <th style={{ width: '30%', textAlign: "center" }}>Topic</th>
+                                            <th style={{ textAlign: "center" }}> Scheduled Date</th>
+                                            <th style={{ width: '10%', textAlign: "center" }}>Pre-Test Mark</th>
+                                            <th style={{ width: '10%', textAlign: "center" }}>Post-Test Mark</th>
+                                            <th style={{ width: '10%', textAlign: "center" }}>Duration (hr)</th>
                                             <th>Approval status</th>
                                         </tr>
                                     </thead>
                                     <tbody style={{ textTransform: "capitalize" }}>
                                         {data.map((row, ndx) => (
-                                            <tr key={ndx}
-                                            // style={{ backgroundColor: getColor(row.training_iduct_tnd_verify_status) }}
-                                            >
-                                                <td>{row.view_slno}</td>
-                                                <td style={{ width: '20%' }}>{row.training_topic_name === null ? "Not updated" : row.training_topic_name.toLowerCase()}</td>
-                                                <td>{row.pre_mark === null ? "Not Attended" : row.pre_mark}</td>
-                                                <td>{row.post_mark === null ? "Not Attended" : row.post_mark}</td>
-                                                <td>{row.hours}</td>
-                                                <td>{row.training_iduct_tnd_verify_status === 0 ? "Approval Pending" : "Approved"}</td>
+                                            <tr key={ndx}>
+                                                <td style={{ width: '5%', textAlign: "center" }}>{row?.view_slno}</td>
+                                                <td style={{ width: '30%' }}>{row?.training_topic_name === null ? "Not updated" : row?.training_topic_name.toLowerCase()}</td>
+                                                <td style={{ textAlign: "center" }}>{format(new Date(row?.induction_date), "dd-MM-yyyy")}</td>
+                                                <td style={{ textAlign: "center" }}>{row?.pre_mark === null ? "Not Attended" : row?.pre_mark}</td>
+                                                <td style={{ textAlign: "center" }}>{row?.post_mark === null ? "Not Attended" : row?.post_mark}</td>
+                                                <td style={{ textAlign: "center" }}>{row?.hours}</td>
+                                                <td>{row?.training_iduct_tnd_verify_status === 0 ? "Approval Pending" : "Approved"}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -126,7 +141,7 @@ const EmpTrainingRecords = () => {
 
                 {Deprtmtl_flag === true ?
                     <Box>
-                        {deptdata.length !== 0 ?
+                        {deptdata?.length !== 0 ?
                             <Sheet sx={{
                                 overflow: 'auto',
                                 '::-webkit-scrollbar': { display: "none" }, height: 700,
@@ -135,23 +150,25 @@ const EmpTrainingRecords = () => {
                                 <Table borderAxis='both' stickyHeader>
                                     <thead>
                                         <tr style={{ background: "#F6F5F5" }} >
-                                            <th >Slno</th>
-                                            <th style={{ width: '20%' }}>Topic</th>
-                                            <th>Pre-Test Mark</th>
-                                            <th>Post-Test Mark</th>
-                                            <th>Duration (hr)</th>
+                                            <th style={{ width: '5%', textAlign: "center" }}>Slno</th>
+                                            <th style={{ width: '30%', textAlign: "center" }}>Topic</th>
+                                            <th style={{ textAlign: "center" }}> Scheduled Date</th>
+                                            <th style={{ width: '10%', textAlign: "center" }}>Pre-Test Mark</th>
+                                            <th style={{ width: '10%', textAlign: "center" }}>Post-Test Mark</th>
+                                            <th style={{ width: '10%', textAlign: "center" }}>Duration (hr)</th>
                                             <th>Approval status</th>
                                         </tr>
                                     </thead>
                                     <tbody style={{ textTransform: "capitalize" }}>
-                                        {deptdata.map((row, ndx) => (
+                                        {deptdata?.map((row, ndx) => (
                                             <tr key={ndx}>
-                                                <td>{row.view_slno}</td>
-                                                <td style={{ width: '20%' }}>{row.training_topic_name === null ? "Not updated" : row.training_topic_name.toLowerCase()}</td>
-                                                <td>{row.pre_mark === null ? "Not Attended" : row.pre_mark}</td>
-                                                <td>{row.post_mark === null ? "Not Attended" : row.post_mark}</td>
-                                                <td>{row.hours}</td>
-                                                <td>{row.tnd_verification_status === 0 ? "Approval Pending" : "Approved"}</td>
+                                                <td style={{ width: '5%', textAlign: "center" }}>{row?.view_slno}</td>
+                                                <td style={{ width: '30%' }}>{row?.training_topic_name === null ? "Not updated" : row?.training_topic_name.toLowerCase()}</td>
+                                                <td style={{ textAlign: "center" }}>{format(new Date(row?.schedule_date), "dd-MM-yyyy")}</td>
+                                                <td style={{ textAlign: "center" }}>{row?.pre_mark === null ? "Not Attended" : row?.pre_mark}</td>
+                                                <td style={{ textAlign: "center" }}>{row?.post_mark === null ? "Not Attended" : row?.post_mark}</td>
+                                                <td style={{ textAlign: "center" }}>{row?.hours}</td>
+                                                <td>{row?.tnd_verification_status === 0 ? "Approval Pending" : "Approved"}</td>
                                             </tr>
                                         ))}
                                     </tbody>

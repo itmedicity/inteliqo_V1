@@ -527,7 +527,7 @@ const routes = [
   { path: '/Home/TrainingPendingReport', exact: true, name: 'Departmental Training Pending Employee Reports', component: TrainingPendingReport },
   { path: '/Home/TrainingRetestEmpReport', exact: true, name: 'Departmental Training Retest Employee Reports', component: TrainingRetestEmpReport },
   { path: '/Home/CommonPreTestPage', exact: true, name: 'Common PreTest', component: CommonPreTestPage },
-  { path: '/PreLogInpage/:topic_slno', exact: true, name: 'PreTest LogIn', component: PreLogInpage },
+  { path: '/PreLogInpage/:topic_slno/:slno', exact: true, name: 'PreTest LogIn', component: PreLogInpage },
   { path: '/Home/CommonPostTestPage', exact: true, name: 'Common PostTest', component: CommonPostTestPage },
   { path: '/RetestEmpDetails/:emId/:tslno', exact: true, name: 'Retest Emp Detailst', component: RetestEmpDetails },
   { path: '/Home/InductionTraining', exact: true, name: 'Induction Training', component: InductionTraining },

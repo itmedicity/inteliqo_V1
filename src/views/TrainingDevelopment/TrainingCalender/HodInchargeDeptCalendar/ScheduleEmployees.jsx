@@ -14,7 +14,7 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import moment from 'moment';
 import { format } from 'date-fns';
 
-const ScheduleEmployees = ({ Scheduledata, topic, setTopic, SetView, View, datefrmt, setTable, EmpDetails, SetDatefrmt, count, SetCount, dept, deptSec, year }) => {
+const ScheduleEmployees = ({ Scheduledata, topic, setTopic, SetView, View, datefrmt, EmpDetails, SetDatefrmt, count, SetCount, dept, deptSec, year }) => {
 
     const [remark, setRemark] = useState('');
     const [trainer, setTrainer] = useState([]);
@@ -113,7 +113,6 @@ const ScheduleEmployees = ({ Scheduledata, topic, setTopic, SetView, View, datef
                         succesNofity(message);
                         SetCount(count + 1);
                         reset();
-                        setTable(0)
 
                     }
                     else {
@@ -124,7 +123,6 @@ const ScheduleEmployees = ({ Scheduledata, topic, setTopic, SetView, View, datef
                     warningNofity(message);
                     reset();
                     SetCount(0)
-                    setTable(0)
 
                 }
             }
@@ -134,7 +132,7 @@ const ScheduleEmployees = ({ Scheduledata, topic, setTopic, SetView, View, datef
 
             warningNofity("Please Enter the given fields ")
         }
-    }, [postData, setTable, SetCount, count, dept, deptSec, year, newdata, trainer, topic, datefrmt, remark, reset, em_id])
+    }, [postData, SetCount, count, dept, deptSec, year, newdata, trainer, topic, datefrmt, remark, reset, em_id])
 
     const ShowallDept = useCallback((e) => {
         if (e.target.checked === true) {

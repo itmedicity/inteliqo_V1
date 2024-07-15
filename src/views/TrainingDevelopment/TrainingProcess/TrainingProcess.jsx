@@ -11,7 +11,7 @@ import NextMonthTrainings from './NextMonthTrainings';
 import { useDispatch, useSelector } from 'react-redux';
 import { AllotedToPostTest, BelowAverageEmployeeList, DepartmentalTrainingDetails, TodaysTraining, TrainingCompletedList, TrainingEmpDatas, TrainingEmpDetailsAll, TrainingProcessdetails } from 'src/redux/actions/Training.Action';
 import moment from 'moment';
-import { addDays, endOfMonth } from 'date-fns';
+import { addDays, endOfMonth, format } from 'date-fns';
 import TodayTrainings from './TodayTrainings';
 import DueTrainings from './DueTrainings';
 import PendingList from './PendingList';
@@ -83,7 +83,7 @@ const TrainingProcess = () => {
                 schedule_date: val.schedule_date,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                date: moment(val.schedule_date).format('YYYY-MM-DD'),
+                date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
             }
             return object;
         })
@@ -101,7 +101,7 @@ const TrainingProcess = () => {
                 pretest_status: val.pretest_status,
                 question_count: val.question_count,
                 schedule_date: val.schedule_date,
-                datefmt: moment(val.schedule_date).format("YYYY-MM-DD"),
+                datefmt: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                 sn: val.sn,
                 slno: val.slno,
                 topic: val.topic,

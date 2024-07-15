@@ -9,6 +9,7 @@ import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { CssVarsProvider, IconButton, Input } from '@mui/joy'
 import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard'
 import JoySelectTopic from 'src/views/MuiComponents/JoyComponent/JoySelectTopic'
+import { format } from 'date-fns'
 
 const InductionCompletedList = ({ setShow, trainingcompleted }) => {
     const [filterdate, setFilterDate] = useState(moment());
@@ -26,7 +27,7 @@ const InductionCompletedList = ({ setShow, trainingcompleted }) => {
                 induct_emp_dept: val.induct_emp_dept,
                 training_status: val.training_status,
                 induction_date: val.induction_date,
-                date: moment(val.induction_date).format('YYYY-MM-DD'),
+                date: format(new Date(val.induction_date), "dd-MM-yyyy"),
                 question_count: val.question_count,
                 pretest_status: val.pretest_status,
                 topic_slno: val.topic_slno,
@@ -42,7 +43,7 @@ const InductionCompletedList = ({ setShow, trainingcompleted }) => {
                 em_id: val.em_id,
                 em_name: val.em_name,
                 em_no: val.em_no,
-                postdate: moment(val.postdate).format('YYYY-MM-DD'),
+                postdate: format(new Date(val.postdate), "dd-MM-yyyy"),
             }
             return object;
         })
@@ -81,7 +82,7 @@ const InductionCompletedList = ({ setShow, trainingcompleted }) => {
     }, [setShow])
 
     return (
-        <CustomInnerHeightDashBoard title="Training Completed Employee List" toClose={toClose} >
+        <CustomInnerHeightDashBoard title="Induction Training Completed Employee List" toClose={toClose} >
             <Box sx={{ width: "100%", p: 0.2, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 <Paper elevation={0} sx={{ display: 'flex', px: 1, py: 0.5 }}>
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >

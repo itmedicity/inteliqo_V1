@@ -4,8 +4,8 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage'
 import LaunchIcon from '@mui/icons-material/Launch';
 import { IconButton as OpenIcon } from '@mui/material';
-import moment from 'moment';
 import InductReschedule from './InductReschedule';
+import { format } from 'date-fns';
 
 const InductionPendingList = ({ setShow, pendingEmp, count, Setcount }) => {
     const [tabledata, SetTabledata] = useState([])
@@ -33,7 +33,7 @@ const InductionPendingList = ({ setShow, pendingEmp, count, Setcount }) => {
                 em_no: val.em_no,
                 schedule_topic: val.schedule_topic,
                 induct_detail_date: val.induct_detail_date,
-                datefmt: moment(val.induct_detail_date).format("YYYY-MM-DD"),
+                datefmt: format(new Date(val.induct_detail_date), "dd-MM-yyyy"),
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
                 trainers: val.trainers,
@@ -69,7 +69,7 @@ const InductionPendingList = ({ setShow, pendingEmp, count, Setcount }) => {
 
     return (
         <Paper>
-            <CustomDashboardPage title="Pending Trainings" displayClose={true} setClose={setShow} >
+            <CustomDashboardPage title="Induction Training Pending List" displayClose={true} setClose={setShow} >
                 {open === true ? <InductReschedule count={count} Setcount={Setcount} open={open} Setopen={Setopen}
                     getData={getData} tabledata={tabledata} />
 

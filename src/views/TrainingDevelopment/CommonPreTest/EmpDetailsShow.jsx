@@ -9,8 +9,7 @@ import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlin
 import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 import { Box, Button, Sheet, Table, Typography } from '@mui/joy';
 
-const EmpDetailsShow = ({ data }) => {
-
+const EmpDetailsShow = ({ data, SetView }) => {
     const history = useHistory()
 
     const [Viewdata, setViewData] = useState({
@@ -27,14 +26,15 @@ const EmpDetailsShow = ({ data }) => {
         Emslno: 0,
         mark: 0,
         postmark: 0,
-        retest: 0
+        retest: 0,
+        scheduled_slno: 0
     });
 
-    const { dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark } = Viewdata;
+    const { dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark, scheduled_slno } = Viewdata;
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
-            const { dept_name, desg_name, em_mobile, postmark, em_name, sect_name, training_topic_name, topic_slno, em_no, em_id, question_count, Emslno, pretest_status, posttest_status, online_mode, mark, offline_mode, training_status } = data[0];
+            const { dept_name, desg_name, em_mobile, postmark, em_name, sect_name, training_topic_name, topic_slno, em_no, em_id, question_count, Emslno, pretest_status, posttest_status, online_mode, mark, offline_mode, training_status, scheduled_slno } = data[0];
             const obj = {
                 dept_name: dept_name,
                 desg_name: desg_name,
@@ -57,7 +57,8 @@ const EmpDetailsShow = ({ data }) => {
                 online: online_mode === 1 ? "Online" : "Offline",
                 postmark: postmark === null ? "Not attend" : postmark,
                 mark: mark,
-                retest: postmark < 2 ? 1 : 0
+                retest: postmark < 2 ? 1 : 0,
+                scheduled_slno: scheduled_slno
             }
             setViewData(obj);
         }
@@ -78,8 +79,9 @@ const EmpDetailsShow = ({ data }) => {
 
     //close the tab
     const GotoLogin = useCallback(() => {
-        history.push(`/PreLogInpage/${topic_slno}`)
-    }, [history, topic_slno])
+        SetView(0)
+        history.push(`/PreLogInpage/${topic_slno}/${scheduled_slno}`)
+    }, [history, SetView, topic_slno, scheduled_slno])
 
 
     return (
