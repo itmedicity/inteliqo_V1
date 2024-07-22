@@ -29,7 +29,7 @@ const TndDeptVerificationMain = () => {
                         sect_id: val.sect_id,
                         sect_name: val.sect_name,
                         schedule_date: val.schedule_date,
-                        date: format(new Date(val.schedule_date), 'yyyy-MM-dd'),
+                        date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                         topic_slno: val.topic_slno,
                         training_topic_name: val.training_topic_name,
                     }
@@ -53,7 +53,6 @@ const TndDeptVerificationMain = () => {
         }
         const result = await axioslogin.post(`/TrainingVerification/getDeptEmpList`, obj)
         const { success, data } = result.data;
-        // console.log(data);
         if (success === 2) {
             const viewData = data?.map((val) => {
                 const obj = {

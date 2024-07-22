@@ -58,7 +58,7 @@ const InductionNextMonth = ({ setShow, NextmonthData, }) => {
         setShow(0)
     }, [setShow])
     return (
-        <CustomInnerHeightDashBoard title="Next Month Training List" toClose={toClose} >
+        <CustomInnerHeightDashBoard title="Induction Next Month Training List" toClose={toClose} >
             <Box sx={{ width: "100%", p: 0.2, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 <Paper elevation={0} sx={{ display: 'flex', px: 1, py: 0.5 }}>
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >

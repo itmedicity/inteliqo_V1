@@ -4,9 +4,9 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import { IconButton as OpenIcon } from '@mui/material';
-import moment from 'moment';
 import RetestScheduleModal from './RetestScheduleModal';
 import DoneIcon from '@mui/icons-material/Done';
+import { format } from 'date-fns';
 
 const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
 
@@ -27,7 +27,7 @@ const BelowAVGListEmpList = ({ BelowAvgList, setShow, count, Setcount }) => {
                 question_count: val.question_count,
                 training_status: val.training_status,
                 schedule_date: val.schedule_date,
-                datefmt: moment(val.schedule_date).format("YYYY-MM-DD"),
+                datefmt: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                 slno: val.slno,
                 sn: val.sn,
                 topic_slno: val.topic_slno,

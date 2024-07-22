@@ -47,7 +47,7 @@ const HodDeptQRPage = ({ em_department }) => {
 
                                 </tr>
                             </thead>
-                            <tbody style={{ height: 50, overflow: "auto", '&::-webkit-scrollbar': { display: "none" } }}>
+                            <tbody sx={{ height: 50, overflow: "auto", '&::-webkit-scrollbar': { display: "none" } }}>
                                 {PreTopics?.map((val, index) => (
                                     <tr key={index}>
                                         <td style={{ width: "15%", textAlign: "center" }}>{val.sno}</td>

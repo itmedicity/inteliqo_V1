@@ -3,15 +3,16 @@ import { Box, Paper, Typography } from '@mui/material';
 import React, { Fragment, memo, useCallback } from 'react'
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-const QRShowModal = ({ open, tslno }) => {
+const QRShowModal = ({ open, tslno, scheduled_slno }) => {
 
-    const topic_slno = tslno;
+    const topic_slno = parseInt(tslno);
+    const slno = parseInt(scheduled_slno)
 
     const history = useHistory()
 
     const GotoLogin = useCallback(() => {
-        history.push(`/PreLogInpage/${topic_slno}`)
-    }, [history, topic_slno])
+        history.push(`/PreLogInpage/${topic_slno}/${slno}`)
+    }, [history, topic_slno, slno])
 
     return (
         <Fragment>

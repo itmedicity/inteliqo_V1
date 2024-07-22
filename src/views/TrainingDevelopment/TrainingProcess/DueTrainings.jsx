@@ -9,6 +9,7 @@ import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { CssVarsProvider, IconButton, Input } from '@mui/joy'
 import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard'
 import JoySelectTopic from 'src/views/MuiComponents/JoyComponent/JoySelectTopic'
+import { format } from 'date-fns'
 
 const DueTrainings = ({ setShow, trainingcompleted }) => {
     const [filterdate, setFilterDate] = useState(moment());
@@ -25,7 +26,7 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
                 posttest_status: val.posttest_status,
                 schedule_topics: val.schedule_topics,
                 schedule_date: val.schedule_date,
-                date: moment(val.schedule_date).format('YYYY-MM-DD'),
+                date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                 schedule_year: val.schedule_year,
                 slno: val.slno,
                 topic_slno: val.topic_slno,

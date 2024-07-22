@@ -7,7 +7,7 @@ import { useHistory } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const QRPretestSubmitModal = ({ data, id, emId, open, tslno, setopen }) => {
+const QRPretestSubmitModal = ({ data, id, scheduled_slno, emId, open, tslno, setopen }) => {
 
     const history = useHistory()
 
@@ -74,10 +74,10 @@ const QRPretestSubmitModal = ({ data, id, emId, open, tslno, setopen }) => {
 
     useEffect(() => {
         if (offline_status === true && offline === 1) {
-            history.push(`/PreLogInpage/${topic_slno}`)
+            history.push(`/PreLogInpage/${topic_slno}/${scheduled_slno}`)
         }
 
-    }, [history, offline_status, offline, topic_slno])
+    }, [history, offline_status, offline, topic_slno, scheduled_slno])
     return (
         <Fragment>
             <Modal

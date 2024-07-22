@@ -36,7 +36,7 @@ const EmpHomepage = ({ data, SetView }) => {
         topic_post_status: 0
     });
 
-    const { dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark, slno, topic_pre_status, topic_post_status } = Viewdata;
+    const { dept_name, desg_name, em_name, training_topic_name, postmark, retest, posttest, em_no, topic_slno, question_count, Emslno, em_id, training_status, pretest_status, posttest_status, pretest, online, mark, slno } = Viewdata;
 
     const updateViewData = (data, setViewData) => {
         if (Object.keys(data).length !== 0) {

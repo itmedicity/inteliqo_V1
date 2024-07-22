@@ -6,7 +6,7 @@ import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDiss
 import SentimentSatisfiedIcon from '@mui/icons-material/SentimentSatisfied';
 import MoodBadIcon from '@mui/icons-material/MoodBad';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
 import { format } from 'date-fns';
@@ -17,8 +17,6 @@ const FeedbackWithoutTest = () => {
     const { topic_no, schedule_no, EmId } = useParams()
 
     const [data, SetData] = useState([])
-
-    const history = useHistory()
 
     const [feedback, SetFeedback] = useState('');
 
@@ -128,7 +126,6 @@ const FeedbackWithoutTest = () => {
             succesNofity(message)
             SetSelectedData([])
             SetFeedback('');
-            // history.push(`/InductLogInpage/${topic_no}/${schedule_no}`)
         }
         else {
             warningNofity(message)
@@ -136,7 +133,7 @@ const FeedbackWithoutTest = () => {
             SetData([])
             SetFeedback('');
         }
-    }, [history, SelectedData, topic_no, SetFeedback, schedule_no, induct_detail_date, trainers, EmId, feedback])
+    }, [SelectedData, topic_no, SetFeedback, schedule_no, induct_detail_date, trainers, EmId, feedback])
 
     return (
         <Fragment>
@@ -145,16 +142,32 @@ const FeedbackWithoutTest = () => {
                 <Box sx={{
                     p: 0.5
                 }}>
-                    <Box sx={{ p: 1 }}>
+                    <Box sx={{}}>
                         <Typography sx={{ textAlign: "center", fontSize: 25, }} >TRAINING & DEVELOPMENT</Typography>
 
-                        <Box sx={{ backgroundColor: "#F1EFEF" }}>
+                        {/* <Box sx={{ backgroundColor: "#F1EFEF" }}>
                             <Typography sx={{ p: 0.2, mt: 2, color: "#686D76", }}>Date: {date}</Typography>
                             <Typography sx={{ p: 0.2, color: "#686D76", textTransform: "capitalize" }}>Topic: {training_topic_name.toLowerCase()}</Typography>
                             <Typography sx={{ p: 0.2, color: "#686D76", textTransform: "capitalize" }}>Trainer Name: {em_name.toLowerCase()}</Typography>
+                        </Box> */}
+                        <Box sx={{ backgroundColor: "#F0F3FF", mt: 0.5, p: 0.5 }}>
+                            <Box sx={{ p: 0.1, display: "flex", flexDirection: "row", gap: 1, flexWrap: "wrap" }}>
+                                <Typography>Date :</Typography>
+                                <Typography sx={{ textTransform: "capitalize" }}>{date}</Typography>
+                            </Box>
+                            <Box sx={{ p: 0.1, display: "flex", flexDirection: "row", gap: 1, flexWrap: "wrap" }}>
+                                <Typography>Trainer :</Typography>
+                                <Typography sx={{ textTransform: "capitalize", display: "flex", flexWrap: "wrap" }}>{em_name.toLowerCase()}</Typography>
+                            </Box>
+                            <Box sx={{ p: 0.1, display: "flex", flexDirection: "row", gap: 1, flexWrap: "wrap" }}>
+                                <Typography>Topic :</Typography>
+                                <Typography sx={{ textTransform: "capitalize" }}>{training_topic_name.toLowerCase()}</Typography>
+                            </Box>
                         </Box>
-                        <Box sx={{ mt: 2 }}>
-                            <Typography level='6'>1.The Objectives of the training were clearly defined.</Typography>
+
+                        <Box sx={{ mt: 1, p: 0.5 }}>
+                            <Typography level='h6'>1.The Objectives of the training were clearly defined.</Typography>
+                            <Typography level='h6'>പരിശീലനത്തിൻ്റെ ലക്ഷ്യങ്ങൾ വ്യക്തമായി നിർവചിക്കപ്പെട്ടിട്ടുണ്ട്</Typography>
                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1.5 }}>
                                 <Box sx={{ flex: 1 }}>
                                     <Box sx={{ textAlign: "center" }}>
@@ -206,8 +219,9 @@ const FeedbackWithoutTest = () => {
                             </Box>
                         </Box>
 
-                        <Box sx={{ mt: 1, p: 0.5 }}>
+                        <Box sx={{ p: 0.5 }}>
                             <Typography level='6'>2.The content was organised and easy to follow.</Typography>
+                            <Typography level='6'>ഉള്ളടക്കം ക്രമീകരിച്ചതും പിന്തുടരാൻ എളുപ്പവുമാണ്</Typography>
                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1.5 }}>
                                 <Box sx={{ flex: 1 }}>
                                     <Box sx={{ textAlign: "center" }}>
@@ -259,8 +273,9 @@ const FeedbackWithoutTest = () => {
                             </Box>
                         </Box>
 
-                        <Box sx={{ mt: 1.2, p: 0.5 }}>
+                        <Box sx={{ p: 0.5 }}>
                             <Typography level='6'>3.Training Facilities were adequate.</Typography>
+                            <Typography level='6'>പരിശീലന സൗകര്യങ്ങൾ മതിയായതായിരുന്നു.</Typography>
                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1.5 }}>
                                 <Box sx={{ flex: 1 }}>
                                     <Box sx={{ textAlign: "center" }}>
@@ -312,8 +327,9 @@ const FeedbackWithoutTest = () => {
                             </Box>
                         </Box>
 
-                        <Box sx={{ mt: 1.1, p: 0.5 }}>
+                        <Box sx={{ p: 0.5 }}>
                             <Typography level='6'>4.The training will be useful in my work.</Typography>
+                            <Typography level='6'>പരിശീലനം എൻ്റെ ജോലിയിൽ ഉപയോഗപ്രദമാകും</Typography>
                             <Box sx={{ display: "flex", flexDirection: "row", gap: 1, mt: 1.5 }}>
                                 <Box sx={{ flex: 1 }}>
                                     <Box sx={{ textAlign: "center" }}>
@@ -366,7 +382,7 @@ const FeedbackWithoutTest = () => {
                         </Box>
                         <Box sx={{ mt: 1 }}>
                             <Textarea
-                                minRows={2}
+                                minRows={1}
                                 maxRows={4}
                                 name="Suggestions"
                                 placeholder="Suggestion if any"

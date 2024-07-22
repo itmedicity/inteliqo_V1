@@ -25,7 +25,7 @@ const TDVerificationMainPage = () => {
                         slno: val.slno,
                         schedule_slno: val.schedule_slno,
                         induction_date: val.induction_date,
-                        schedule_date: format(new Date(val.induction_date), 'yyyy-MM-dd'),
+                        schedule_date: format(new Date(val.induction_date), 'dd-MM-yyyy'),
                         topic_slno: val.topic_slno,
                         training_topic_name: val.training_topic_name
                     }

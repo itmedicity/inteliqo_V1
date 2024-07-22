@@ -139,7 +139,7 @@ const InductReschedule = ({ count, Setcount, open, Setopen, getData }) => {
                     }
                     sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                 >
-                    Training Reschedule
+                    Induction Training Reschedule
                 </Typography>
 
                 <Box sx={{ px: 4 }}>
