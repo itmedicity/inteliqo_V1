@@ -13,6 +13,8 @@ export const hr_report_one = [
     // { to: '/Home/SalaryReport', name: 'Attendance Salary Report', slno: 272 },
     { to: '/Home/DayWiseAttendence', name: 'Employee Day Wise Attendence Report', slno: 284 },
     { to: '/Home/OndutyReport', name: 'Employee On Duty Report', slno: 298 },
+    { to: '/Home/CreditedLeaveCount', name: 'Credited Leave Count Report', slno: 190 },
+
 
 ]
 export const hr_report_two = [
