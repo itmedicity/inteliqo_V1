@@ -44,7 +44,8 @@ const RemarkModal = ({ open, setOpen, data, setCount }) => {
 
     const saveData = useCallback(async () => {
         const postData = {
-            em_id: emid
+            em_id: emid,
+            em_no: emno,
         }
         const postDeptData = {
             dept_id: dept_id,
