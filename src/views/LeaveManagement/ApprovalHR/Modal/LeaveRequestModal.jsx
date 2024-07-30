@@ -101,19 +101,19 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                 })
 
                 //UPDATE HOLIDAY 
-                const holidayLeavePromise = new Promise(async (resolve, reject) => {
-                    if (Holiday?.length > 0) {
-                        const resulthl = await axioslogin.post(`/LeaveRequestApproval/updateHolidayLeaveTable`, Holiday);
-                        const { success, message } = resulthl.data;
-                        if (success === 1) {
-                            resolve('Holiday Leave Request updated')
-                        } else {
-                            reject(`HL Updation ! Error ${message}`)
-                        }
-                    } else {
-                        resolve(1)
-                    }
-                })
+                // const holidayLeavePromise = new Promise(async (resolve, reject) => {
+                //     if (Holiday?.length > 0) {
+                //         const resulthl = await axioslogin.post(`/LeaveRequestApproval/updateHolidayLeaveTable`, Holiday);
+                //         const { success, message } = resulthl.data;
+                //         if (success === 1) {
+                //             resolve('Holiday Leave Request updated')
+                //         } else {
+                //             reject(`HL Updation ! Error ${message}`)
+                //         }
+                //     } else {
+                //         resolve(1)
+                //     }
+                // })
 
                 //EARN LEAVE 
                 const earnLeavePromise = new Promise(async (resolve, reject) => {
@@ -213,28 +213,34 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
 
                 Promise.all([
                     casualLeavePromise,
-                    holidayLeavePromise,
+                    // holidayLeavePromise,
                     earnLeavePromise,
                     coffLeavePromise,
-                    updateEsiLeavePunchMaster,
-                    updateLwpPunchMaster,
-                    updateLeavePunchMasterTable
+                    // updateEsiLeavePunchMaster,
+                    // updateLwpPunchMaster,
+                    // updateLeavePunchMasterTable
                 ]).then(async (result) => {
                     if (result) {
-                        const resultdel = await axioslogin.patch(`/LeaveRequestApproval/hrLeaveapprv`, formData);
-                        const { success } = await resultdel.data;
-                        if (success === 1) {
-                            setOpenBkDrop(false)
-                            setCount(Math.random())
-                            succesNofity('Leave Request Approved')
-                            setOpen(false)
-                        }
-                        else {
-                            setCount(Math.random())
-                            errorNofity('Error Updating Leave Request')
-                            setOpenBkDrop(false)
-                            setOpen(false)
-                        }
+                        Promise.all([
+                            updateEsiLeavePunchMaster,
+                            updateLwpPunchMaster,
+                            updateLeavePunchMasterTable
+                        ]).then(async (result) => {
+                            const resultdel = await axioslogin.patch(`/LeaveRequestApproval/hrLeaveapprv`, formData);
+                            const { success } = await resultdel.data;
+                            if (success === 1) {
+                                setOpenBkDrop(false)
+                                setCount(Math.random())
+                                succesNofity('Leave Request Approved')
+                                setOpen(false)
+                            }
+                            else {
+                                setCount(Math.random())
+                                errorNofity('Error Updating Leave Request')
+                                setOpenBkDrop(false)
+                                setOpen(false)
+                            }
+                        })
                     }
                 }).catch(error => {
                     setCount(Math.random())
