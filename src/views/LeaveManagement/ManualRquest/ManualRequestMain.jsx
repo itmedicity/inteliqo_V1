@@ -16,6 +16,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import SaveIcon from '@mui/icons-material/Save';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 
 const ManualRequestMain = () => {
 
@@ -74,6 +75,10 @@ const ManualRequestMain = () => {
             const result = await axioslogin.post(`/ReligionReport/punchReportmaster`, postdata)
             const { success, data: punchMasteData } = result.data
             if (success === 1) {
+
+                console.log(punchMasteData);
+
+
                 const arr = punchMasteData?.map((val) => {
                     const a = modifiedTable?.find((e) => format(new Date(e.date), 'yyyy-MM-dd') === val.duty_day)
                     let shiftIn = `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_in), 'HH:mm')}`;
@@ -109,21 +114,37 @@ const ManualRequestMain = () => {
                 create_user: em_id
             }
         })
-        const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
-        const { success } = result.data;
-        if (success === 1) {
-            succesNofity("Data saved successfully")
-            setTable([])
-            setRemark('')
+        if (remrk === '') {
+            warningNofity("Please Add any Reason!")
         } else {
-            warningNofity("Error while saving data, Please contact IT")
+            const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
+            const { success } = result.data;
+            if (success === 1) {
+                succesNofity("Data saved successfully")
+                setTable([])
+                setRemark('')
+            } else {
+                warningNofity("Error while saving data, Please contact IT")
+            }
         }
+
     }, [table, remrk, em_id])
 
     const getArray = useCallback(async (e, val) => {
         let ar = table?.map((e) => e.duty_day === val.duty_day ? { ...e, selected: 1 } : { ...e })
+        const arry = table.map((val) => val.duty_desc)
+        if (arry.includes('P')) {
+            warningNofity("Please Select Absent Days")
+        } else {
+            return
+        }
         setTable([...ar])
     }, [table])
+
+    const handleFileChange = useCallback(() => {
+
+    })
+
 
     return (
         <CustomLayout title="Manual Request" displayClose={true} >
@@ -216,6 +237,8 @@ const ManualRequestMain = () => {
                                 <tr>
                                     <th style={{ width: '20%', textAlign: 'center', }}>Selected Date</th>
                                     <th style={{ textAlign: 'center', }}>Shift Desc</th>
+                                    <th style={{ textAlign: 'center', }}>Leave Desc</th>
+                                    <th style={{ textAlign: 'center', }}>Duty Desc</th>
                                     <th style={{ textAlign: 'center', }}>Action</th>
 
                                 </tr>
@@ -259,6 +282,34 @@ const ManualRequestMain = () => {
                                                     fontFamily="monospace"
                                                     sx={{ opacity: '50%' }}
                                                 >
+                                                    {val.lvereq_desc}
+                                                </Typography>
+                                            </td>
+                                            <td
+                                                style={{
+                                                    textAlign: 'center',
+                                                }}
+                                            >
+                                                <Typography
+                                                    level="title-md"
+                                                    textColor="var(--joy-palette-success-plainColor)"
+                                                    fontFamily="monospace"
+                                                    sx={{ opacity: '50%' }}
+                                                >
+                                                    {val.duty_desc}
+                                                </Typography>
+                                            </td>
+                                            <td
+                                                style={{
+                                                    textAlign: 'center',
+                                                }}
+                                            >
+                                                <Typography
+                                                    level="title-md"
+                                                    textColor="var(--joy-palette-success-plainColor)"
+                                                    fontFamily="monospace"
+                                                    sx={{ opacity: '50%' }}
+                                                >
                                                     {val.shft_desc}
                                                 </Typography>
                                             </td>
@@ -279,11 +330,11 @@ const ManualRequestMain = () => {
                         </Table>
                     </Paper>
                 </Box>
-                <Box sx={{ display: 'flex', flex: 1, p: 1, }}>
+                <Box sx={{ display: 'flex', flex: 1, p: 1, flexWrap: "wrap", gap: 0.5 }}>
                     <Box sx={{ display: 'flex', flex: 3 }} >
                         <Textarea
                             label="Outlined"
-                            placeholder="Message"
+                            placeholder="Reason"
                             variant="outlined"
                             color="warning"
                             size="md"
@@ -292,6 +343,30 @@ const ManualRequestMain = () => {
                             onChange={(e) => setRemark(e.target.value)}
                             sx={{ flex: 1 }}
                         />
+                    </Box>
+                    <Box>
+                        <CssVarsProvider>
+                            <Tooltip title="Upload Documents" variant="outlined" placement="top">
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="lg"
+                                    color="danger"
+                                >
+                                    <UploadFileIcon />
+                                    <input
+                                        //hidden 
+                                        id="file-input"
+                                        accept=".jpg, .jpeg, .png, .pdf"
+                                        style={{ display: 'none' }}
+                                        multiple
+                                        type="file"
+                                        name="file"
+                                        onChange={handleFileChange}
+                                    />
+                                </Button>
+                            </Tooltip>
+                        </CssVarsProvider>
                     </Box>
                     <Box sx={{ display: 'flex', }} >
                         <CssVarsProvider>
