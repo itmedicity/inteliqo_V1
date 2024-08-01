@@ -433,6 +433,8 @@ const EmployeeRecordEdit = () => {
             } else {
                 updateContractEmp(submitdata)
             }
+        } else if (oldContract_Status === 0 && contractflag === 1) {
+            warningNofity("You can't Edit Employee Permanent to Any Contract")
         }
         else {
             if (isBefore(new Date(probdate), new Date()) && probdate !== '2000-01-31') {
