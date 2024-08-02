@@ -123,30 +123,26 @@ const ManualRequestMain = () => {
             const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
             const { success } = result.data;
             if (success === 1) {
-                succesNofity("Data saved successfully")
                 setTable([])
                 setRemark('')
+                succesNofity("Data saved successfully")
             } else {
+                setTable([])
+                setRemark('')
                 warningNofity("Error while saving data, Please contact IT")
             }
         }
 
-    }, [table, remrk, em_id])
+    }, [table, remrk, em_id, setRemark])
 
     const getArray = useCallback(async (e, val) => {
         let ar = table?.map((e) => e.duty_day === val.duty_day ? { ...e, selected: 1 } : { ...e })
-        const arry = table.map((val) => val.duty_desc)
-        // if (arry.includes('P')) {
-        //     warningNofity("Please Select Absent Days")
-        // } else {
-        //     return
-        // }
         setTable([...ar])
     }, [table])
 
     const handleFileChange = useCallback(() => {
 
-    })
+    }, [])
 
 
     useEffect(() => {
@@ -241,7 +237,7 @@ const ManualRequestMain = () => {
                                 <DatePicker
                                     views={['day']}
                                     inputFormat="dd-MM-yyyy"
-                                    //minDate={new Date()}
+                                    minDate={new Date(fromDate)}
                                     maxDate={endOfMonth(new Date(fromDate))}
                                     value={toDate}
                                     size="small"
@@ -296,6 +292,8 @@ const ManualRequestMain = () => {
                                         <th style={{ textAlign: 'center', }}>Leave Desc</th>
                                         <th style={{ textAlign: 'center', }}>Duty Desc</th>
                                         <th style={{ textAlign: 'center', }}>Action</th>
+                                        <th style={{ textAlign: 'center', }}></th>
+
 
                                     </tr>
                                 </thead>
@@ -373,11 +371,26 @@ const ManualRequestMain = () => {
                                                     <Box>
                                                         <Checkbox
                                                             checked={val.selected === 1 ? true : false}
+                                                            disabled={val.duty_desc !== 'A' ? true : false}
                                                             onChange={(e) => {
                                                                 getArray(e, val)
                                                             }}
                                                         />
                                                     </Box>
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        textAlign: 'center',
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        level="title-md"
+                                                        textColor={val.duty_desc !== 'A' ? 'red' : 'success.100'}
+                                                        fontFamily="monospace"
+                                                        sx={{ opacity: '50%' }}
+                                                    >
+                                                        {val.duty_desc !== 'A' ? 'Description is not Absent' : null}
+                                                    </Typography>
                                                 </td>
                                             </tr>
                                         )
@@ -396,6 +409,8 @@ const ManualRequestMain = () => {
                                 size="md"
                                 minRows={1}
                                 maxRows={2}
+                                name='remrk'
+                                value={remrk}
                                 onChange={(e) => setRemark(e.target.value)}
                                 sx={{ flex: 1 }}
                             />

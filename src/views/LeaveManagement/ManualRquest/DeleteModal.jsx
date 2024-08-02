@@ -45,7 +45,7 @@ const DeleteModal = ({ open, setOpen, punchMastdata, setCount }) => {
             setOpen(false)
         }
 
-    }, [punchMastdata, setCount])
+    }, [punchMastdata, setCount, setOpen])
 
     const closeRequest = useCallback(() => {
         setOpen(false)
