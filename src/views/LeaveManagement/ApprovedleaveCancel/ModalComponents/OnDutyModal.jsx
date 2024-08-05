@@ -76,7 +76,7 @@ const OnDutyModal = ({ open, setOpen, ondutyData, setCount }) => {
             errorNofity("Error getting PunchMarkingHR ")
             setOpen(false)
         }
-    }, [em_id, ondutyData])
+    }, [em_id, ondutyData, setOpen, setCount, reason])
 
     const handleClose = useCallback(() => {
         setOpen(false)

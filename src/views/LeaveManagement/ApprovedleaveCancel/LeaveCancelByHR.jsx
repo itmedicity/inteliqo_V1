@@ -205,7 +205,7 @@ const LeaveCancelByHR = () => {
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department ', field: 'department', minWidth: 200, filter: true },
         { headerName: 'Section', field: 'section', filter: true, minWidth: 200 },
-
+        { headerName: 'Request Date', field: 'requestDate', filter: true, minWidth: 200 },
         {
             headerName: 'Action',
             cellRenderer: params => {

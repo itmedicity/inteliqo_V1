@@ -242,7 +242,7 @@ const LeaveRqModal = ({ open, setOpen, empData, setCount }) => {
             setOpen(false)
         }
 
-    }, [reason, empData, em_id])
+    }, [reason, empData, em_id, reqDetl, setCount, setOpen])
     return (
         <Modal
             aria-labelledby="modal-title"
