@@ -10,10 +10,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Button, Checkbox, CssVarsProvider, Input, Table, Textarea, Tooltip, Typography } from '@mui/joy';
-import { addDays, differenceInCalendarDays, eachDayOfInterval, endOfMonth, format } from 'date-fns';
+import { addDays, differenceInCalendarDays, eachDayOfInterval, endOfMonth, format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import SaveIcon from '@mui/icons-material/Save';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
@@ -120,20 +120,39 @@ const ManualRequestMain = () => {
         if (remrk === '') {
             warningNofity("Please Add any Reason!")
         } else {
-            const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
-            const { success } = result.data;
-            if (success === 1) {
-                setTable([])
-                setRemark('')
-                succesNofity("Data saved successfully")
+            const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+            const postData = {
+                month: monthStartDate,
+                section: deptsection
+            }
+
+            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
+            const { success, data } = checkPunchMarkingHr.data
+            if (success === 0 || success === 1) {
+                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                    warningNofity("Punch Marking Monthly Process Done !! Can't Cancel Miss Punch Request  ")
+                    setTable([])
+                } else {
+                    const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
+                    const { success } = result.data;
+                    if (success === 1) {
+                        setTable([])
+                        setRemark('')
+                        succesNofity("Data saved successfully")
+                    } else {
+                        setTable([])
+                        setRemark('')
+                        warningNofity("Error while saving data, Please contact IT")
+                    }
+                }
             } else {
-                setTable([])
-                setRemark('')
-                warningNofity("Error while saving data, Please contact IT")
+                errorNofity("Error getting PunchMarkingHR ")
             }
         }
 
-    }, [table, remrk, em_id, setRemark])
+    }, [table, remrk, em_id, setRemark, deptsection, fromDate])
 
     const getArray = useCallback(async (e, val) => {
         let ar = table?.map((e) => e.duty_day === val.duty_day ? { ...e, selected: 1 } : { ...e })

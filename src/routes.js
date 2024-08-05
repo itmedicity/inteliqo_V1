@@ -296,6 +296,8 @@ const FeedbackPageWithoutTest = React.lazy(() => import('./views/TrainingDevelop
 const OndutyReport = React.lazy(() => import('./views/HrReports/OnDutyReport/OndutyReport'))
 const ManualRequest = React.lazy(() => import('./views/LeaveManagement/ManualRquest/ManualRequestMain'))
 const CreditedLeaveCount = React.lazy(() => import('./views/HrReports/LeaveCountReport/CreditedLeaveCountReport'))
+const ApprovedLeaveCancel = React.lazy(() => import('./views/LeaveManagement/ApprovedleaveCancel/LeaveCancelByHR'))
+
 
 
 const routes = [
@@ -573,7 +575,8 @@ const routes = [
   { path: '/FeedbackPageWithoutTest/:topic_no/:schedule_no/:EmId', exact: true, name: 'Feedback Page Without Test', component: FeedbackPageWithoutTest },
   { path: '/Home/OndutyReport', exact: true, name: 'On Duty Report', component: OndutyReport },
   { path: '/Home/ManualRequest', exact: true, name: 'Manual Request', component: ManualRequest },
-  { path: '/Home/CreditedLeaveCount', exact: true, name: 'Credited Leave Count Report', component: CreditedLeaveCount }
+  { path: '/Home/CreditedLeaveCount', exact: true, name: 'Credited Leave Count Report', component: CreditedLeaveCount },
+  { path: '/Home/ApprovedLeaveCancel', exact: true, name: 'Approved Leave Cancel By HR', component: ApprovedLeaveCancel }
 
 ]
 

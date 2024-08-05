@@ -135,6 +135,13 @@ const Leavemanagement = [
         name: 'Manual Request',
         to: '/Home/ManualRequest',
     },
+    {
+        men_slno: 299,
+        component: CNavItem,
+        name: 'Approved Leave Cancel',
+        to: '/Home/ApprovedLeaveCancel',
+    },
+
 
 ]
 

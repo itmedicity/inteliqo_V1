@@ -218,9 +218,10 @@ export const getCaualLeaveDetl = (state) => {
             slno: e.hrm_cl_slno,
             month: e.cl_lv_mnth + '-' + leveCount,
             count: leveCount,
-            status: e.hl_lv_tkn_status
+            status: e.hl_lv_tkn_status,
+            leaveMonth: e.cl_lv_year
         }
-    })?.filter(e => e.status === 0)
+    })?.filter(e => e.status === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date()))
 }
 
 
