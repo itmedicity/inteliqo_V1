@@ -1,12 +1,17 @@
-import { Alert, Stack } from '@mui/material'
+import { Typography } from '@mui/joy'
 import React, { Fragment, memo } from 'react'
 
 const ResignationComponent = () => {
     return (
         <Fragment>
-            <Stack sx={{ width: '100%', height: '10px' }} spacing={2}>
-                <Alert severity="error" >HR Policy Is Applicable For 24-Hour Resignation</Alert>
-            </Stack>
+            <Typography
+                color="danger"
+                level="body-sm"
+                variant="outlined"
+                sx={{ p: 0.8, borderRadius: 5 }}
+            >
+                HR Policy Applicable For 24-Hour Resignation Process
+            </Typography>
         </Fragment >
     )
 }

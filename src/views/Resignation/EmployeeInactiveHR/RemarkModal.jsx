@@ -8,10 +8,11 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import moment from 'moment';
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 
 const RemarkModal = ({ open, setOpen, data, setCount }) => {
     const [reason, setReason] = useState('')
-    const [value, setValue] = useState(moment(new Date()).format('DD-MM-YYYY'));
+    const [value, setValue] = useState(new Date());
     const [details, setDetails] = useState(
         {
             emno: '',
@@ -124,16 +125,16 @@ const RemarkModal = ({ open, setOpen, data, setCount }) => {
                         bgcolor: 'background.body',
                     }}
                 />
-                <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
+                <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'left', flexDirection: 'column' }} >
                     <Typography
                         fontSize="xl2"
-                        lineHeight={1}
+                        lineHeight={0.8}
                         startDecorator={
-                            <EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />
+                            <AssignmentIndOutlinedIcon sx={{}} />
                         }
-                        sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
+                        sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, textTransform: 'capitalize' }}
                     >
-                        {name}
+                        {name?.toLocaleLowerCase()}
                     </Typography>
                     <Typography
                         lineHeight={1}
@@ -142,21 +143,27 @@ const RemarkModal = ({ open, setOpen, data, setCount }) => {
                         level="h5"
                         textColor="inherit"
                         fontWeight="md"
-                        endDecorator={<Typography
+                        startDecorator={`Employee #`}
+                        sx={{ color: 'neutral.400', display: 'flex', }}
+                    >
+                        <Typography
                             level="h6"
                             justifyContent="center"
                             alignItems="center"
                             alignContent='center'
-                            lineHeight={1}
+                            lineHeight={1.5}
                         >
                             {emno}
-                        </Typography>}
-                        sx={{ color: 'neutral.400', display: 'flex', }}
-                    >
-                        {`employee #`}
+                        </Typography>
                     </Typography>
-                    <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >
-                        {section}
+                    <Typography
+                        level="h5"
+                        textColor="inherit"
+                        fontWeight="md"
+                        sx={{ px: 0, textTransform: "capitalize", color: 'neutral.400', }}
+                    // startDecorator={`Section`}
+                    >
+                        {section?.toLowerCase()}
                     </Typography>
                 </Box>
                 <Divider>
@@ -164,27 +171,42 @@ const RemarkModal = ({ open, setOpen, data, setCount }) => {
                         HR Use Only
                     </Chip>
                 </Divider>
-                <Box sx={{ display: 'flex', flexDirection: 'row' }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, pt: 1, justifyContent: 'center' }} >
+
+                <Box sx={{ display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center', }} >
+                    <Box sx={{ display: "flex", flex: 1, justifyContent: 'Left', alignItems: 'center', pr: 5 }} >
                         <CssVarsProvider>
-                            <Typography level="body1">Resigned Date</Typography>
+                            <Typography level="body1" >Inactive Date</Typography>
                         </CssVarsProvider>
                     </Box>
-                    <Box sx={{ flex: 1, px: 0.5, }} >
+                    <Box sx={{ display: "flex", flex: 1, justifyContent: 'Left', }} >
+                        <CssVarsProvider>
+                            <Typography level="body1" >{moment(new Date()).format('DD-MM-YYYY')}</Typography>
+                        </CssVarsProvider>
+                    </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center', }} >
+                    <Box sx={{ display: "flex", flex: 1, justifyContent: 'left', alignItems: 'center', pr: 5 }} >
+                        <CssVarsProvider>
+                            <Typography level="body1" >Resigned Date</Typography>
+                        </CssVarsProvider>
+                    </Box>
+                    <Box sx={{ display: "flex" }} >
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['day']}
                                 // minDate={subMonths(new Date(), 1)}
-                                // maxDate={addMonths(new Date(), 1)}
+                                maxDate={new Date()}
                                 value={value}
                                 size="small"
                                 onChange={(newValue) => {
                                     setValue(newValue);
                                 }}
+                                inputFormat="dd/MM/yyyy"
                                 renderInput={({ inputRef, inputProps, InputProps }) => (
-                                    <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
                                         <CssVarsProvider>
-                                            <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                            <Input ref={inputRef} {...inputProps} style={{}} disabled={true} sx={{ textAlign: 'right', }} />
                                         </CssVarsProvider>
                                         {InputProps?.endAdornment}
                                     </Box>
@@ -194,8 +216,14 @@ const RemarkModal = ({ open, setOpen, data, setCount }) => {
                     </Box>
                 </Box>
                 <Box sx={{ pt: 0.5 }} >
-                    <Textarea name="Outlined" placeholder="Add Any Remarks Here...."
-                        variant="outlined" onChange={(e) => setReason(e.target.value)} />
+                    <Textarea
+                        name="Outlined"
+                        required
+                        sx={{ minHeight: 150, width: '100%' }}
+                        placeholder="Reason for Inactive / Resignation"
+                        variant="outlined"
+                        onChange={(e) => setReason(e.target.value)}
+                    />
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
                         <Button variant="solid" color="success" onClick={saveData}>
                             Save

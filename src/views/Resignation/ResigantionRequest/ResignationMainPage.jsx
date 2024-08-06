@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import _ from 'underscore'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { Button, CssVarsProvider, Option, Select, Textarea, Tooltip, Typography } from '@mui/joy'
+import { Button, CssVarsProvider, Input, Option, Select, Textarea, Tooltip, Typography } from '@mui/joy'
 import { useCallback } from 'react'
 import ResignationComponent from './ResignationComponent'
 import moment from 'moment'
@@ -12,6 +12,17 @@ import { addDays } from 'date-fns'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useSelector } from 'react-redux'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import Files from 'react-files'
+import BackupIcon from '@mui/icons-material/Backup';
+
+import png from '../../../assets/upload/png.png';
+import jpeg from '../../../assets/upload/jpeg.png';
+import pdf from '../../../assets/upload/pdf.png';
+import doc from '../../../assets/upload/doc.png';
+
 
 const ResignationMainPage = () => {
 
@@ -141,53 +152,76 @@ const ResignationMainPage = () => {
         authorization_hod, co_assign, em_designation, em_id, em_department, em_no,
         em_dept_section, request_date, relvngDate, noticeperiod])
 
+
+
+    const handleChange = (files) => {
+        console.log(files)
+    }
+
+    const handleError = (error, file) => {
+        console.log(error)
+    }
+
     return (
         <CustomLayout title="Resignation Request" displayClose={true} >
             <ToastContainer />
-            <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
-                <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
-                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-                        <InputComponent
-                            type="text"
-                            size="sm"
-                            name="sect_name"
-                            value={sect_name}
-                            disabled
-                        />
-                    </Box>
-                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-                        <InputComponent
-                            type="text"
-                            size="sm"
-                            name="em_name"
-                            value={em_name}
-                            disabled
-                        />
-                    </Box>
-                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-                        <InputComponent
-                            type="text"
-                            size="sm"
-                            name="em_no"
-                            value={em_no}
-                            disabled
-                        />
-                    </Box>
-                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-                        <InputComponent
-                            type="text"
-                            size="sm"
-                            name="desg_name"
-                            value={desg_name}
-                            disabled
-                        />
+            <Paper variant="outlined" sx={{ width: '100%', m: 2, pt: 2 }}  >
+                <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'column', mx: 2 }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flex: 1,
+                            flexDirection: 'column',
+                            border: '1px solid #e0e0e0',
+                            borderRadius: 1,
+                            p: 0.5,
+                            pl: 1,
+                        }}
+                    >
+                        <Typography
+                            color="neutral"
+                            level="title-md"
+                            noWrap={false}
+                            variant="plain"
+                        >
+                            {em_name}
+                        </Typography>
+                        <Typography
+                            color="neutral"
+                            level="body-md"
+                            noWrap={false}
+                            variant="plain"
+                            sx={{ fontWeight: 500 }}
+                            startDecorator={`Employee No : `}
+                        >
+                            {em_no}
+                        </Typography>
+                        <Typography
+                            color="neutral"
+                            level="body-md"
+                            noWrap={false}
+                            variant="plain"
+                            sx={{ lineHeight: 0.5, textTransform: 'capitalize', fontWeight: 500 }}
+                        >
+                            {desg_name.toLowerCase()}
+                        </Typography>
+                        <Typography
+                            color="neutral"
+                            level="body-md"
+                            noWrap={false}
+                            variant="plain"
+                            sx={{ textTransform: "capitalize", lineHeight: 1.5, fontWeight: 500 }}
+                        >
+                            {sect_name.toLowerCase()}
+                        </Typography>
                     </Box>
                 </Box>
                 <Box sx={{
                     display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, },
-                    flexDirection: 'row', width: '100%'
+                    flexDirection: 'row',
+                    mx: 2
                 }}>
-                    <Box sx={{ flex: 1, mt: 1, px: 0.3, }}>
+                    <Box sx={{ flex: 2, mt: 1, px: 0.3 }}>
                         <Box sx={{ flex: 1, display: 'flex' }}>
                             <Box sx={{ flex: 1 }} >
                                 <CssVarsProvider>
@@ -206,8 +240,8 @@ const ResignationMainPage = () => {
                                     variant='outlined'
                                 >
                                     <Option value={0}>Select Resignation Type</Option>
-                                    <Option value={1}>Resignation</Option>
-                                    <Option value={2}>24-Hour Resignation</Option>
+                                    <Option value={1}>Regular Resignation Process</Option>
+                                    <Option value={2}>24-Hour Resignation Process</Option>
                                 </Select>
                             </Box>
                         </Box>
@@ -215,26 +249,38 @@ const ResignationMainPage = () => {
                             <Box sx={{ flex: 1 }} >
                                 <CssVarsProvider>
                                     <Typography >
-                                        Request Date
+                                        Resignation Requested Date
                                     </Typography>
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ flex: 1 }} >
-                                <InputComponent
-                                    type="date"
-                                    size="sm"
-                                    placeholder="Request date"
-                                    name="request_date"
-                                    value={request_date}
-                                    onchange={(e) => setrequest_date(e.target.value)}
-                                />
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        views={['day']}
+                                        minDate={new Date()}
+                                        value={request_date}
+                                        size="small"
+                                        onChange={(newValue) => {
+                                            setrequest_date(newValue)
+                                        }}
+                                        inputFormat="dd-MM-yyyy"
+                                        renderInput={({ inputRef, inputProps, InputProps }) => (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+                                                <CssVarsProvider>
+                                                    <Input ref={inputRef} {...inputProps} style={{}} disabled={true} sx={{ textAlign: 'right', width: '100%' }} />
+                                                </CssVarsProvider>
+                                                {InputProps?.endAdornment}
+                                            </Box>
+                                        )}
+                                    />
+                                </LocalizationProvider>
                             </Box>
                         </Box>
                         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'row', mt: 1 }}>
                             <Box sx={{ flex: 1 }} >
                                 <CssVarsProvider>
                                     <Typography >
-                                        Notice Period
+                                        Notice Period In Days
                                     </Typography>
                                 </CssVarsProvider>
                             </Box>
@@ -243,7 +289,7 @@ const ResignationMainPage = () => {
                                     type="text"
                                     size="sm"
                                     name="noticeperiod"
-                                    value={noticeperiod}
+                                    value={resignation_type === 1 ? `30 Days` : `24 Hour`}
                                     disabled
                                 />
                             </Box>
@@ -269,36 +315,76 @@ const ResignationMainPage = () => {
                             </Box>
                         </Box>
                     </Box>
-                    <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-                        {resignation_type === 2 ? <ResignationComponent /> : null}
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        flex: 1,
+                        mt: 0.5,
+                        mp: 1,
+                    }}>
+                        <Box sx={{
+                            display: 'flex',
+                            flex: 1,
+                        }} >
+                            <Box sx={{
+                                display: 'flex',
+                                flex: 1,
+                                border: 3 + 'px dashed',
+                                borderColor: '#8EADCD',
+                                borderRadius: 5,
+                                m: 2,
+                                mx: 4,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }} >
+                                <Files
+                                    className='files-dropzone'
+                                    onChange={handleChange}
+                                    onError={handleError}
+                                    accepts={['image/png', '.pdf', '.doc', '.docx', 'image/jpeg', 'image/jpg']}
+                                    multiple={false}
+                                    maxFileSize={10000000}
+                                    minFileSize={0}
+                                    clickable
+                                >
+                                    <BackupIcon sx={{ fontSize: 80, color: '#8EADCD' }} />
+                                </Files>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', }} >
+                            <img src={pdf} alt="preview" style={{ width: 140, height: 140 }} />
+                        </Box>
                     </Box>
                 </Box>
-                <Box sx={{ flex: 1, mt: 1, px: 0.3, display: 'flex', flexDirection: 'row' }}>
+                <Box sx={{ px: 3, py: 0.5 }} >
+                    {resignation_type === 2 ? <ResignationComponent /> : null}
+                </Box>
+                <Box sx={{ flex: 1, mt: 1, px: 0.3, pb: 2, display: 'flex', flexDirection: 'column', mx: 2 }}>
                     <Box sx={{ flex: 1 }} >
                         <Textarea
                             label="Outlined"
-                            placeholder="Resignation Remark"
+                            placeholder="Reason for Resignation"
                             variant="outlined"
-                            color="warning"
+                            color="neutral"
                             size="lg"
                             minRows={1}
-                            maxRows={2}
+                            maxRows={4}
                             value={resignation_reason}
                             onChange={(e) => setresignation_reason(e.target.value)}
                             sx={{ flex: 1 }}
                         />
                     </Box>
-                    <Box sx={{ px: 0.5, mt: 0.5 }}>
+                    <Box sx={{ pt: 1 }}>
                         <CssVarsProvider>
                             <Tooltip title="Save Request" variant="outlined" placement="top">
                                 <Button
                                     variant="outlined"
                                     component="label"
                                     size="md"
-                                    color="primary"
+                                    color="danger"
                                     onClick={submitFormData}
                                 >
-                                    Save Request
+                                    Save Resignation Request
                                 </Button>
                             </Tooltip>
                         </CssVarsProvider>

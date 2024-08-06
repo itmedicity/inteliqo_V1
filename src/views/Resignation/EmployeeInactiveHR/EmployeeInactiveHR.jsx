@@ -13,6 +13,8 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import RemarkModal from './RemarkModal';
+import ToggleOffOutlinedIcon from '@mui/icons-material/ToggleOffOutlined';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
 
 const EmployeeInactiveHR = () => {
 
@@ -66,11 +68,25 @@ const EmployeeInactiveHR = () => {
             headerName: 'Action',
             cellRenderer: params =>
                 <Fragment>
-                    <Tooltip title="In Active " followCursor placement='top' arrow >
-                        <IconButton sx={{ mb: 0.5 }} onClick={() => InactiveEmp(params)} >
-                            <CheckCircleOutlineIcon color='primary' />
-                        </IconButton>
-                    </Tooltip>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'left',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Tooltip
+                            title="Click Here to Inactive the Selected Employee"
+                            followCursor
+                            placement='top'
+                            arrow
+                            sx={{}}
+                        >
+                            <IconButton onClick={() => InactiveEmp(params)} sx={{ p: 0, fontSize: 30 }} >
+                                <ToggleOffOutlinedIcon color='error' fontSize='inherit' />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Fragment>
         },
     ])
@@ -95,12 +111,13 @@ const EmployeeInactiveHR = () => {
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                         <DeptSecSelectByRedux dept={dept} value={deptSect} setValue={setDeptSect} />
                     </Box>
-                    <Box sx={{ mt: 0.2, pr: 0.2 }} >
+                    <Box sx={{}} >
                         <CssVarsProvider>
                             <Button
                                 aria-label="Like"
                                 variant="outlined"
                                 color="primary"
+                                sx={{ height: '100%' }}
                                 onClick={() => {
                                     getemployeedetails()
                                 }}
@@ -115,15 +132,14 @@ const EmployeeInactiveHR = () => {
                         columnDefs={column}
                         tableData={empData}
                         sx={{
-                            height: 400,
-                            width: "100%"
+                            height: screenInnerHeight - 200,
+                            width: "100%",
                         }}
                         rowHeight={30}
                         headerHeight={30}
                     />
                 </Paper>
                 <RemarkModal open={flag} setOpen={setFlag} data={details} setCount={setCount} />
-
             </Box>
         </CustomLayout>
     )
