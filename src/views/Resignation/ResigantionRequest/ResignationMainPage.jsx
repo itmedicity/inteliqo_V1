@@ -22,6 +22,7 @@ import png from '../../../assets/upload/png.png';
 import jpeg from '../../../assets/upload/jpeg.png';
 import pdf from '../../../assets/upload/pdf.png';
 import doc from '../../../assets/upload/doc.png';
+import noPreview from '../../../assets/upload/images.png'
 
 
 const ResignationMainPage = () => {
@@ -152,9 +153,10 @@ const ResignationMainPage = () => {
         authorization_hod, co_assign, em_designation, em_id, em_department, em_no,
         em_dept_section, request_date, relvngDate, noticeperiod])
 
-
+    const [files, setFiles] = useState([])
 
     const handleChange = (files) => {
+        setFiles(files)
         console.log(files)
     }
 
@@ -352,7 +354,13 @@ const ResignationMainPage = () => {
                             </Box>
                         </Box>
                         <Box sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', }} >
-                            <img src={pdf} alt="preview" style={{ width: 140, height: 140 }} />
+                            <img
+                                src={
+                                    files.length === 0 ? noPreview : files[0].extension === 'pdf' ? pdf : files[0].extension === 'doc' || files[0].extension === 'docx' ? doc : files[0].extension === 'jpg' || files[0].extension === 'jpeg' ? jpeg : png
+                                }
+                                alt="preview"
+                                style={{ width: 140, height: 140 }}
+                            />
                         </Box>
                     </Box>
                 </Box>
