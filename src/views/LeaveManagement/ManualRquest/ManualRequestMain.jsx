@@ -122,6 +122,17 @@ const ManualRequestMain = () => {
         }
     }, [toDate, fromDate, emply])
 
+    const handleImageUpload = useCallback(async (imageFile) => {
+        const options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+        }
+        const compressedFile = await imageCompression(imageFile, options)
+        return compressedFile
+    }, []);
+
+
     const submitData = useCallback(async () => {
 
         if (remrk === '') {
@@ -198,15 +209,7 @@ const ManualRequestMain = () => {
         }
     }, [table, remrk, em_id, setRemark, deptsection, fromDate, selectFile, emply, handleImageUpload])
 
-    const handleImageUpload = useCallback(async (imageFile) => {
-        const options = {
-            maxSizeMB: 1,
-            maxWidthOrHeight: 1920,
-            useWebWorker: true,
-        }
-        const compressedFile = await imageCompression(imageFile, options)
-        return compressedFile
-    }, []);
+
 
 
     const getArray = useCallback(async (e, val) => {
@@ -571,7 +574,9 @@ const ManualRequestMain = () => {
                                     {/* <Box sx={{  pr: 1, color: '#78C1F3' }}>{index + 1}.</Box> */}
                                     <Box sx={{}}> <Typography level='body-xs'>{file.name}</Typography></Box>
                                     <Box sx={{
-                                        p: 0, cursor: 'pointer', '&:hover': {
+                                        p: 0,
+                                        cursor: 'pointer',
+                                        '&:hover': {
                                             color: '#FF6868',
                                         }
                                     }}>
@@ -580,7 +585,6 @@ const ManualRequestMain = () => {
                                                 <CloseSharpIcon fontSize='small' />
                                             </Box>
                                         </Tooltip>
-
                                     </Box>
                                 </Box>
                             ))}
