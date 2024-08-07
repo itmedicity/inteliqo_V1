@@ -161,7 +161,16 @@ const ResignationMainPage = () => {
     }
 
     const handleError = (error, file) => {
-        console.log(error)
+        const { code } = error
+        if (code === 1) {
+            warningNofity('Upload failed. Invalid file type')
+        } else if (code === 2) {
+            warningNofity('Upload failed. File too large')
+        } else if (code === 3) {
+            warningNofity('Upload failed. File too small')
+        } else {
+            warningNofity('Upload failed. Maximum file count reached')
+        }
     }
 
     return (
@@ -326,7 +335,7 @@ const ResignationMainPage = () => {
                     }}>
                         <Box sx={{
                             display: 'flex',
-                            flex: 1,
+                            width: '50%',
                         }} >
                             <Box sx={{
                                 display: 'flex',
@@ -345,22 +354,42 @@ const ResignationMainPage = () => {
                                     onError={handleError}
                                     accepts={['image/png', '.pdf', '.doc', '.docx', 'image/jpeg', 'image/jpg']}
                                     multiple={false}
-                                    maxFileSize={10000000}
+                                    maxFileSize={2000000}
                                     minFileSize={0}
                                     clickable
                                 >
                                     <BackupIcon sx={{ fontSize: 80, color: '#8EADCD' }} />
+                                    <Typography
+                                        color="neutral"
+                                        level="body-xs"
+                                        noWrap
+                                        sx={{ flex: 1, textAlign: 'center', color: '#8EADCD' }}
+                                    >
+                                        upload files
+                                    </Typography>
                                 </Files>
                             </Box>
                         </Box>
-                        <Box sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', }} >
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '50%', justifyContent: 'center', alignItems: 'center', }} >
                             <img
                                 src={
                                     files.length === 0 ? noPreview : files[0].extension === 'pdf' ? pdf : files[0].extension === 'doc' || files[0].extension === 'docx' ? doc : files[0].extension === 'jpg' || files[0].extension === 'jpeg' ? jpeg : png
                                 }
                                 alt="preview"
-                                style={{ width: 140, height: 140 }}
+                                style={{ width: 100, height: 100 }}
                             />
+                            <CssVarsProvider>
+                                <Typography
+                                    color="neutral"
+                                    level="body-xs"
+                                    noWrap
+                                    textAlign={'center'}
+                                    textOverflow={'ellipsis'}
+                                    sx={{ width: '80%', }}
+                                >
+                                    {files[0]?.name}
+                                </Typography>
+                            </CssVarsProvider>
                         </Box>
                     </Box>
                 </Box>
