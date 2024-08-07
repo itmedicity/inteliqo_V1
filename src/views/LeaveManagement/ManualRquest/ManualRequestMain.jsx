@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import { Box, IconButton, Paper } from '@mui/material'
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
@@ -20,6 +20,12 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteModal from './DeleteModal';
+import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+import imageCompression from 'browser-image-compression'
+import { setCommonSetting } from 'src/redux/actions/Common.Action';
+import DescriptionIcon from '@mui/icons-material/Description';
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+import FileViewmodal from './FileViewmodal';
 
 const ManualRequestMain = () => {
 
@@ -27,6 +33,7 @@ const ManualRequestMain = () => {
 
     useEffect(() => {
         dispatch(setDepartment());
+        dispatch(setCommonSetting())
     }, [dispatch])
 
     const [dept, changeDept] = useState(0)
@@ -40,9 +47,17 @@ const ManualRequestMain = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [punchMastdata, setPunchMastdata] = useState({})
     const [count, setCount] = useState(0)
+    const [selectFile, setSelectFile] = useState([]);
+    const [fileUrsl, setFileUrls] = useState([])
+    const [fileOpen, setFileOpen] = useState(false)
 
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0])
     const { em_id } = empData;
+
+    const state = useSelector((state) => state?.getCommonSettings)
+    const commonSetting = useMemo(() => state, [state])
+    // console.log(commonSetting)
+    const { default_shift } = commonSetting;
 
     const getEmpdata = useCallback(async () => {
         //dataes difference count for checking the the duyt plan is done or not
@@ -108,15 +123,7 @@ const ManualRequestMain = () => {
     }, [toDate, fromDate, emply])
 
     const submitData = useCallback(async () => {
-        const filterArray = table?.filter(val => val.selected === 1)?.map((val) => {
-            return {
-                ...val,
-                duty_desc: 'P',
-                lvereq_desc: 'P',
-                remrk: remrk,
-                create_user: em_id
-            }
-        })
+
         if (remrk === '') {
             warningNofity("Please Add any Reason!")
         } else {
@@ -135,33 +142,85 @@ const ManualRequestMain = () => {
                     warningNofity("Punch Marking Monthly Process Done !! Can't Cancel Miss Punch Request  ")
                     setTable([])
                 } else {
-                    const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
-                    const { success } = result.data;
-                    if (success === 1) {
-                        setTable([])
-                        setRemark('')
-                        succesNofity("Data saved successfully")
+                    if (!selectFile?.length) {
+                        warningNofity('Please select files to upload.')
+                        return
                     } else {
-                        setTable([])
-                        setRemark('')
-                        warningNofity("Error while saving data, Please contact IT")
+                        const formData = new FormData()
+                        formData.append('emno', emply?.em_no)
+                        for (const file of selectFile) {
+                            if (file.type.startsWith('image')) {
+                                const compressedFile = await handleImageUpload(file)
+                                formData.append('files', compressedFile, compressedFile.name)
+                            } else {
+                                formData.append('files', file, file.name)
+                            }
+                        }
+                        const result = await axioslogin.post('/manualRequest/uploadManualRequest', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        })
+                        const { success, message, filenames } = result.data
+                        if (success === 1) {
+
+                            const filterArray = table?.filter(val => val.selected === 1)?.map((val) => {
+                                return {
+                                    ...val,
+                                    duty_desc: 'P',
+                                    lvereq_desc: 'P',
+                                    remrk: remrk,
+                                    create_user: em_id,
+                                    filename: filenames[0]
+                                }
+                            })
+                            const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
+                            const { success } = result.data;
+                            if (success === 1) {
+                                setTable([])
+                                setRemark('')
+                                setSelectFile([])
+                                succesNofity("Data saved successfully")
+
+                            } else {
+                                setTable([])
+                                setRemark('')
+                                warningNofity("Error while saving data, Please contact IT")
+                            }
+                        } else {
+                            warningNofity(message)
+                        }
                     }
                 }
             } else {
                 errorNofity("Error getting PunchMarkingHR ")
             }
         }
+    }, [table, remrk, em_id, setRemark, deptsection, fromDate, selectFile, emply, handleImageUpload])
 
-    }, [table, remrk, em_id, setRemark, deptsection, fromDate])
+    const handleImageUpload = useCallback(async (imageFile) => {
+        const options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+        }
+        const compressedFile = await imageCompression(imageFile, options)
+        return compressedFile
+    }, []);
+
 
     const getArray = useCallback(async (e, val) => {
         let ar = table?.map((e) => e.duty_day === val.duty_day ? { ...e, selected: 1 } : { ...e })
         setTable([...ar])
     }, [table])
 
-    const handleFileChange = useCallback(() => {
+    const handleFileChange = useCallback((e) => {
+        const newFiles = [...selectFile]
+        newFiles.push(e.target.files[0])
+        setSelectFile(newFiles)
 
-    }, [])
+    }, [selectFile, setSelectFile])
+
 
 
     useEffect(() => {
@@ -195,18 +254,43 @@ const ManualRequestMain = () => {
         { headerName: 'Leave Desc', field: 'lvereq_desc', filter: true },
         { headerName: 'Duty Desc ', field: 'duty_desc', },
         {
-            headerName: 'Action',
+            headerName: 'Delete',
             cellRenderer: params =>
-
-                <Tooltip title="Delete" followCursor placement='top' arrow >
-                    <IconButton sx={{ paddingY: 0.5 }}
-                        onClick={() => deleteRequest(params)}
-                    >
-                        <DeleteIcon color='primary' />
-                    </IconButton>
-                </Tooltip>
+                <>
+                    <Tooltip title="Delete" followCursor placement='top' arrow >
+                        <IconButton sx={{ paddingY: 0.5 }}
+                            onClick={() => deleteRequest(params)}
+                        >
+                            <DeleteIcon color='primary' />
+                        </IconButton>
+                    </Tooltip>
+                </>
+        },
+        {
+            headerName: 'View',
+            cellRenderer: params =>
+                <>
+                    <Tooltip title="Delete" followCursor placement='top' arrow >
+                        <IconButton sx={{ paddingY: 0.5 }}
+                            onClick={() => getFileData(params)}
+                        >
+                            <DescriptionIcon color='error' />
+                        </IconButton>
+                    </Tooltip>
+                </>
         },
     ])
+
+    const getFileData = useCallback((params) => {
+        const { filename } = params.data
+        const file = `${PUBLIC_NAS_FOLDER}/ManualRequests/${filename}`;
+        if (filename !== null) {
+            setFileUrls(file)
+            setFileOpen(true)
+        } else {
+            warningNofity("No Files Attached")
+        }
+    }, [])
 
     const deleteRequest = useCallback((params) => {
         const data = params.data
@@ -214,8 +298,21 @@ const ManualRequestMain = () => {
         setPunchMastdata(data)
     }, [])
 
+
+    const handleRemoveFile = useCallback((index) => {
+        const newFiles = [...selectFile]
+        newFiles.splice(index, 1)
+        setSelectFile(newFiles)
+        // Reset the file input value to allow selecting the same file again
+        const fileInput = document.getElementById('file-input')
+        if (fileInput) {
+            fileInput.value = null
+        }
+    }, [selectFile])
+
     return (
         <CustomLayout title="Manual Request" displayClose={true} >
+            <FileViewmodal open={fileOpen} setOpen={setFileOpen} fileUrsl={fileUrsl} />
             <DeleteModal open={modalOpen} setOpen={setModalOpen} punchMastdata={punchMastdata} setCount={setCount} />
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -390,7 +487,7 @@ const ManualRequestMain = () => {
                                                     <Box>
                                                         <Checkbox
                                                             checked={val.selected === 1 ? true : false}
-                                                            disabled={val.duty_desc !== 'A' ? true : false}
+                                                            disabled={val.duty_desc !== 'A' ? true : val.shift_id === default_shift ? true : false}
                                                             onChange={(e) => {
                                                                 getArray(e, val)
                                                             }}
@@ -404,11 +501,11 @@ const ManualRequestMain = () => {
                                                 >
                                                     <Typography
                                                         level="title-md"
-                                                        textColor={val.duty_desc !== 'A' ? 'red' : 'success.100'}
+                                                        textColor={val.duty_desc !== 'A' ? 'red' : val.shift_id === default_shift ? 'red' : 'success.100'}
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
-                                                        {val.duty_desc !== 'A' ? 'Description is not Absent' : null}
+                                                        {val.duty_desc !== 'A' ? 'Description is not Absent' : val.shift_id === default_shift ? 'Duty Not Scheduled' : null}
                                                     </Typography>
                                                 </td>
                                             </tr>
@@ -457,6 +554,36 @@ const ManualRequestMain = () => {
                                     </Button>
                                 </Tooltip>
                             </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            {selectFile.map((file, index) => (
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        display: 'flex',
+                                        borderRadius: 20,
+                                        p: .5,
+                                        alignItems: 'center',
+                                        backgroundColor: '#E1E5EA',
+
+                                    }}
+                                >
+                                    {/* <Box sx={{  pr: 1, color: '#78C1F3' }}>{index + 1}.</Box> */}
+                                    <Box sx={{}}> <Typography level='body-xs'>{file.name}</Typography></Box>
+                                    <Box sx={{
+                                        p: 0, cursor: 'pointer', '&:hover': {
+                                            color: '#FF6868',
+                                        }
+                                    }}>
+                                        <Tooltip title="Close">
+                                            <Box sx={{ p: 0 }} aria-label="Close" onClick={() => handleRemoveFile(index)}>
+                                                <CloseSharpIcon fontSize='small' />
+                                            </Box>
+                                        </Tooltip>
+
+                                    </Box>
+                                </Box>
+                            ))}
                         </Box>
                         <Box sx={{ display: 'flex', }} >
                             <CssVarsProvider>
