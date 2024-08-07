@@ -79,7 +79,7 @@ const ManualRequestMain = () => {
         const checkDutyPlan = await axioslogin.post('/plan/checkDutyPlanExcistNew', postData);
         const { success, dta } = checkDutyPlan.data;
 
-        if (success === 1 && dta.plan === differenceCountFromToDate) {
+        if (success === 1 && dta?.plan === differenceCountFromToDate) {
             //DUTY PLAN IS PLANNED FOR THE SELECTED DATE
 
             //FOR LISTING THE SELECTED DATE IN THE SCREEN
@@ -122,11 +122,24 @@ const ManualRequestMain = () => {
         }
     }, [toDate, fromDate, emply])
 
-    const submitData = useCallback(async () => {
+    const handleImageUpload = useCallback(async (imageFile) => {
+        const options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+        }
+        const compressedFile = await imageCompression(imageFile, options)
+        return compressedFile
+    }, []);
 
+
+    const submitData = useCallback(async () => {
         if (remrk === '') {
-            warningNofity("Please Add any Reason!")
-        } else {
+            warningNofity(" Add any Reason!")
+        } else if (remrk?.length > 45) {
+            warningNofity("Reason must be 45 character length")
+        }
+        else {
             const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
             const postData = {
                 month: monthStartDate,
@@ -142,71 +155,65 @@ const ManualRequestMain = () => {
                     warningNofity("Punch Marking Monthly Process Done !! Can't Cancel Miss Punch Request  ")
                     setTable([])
                 } else {
-                    if (!selectFile?.length) {
-                        warningNofity('Please select files to upload.')
-                        return
-                    } else {
-                        const formData = new FormData()
-                        formData.append('emno', emply?.em_no)
-                        for (const file of selectFile) {
-                            if (file.type.startsWith('image')) {
-                                const compressedFile = await handleImageUpload(file)
-                                formData.append('files', compressedFile, compressedFile.name)
-                            } else {
-                                formData.append('files', file, file.name)
-                            }
-                        }
-                        const result = await axioslogin.post('/manualRequest/uploadManualRequest', formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                            },
-                        })
-                        const { success, message, filenames } = result.data
-                        if (success === 1) {
-
-                            const filterArray = table?.filter(val => val.selected === 1)?.map((val) => {
-                                return {
-                                    ...val,
-                                    duty_desc: 'P',
-                                    lvereq_desc: 'P',
-                                    remrk: remrk,
-                                    create_user: em_id,
-                                    filename: filenames[0]
-                                }
-                            })
-                            const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
-                            const { success } = result.data;
-                            if (success === 1) {
-                                setTable([])
-                                setRemark('')
-                                setSelectFile([])
-                                succesNofity("Data saved successfully")
-
-                            } else {
-                                setTable([])
-                                setRemark('')
-                                warningNofity("Error while saving data, Please contact IT")
-                            }
+                    // if (!selectFile?.length) {
+                    //     warningNofity('Select files to upload.')
+                    //     return
+                    // } else {
+                    const formData = new FormData()
+                    formData.append('emno', emply?.em_no)
+                    for (const file of selectFile) {
+                        if (file.type.startsWith('image')) {
+                            const compressedFile = await handleImageUpload(file)
+                            formData.append('files', compressedFile, compressedFile.name)
                         } else {
-                            warningNofity(message)
+                            formData.append('files', file, file.name)
                         }
                     }
+                    const result = await axioslogin.post('/manualRequest/uploadManualRequest', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    })
+                    const { success, message, filenames } = result.data
+                    if (success === 1) {
+
+                        const filterArray = table?.filter(val => val.selected === 1)?.map((val) => {
+                            return {
+                                ...val,
+                                duty_desc: 'P',
+                                lvereq_desc: 'P',
+                                remrk: remrk,
+                                create_user: em_id,
+                                filename: filenames[0]
+                            }
+                        })
+                        const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
+                        const { success, message } = result.data;
+                        if (success === 1) {
+                            setTable([])
+                            setRemark('')
+                            setSelectFile([])
+                            succesNofity("Data saved successfully")
+
+                        } else if (success === 2) {
+                            warningNofity(message)
+                        }
+                        else {
+                            setTable([])
+                            setRemark('')
+                            warningNofity("Error while saving data, Please contact IT")
+                        }
+                    } else {
+                        warningNofity(message)
+                    }
                 }
+                // }
             } else {
                 errorNofity("Error getting PunchMarkingHR ")
             }
         }
     }, [table, remrk, em_id, setRemark, deptsection, fromDate, selectFile, emply, handleImageUpload])
 
-    const handleImageUpload = useCallback(async (imageFile) => {
-        const options = {
-            maxSizeMB: 1,
-            maxWidthOrHeight: 1920,
-            useWebWorker: true,
-        }
-        const compressedFile = await imageCompression(imageFile, options)
-        return compressedFile
-    }, []);
 
 
     const getArray = useCallback(async (e, val) => {
@@ -426,7 +433,7 @@ const ManualRequestMain = () => {
                                                                 fontFamily="monospace"
                                                                 sx={{ opacity: '80%' }}
                                                             >
-                                                                {format(val.datenew, 'dd-MMMM')}
+                                                                {format(val?.datenew, 'dd-MMMM')}
                                                             </Typography>
                                                         </Box>
                                                         <Box>
@@ -436,7 +443,7 @@ const ManualRequestMain = () => {
                                                                 fontFamily="monospace"
                                                                 sx={{ opacity: '50%' }}
                                                             >
-                                                                {format(val.datenew, 'eee')}
+                                                                {format(val?.datenew, 'eee')}
                                                             </Typography>
                                                         </Box>
                                                     </Box>
@@ -452,7 +459,7 @@ const ManualRequestMain = () => {
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
-                                                        {val.lvereq_desc}
+                                                        {val?.lvereq_desc}
                                                     </Typography>
                                                 </td>
                                                 <td
@@ -466,7 +473,7 @@ const ManualRequestMain = () => {
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
-                                                        {val.duty_desc}
+                                                        {val?.duty_desc}
                                                     </Typography>
                                                 </td>
                                                 <td
@@ -480,14 +487,14 @@ const ManualRequestMain = () => {
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
-                                                        {val.shft_desc}
+                                                        {val?.shft_desc}
                                                     </Typography>
                                                 </td>
                                                 <td style={{ textAlign: 'center', }}>
                                                     <Box>
                                                         <Checkbox
-                                                            checked={val.selected === 1 ? true : false}
-                                                            disabled={val.duty_desc !== 'A' ? true : val.shift_id === default_shift ? true : false}
+                                                            checked={val?.selected === 1 ? true : false}
+                                                            disabled={val?.duty_desc !== 'A' ? true : val?.shift_id === default_shift ? true : false}
                                                             onChange={(e) => {
                                                                 getArray(e, val)
                                                             }}
@@ -501,11 +508,11 @@ const ManualRequestMain = () => {
                                                 >
                                                     <Typography
                                                         level="title-md"
-                                                        textColor={val.duty_desc !== 'A' ? 'red' : val.shift_id === default_shift ? 'red' : 'success.100'}
+                                                        textColor={val?.duty_desc !== 'A' ? 'red' : val?.shift_id === default_shift ? 'red' : 'success.100'}
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
-                                                        {val.duty_desc !== 'A' ? 'Description is not Absent' : val.shift_id === default_shift ? 'Duty Not Scheduled' : null}
+                                                        {val?.duty_desc !== 'A' ? 'Description is not Absent' : val?.shift_id === default_shift ? 'Duty Not Scheduled' : null}
                                                     </Typography>
                                                 </td>
                                             </tr>
@@ -546,7 +553,7 @@ const ManualRequestMain = () => {
                                             id="file-input"
                                             accept=".jpg, .jpeg, .png, .pdf"
                                             style={{ display: 'none' }}
-                                            multiple
+                                            // multiple
                                             type="file"
                                             name="file"
                                             onChange={handleFileChange}
@@ -569,7 +576,7 @@ const ManualRequestMain = () => {
                                     }}
                                 >
                                     {/* <Box sx={{  pr: 1, color: '#78C1F3' }}>{index + 1}.</Box> */}
-                                    <Box sx={{}}> <Typography level='body-xs'>{file.name}</Typography></Box>
+                                    <Box sx={{}}> <Typography level='body-xs'>{file?.name}</Typography></Box>
                                     <Box sx={{
                                         p: 0, cursor: 'pointer', '&:hover': {
                                             color: '#FF6868',
