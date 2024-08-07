@@ -266,7 +266,7 @@ export const getAttendanceCalculation = async (
     //HALF DAY CALCULATION
     const totalShiftInMInits = differenceInMinutes(new Date(shift_out), new Date(shift_in))
     const halfDayInMinits = totalShiftInMInits / 2;
-    const halfDayStartTime = addMinutes(shift_in, halfDayInMinits - 1)
+    const halfDayStartTime = addMinutes(shift_in, halfDayInMinits)
 
     if (checkShiftIdStatus === true) {
         // This condition not included  ( !== default shift , !== not applicable shift , !== Night off , !== week off) 
@@ -308,7 +308,7 @@ export const getAttendanceCalculation = async (
                                     { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'EGHD', duty_remark: 'Early going Half day' } :
 
                                     // { outtime greater than 0 minit  ~~ early out less than 30 minits ~~ intime greater than 30  ~~ intime  and outtime should be before and after half day in time  } 
-                                    (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                    (earlyOut >= 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
                                         { duty_status: 0.5, duty_desc: 'HD', lvereq_desc: 'HD', duty_remark: 'Half day latein and late out' } :
 
                                         // { outtime greater than 0 minit  ~~ early out greater than 30 minits ~~ intime greater than or equal 30  ~~ intime  and outtime should be before and after half day in time  } 

@@ -12,6 +12,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { addDays, addHours, differenceInMinutes, differenceInHours, format, subHours, isValid } from 'date-fns'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
@@ -39,6 +40,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
     const [punchOutTime, setPunchOutTime] = useState(0);
 
     const [openBkDrop, setOpenBkDrop] = useState(false)
+    const [disableDate, setDisableDate] = useState(false)
 
     const state = useSelector((state) => state?.getCommonSettings)
     const commonStates = useMemo(() => state, [state])
@@ -62,6 +64,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
     const handleChangefetchShift = useCallback(async () => {
         setDisableCheck(false)
+        setDisableDate(true)
         if (selectedShift !== 0 && isValid(new Date(fromDate)) && Object.keys(empData).length !== 0) {
             //GET SHIFT DATA 
             const postData = {
@@ -221,6 +224,9 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
     }, [reason, punchSlno, fromDate, punchInTime, punchOutTime, selectedShift, selectedShiftTiming,
         setCount, empData, coff_min_working_hour, setShowForm])
 
+    const refresh = useCallback(() => {
+        setDisableDate(false)
+    }, [])
 
     return (
         <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', mt: 0.5 }}>
@@ -233,6 +239,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                             inputFormat="dd-MM-yyyy"
                             value={fromDate}
                             size="small"
+                            disabled={disableDate}
                             onChange={(newValue) => {
                                 setFromDate(newValue);
                             }}
@@ -285,6 +292,21 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                             endDecorator={<Box>Show Punch Data</Box>}
                         >
                             <ExitToAppOutlinedIcon fontSize='medium' />
+                        </Button>
+                    </Tooltip>
+                </Box>
+                <Box sx={{ px: 0.5, mt: 0.5 }}>
+                    <Tooltip title="Refresh" followCursor placement='top' arrow variant='outlined' color='success'  >
+                        <Button
+                            aria-label="Like"
+                            variant="outlined"
+                            color="primary"
+                            onClick={refresh}
+                            size='sm'
+                            sx={{ width: '100%' }}
+                        //endDecorator={<Box>Show Punch Data</Box>}
+                        >
+                            <RefreshIcon fontSize='medium' />
                         </Button>
                     </Tooltip>
                 </Box>

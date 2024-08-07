@@ -815,7 +815,8 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                                         (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
                                             (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
                                                 (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
-                                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Approval Pending',
+                                                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'HR Rejected' :
+                                                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
                 code: 1,
                 reqDate: val.request_date,
                 fromDate: new Date(val.leave_date),
@@ -839,7 +840,8 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                                     (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected' :
                                         (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
                                             (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
-                                                (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
+                                                (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' :
+                                                    (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
                 inchargestatus: val.hf_incapprv_status,
                 hodstatus: val.hf_hod_apprv_status,
                 hrstatus: val.hf_hr_apprv_status,
@@ -870,7 +872,8 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                                     (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected' :
                                         (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' :
                                             (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' :
-                                                (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
+                                                (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'HR Rejected' :
+                                                    (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
                 code: 3,
                 reqDate: val.creteddate,
                 fromDate: new Date(val.nopunchdate),
@@ -911,7 +914,8 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                                             (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
                                                 (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
                                                     (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
-                                                        (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Approval Pending',
+                                                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'HR Rejected' :
+                                                            (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
                     code: 1,
                     reqDate: val.request_date,
                     fromDate: new Date(val.leave_date),
@@ -938,7 +942,8 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                                         (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected' :
                                             (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
                                                 (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
-                                                    (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
+                                                    (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' :
+                                                        (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
                     inchargestatus: val.hf_incapprv_status,
                     hodstatus: val.hf_hod_apprv_status,
                     hrstatus: val.hf_hr_apprv_status,
@@ -970,8 +975,9 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                                     (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
                                         (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected' :
                                             (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'HR Rejected' :
-                                                (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' :
-                                                    (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' : 'HR Approval Pending',
+                                                (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'HR Rejected' :
+                                                    (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' :
+                                                        (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' : 'HR Approval Pending',
                     code: 3,
                     reqDate: val.creteddate,
                     fromDate: new Date(val.nopunchdate),
@@ -1008,7 +1014,8 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                                         (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
                                             (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
                                                 (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
-                                                    (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Approval Pending',
+                                                    (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'HR Rejected' :
+                                                        (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
                 code: 1,
                 reqDate: val.request_date,
                 fromDate: new Date(val.leave_date),
@@ -1032,7 +1039,8 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                                     (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected' :
                                         (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
                                             (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1) ? 'HR Approved' :
-                                                (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
+                                                (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' :
+                                                    (val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0 && val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2) ? 'HR Rejected' : 'HR Approval Pending',
                 inchargestatus: val.hf_incapprv_status,
                 hodstatus: val.hf_hod_apprv_status,
                 hrstatus: val.hf_hr_apprv_status,
@@ -1062,8 +1070,9 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
                                 (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
                                     (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected' :
                                         (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'HR Rejected' :
-                                            (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' :
-                                                (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' : 'HR Approval Pending',
+                                            (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2) ? 'HR Rejected' :
+                                                (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' :
+                                                    (val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0 && val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1) ? 'HR Approved' : 'HR Approval Pending',
                 code: 3,
                 reqDate: val.creteddate,
                 fromDate: new Date(val.nopunchdate),
