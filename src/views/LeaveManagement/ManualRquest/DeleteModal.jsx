@@ -6,7 +6,7 @@ import { memo } from 'react';
 import { Button, ModalClose, Textarea, Typography } from '@mui/joy';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
 import { format } from 'date-fns';
 
@@ -20,40 +20,46 @@ const DeleteModal = ({ open, setOpen, punchMastdata, setCount }) => {
 
     const submitRequest = useCallback(async () => {
         const { punch_slno, manual_slno } = punchMastdata
-        const postData = {
-            punch_in: null,
-            punch_out: null,
-            hrs_worked: 0,
-            late_in: 0,
-            early_out: 0,
-            duty_status: 0,
-            duty_desc: 'A',
-            lvereq_desc: 'A',
-            punch_slno: punch_slno,
-        }
+        if (reason === '') {
+            warningNofity("Reason is Mandatory")
+            setOpen(false)
+        } else {
+            const postData = {
+                punch_in: null,
+                punch_out: null,
+                hrs_worked: 0,
+                late_in: 0,
+                early_out: 0,
+                duty_status: 0,
+                duty_desc: 'A',
+                lvereq_desc: 'A',
+                punch_slno: punch_slno,
+            }
 
-        const deleteId = {
-            delete_comments: reason,
-            delete_user: em_id,
-            delete_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
-            manual_slno: manual_slno
-        }
-        let result = await axioslogin.post("/attendCal/deletePunchMasterSingleRow", postData);
-        const { success } = result.data;
-        if (success === 1) {
-
-            let result = await axioslogin.patch("/attendCal/inactiveStatus", deleteId);
+            const deleteId = {
+                delete_comments: reason,
+                delete_user: em_id,
+                delete_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                manual_slno: manual_slno
+            }
+            let result = await axioslogin.post("/attendCal/deletePunchMasterSingleRow", postData);
             const { success } = result.data;
             if (success === 1) {
-                succesNofity('Punch Data Cleared')
-                setOpen(false)
-                setCount(Math.random())
+
+                let result = await axioslogin.patch("/attendCal/inactiveStatus", deleteId);
+                const { success } = result.data;
+                if (success === 1) {
+                    succesNofity('Punch Data Cleared')
+                    setOpen(false)
+                    setCount(Math.random())
+                } else {
+                    errorNofity("Error While Inactiving Data ! Contact HR/IT")
+                }
             } else {
-                errorNofity("Error While Inactiving Data ! Contact HR/IT")
+                errorNofity('Error Punch Master Data Updarion ! Contact HR/IT')
+                setOpen(false)
             }
-        } else {
-            errorNofity('Error Punch Master Data Updarion ! Contact HR/IT')
-            setOpen(false)
+
         }
 
     }, [punchMastdata, setCount, setOpen, em_id, reason])
