@@ -12,7 +12,8 @@ import { useMemo } from 'react';
 
 const ShiftModal = lazy(() => import('./ShiftModal'))
 
-const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray }) => {
+const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray, empSalary }) => {
+
     // console.log(disable)
     const state = useSelector((state) => state?.getCommonSettings)
     const commonSetting = useMemo(() => state, [state])
@@ -27,7 +28,7 @@ const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray })
     return (
         <>
             <Suspense>
-                <ShiftModal open={open} setOpen={setOpen} data={data} punchData={punchData} punchMast={punchMaster} setTableArray={setTableArray} />
+                <ShiftModal open={open} setOpen={setOpen} data={data} punchData={punchData} punchMast={punchMaster} setTableArray={setTableArray} empSalary={empSalary} />
             </Suspense>
             <TableRow hover sx={{ backgroundColor: (data?.late_in > 0 || data?.early_out) ? '#FCD7D7' : (data?.isWeekOff === true || data?.isNOff === true) ? '#CBE6CE' : '' }} >
                 {

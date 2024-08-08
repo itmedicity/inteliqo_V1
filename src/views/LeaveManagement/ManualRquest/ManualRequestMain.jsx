@@ -26,7 +26,6 @@ import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import FileViewmodal from './FileViewmodal';
-
 const ManualRequestMain = () => {
 
     const dispatch = useDispatch();
@@ -122,6 +121,12 @@ const ManualRequestMain = () => {
         }
     }, [toDate, fromDate, emply])
 
+
+    useEffect(() => {
+        setTable([])
+        setSelectFile([])
+    }, [toDate, fromDate,])
+
     const handleImageUpload = useCallback(async (imageFile) => {
         const options = {
             maxSizeMB: 1,
@@ -194,6 +199,7 @@ const ManualRequestMain = () => {
                             setRemark('')
                             setSelectFile([])
                             succesNofity("Data saved successfully")
+                            setCount(Math.random())
 
                         } else if (success === 2) {
                             warningNofity(message)
@@ -275,16 +281,22 @@ const ManualRequestMain = () => {
         },
         {
             headerName: 'View',
-            cellRenderer: params =>
-                <>
-                    <Tooltip title="Delete" followCursor placement='top' arrow >
+            cellRenderer: params => {
+                if (params.data.filename === null) {
+                    return <IconButton
+                        sx={{ paddingY: 0.5 }}  >
+                        <DescriptionIcon color='inherit' />
+                    </IconButton>
+                } else {
+                    return <Tooltip title="View File" followCursor placement='top' arrow >
                         <IconButton sx={{ paddingY: 0.5 }}
                             onClick={() => getFileData(params)}
                         >
                             <DescriptionIcon color='error' />
                         </IconButton>
                     </Tooltip>
-                </>
+                }
+            }
         },
     ])
 
@@ -326,12 +338,15 @@ const ManualRequestMain = () => {
                     <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', flexWrap: "wrap", gap: 0.5 }} >
                         <Box sx={{ flex: 1, px: 0.5 }}>
                             <DepartmentDropRedx getDept={changeDept} />
+                            {/* <JoyDepartment deptValue={dept} getDept={changeDept} /> */}
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }}>
                             <DepartmentSectionRedx getSection={changeSection} />
+                            {/* <JoyDepartmentSection sectValues={deptsection} getSection={changeSection} dept={dept} /> */}
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }}>
                             <SectionBsdEmployee getEmploy={getEmployee} />
+                            {/* <JoySectionWiseEmployee employee={emply} getEmploy={getEmployee} /> */}
                         </Box>
                         <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }} >
                             <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >From Date</Typography>

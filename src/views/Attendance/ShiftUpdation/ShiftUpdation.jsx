@@ -835,7 +835,7 @@ const ShiftUpdation = () => {
                                     <Suspense>
                                         {
                                             tableArray?.map((val, ind) => {
-                                                return <TableRows key={ind} no={ind} data={val} disable={disable} punchData={punchDta} punchMaster={punchMast} setTableArray={setTableArray} />
+                                                return <TableRows key={ind} no={ind} data={val} disable={disable} punchData={punchDta} punchMaster={punchMast} setTableArray={setTableArray} empSalary={empSalary} />
                                             })
                                         }
                                     </Suspense>
