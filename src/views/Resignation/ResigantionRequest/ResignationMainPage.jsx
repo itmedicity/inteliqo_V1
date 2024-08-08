@@ -32,6 +32,9 @@ const ResignationMainPage = () => {
     const [resignation_reason, setresignation_reason] = useState('')
     const [noticeperiod, setNoticePeriod] = useState(0)
     const [relvngDate, setRelivingdate] = useState(moment(new Date()))
+
+    const [files, setFiles] = useState([])
+
     const [authorization, setAuthorization] = useState({
         hod: 0, incharge: 0, authorization_incharge: 0, authorization_hod: 0, co_assign: 0
     })
@@ -130,34 +133,48 @@ const ResignationMainPage = () => {
             hr_required: 1,
             ceo_required: co_assign,
         }
-        const result = await axioslogin.post('/Resignation', postData)
-        const { success, message } = result.data
+
+        let formData = new FormData();
+
+        formData.append('file', files);
+        // formData.append('postDate', postData);
+
+        const result = await axioslogin.post('/Resignation', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            },
+            // onUploadProgress: (progreeEvent) => {
+            //     const progress = (progreeEvent.loaded / (progreeEvent?.total ?? 100)) * 50
+            // },
+            // onDownloadProgress: (progreeEvent) => {
+            //     const progress = 50 + (progreeEvent.loaded / (progreeEvent?.total ?? 100)) * 50
+            // }
+        })
+        const { success, message } = result.data;
+
         if (success === 1) {
             succesNofity(message)
             setresignation_type(0)
             setrequest_date(new Date())
             setresignation_reason('')
             setRelivingdate(new Date())
-        }
-        else if (success === 2) {
+        } else if (success === 2) {
             warningNofity(message)
-        }
-        else if (success === 0) {
+        } else if (success === 0) {
             infoNofity("Your Resignation Already In Process")
-
-        }
-        else {
+        } else {
             errorNofity("Error Occured!!!!! Please Contact EDP")
         }
     }, [resignation_type, resignation_reason, hod, incharge, authorization_incharge,
         authorization_hod, co_assign, em_designation, em_id, em_department, em_no,
-        em_dept_section, request_date, relvngDate, noticeperiod])
+        em_dept_section, request_date, relvngDate, noticeperiod, files])
 
-    const [files, setFiles] = useState([])
+    console.log(files[0])
+
 
     const handleChange = (files) => {
         setFiles(files)
-        console.log(files)
+        // console.log(files)
     }
 
     const handleError = (error, file) => {
