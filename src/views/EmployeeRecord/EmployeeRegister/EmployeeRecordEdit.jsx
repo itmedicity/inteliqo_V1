@@ -173,7 +173,7 @@ const EmployeeRecordEdit = () => {
             getcategorydata()
         }
 
-        if (oldCategory != 0) {
+        if (oldCategory !== 0) {
             const getOldContractDetail = async () => {
                 const result = await axioslogin.get(`/empcat/${oldCategory}`)
                 const { data, success } = result.data
@@ -191,7 +191,7 @@ const EmployeeRecordEdit = () => {
 
 
 
-    }, [category, dateofjoining])
+    }, [category, dateofjoining, oldCategory])
 
     useEffect(() => {
         const getEmployeedetails = async () => {

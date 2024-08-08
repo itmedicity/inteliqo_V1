@@ -18,6 +18,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { IconButton as OpenIcon } from '@mui/material';
 import ObservationModal from './ObservationModal';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+const DeleteModal = React.lazy(() => import('./DeleteModal'))
 
 const OnobservationRequest = () => {
     const [department, setDept] = useState(0)
@@ -27,6 +31,9 @@ const OnobservationRequest = () => {
     const [tableData, setTableData] = useState([])
     const [open, setOpen] = useState(false)
     const [empdata, setEmpdata] = useState([])
+    const [viewData, setViewData] = useState(false)
+    const [deleteOpen, setDeleteOpen] = useState(false)
+    const [employeeData, setEmployeeData] = useState({})
 
     const dispatch = useDispatch();
 
@@ -96,8 +103,43 @@ const OnobservationRequest = () => {
 
     }, [])
 
+    const tableView = useCallback(async () => {
+        const empData = await axioslogin.get("/OnObservationRequest/getall");
+        const { success, data } = empData.data;
+        if (success === 1) {
+            setTableData(data)
+            setViewData(true)
+        } else {
+            setViewData(false)
+            setTableData([])
+        }
+    }, [])
+
+    const [columnView] = useState([
+        { headerName: 'Emp ID', field: 'em_no', minWidth: 150, filter: true },
+        { headerName: 'Name', field: 'em_name', autoHeight: true, wrapText: true, minWidth: 200, filter: true },
+        { headerName: 'Date of joining', field: 'em_doj', minWidth: 90 },
+        { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 250 },
+        { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 250 },
+        {
+            headerName: 'Action', minWidth: 100,
+            cellRenderer: params =>
+                <Tooltip title="Profile View" followCursor placement='top' arrow >
+                    <OpenIcon size='sm' color='primary' onClick={() => DeleteData(params)}>
+                        <DeleteIcon />
+                    </OpenIcon>
+                </Tooltip>
+        }
+    ])
+
+    const DeleteData = useCallback((params) => {
+        setDeleteOpen(true)
+        setEmployeeData(params.data)
+    }, [])
+
     return (
         <CustomLayout title="On Observation Request" displayClose={true} >
+            <DeleteModal open={deleteOpen} setOpen={setDeleteOpen} empdata={employeeData} />
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                 <Box sx={{ display: 'flex' }}>
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', px: 0.5 }} >
@@ -161,10 +203,24 @@ const OnobservationRequest = () => {
                             </Button>
                         </Tooltip>
                     </Box>
+                    <Box sx={{ display: "flex", px: 0.3, }} >
+                        <Tooltip title="Click Here to View Table" followCursor placement='top' arrow variant='outlined' color='primary' >
+                            <Button
+                                aria-label="Like"
+                                variant="outlined"
+                                color="primary"
+                                onClick={tableView}
+                                size='sm'
+                                endDecorator={<Box>View</Box>}
+                            >
+                                <ViewListIcon fontSize='medium' />
+                            </Button>
+                        </Tooltip>
+                    </Box>
                 </Box>
                 <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid
-                        columnDefs={columnDef}
+                        columnDefs={viewData === true ? columnView : columnDef}
                         tableData={tableData}
                         sx={{
                             height: 600,

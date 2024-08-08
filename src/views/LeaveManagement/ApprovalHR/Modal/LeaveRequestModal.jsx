@@ -49,9 +49,9 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
             return { ...val, emno: emno }
         });
         //NATIONAL HOLIDAY
-        const Holiday = reqDetl?.filter(val => val.leave_typeid === 3 || val.leave_typeid === 4)?.map(val => {
-            return { ...val, emno: emno }
-        });
+        // const Holiday = reqDetl?.filter(val => val.leave_typeid === 3 || val.leave_typeid === 4)?.map(val => {
+        //     return { ...val, emno: emno }
+        // });
         //EARN LEAVE
         const earnLeave = reqDetl?.filter(val => val.leave_typeid === 8)?.map(val => {
             return { ...val, emno: emno }

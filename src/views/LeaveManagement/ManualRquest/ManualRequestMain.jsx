@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import { Box, IconButton, Paper } from '@mui/material'
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
@@ -10,23 +10,29 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Button, Checkbox, CssVarsProvider, Input, Table, Textarea, Tooltip, Typography } from '@mui/joy';
-import { addDays, differenceInCalendarDays, eachDayOfInterval, endOfMonth, format } from 'date-fns';
+import { addDays, differenceInCalendarDays, eachDayOfInterval, endOfMonth, format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import SaveIcon from '@mui/icons-material/Save';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteModal from './DeleteModal';
-
+import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+import imageCompression from 'browser-image-compression'
+import { setCommonSetting } from 'src/redux/actions/Common.Action';
+import DescriptionIcon from '@mui/icons-material/Description';
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+import FileViewmodal from './FileViewmodal';
 const ManualRequestMain = () => {
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(setDepartment());
+        dispatch(setCommonSetting())
     }, [dispatch])
 
     const [dept, changeDept] = useState(0)
@@ -40,9 +46,17 @@ const ManualRequestMain = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [punchMastdata, setPunchMastdata] = useState({})
     const [count, setCount] = useState(0)
+    const [selectFile, setSelectFile] = useState([]);
+    const [fileUrsl, setFileUrls] = useState([])
+    const [fileOpen, setFileOpen] = useState(false)
 
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0])
     const { em_id } = empData;
+
+    const state = useSelector((state) => state?.getCommonSettings)
+    const commonSetting = useMemo(() => state, [state])
+    // console.log(commonSetting)
+    const { default_shift } = commonSetting;
 
     const getEmpdata = useCallback(async () => {
         //dataes difference count for checking the the duyt plan is done or not
@@ -64,7 +78,7 @@ const ManualRequestMain = () => {
         const checkDutyPlan = await axioslogin.post('/plan/checkDutyPlanExcistNew', postData);
         const { success, dta } = checkDutyPlan.data;
 
-        if (success === 1 && dta.plan === differenceCountFromToDate) {
+        if (success === 1 && dta?.plan === differenceCountFromToDate) {
             //DUTY PLAN IS PLANNED FOR THE SELECTED DATE
 
             //FOR LISTING THE SELECTED DATE IN THE SCREEN
@@ -107,46 +121,119 @@ const ManualRequestMain = () => {
         }
     }, [toDate, fromDate, emply])
 
+
+    useEffect(() => {
+        setTable([])
+        setSelectFile([])
+    }, [toDate, fromDate,])
+
+    const handleImageUpload = useCallback(async (imageFile) => {
+        const options = {
+            maxSizeMB: 1,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true,
+        }
+        const compressedFile = await imageCompression(imageFile, options)
+        return compressedFile
+    }, []);
+
+
     const submitData = useCallback(async () => {
-        const filterArray = table?.filter(val => val.selected === 1)?.map((val) => {
-            return {
-                ...val,
-                duty_desc: 'P',
-                lvereq_desc: 'P',
-                remrk: remrk,
-                create_user: em_id
-            }
-        })
         if (remrk === '') {
-            warningNofity("Please Add any Reason!")
-        } else {
-            const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
-            const { success } = result.data;
-            if (success === 1) {
-                succesNofity("Data saved successfully")
-                setTable([])
-                setRemark('')
+            warningNofity(" Add any Reason!")
+        } else if (remrk?.length > 45) {
+            warningNofity("Reason must be 45 character length")
+        }
+        else {
+            const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+            const postData = {
+                month: monthStartDate,
+                section: deptsection
+            }
+
+            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
+            const { success, data } = checkPunchMarkingHr.data
+            if (success === 0 || success === 1) {
+                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                    warningNofity("Punch Marking Monthly Process Done !! Can't Cancel Miss Punch Request  ")
+                    setTable([])
+                } else {
+                    // if (!selectFile?.length) {
+                    //     warningNofity('Select files to upload.')
+                    //     return
+                    // } else {
+                    const formData = new FormData()
+                    formData.append('emno', emply?.em_no)
+                    for (const file of selectFile) {
+                        if (file.type.startsWith('image')) {
+                            const compressedFile = await handleImageUpload(file)
+                            formData.append('files', compressedFile, compressedFile.name)
+                        } else {
+                            formData.append('files', file, file.name)
+                        }
+                    }
+                    const result = await axioslogin.post('/manualRequest/uploadManualRequest', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    })
+                    const { success, message, filenames } = result.data
+                    if (success === 1) {
+
+                        const filterArray = table?.filter(val => val.selected === 1)?.map((val) => {
+                            return {
+                                ...val,
+                                duty_desc: 'P',
+                                lvereq_desc: 'P',
+                                remrk: remrk,
+                                create_user: em_id,
+                                filename: filenames[0]
+                            }
+                        })
+                        const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
+                        const { success, message } = result.data;
+                        if (success === 1) {
+                            setTable([])
+                            setRemark('')
+                            setSelectFile([])
+                            succesNofity("Data saved successfully")
+                            setCount(Math.random())
+
+                        } else if (success === 2) {
+                            warningNofity(message)
+                        }
+                        else {
+                            setTable([])
+                            setRemark('')
+                            warningNofity("Error while saving data, Please contact IT")
+                        }
+                    } else {
+                        warningNofity(message)
+                    }
+                }
+                // }
             } else {
-                warningNofity("Error while saving data, Please contact IT")
+                errorNofity("Error getting PunchMarkingHR ")
             }
         }
+    }, [table, remrk, em_id, setRemark, deptsection, fromDate, selectFile, emply, handleImageUpload])
 
-    }, [table, remrk, em_id])
+
 
     const getArray = useCallback(async (e, val) => {
         let ar = table?.map((e) => e.duty_day === val.duty_day ? { ...e, selected: 1 } : { ...e })
-        const arry = table.map((val) => val.duty_desc)
-        // if (arry.includes('P')) {
-        //     warningNofity("Please Select Absent Days")
-        // } else {
-        //     return
-        // }
         setTable([...ar])
     }, [table])
 
-    const handleFileChange = useCallback(() => {
+    const handleFileChange = useCallback((e) => {
+        const newFiles = [...selectFile]
+        newFiles.push(e.target.files[0])
+        setSelectFile(newFiles)
 
-    })
+    }, [selectFile, setSelectFile])
+
 
 
     useEffect(() => {
@@ -180,18 +267,49 @@ const ManualRequestMain = () => {
         { headerName: 'Leave Desc', field: 'lvereq_desc', filter: true },
         { headerName: 'Duty Desc ', field: 'duty_desc', },
         {
-            headerName: 'Action',
+            headerName: 'Delete',
             cellRenderer: params =>
-
-                <Tooltip title="Delete" followCursor placement='top' arrow >
-                    <IconButton sx={{ paddingY: 0.5 }}
-                        onClick={() => deleteRequest(params)}
-                    >
-                        <DeleteIcon color='primary' />
+                <>
+                    <Tooltip title="Delete" followCursor placement='top' arrow >
+                        <IconButton sx={{ paddingY: 0.5 }}
+                            onClick={() => deleteRequest(params)}
+                        >
+                            <DeleteIcon color='primary' />
+                        </IconButton>
+                    </Tooltip>
+                </>
+        },
+        {
+            headerName: 'View',
+            cellRenderer: params => {
+                if (params.data.filename === null) {
+                    return <IconButton
+                        sx={{ paddingY: 0.5 }}  >
+                        <DescriptionIcon color='inherit' />
                     </IconButton>
-                </Tooltip>
+                } else {
+                    return <Tooltip title="View File" followCursor placement='top' arrow >
+                        <IconButton sx={{ paddingY: 0.5 }}
+                            onClick={() => getFileData(params)}
+                        >
+                            <DescriptionIcon color='error' />
+                        </IconButton>
+                    </Tooltip>
+                }
+            }
         },
     ])
+
+    const getFileData = useCallback((params) => {
+        const { filename } = params.data
+        const file = `${PUBLIC_NAS_FOLDER}/ManualRequests/${filename}`;
+        if (filename !== null) {
+            setFileUrls(file)
+            setFileOpen(true)
+        } else {
+            warningNofity("No Files Attached")
+        }
+    }, [])
 
     const deleteRequest = useCallback((params) => {
         const data = params.data
@@ -199,20 +317,36 @@ const ManualRequestMain = () => {
         setPunchMastdata(data)
     }, [])
 
+
+    const handleRemoveFile = useCallback((index) => {
+        const newFiles = [...selectFile]
+        newFiles.splice(index, 1)
+        setSelectFile(newFiles)
+        // Reset the file input value to allow selecting the same file again
+        const fileInput = document.getElementById('file-input')
+        if (fileInput) {
+            fileInput.value = null
+        }
+    }, [selectFile])
+
     return (
         <CustomLayout title="Manual Request" displayClose={true} >
+            <FileViewmodal open={fileOpen} setOpen={setFileOpen} fileUrsl={fileUrsl} />
             <DeleteModal open={modalOpen} setOpen={setModalOpen} punchMastdata={punchMastdata} setCount={setCount} />
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                     <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', flexWrap: "wrap", gap: 0.5 }} >
                         <Box sx={{ flex: 1, px: 0.5 }}>
                             <DepartmentDropRedx getDept={changeDept} />
+                            {/* <JoyDepartment deptValue={dept} getDept={changeDept} /> */}
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }}>
                             <DepartmentSectionRedx getSection={changeSection} />
+                            {/* <JoyDepartmentSection sectValues={deptsection} getSection={changeSection} dept={dept} /> */}
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5 }}>
                             <SectionBsdEmployee getEmploy={getEmployee} />
+                            {/* <JoySectionWiseEmployee employee={emply} getEmploy={getEmployee} /> */}
                         </Box>
                         <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }} >
                             <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >From Date</Typography>
@@ -241,7 +375,7 @@ const ManualRequestMain = () => {
                                 <DatePicker
                                     views={['day']}
                                     inputFormat="dd-MM-yyyy"
-                                    //minDate={new Date()}
+                                    minDate={new Date(fromDate)}
                                     maxDate={endOfMonth(new Date(fromDate))}
                                     value={toDate}
                                     size="small"
@@ -296,6 +430,8 @@ const ManualRequestMain = () => {
                                         <th style={{ textAlign: 'center', }}>Leave Desc</th>
                                         <th style={{ textAlign: 'center', }}>Duty Desc</th>
                                         <th style={{ textAlign: 'center', }}>Action</th>
+                                        <th style={{ textAlign: 'center', }}></th>
+
 
                                     </tr>
                                 </thead>
@@ -312,7 +448,7 @@ const ManualRequestMain = () => {
                                                                 fontFamily="monospace"
                                                                 sx={{ opacity: '80%' }}
                                                             >
-                                                                {format(val.datenew, 'dd-MMMM')}
+                                                                {format(val?.datenew, 'dd-MMMM')}
                                                             </Typography>
                                                         </Box>
                                                         <Box>
@@ -322,7 +458,7 @@ const ManualRequestMain = () => {
                                                                 fontFamily="monospace"
                                                                 sx={{ opacity: '50%' }}
                                                             >
-                                                                {format(val.datenew, 'eee')}
+                                                                {format(val?.datenew, 'eee')}
                                                             </Typography>
                                                         </Box>
                                                     </Box>
@@ -338,7 +474,7 @@ const ManualRequestMain = () => {
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
-                                                        {val.lvereq_desc}
+                                                        {val?.lvereq_desc}
                                                     </Typography>
                                                 </td>
                                                 <td
@@ -352,7 +488,7 @@ const ManualRequestMain = () => {
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
-                                                        {val.duty_desc}
+                                                        {val?.duty_desc}
                                                     </Typography>
                                                 </td>
                                                 <td
@@ -366,18 +502,33 @@ const ManualRequestMain = () => {
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
-                                                        {val.shft_desc}
+                                                        {val?.shft_desc}
                                                     </Typography>
                                                 </td>
                                                 <td style={{ textAlign: 'center', }}>
                                                     <Box>
                                                         <Checkbox
-                                                            checked={val.selected === 1 ? true : false}
+                                                            checked={val?.selected === 1 ? true : false}
+                                                            disabled={val?.duty_desc !== 'A' ? true : val?.shift_id === default_shift ? true : false}
                                                             onChange={(e) => {
                                                                 getArray(e, val)
                                                             }}
                                                         />
                                                     </Box>
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        textAlign: 'center',
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        level="title-md"
+                                                        textColor={val?.duty_desc !== 'A' ? 'red' : val?.shift_id === default_shift ? 'red' : 'success.100'}
+                                                        fontFamily="monospace"
+                                                        sx={{ opacity: '50%' }}
+                                                    >
+                                                        {val?.duty_desc !== 'A' ? 'Description is not Absent' : val?.shift_id === default_shift ? 'Duty Not Scheduled' : null}
+                                                    </Typography>
                                                 </td>
                                             </tr>
                                         )
@@ -396,6 +547,8 @@ const ManualRequestMain = () => {
                                 size="md"
                                 minRows={1}
                                 maxRows={2}
+                                name='remrk'
+                                value={remrk}
                                 onChange={(e) => setRemark(e.target.value)}
                                 sx={{ flex: 1 }}
                             />
@@ -415,7 +568,7 @@ const ManualRequestMain = () => {
                                             id="file-input"
                                             accept=".jpg, .jpeg, .png, .pdf"
                                             style={{ display: 'none' }}
-                                            multiple
+                                            // multiple
                                             type="file"
                                             name="file"
                                             onChange={handleFileChange}
@@ -423,6 +576,36 @@ const ManualRequestMain = () => {
                                     </Button>
                                 </Tooltip>
                             </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            {selectFile.map((file, index) => (
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        display: 'flex',
+                                        borderRadius: 20,
+                                        p: .5,
+                                        alignItems: 'center',
+                                        backgroundColor: '#E1E5EA',
+
+                                    }}
+                                >
+                                    {/* <Box sx={{  pr: 1, color: '#78C1F3' }}>{index + 1}.</Box> */}
+                                    <Box sx={{}}> <Typography level='body-xs'>{file?.name}</Typography></Box>
+                                    <Box sx={{
+                                        p: 0, cursor: 'pointer', '&:hover': {
+                                            color: '#FF6868',
+                                        }
+                                    }}>
+                                        <Tooltip title="Close">
+                                            <Box sx={{ p: 0 }} aria-label="Close" onClick={() => handleRemoveFile(index)}>
+                                                <CloseSharpIcon fontSize='small' />
+                                            </Box>
+                                        </Tooltip>
+
+                                    </Box>
+                                </Box>
+                            ))}
                         </Box>
                         <Box sx={{ display: 'flex', }} >
                             <CssVarsProvider>
