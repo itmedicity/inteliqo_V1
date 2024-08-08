@@ -32,8 +32,9 @@ const ResignationMainPage = () => {
     const [resignation_reason, setresignation_reason] = useState('')
     const [noticeperiod, setNoticePeriod] = useState(0)
     const [relvngDate, setRelivingdate] = useState(moment(new Date()))
+    const [files, setFiles] = useState('')
+    const [progress, setProgress] = useState(0);
 
-    const [files, setFiles] = useState([])
 
     const [authorization, setAuthorization] = useState({
         hod: 0, incharge: 0, authorization_incharge: 0, authorization_hod: 0, co_assign: 0
@@ -91,7 +92,9 @@ const ResignationMainPage = () => {
 
     }, [request_date, noticeperiod, resignation_type])
 
+
     const submitFormData = useCallback(async (e) => {
+
         e.preventDefault()
         const postData = {
             dept_id: em_department,
@@ -134,25 +137,37 @@ const ResignationMainPage = () => {
             ceo_required: co_assign,
         }
 
-        let formData = new FormData();
+        const formData = new FormData()
 
-        formData.append('file', files);
-        // formData.append('postDate', postData);
+        formData.append('file', files[0]);
+        formData.append('postDate', postData);
 
         const result = await axioslogin.post('/Resignation', formData, {
             headers: {
-                "Content-Type": "multipart/form-data"
+                'Content-Type': 'multipart/form-data'
             },
             // onUploadProgress: (progreeEvent) => {
-            //     const progress = (progreeEvent.loaded / (progreeEvent?.total ?? 100)) * 50
+            //     const progress = (progreeEvent.loaded / (progreeEvent?.total ?? 100))
+            //     console.log(progress)
             // },
             // onDownloadProgress: (progreeEvent) => {
-            //     const progress = 50 + (progreeEvent.loaded / (progreeEvent?.total ?? 100)) * 50
+            //     const progress = 50 + (progreeEvent.loaded / (progreeEvent?.total ?? 100))
+            //     console.log(progress)
             // }
+            onUploadProgress: progressEvent => {
+                const { loaded, total } = progressEvent;
+                let percent = Math.floor((loaded * 100) / total);
+                console.log(`${loaded}kb of ${total}kb | ${percent}%`);
+                if (percent < 100) {
+                    setProgress(percent)
+                }
+            }
+
         })
         const { success, message } = result.data;
 
         if (success === 1) {
+            setProgress(100)
             succesNofity(message)
             setresignation_type(0)
             setrequest_date(new Date())
@@ -244,6 +259,23 @@ const ResignationMainPage = () => {
                         </Typography>
                     </Box>
                 </Box>
+
+                {/* Progress Bar */}
+                {progress > 0 && (
+                    <div style={{ width: '100%', backgroundColor: '#f3f3f3', marginTop: '10px' }}>
+                        <div
+                            style={{
+                                width: `${progress}%`,
+                                backgroundColor: progress === 100 ? '#4caf50' : '#2196f3',
+                                height: '24px',
+                                transition: 'width 0.2s',
+                            }}
+                        />
+                    </div>
+                )}
+
+                <p>Progress: {progress}%</p>
+
                 <Box sx={{
                     display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, },
                     flexDirection: 'row',
