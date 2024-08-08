@@ -1,55 +1,75 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import Box from '@mui/joy/Box';
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import { memo } from 'react';
-import { Button, ModalClose, Typography } from '@mui/joy';
+import { Button, ModalClose, Textarea, Typography } from '@mui/joy';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { useSelector } from 'react-redux';
+import { format } from 'date-fns';
 
 const DeleteModal = ({ open, setOpen, punchMastdata, setCount }) => {
 
+    const [reason, setReason] = useState('')
+
+    const employeeState = useSelector((state) => state?.getProfileData?.ProfileData);
+    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
+    const { em_id, } = employeeProfileDetl;
+
     const submitRequest = useCallback(async () => {
         const { punch_slno, manual_slno } = punchMastdata
-        const postData = {
-            punch_in: null,
-            punch_out: null,
-            hrs_worked: 0,
-            late_in: 0,
-            early_out: 0,
-            duty_status: 0,
-            duty_desc: 'A',
-            lvereq_desc: 'A',
-            punch_slno: punch_slno,
-        }
+        if (reason === '') {
+            warningNofity("Reason is Mandatory")
+            setOpen(false)
+        } else {
+            const postData = {
+                punch_in: null,
+                punch_out: null,
+                hrs_worked: 0,
+                late_in: 0,
+                early_out: 0,
+                duty_status: 0,
+                duty_desc: 'A',
+                lvereq_desc: 'A',
+                punch_slno: punch_slno,
+            }
 
-        const deleteId = {
-            manual_slno: manual_slno
-        }
-        let result = await axioslogin.post("/attendCal/deletePunchMasterSingleRow", postData);
-        const { success } = result.data;
-        if (success === 1) {
-
-            let result = await axioslogin.patch("/attendCal/inactiveStatus", deleteId);
+            const deleteId = {
+                delete_comments: reason,
+                delete_user: em_id,
+                delete_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                manual_slno: manual_slno
+            }
+            let result = await axioslogin.post("/attendCal/deletePunchMasterSingleRow", postData);
             const { success } = result.data;
             if (success === 1) {
-                succesNofity('Punch Data Cleared')
-                setOpen(false)
-                setCount(Math.random())
+
+                let result = await axioslogin.patch("/attendCal/inactiveStatus", deleteId);
+                const { success } = result.data;
+                if (success === 1) {
+                    succesNofity('Punch Data Cleared')
+                    setOpen(false)
+                    setCount(Math.random())
+                } else {
+                    errorNofity("Error While Inactiving Data ! Contact HR/IT")
+                }
             } else {
-                errorNofity("Error While Inactiving Data ! Contact HR/IT")
+                errorNofity('Error Punch Master Data Updarion ! Contact HR/IT')
+                setOpen(false)
             }
-        } else {
-            errorNofity('Error Punch Master Data Updarion ! Contact HR/IT')
-            setOpen(false)
+
         }
 
-    }, [punchMastdata, setCount])
+    }, [punchMastdata, setCount, setOpen, em_id, reason])
 
     const closeRequest = useCallback(() => {
         setOpen(false)
     }, [setOpen])
+
+
+
 
     return (
         <Modal
@@ -117,7 +137,7 @@ const DeleteModal = ({ open, setOpen, punchMastdata, setCount }) => {
                     </Box>
                 </Box>
 
-                <Box sx={{ flex: 1, py: 1 }}>
+                <Box sx={{ flex: 1, }}>
                     <Typography
                         level="body2"
                         // startDecorator={<InfoOutlined />}
@@ -125,6 +145,10 @@ const DeleteModal = ({ open, setOpen, punchMastdata, setCount }) => {
                     >
                         Are you sure want to delete?
                     </Typography>
+                </Box>
+                <Box sx={{ flex: 1, }}>
+                    <Textarea name="Outlined" placeholder="Reason For Deleting Request"
+                        variant="outlined" onChange={(e) => setReason(e.target.value)} />
                 </Box>
                 <Box sx={{ pt: 0.5 }} >
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>

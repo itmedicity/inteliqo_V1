@@ -20,10 +20,16 @@ import { getAttendanceCalculation, getLateInTimeIntervel } from '../PunchMarking
 import ReportIcon from '@mui/icons-material/Report';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }) => {
+const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, empSalary }) => {
+
+    // console.log(data);
 
     // const dispatch = useDispatch()
     //const { UPDATE_PUNCHMASTER_TABLE } = Actiontypes
+
+    const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+
+    // console.log(sortedSalaryData);
 
     const selectedDate = format(new Date(data?.duty_day), 'yyyy-MM-dd');
 
@@ -141,8 +147,12 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray }
 
             if (isValid(punch_In) === true && isValid(punch_out) === true) {
                 // console.log(data)
+
+                const salaryLimit = sortedSalaryData.gross_salary > salary_above ? true : false;
+
+
                 const getAttendance = await getAttendanceCalculation(
-                    punch_In, shift_In, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, default_shift, notapplicable_shift, noff, week_off_day, salary_above, cmmn_late_in
+                    punch_In, shift_In, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, default_shift, notapplicable_shift, noff, week_off_day, salaryLimit, cmmn_late_in
                 )
 
                 const postData = {
