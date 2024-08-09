@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import _ from 'underscore'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { Button, CssVarsProvider, Input, Option, Select, Textarea, Tooltip, Typography } from '@mui/joy'
+import { Button, CssVarsProvider, Input, LinearProgress, Option, Select, Textarea, Tooltip, Typography } from '@mui/joy'
 import { useCallback } from 'react'
 import ResignationComponent from './ResignationComponent'
 import moment from 'moment'
@@ -94,8 +94,26 @@ const ResignationMainPage = () => {
 
 
     const submitFormData = useCallback(async (e) => {
-
         e.preventDefault()
+
+
+        if (resignation_type === 0) {
+            warningNofity("Please Select Resignation Type")
+            return
+        }
+
+        if (resignation_type === 2) {
+            if (files.length === 0) {
+                warningNofity("Please Upload Resignation Reason Document")
+                return
+            }
+        }
+
+        if (resignation_reason === '' || resignation_reason === null) {
+            warningNofity("Please Enter Resignation Reason")
+            return
+        }
+
         const postData = {
             dept_id: em_department,
             sect_id: em_dept_section,
@@ -140,24 +158,15 @@ const ResignationMainPage = () => {
         const formData = new FormData()
 
         formData.append('file', files[0]);
-        formData.append('postDate', postData);
+        formData.append('postData', JSON.stringify(postData));
 
         const result = await axioslogin.post('/Resignation', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             },
-            // onUploadProgress: (progreeEvent) => {
-            //     const progress = (progreeEvent.loaded / (progreeEvent?.total ?? 100))
-            //     console.log(progress)
-            // },
-            // onDownloadProgress: (progreeEvent) => {
-            //     const progress = 50 + (progreeEvent.loaded / (progreeEvent?.total ?? 100))
-            //     console.log(progress)
-            // }
             onUploadProgress: progressEvent => {
                 const { loaded, total } = progressEvent;
                 let percent = Math.floor((loaded * 100) / total);
-                console.log(`${loaded}kb of ${total}kb | ${percent}%`);
                 if (percent < 100) {
                     console.log(percent)
                     setProgress(percent)
@@ -175,22 +184,22 @@ const ResignationMainPage = () => {
             setresignation_reason('')
             setRelivingdate(new Date())
         } else if (success === 2) {
+            setProgress(0)
             warningNofity(message)
         } else if (success === 0) {
+            setProgress(0)
             infoNofity("Your Resignation Already In Process")
         } else {
+            setProgress(0)
             errorNofity("Error Occured!!!!! Please Contact EDP")
         }
+
     }, [resignation_type, resignation_reason, hod, incharge, authorization_incharge,
         authorization_hod, co_assign, em_designation, em_id, em_department, em_no,
         em_dept_section, request_date, relvngDate, noticeperiod, files])
 
-    console.log(files[0])
-
-
     const handleChange = (files) => {
         setFiles(files)
-        // console.log(files)
     }
 
     const handleError = (error, file) => {
@@ -260,22 +269,6 @@ const ResignationMainPage = () => {
                         </Typography>
                     </Box>
                 </Box>
-
-                {/* Progress Bar */}
-                {progress > 0 && (
-                    <div style={{ width: '100%', backgroundColor: '#f3f3f3', marginTop: '10px' }}>
-                        <div
-                            style={{
-                                width: `${progress}%`,
-                                backgroundColor: progress === 100 ? '#4caf50' : '#2196f3',
-                                height: '24px',
-                                transition: 'width 0.2s',
-                            }}
-                        />
-                    </div>
-                )}
-
-                <p>Progress: {progress}%</p>
 
                 <Box sx={{
                     display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, },
@@ -440,6 +433,25 @@ const ResignationMainPage = () => {
                                     {files[0]?.name}
                                 </Typography>
                             </CssVarsProvider>
+                            <Box
+                                sx={{
+                                    bgcolor: 'white',
+                                    width: '50%',
+                                }}
+                            >
+                                <LinearProgress
+                                    determinate
+                                    variant="outlined"
+                                    color="success"
+                                    size="sm"
+                                    thickness={5}
+                                    value={progress}
+                                    sx={{
+                                        mt: 0.5,
+                                        boxShadow: 'sm',
+                                    }}
+                                />
+                            </Box>
                         </Box>
                     </Box>
                 </Box>
