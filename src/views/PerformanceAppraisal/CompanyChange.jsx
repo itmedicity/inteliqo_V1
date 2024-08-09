@@ -357,7 +357,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                         type="date"
                                         slotProps={{
                                             input: {
-                                                min: moment(new Date()).format('YYYY-MM-DD'),
+                                                min: moment(new Date(p_enddate)).format('YYYY-MM-DD'),
                                             },
                                         }}
                                         value={ineffectdate}
@@ -394,7 +394,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                         type="date"
                                         slotProps={{
                                             input: {
-                                                min: moment(new Date()).format('YYYY-MM-DD'),
+                                                min: moment(new Date(p_enddate)).format('YYYY-MM-DD'),
                                             },
                                         }}
                                         value={cateineffectdate}
@@ -444,7 +444,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                                     type="date"
                                                     slotProps={{
                                                         input: {
-                                                            min: moment(new Date()).format('YYYY-MM-DD'),
+                                                            min: moment(new Date(p_enddate)).format('YYYY-MM-DD'),
                                                         },
                                                     }}
                                                     value={prob_extendDate}
@@ -465,7 +465,7 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
                                                     type="date"
                                                     slotProps={{
                                                         input: {
-                                                            min: moment(new Date()).format('YYYY-MM-DD'),
+                                                            min: moment(new Date(p_enddate)).format('YYYY-MM-DD'),
                                                         },
                                                     }}
                                                     value={probationconfDate}
