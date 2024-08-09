@@ -159,6 +159,7 @@ const ResignationMainPage = () => {
                 let percent = Math.floor((loaded * 100) / total);
                 console.log(`${loaded}kb of ${total}kb | ${percent}%`);
                 if (percent < 100) {
+                    console.log(percent)
                     setProgress(percent)
                 }
             }
@@ -167,7 +168,7 @@ const ResignationMainPage = () => {
         const { success, message } = result.data;
 
         if (success === 1) {
-            setProgress(100)
+            // setProgress(100)
             succesNofity(message)
             setresignation_type(0)
             setrequest_date(new Date())
