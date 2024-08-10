@@ -394,7 +394,7 @@ const ResignationMainPage = () => {
                                     className='files-dropzone'
                                     onChange={handleChange}
                                     onError={handleError}
-                                    accepts={['image/png', '.pdf', '.doc', '.docx', 'image/jpeg', 'image/jpg']}
+                                    accepts={['image/png', '.pdf', 'image/jpeg', 'image/jpg']}
                                     multiple={false}
                                     maxFileSize={2000000}
                                     minFileSize={0}
