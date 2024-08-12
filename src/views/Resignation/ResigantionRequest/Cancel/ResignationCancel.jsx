@@ -8,6 +8,8 @@ import BeenhereIcon from '@mui/icons-material/Beenhere';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
+import { Box } from '@mui/joy'
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 const ResigModal = lazy(() => import('./ResignModal'))
 
@@ -46,21 +48,16 @@ const ResignationCancel = () => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.ceo_appr_status === "1" || params.data.ceo_appr_status === "2") {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
-                        <Tooltip title="Approved Request">
-                            <BeenhereIcon />
+                return <Box
+                    sx={{ display: 'flex', alignItems: 'center', }}
+                >
+                    <IconButton onClick={() => handleClickIcon(params)}
+                        sx={{ padding: 0 }} >
+                        <Tooltip title="Click Here to Cancel Approved Resignation Request"  >
+                            <CancelOutlinedIcon color='error' />
                         </Tooltip>
                     </IconButton>
-                } else {
-                    return <IconButton onClick={() => handleClickIcon(params)}
-                        sx={{ paddingY: 0.5 }} >
-                        <Tooltip title="Click Here to Approve / Reject">
-                            <CheckCircleOutlineIcon color='primary' />
-                        </Tooltip>
-                    </IconButton>
-                }
+                </Box>
             }
         },
     ])

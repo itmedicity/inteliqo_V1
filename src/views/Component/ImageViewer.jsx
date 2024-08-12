@@ -9,18 +9,20 @@ const ImageViewer = ({ fileURL, fileType }) => {
         <Box
             sx={{
                 display: 'flex',
+                flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
                 overflow: 'auto',
-                height: '100%',
-                width: '100%',
+                // height: '100%',
+                width: 800,
                 p: 1
             }}
+            onContextMenu={(e) => e.preventDefault()}
         >
             {
                 fileType === 'application/pdf' ?
                     <PDFReader
-                        url={fileURL}
+                        url={`${fileURL}#toolbar=0&navpanes=0&view=FitH`}
                         scale={1}
                         width="100%"
                     />

@@ -9,6 +9,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 
 const ApprovalModel = lazy(() => import('./InchargeApprovalModal'))
 const ContractModal = lazy(() => import('./ContractClosedModal'))
@@ -82,19 +83,23 @@ const HrApproval = () => {
             headerName: 'Action',
             cellRenderer: params => {
                 if (params.data.hod_app_status === "1" || params.data.hod_app_status === "2") {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton
+                        sx={{ padding: 0, cursor: 'none' }}
+                        disabled
+                    >
                         <Tooltip title="Approved Request">
-                            <BeenhereIcon />
+                            <ThumbUpAltIcon color='disabled' sx={{ padding: 0, }} />
                         </Tooltip>
                     </IconButton>
+                    </Box>
                 } else {
-                    return <IconButton onClick={() => handleClickIcon(params)}
-                        sx={{ paddingY: 0.5 }} >
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton onClick={() => handleClickIcon(params)}
+                        sx={{ padding: 0 }} >
                         <Tooltip title="Click Here to Approve / Reject">
-                            <CheckCircleOutlineIcon color='primary' />
+                            <ThumbUpAltIcon color='success' sx={{ padding: 0 }} />
                         </Tooltip>
                     </IconButton>
+                    </Box>
                 }
             }
         },
@@ -111,19 +116,25 @@ const HrApproval = () => {
             headerName: 'Action',
             cellRenderer: params => {
                 if (params.data.hod_app_status === "1" || params.data.hod_app_status === "2") {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
-                        <Tooltip title="Approved Request">
-                            <BeenhereIcon />
-                        </Tooltip>
-                    </IconButton>
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                        <IconButton
+                            sx={{ padding: 0, cursor: 'none' }}
+                            disabled
+                        >
+                            <Tooltip title="Approved Request">
+                                <ThumbUpAltIcon color='disabled' sx={{ padding: 0, }} />
+                            </Tooltip>
+                        </IconButton>
+                    </Box>
                 } else {
-                    return <IconButton onClick={() => ContactClick(params)}
-                        sx={{ paddingY: 0.5 }} >
-                        <Tooltip title="Click Here to Approve / Reject">
-                            <CheckCircleOutlineIcon color='primary' />
-                        </Tooltip>
-                    </IconButton>
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                        <IconButton onClick={() => ContactClick(params)}
+                            sx={{ padding: 0 }} >
+                            <Tooltip title="Click Here to Approve / Reject">
+                                <ThumbUpAltIcon color='success' sx={{ padding: 0 }} />
+                            </Tooltip>
+                        </IconButton>
+                    </Box>
                 }
             }
         },

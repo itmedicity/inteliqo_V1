@@ -68,19 +68,21 @@ const Inchargeapproval = () => {
             headerName: 'Action',
             cellRenderer: params => {
                 if (params.data.inch_app_status === "1" || params.data.inch_app_status === "2") {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton
+                        sx={{ padding: 0, cursor: 'none' }}
+                        disabled
+                    >
                         <Tooltip title="Approved Request">
-                            <ThumbUpAltIcon color='error' sx={{ padding: 0 }} disabled />
+                            <ThumbUpAltIcon color='disabled' sx={{ padding: 0, }} />
                         </Tooltip>
-                    </IconButton>
+                    </IconButton></Box>
                 } else {
-                    return <IconButton onClick={() => handleClickIcon(params)}
-                        sx={{ paddingY: 0.5 }} >
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton onClick={() => handleClickIcon(params)}
+                        sx={{ padding: 0 }} >
                         <Tooltip title="Click Here to Approve / Reject">
-                            <ThumbUpAltIcon color='error' sx={{ padding: 0 }} />
+                            <ThumbUpAltIcon color='success' sx={{ padding: 0 }} />
                         </Tooltip>
-                    </IconButton>
+                    </IconButton></Box>
                 }
             }
         },

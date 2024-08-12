@@ -85,10 +85,10 @@ const ResignModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
             aria-describedby="modal-desc"
             open={open}
             onClose={() => setOpen(false)}
-            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', }}
 
         >
-            <ModalDialog size="lg"  >
+            <ModalDialog size="lg" sx={{ width: '30%' }}  >
                 <ModalClose
                     variant="outlined"
                     sx={{
@@ -99,14 +99,11 @@ const ResignModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
                         bgcolor: 'background.body',
                     }}
                 />
-                <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
+                <Box sx={{ display: 'flex', flex: 1, justifyContent: 'left', flexDirection: 'column', }} >
                     <Typography
                         fontSize="xl2"
                         lineHeight={1}
-                        startDecorator={
-                            <EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />
-                        }
-                        sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
+                        sx={{ display: 'flex', alignItems: 'flex-start' }}
                     >
                         {em_name}
                     </Typography>
@@ -127,17 +124,17 @@ const ResignModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
                         >
                             {em_no}
                         </Typography>}
-                        sx={{ color: 'neutral.400', display: 'flex', }}
+                        sx={{ color: 'neutral.400', display: 'flex', mt: 0.2 }}
                     >
                         {`employee #`}
                     </Typography>
-                    <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
+                    <Typography level="body1" sx={{ textTransform: "capitalize" }} >{sect_name?.toLowerCase()}</Typography>
                 </Box>
 
                 {
                     slno === 4 ? null : <Box sx={{ mt: 0.5, pt: 1 }} >
                         <Typography variant="outlined" color="success">
-                            {status}
+                            Approved Resignation Request Please Verify Details before Canceling
                         </Typography>
                     </Box>
                 }
@@ -193,12 +190,16 @@ const ResignModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
                     }
                 </Paper>
                 <Box sx={{ pt: 0.5 }} >
-                    <Textarea name="Outlined" placeholder="Reason For Cancellation"
-                        variant="outlined" onChange={(e) => setRemark(e.target.value)} />
-
+                    <Textarea
+                        name="Outlined"
+                        placeholder="Reason For Cancellation"
+                        minRows={3}
+                        variant="outlined"
+                        onChange={(e) => setRemark(e.target.value)}
+                    />
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
-                        <Button variant="solid" color="success" onClick={submitFormdata}>
-                            Cancel
+                        <Button variant="solid" color="danger" onClick={submitFormdata}>
+                            Submit Resignation Cancelation
                         </Button>
                     </Box>
                 </Box>

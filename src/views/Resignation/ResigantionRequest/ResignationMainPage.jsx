@@ -172,7 +172,6 @@ const ResignationMainPage = () => {
 
         })
         const { success, message } = result.data;
-
         if (success === 1) {
             // setProgress(100)
             succesNofity(message)
@@ -185,7 +184,7 @@ const ResignationMainPage = () => {
             warningNofity(message)
         } else if (success === 0) {
             setProgress(0)
-            infoNofity("Your Resignation Already In Process")
+            infoNofity(message)
         } else {
             setProgress(0)
             errorNofity("Error Occured!!!!! Please Contact EDP")

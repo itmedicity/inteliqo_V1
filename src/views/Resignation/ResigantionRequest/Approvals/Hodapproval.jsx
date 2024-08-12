@@ -10,6 +10,8 @@ import _ from 'underscore'
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { lazy } from 'react'
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+
 const ApprovalModel = lazy(() => import('./InchargeApprovalModal'))
 
 const Hodapproval = () => {
@@ -68,19 +70,23 @@ const Hodapproval = () => {
             headerName: 'Action',
             cellRenderer: params => {
                 if (params.data.hod_app_status === "1" || params.data.hod_app_status === "2") {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton
+                        sx={{ padding: 0, cursor: 'none' }}
+                        disabled
+                    >
                         <Tooltip title="Approved Request">
-                            <BeenhereIcon />
+                            <ThumbUpAltIcon color='disabled' sx={{ padding: 0, }} />
                         </Tooltip>
                     </IconButton>
+                    </Box>
                 } else {
-                    return <IconButton onClick={() => handleClickIcon(params)}
-                        sx={{ paddingY: 0.5 }} >
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton onClick={() => handleClickIcon(params)}
+                        sx={{ padding: 0 }} >
                         <Tooltip title="Click Here to Approve / Reject">
-                            <CheckCircleOutlineIcon color='primary' />
+                            <ThumbUpAltIcon color='success' sx={{ padding: 0 }} />
                         </Tooltip>
                     </IconButton>
+                    </Box>
                 }
             }
         },
