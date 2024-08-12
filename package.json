@@ -81,6 +81,7 @@
     "react-tooltip": "^4.2.21",
     "react-virtuoso": "^4.1.0",
     "react-youtube": "^10.1.0",
+    "reactjs-pdf-reader": "^1.0.12",
     "redux": "4.1.1",
     "redux-thunk": "^2.4.1",
     "simplebar-react": "^2.3.6",

@@ -9,6 +9,7 @@ import { useCallback } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
+import ImageViewer from 'src/views/Component/ImageViewer';
 
 const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
 
@@ -32,7 +33,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
     })
     const { em_name, em_no, request_date, resig_slno,
         sect_name, status, resign_reason, relieving_date, inch_coment,
-        dept_id, sect_id, em_id, resignation_type, attachment } = details;
+        dept_id, sect_id, em_id, resignation_type, attachment, attachment_type } = details;
     const [remark, setRemark] = useState('')
     const [replacement, setreplacement] = useState(false)
     const [dueDept, SetDueDept] = useState({})
@@ -41,7 +42,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
             const { dept_id, dept_name, em_name, em_no, request_date, resig_slno, sect_id,
-                sect_name, resign_reason, relieving_date, status, inch_coment, em_id, resignation_type, attachment } = data
+                sect_name, resign_reason, relieving_date, status, inch_coment, em_id, resignation_type, attachment, attachment_type } = data
 
             const details = {
                 dept_id: dept_id,
@@ -58,7 +59,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 inch_coment: inch_coment,
                 em_id: em_id,
                 resignation_type: resignation_type,
-                attachment: attachment
+                attachment: attachment,
+                attachment_type: attachment_type
             }
 
             setDetails(details)
@@ -319,7 +321,6 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
     }, [remark, replacement, resig_slno, loginId, slno, dueDept,
         salaryPenalty, setOpen, setCount])
 
-
     const [open1, setOpen1] = useState(false);
 
 
@@ -498,11 +499,12 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 <Modal
                     open={open1}
                     onClose={() => setOpen1(false)}
+                    sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}
                 >
                     <ModalDialog>
                         <ModalClose />
-                        <Box>
-                            <img src={`http://localhost/NAS/ResignationReq/${attachment}`} alt="Resignation" style={{ width: '100%', height: '100%' }} />
+                        <Box sx={{ width: '80%', height: '80%', p: 2, overflow: 'auto' }} >
+                            <ImageViewer fileURL={`http://localhost/NAS/PersonalRecords/ResignationReq/${attachment}`} fileType={attachment_type} />,
                         </Box>
                     </ModalDialog>
                 </Modal>

@@ -95,8 +95,6 @@ const ResignationMainPage = () => {
 
     const submitFormData = useCallback(async (e) => {
         e.preventDefault()
-
-
         if (resignation_type === 0) {
             warningNofity("Please Select Resignation Type")
             return
@@ -168,7 +166,6 @@ const ResignationMainPage = () => {
                 const { loaded, total } = progressEvent;
                 let percent = Math.floor((loaded * 100) / total);
                 if (percent < 100) {
-                    console.log(percent)
                     setProgress(percent)
                 }
             }

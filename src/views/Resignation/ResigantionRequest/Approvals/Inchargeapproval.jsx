@@ -11,6 +11,7 @@ import _ from 'underscore'
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import InchargeApprovalModal from './InchargeApprovalModal'
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 
 const Inchargeapproval = () => {
 
@@ -70,14 +71,14 @@ const Inchargeapproval = () => {
                     return <IconButton
                         sx={{ paddingY: 0.5, cursor: 'none' }}  >
                         <Tooltip title="Approved Request">
-                            <BeenhereIcon />
+                            <ThumbUpAltIcon color='error' sx={{ padding: 0 }} disabled />
                         </Tooltip>
                     </IconButton>
                 } else {
                     return <IconButton onClick={() => handleClickIcon(params)}
                         sx={{ paddingY: 0.5 }} >
                         <Tooltip title="Click Here to Approve / Reject">
-                            <CheckCircleOutlineIcon color='primary' />
+                            <ThumbUpAltIcon color='error' sx={{ padding: 0 }} />
                         </Tooltip>
                     </IconButton>
                 }
