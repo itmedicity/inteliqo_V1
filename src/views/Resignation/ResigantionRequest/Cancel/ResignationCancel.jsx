@@ -10,6 +10,8 @@ import { useSelector } from 'react-redux'
 import _ from 'underscore'
 import { Box } from '@mui/joy'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import { ScreenRotation } from '@material-ui/icons'
+import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const ResigModal = lazy(() => import('./ResignModal'))
 
@@ -75,22 +77,22 @@ const ResignationCancel = () => {
             </Suspense>
             <CustomLayout title="Resignation Cancel" displayClose={true} >
                 <ToastContainer />
-                <Paper sx={{ width: '100%' }}>
-                    <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", }} >
-                        <CommonAgGrid
-                            columnDefs={column}
-                            tableData={tableData}
-                            sx={{
-                                height: 600,
-                                width: "100%"
-                            }}
-                            rowHeight={30}
-                            headerHeight={30}
-                        // rowStyle={rowStyle}
-                        // getRowStyle={getRowStyle}
-                        />
-                    </Paper>
+                {/* <Paper sx={{ width: '100%', display: 'flex', flex: 1, backgroundColor: 'green' }}> */}
+                <Paper variant='outlined' sx={{ display: 'flex', m: 1, flex: 1, flexDirection: "column", }} >
+                    <CommonAgGrid
+                        columnDefs={column}
+                        tableData={tableData}
+                        sx={{
+                            height: screenInnerHeight - 130,
+                            width: "100%"
+                        }}
+                        rowHeight={30}
+                        headerHeight={30}
+                    // rowStyle={rowStyle}
+                    // getRowStyle={getRowStyle}
+                    />
                 </Paper>
+                {/* </Paper> */}
             </CustomLayout>
         </Fragment>
     )

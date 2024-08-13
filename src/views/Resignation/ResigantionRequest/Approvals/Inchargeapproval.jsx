@@ -12,6 +12,7 @@ import BeenhereIcon from '@mui/icons-material/Beenhere';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import InchargeApprovalModal from './InchargeApprovalModal'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const Inchargeapproval = () => {
 
@@ -101,19 +102,18 @@ const Inchargeapproval = () => {
             <CustomLayout title="Resignation Approval Incharge" displayClose={true} >
                 <ToastContainer />
                 <Paper sx={{ width: '100%' }}>
-                    <Paper square sx={{ display: 'flex', flex: 1, mb: 0.4, p: 0.8, alignItems: 'center', }} >
+                    <Paper variant="outlined" sx={{ display: 'flex', flex: 1, m: 1, p: 0.8, alignItems: 'center', }} >
                         <Box sx={{ display: 'flex', flex: 1, pt: 0.4, pr: 0.8, }} >
                             <ApprovalDeptSectSelection em_id={em_id} value={deptSect} setValue={setDeptSect} updateDeptSect={updateDeptSect} />
                         </Box>
-                        <Box sx={{ display: 'flex', flex: 3, pt: 0.4, pr: 0.8, }} >
-                        </Box>
+                        <Box sx={{ display: 'flex', flex: 3, pt: 0.4, pr: 0.8, }} ></Box>
                     </Paper>
-                    <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", }} >
+                    <Paper square elevation={0} sx={{ p: 1, display: 'flex', flexDirection: "column", flex: 1 }} >
                         <CommonAgGrid
                             columnDefs={column}
                             tableData={tableData}
                             sx={{
-                                height: 600,
+                                height: screenInnerHeight - 210,
                                 width: "100%"
                             }}
                             rowHeight={30}

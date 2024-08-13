@@ -11,6 +11,7 @@ import BeenhereIcon from '@mui/icons-material/Beenhere';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { lazy } from 'react'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const ApprovalModel = lazy(() => import('./InchargeApprovalModal'))
 
@@ -105,7 +106,7 @@ const Hodapproval = () => {
             <CustomLayout title="Resignation Approval HOD" displayClose={true} >
                 <ToastContainer />
                 <Paper sx={{ width: '100%' }}>
-                    <Paper square sx={{ display: 'flex', flex: 1, mb: 0.4, p: 0.8, alignItems: 'center', }} >
+                    <Paper variant='outlined' sx={{ display: 'flex', flex: 1, m: 1, p: 1, alignItems: 'center', }} >
                         <Box sx={{ display: 'flex', flex: 1, pt: 0.4, pr: 0.8, }} >
                             <ApprovalDeptSectSelection em_id={em_id} value={deptSect} setValue={setDeptSect} updateDeptSect={updateDeptSect} />
                         </Box>
@@ -117,7 +118,7 @@ const Hodapproval = () => {
                             columnDefs={column}
                             tableData={tableData}
                             sx={{
-                                height: 600,
+                                height: screenInnerHeight - 210,
                                 width: "100%"
                             }}
                             rowHeight={30}

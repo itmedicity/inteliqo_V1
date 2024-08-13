@@ -2,7 +2,7 @@ import { Box, Button, CssVarsProvider, } from '@mui/joy'
 import { IconButton, Paper, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import {  warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
@@ -12,6 +12,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ActiveModal from './ActiveModal'
+import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const EmployeeActiveHR = () => {
 
@@ -86,7 +87,7 @@ const EmployeeActiveHR = () => {
     return (
         <CustomLayout title="Employee Active" displayClose={true} >
             <ToastContainer />
-            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', m: 1, }}>
                 <Paper variant="outlined" sx={{ width: '100%', p: 0.5, display: 'flex', flexDirection: 'row' }}  >
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                         <BranchSelectRedux value={branch} setValue={setBranch} />
@@ -97,12 +98,13 @@ const EmployeeActiveHR = () => {
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                         <DeptSecSelectByRedux dept={dept} value={deptSect} setValue={setDeptSect} />
                     </Box>
-                    <Box sx={{ mt: 0.2, pr: 0.2 }} >
+                    <Box sx={{}} >
                         <CssVarsProvider>
                             <Button
                                 aria-label="Like"
                                 variant="outlined"
                                 color="primary"
+                                sx={{ height: '100%' }}
                                 onClick={() => {
                                     getemployeedetails()
                                 }}
@@ -112,19 +114,19 @@ const EmployeeActiveHR = () => {
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-                <Paper square sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                <Paper square sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column", flex: 1 }} >
                     <CommonAgGrid
                         columnDefs={column}
                         tableData={state === 1 ? empData : null}
                         sx={{
-                            height: 400,
+                            height: screenInnerHeight - 200,
                             width: "100%"
                         }}
                         rowHeight={30}
                         headerHeight={30}
                     />
                 </Paper>
-                <ActiveModal open={flag} setOpen={setFlag} data={details} setCount={setCount}/>
+                <ActiveModal open={flag} setOpen={setFlag} data={details} setCount={setCount} />
             </Box>
         </CustomLayout>
     )

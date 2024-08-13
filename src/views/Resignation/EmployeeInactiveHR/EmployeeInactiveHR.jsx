@@ -100,7 +100,7 @@ const EmployeeInactiveHR = () => {
     return (
         <CustomLayout title="Employee Inactive" displayClose={true} >
             <ToastContainer />
-            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', m: 1 }}>
                 <Paper variant="outlined" sx={{ width: '100%', p: 0.5, display: 'flex', flexDirection: 'row' }}  >
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                         <BranchSelectRedux value={branch} setValue={setBranch} />

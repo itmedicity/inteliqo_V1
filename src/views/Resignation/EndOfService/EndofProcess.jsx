@@ -1,4 +1,4 @@
-import { CssVarsProvider, Typography } from '@mui/joy'
+import { Button, CssVarsProvider, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
 import { differenceInDays, getDaysInMonth, startOfMonth, subDays } from 'date-fns'
 import moment from 'moment'
@@ -8,6 +8,11 @@ import { ToWords } from 'to-words';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
+import Files from 'react-files'
+import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
+import PermMediaOutlinedIcon from '@mui/icons-material/PermMediaOutlined';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 
 const EndofProcess = ({ details }) => {
     const toWords = new ToWords({
@@ -165,121 +170,147 @@ const EndofProcess = ({ details }) => {
     const tot = (salary + dutyoff + holiday + arear + compoff + earnleave + cautiondepo) - (gross_salary + kswf + pf + esi + protax)
     var numstring = toWords?.convert(Math.abs(tot))
 
+
+    //NEW CODE FUNCTIONS START HERE
+    const [files, setFiles] = useState('')
+    const handleChange = (files) => {
+        setFiles(files)
+    }
+
+    const handleError = (error, file) => {
+        const { code } = error
+        if (code === 1) {
+            warningNofity('Upload failed. Invalid file type')
+        } else if (code === 2) {
+            warningNofity('Upload failed. File too large')
+        } else if (code === 3) {
+            warningNofity('Upload failed. File too small')
+        } else {
+            warningNofity('Upload failed. Maximum file count reached')
+        }
+    }
+
     return (
-        <Box sx={{ width: "100%", backgroundColor: 'white' }} >
-            <Paper elevation={0} variant='outlined' square sx={{ px: 3, display: "flex", flexDirection: "column" }} >
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}>
-                        <CssVarsProvider>
-                            <Typography level="body1"> EMP. ID</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {em_no}</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}  >
-                        <CssVarsProvider>
-                            <Typography level="body1">DOJ</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }}  >
-                        <CssVarsProvider>
-                            <Typography level="body1">{moment(em_doj).format('DD-MM-YYYY')}</Typography>
-                        </CssVarsProvider>
+        <Box sx={{ width: "100%", p: 1 }} >
+            <Paper variant='outlined' sx={{ p: 1, display: "flex", flexDirection: "column", }} >
+                {/* Employee Information */}
+                <Box sx={{ display: "flex", flexDirection: "column", border: "1px solid", borderColor: "grey.300", p: 1, borderRadius: 2, }} >
+                    <Typography level='body-lg' fontWeight={500} fontSize='1.5rem' color='neutral' fontFamily="monospace" lineHeight={1.5} >{em_name}</Typography>
+                    <Box sx={{ display: "flex", flexDirection: "row", }} >
+                        <Box sx={{ display: 'flex', flexDirection: 'column', flexBasis: '40%' }} >
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Employee ID :'} >{em_no}</Typography>
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Department :'}>{dept_name}</Typography>
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Designation :'}>{desg_name}</Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', flexBasis: '30%' }} >
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Date Of Joining :'}>12-02-2024</Typography>
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Resignation Date :'}>12-02-2024</Typography>
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Notice Period End Date :'}>12-02-2024</Typography>
+                        </Box>
                     </Box>
                 </Box>
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}>
-                        <CssVarsProvider>
-                            <Typography level="body1"> EMP. NAME</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {em_name}</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}  >
-                        <CssVarsProvider>
-                            <Typography level="body1">NOTICE DATE</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }}  >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {moment(request_date).format('DD-MM-YYYY')}
-                            </Typography>
-                        </CssVarsProvider>
-                    </Box>
-                </Box>
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}>
-                        <CssVarsProvider>
-                            <Typography level="body1">DEPARTMENT</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {dept_name}</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}  >
-                        <CssVarsProvider>
-                            <Typography level="body1">CALCULATED LWD</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }}  >
-                        <CssVarsProvider>
-                            <Typography level="body1">{moment(subDays(new Date(relieving_date), 1)).format('DD-MM-YYYY')}</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                </Box>
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}>
-                        <CssVarsProvider>
-                            <Typography level="body1">DESIGNATION</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {desg_name}</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}  >
-                        <CssVarsProvider>
-                            <Typography level="body1">ACTUAL LWD OFF</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }}  >
-                        <CssVarsProvider>
-                            <Typography level="body1">{moment(relieving_date).format('DD-MM-YYYY')}</Typography>
-                        </CssVarsProvider>
+                {/* Dure Clearence Details file upload */}
+                <Box sx={{ display: "flex", flex: 1, px: 0.5, border: "1px solid", borderColor: "grey.300", borderRadius: 2, mt: 0.5, flexDirection: 'column' }} >
+                    <Typography
+                        color="neutral"
+                        level="body-xs"
+                        noWrap
+                        sx={{ flex: 1, textAlign: 'left', color: '#8EADCD', mt: 0.5, ml: 0.5, textDecoration: 'underline' }}
+                    >
+                        Upload Due Clearence Documents
+                    </Typography>
+                    <Box sx={{ display: "flex", flex: 1, p: 1, flexDirection: "row" }}>
+                        <Files
+                            className='files-dropzone'
+                            onChange={handleChange}
+                            onError={handleError}
+                            accepts={['image/png', '.pdf', 'image/jpeg', 'image/jpg']}
+                            multiple={false}
+                            maxFileSize={2000000}
+                            minFileSize={0}
+                            clickable
+                        >
+                            <Box sx={{
+                                display: 'flex', alignItems: 'center', cursor: 'pointer', border: 1, borderColor: '#8dbb8f', borderRadius: 2,
+                                '&:hover': {
+                                    boxShadow: '0 0 0 1px #8dbb8f',
+                                }
+                            }}  >
+                                <DriveFolderUploadOutlinedIcon sx={{ fontSize: 35, color: '#8dbb8f', ml: 1 }} />
+                                <Typography
+                                    level="body-xs"
+                                    textColor="var(--joy-palette-success-plainColor)"
+                                    noWrap
+                                    sx={{ display: "flex", flex: 1, textAlign: 'center', mx: 1.5, opacity: 0.7 }}
+                                >
+                                    Upload files
+                                </Typography>
+                            </Box>
+                        </Files>
+                        {/* upload file view here model with file open click here */}
+                        {
+                            true === true &&
+                            <Box
+                                sx={{
+                                    display: 'flex', justifyContent: 'center', alignItems: 'end', borderBottom: '3px solid grey', mb: 0.3, ml: 5, width: '30%',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                <PermMediaOutlinedIcon sx={{ color: 'grey' }} />
+                                <Typography
+                                    level="body-xs"
+                                    textColor="var(--joy-palette-success-plainColor)"
+                                    noWrap
+                                    sx={{
+                                        display: "flex", flex: 1, textAlign: 'center', mx: 1.5, opacity: 0.7,
+                                        '&:hover': {
+                                            opacity: 10
+                                        }
+                                    }}
+                                >
+                                    File name here
+                                </Typography>
+                            </Box>
+                        }
                     </Box>
                 </Box>
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}>
-                        <CssVarsProvider>
-                            <Typography level="body1">SALARY (GROSS)</Typography>
-                        </CssVarsProvider>
+                {/* Attendance process code start here */}
+                <Box sx={{ display: "flex", flex: 1, px: 0.5, border: "1px solid", borderColor: "grey.300", borderRadius: 2, mt: 0.5, flexDirection: 'column', py: 0.5 }} >
+                    <Box sx={{ display: "flex", flex: 1, p: 1, flexDirection: "row", justifyContent: "left", alignItems: 'center' }}>
+                        <Typography
+                            level='title-sm'
+                            color='neutral'
+                            fontFamily="inherit"
+                            startDecorator={<CalendarMonthOutlinedIcon fontSize='small' />}
+                            variant='outlined'
+                            sx={{ borderRadius: 5, pr: 2, py: 0.5 }}
+                        >Start of Month</Typography>
+                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'}  >12-08-2024</Typography>
+                        <Typography
+                            level='title-sm'
+                            color='neutral'
+                            startDecorator={<CalendarMonthOutlinedIcon fontSize='small' />}
+                            variant='outlined'
+                            sx={{ borderRadius: 5, pr: 2, py: 0.5 }}
+                        >Resignation Date</Typography>
+                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'} >12-08-2024</Typography>
+                        <Button
+                            color="primary"
+                            onClick={function () { }}
+                            size="sm"
+                            variant="outlined"
+                        >
+                            Process Attendance Information
+                        </Button>
                     </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {gross_salary}</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}  >
-                        {/* <CssVarsProvider>
-                            <Typography level="body1">ACTUAL LWD OFF</Typography>
-                        </CssVarsProvider> */}
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }}  >
-                        {/* <CssVarsProvider>
-                            <Typography level="body1">frgdhg</Typography>
-                        </CssVarsProvider> */}
+                    <Box>
+                        dsfsdf
                     </Box>
                 </Box>
             </Paper>
+
+
+
             <Paper elevation={0} variant='outlined' square sx={{ px: 3, display: "flex", flexDirection: "column" }} >
                 <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}>
                     <CssVarsProvider>
@@ -287,8 +318,7 @@ const EndofProcess = ({ details }) => {
                     </CssVarsProvider>
                 </Box>
             </Paper>
-            <Paper elevation={0} variant='outlined' square sx={{ px: 3, display: "flex", flexDirection: "column" }}
-            >
+            <Paper elevation={0} variant='outlined' square sx={{ px: 3, display: "flex", flexDirection: "column" }}>
                 <Box sx={{ display: "flex", width: "100%" }} >
                     <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
                         <CssVarsProvider>

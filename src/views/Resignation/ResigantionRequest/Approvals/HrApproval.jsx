@@ -10,6 +10,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const ApprovalModel = lazy(() => import('./InchargeApprovalModal'))
 const ContractModal = lazy(() => import('./ContractClosedModal'))
@@ -158,7 +159,7 @@ const HrApproval = () => {
             <CustomLayout title="Resignation Approval HR" displayClose={true} >
                 <ToastContainer />
                 <Paper sx={{ width: '100%' }}>
-                    <Paper square sx={{ display: 'flex', flex: 1, mb: 0.4, p: 0.8, alignItems: 'center', }} >
+                    <Paper variant='outlined' sx={{ display: 'flex', flex: 1, m: 1, p: 1, alignItems: 'center', }} >
                         <Box sx={{ display: 'flex', flex: 1, pt: 0.4, pr: 0.8, }} >
                             <DeptSelectByRedux setValue={setDeptSect} value={deptSect} />
                         </Box>
@@ -177,7 +178,7 @@ const HrApproval = () => {
                             columnDefs={conttrcatclose === true ? columnDef : column}
                             tableData={conttrcatclose === true ? contractdata : tableData}
                             sx={{
-                                height: 600,
+                                height: screenInnerHeight - 210,
                                 width: "100%"
                             }}
                             rowHeight={30}

@@ -10,7 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { pdfdownlod } from './FullFinalPdf'
 import { PUBLIC_NAS_FOLDER, } from 'src/views/Constant/Static';
-import { urlExist } from 'src/views/Constant/Constant'
+import { screenInnerHeight, urlExist } from 'src/views/Constant/Constant'
 import ProfilePicDefault from 'src/assets/images/nosigature.jpg'
 import _ from 'underscore'
 import moment from 'moment';
@@ -89,11 +89,13 @@ const FullandFinalSettlement = () => {
         {
             headerName: 'Action',
             cellRenderer: params =>
-                <Tooltip title="View Details" followCursor placement='top' arrow >
-                    <OpenIcon onClick={() => handleClickIcon(params)}>
-                        <NextPlanOutlinedIcon color='primary' />
-                    </OpenIcon>
-                </Tooltip>
+                <Box sx={{ display: 'flex', alignItems: 'center' }} >
+                    <Tooltip title="View Details" followCursor placement='top' arrow >
+                        <OpenIcon onClick={() => handleClickIcon(params)} sx={{ cursor: 'pointer', p: 0 }}>
+                            <NextPlanOutlinedIcon color='primary' />
+                        </OpenIcon>
+                    </Tooltip>
+                </Box>
         }
     ])
 
@@ -164,71 +166,73 @@ const FullandFinalSettlement = () => {
 
     return (
         <Fragment>
-            <CustomBackDrop open={openBkDrop} text="Please wait !. Employee Details In Process" />
-            <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
-                <Box sx={{ display: "flex", flex: 1, height: 30, }} >
-                    <Paper square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', }} >
-                        <Box sx={{ flex: 1, display: 'flex' }}>
-                            <DragIndicatorOutlinedIcon />
-                            <CssVarsProvider>
-                                <Typography textColor="neutral.400" sx={{ display: 'flex', }} >
-                                    Full and Final Settlement
-                                </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        {
-                            details.length === 0 ? null : <Tooltip title="Download as PDF" followCursor placement='top' arrow >
-                                <Box sx={{ display: "flex", pr: 1 }}>
-                                    <CssVarsProvider>
-                                        <IconButton
-                                            variant="outlined"
-                                            size='xs'
-                                            color='primary'
-                                            onClick={download}
-                                            sx={{ color: '#347aeb' }}
-                                        >
-                                            <ArrowDownwardIcon />
-                                        </IconButton>
-                                    </CssVarsProvider>
-                                </Box>
-                            </Tooltip >
-                        }
-                        <Box sx={{ display: "flex", pr: 1 }}>
-                            <CssVarsProvider>
-                                <IconButton
-                                    variant="outlined"
-                                    size='xs'
-                                    color="danger"
-                                    onClick={toRedirectToHome}
-                                    sx={{ color: '#ef5350' }}
-                                >
-                                    <CloseIcon />
-                                </IconButton>
-                            </CssVarsProvider>
-                        </Box>
-                    </Paper>
-                </Box>
-            </Paper>
-            {
-                flag === 1 ? <EndofProcess details={details} /> : <Paper sx={{ width: '100%' }}>
-                    <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", }} >
-                        <CommonAgGrid
-                            columnDefs={column}
-                            tableData={tableData}
-                            sx={{
-                                height: 600,
-                                width: "100%"
-                            }}
-                            rowHeight={30}
-                            headerHeight={30}
-                        // rowStyle={rowStyle}
-                        // getRowStyle={getRowStyle}
-                        />
-                    </Paper>
+            <Paper variant='outlined' sx={{ display: 'flex', flex: 1, flexDirection: 'column', height: screenInnerHeight - 100 }} >
+                <CustomBackDrop open={openBkDrop} text="Please wait !. Employee Details In Process" />
+                <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
+                    <Box sx={{ display: "flex", flex: 1, height: 30 }} >
+                        <Paper elevation={5} square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', }} >
+                            <Box sx={{ flex: 1, display: 'flex' }}>
+                                <DragIndicatorOutlinedIcon />
+                                <CssVarsProvider>
+                                    <Typography textColor="neutral.400" sx={{ display: 'flex', }} >
+                                        Full and Final Settlement
+                                    </Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            {
+                                details.length === 0 ? null : <Tooltip title="Download as PDF" followCursor placement='top' arrow >
+                                    <Box sx={{ display: "flex", pr: 1 }}>
+                                        <CssVarsProvider>
+                                            <IconButton
+                                                variant="outlined"
+                                                size='xs'
+                                                color='primary'
+                                                onClick={download}
+                                                sx={{ color: '#347aeb' }}
+                                            >
+                                                <ArrowDownwardIcon />
+                                            </IconButton>
+                                        </CssVarsProvider>
+                                    </Box>
+                                </Tooltip >
+                            }
+                            <Box sx={{ display: "flex", pr: 1 }}>
+                                <CssVarsProvider>
+                                    <IconButton
+                                        variant="outlined"
+                                        size='xs'
+                                        color="danger"
+                                        onClick={toRedirectToHome}
+                                        sx={{ color: '#ef5350' }}
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                </CssVarsProvider>
+                            </Box>
+                        </Paper>
+                    </Box>
                 </Paper>
-            }
-
-
+                {
+                    flag === 1
+                        ? <EndofProcess details={details} />
+                        : <Paper variant='outlined' elevation={2} sx={{ width: '100%', height: screenInnerHeight - 120, p: 1 }}>
+                            {/* <Paper variant='outlined' elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flex: 1, flexDirection: "column", }} > */}
+                            <CommonAgGrid
+                                columnDefs={column}
+                                tableData={tableData}
+                                sx={{
+                                    height: screenInnerHeight - 150,
+                                    width: "100%"
+                                }}
+                                rowHeight={30}
+                                headerHeight={30}
+                            // rowStyle={rowStyle}
+                            // getRowStyle={getRowStyle}
+                            />
+                            {/* </Paper> */}
+                        </Paper>
+                }
+            </Paper>
         </Fragment>
     )
 }
