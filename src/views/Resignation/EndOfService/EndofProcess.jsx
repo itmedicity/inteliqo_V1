@@ -303,8 +303,18 @@ const EndofProcess = ({ details }) => {
                             Process Attendance Information
                         </Button>
                     </Box>
+                    {/* Processed data show here */}
                     <Box>
-                        dsfsdf
+                        {
+                            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((item, index) => (
+                                <Box key={index} sx={{ display: 'flex', flexDirection: 'row' }} >
+                                    <Typography level='title-sm' color='neutral' fontFamily="monospace">{item}</Typography>
+                                    <Typography level='title-sm' color='neutral' fontFamily="monospace">Mon</Typography>
+                                    <Typography level='title-sm' color='neutral' fontFamily="monospace">P</Typography>
+                                    <Typography level='title-sm' color='neutral' fontFamily="monospace">LC</Typography>
+                                </Box>
+                            ))
+                        }
                     </Box>
                 </Box>
             </Paper>
