@@ -7,6 +7,12 @@ const Leavemanagement = [
         to: '/Home/LeaveRequsition',
     },
     {
+        men_slno: 192,
+        component: CNavItem,
+        name: 'OFF Request',
+        to: '/Home/DoffRequest',
+    },
+    {
         men_slno: 285,
         component: CNavItem,
         name: 'Credit COFF',
@@ -24,12 +30,12 @@ const Leavemanagement = [
         name: 'Overtime Request',
         to: '/Home/OTRequest',
     },
-    {
-        men_slno: 239,
-        component: CNavItem,
-        name: 'Common Request',
-        to: '/Home/CommonReqst',
-    },
+    // {
+    //     men_slno: 239,
+    //     component: CNavItem,
+    //     name: 'Common Request',
+    //     to: '/Home/CommonReqst',
+    // },
     {
         men_slno: 61,
         component: CNavItem,
@@ -48,12 +54,7 @@ const Leavemanagement = [
         name: 'Manual Request',
         to: '/Home/ManualRequest',
     },
-    {
-        men_slno: 192,
-        component: CNavItem,
-        name: 'OFF Request',
-        to: '/Home/DoffRequest',
-    },
+
     {
         men_slno: 26,
         component: CNavItem,
