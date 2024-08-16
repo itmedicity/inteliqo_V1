@@ -9,6 +9,8 @@ import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 
 const Manpowerexp = ({ setExperience_status, Fresher_status, setexpfrom, setexpto, expfrom, expto, setFresher_status, TraineeExp_status, setTraineeExp_status, Experience_status, setApprenticeshipExp_status, ApprenticeshipExp_status, salaryfrom, salaryto,
     setexp, exp, setValue, value, settraining, training, other_essen, setother_essen }) => {
+
+
     const handleCountfrom = useCallback((e) => {
         setexpfrom(e);
 

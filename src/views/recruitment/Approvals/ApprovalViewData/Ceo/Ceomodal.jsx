@@ -10,7 +10,7 @@ const Interviewedu = lazy(() => import('./eduview'))
 const CeoMarkModal = lazy(() => import('./CeoMarkModal'))
 const Assesmentmark = lazy(() => import('./AssesmentMark'))
 
-const Ceomodal = ({ isModalOpen, setIsModalOpen, personaldata, data, setOpenRowIndex, count, setcount }) => {
+const Ceomodal = ({ isModalOpen, setIsModalOpen, personaldata, data, setOpenRowIndex, count, setcount, stausdata }) => {
     const [details, setDetails] = useState({
         email: '',
         first_name: '',
@@ -62,7 +62,7 @@ const Ceomodal = ({ isModalOpen, setIsModalOpen, personaldata, data, setOpenRowI
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: 1500,
+                        width: "80%",
                         bgcolor: 'white',
                         boxShadow: 24,
                         p: 3,
@@ -153,7 +153,8 @@ const Ceomodal = ({ isModalOpen, setIsModalOpen, personaldata, data, setOpenRowI
                         </Box>
 
                         <Box sx={{ mt: 2 }}>
-                            <CeoMarkModal data={data} setIsModalOpen={setIsModalOpen} setOpenRowIndex={setOpenRowIndex} count={count} setcount={setcount} />
+                            <CeoMarkModal data={data} setIsModalOpen={setIsModalOpen} setOpenRowIndex={setOpenRowIndex}
+                                count={count} setcount={setcount} stausdata={stausdata} />
                         </Box>
                     </Box>
 

@@ -74,18 +74,7 @@ const PersonalRecords = () => {
           warningNofity(message)
         }
       }
-      // else if (dept !== 0 && section !== 0) {
-      //   console.log("emp");
-      //   const result = await axioslogin.post('/empmast/getEmpDetInactive', postData)
-      //   const { success, data, message } = result.data
-      //   if (success === 1) {
-      //     setTableData(data)
 
-      //   }
-      //   else {
-      //     warningNofity(message)
-      //   }
-      // }
       else if (dept === 0 && section === 0 && empNo !== 0) {
 
         const result = await axioslogin.get(`/empearndeduction/getAll/${empNo}`)

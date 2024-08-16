@@ -20,6 +20,8 @@ const Incharge = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [personaldata, setpersonaldata] = useState([]);
     const [data, setdata] = useState([]);
+    const [stausdata, setstatusdata] = useState([]);
+
     const [count, setcount] = useState(0)
     const history = useHistory();
     const toRedirectToHome = () => {
@@ -47,6 +49,7 @@ const Incharge = () => {
 
                 if (success === 1) {
                     const result = await axioslogin.post('/Applicationform/statusdata')
+
                     const { success1, data1: statusdata } = result.data
                     if (success1 === 1) {
                         const newFun = (val) => {
@@ -64,11 +67,13 @@ const Incharge = () => {
                             //for showing the drop down details
                             const updatedApslno = item.apslno.map((apslnoItem) => {
                                 const foundStatus = filteredStatusData.find((statusItem) => statusItem.application_no === apslnoItem.application_no && statusItem.letter_status === 1
-                                    && statusItem.interview_status === 1 && statusItem.incharge_interview_status === 0 && statusItem.interview_status === 1 && statusItem.Hr_interview_status === 1);
+                                    && statusItem.incharge_interview_status === 0 && statusItem.interview_status === 1 && statusItem.Incharge_required_status === 1 && statusItem.Incharge_level_staus === 1);
 
                                 return foundStatus ? {
                                     ...apslnoItem, status: foundStatus.status, letterstatus: foundStatus.letter_status, mark: foundStatus.mark,
-                                    Hrmark: foundStatus?.Hr_Interview_Mark,
+                                    inchargemark: foundStatus.total_Incharge_inter_mark,
+                                    Hodmark: foundStatus.Hod_interview_mark, Msmark: foundStatus.Ms_Interview_Mark, Dmsmark: foundStatus.Dms_Interview_Mark, Operationmark: foundStatus.Operation_Interview_Mark,
+                                    Ceomark: foundStatus.Ceo_Interview_Mark, Hrmark: foundStatus?.Hr_Interview_Mark, Hrstatus: foundStatus?.Hr_interview_status, Ceostatus: foundStatus?.Ceo_Interview_status,
                                 } : apslnoItem;
                             });
                             return { ...item, apslno: updatedApslno };
@@ -106,7 +111,9 @@ const Incharge = () => {
         const { success, data } = result.data
         if (success === 1) {
             const result = await axioslogin.post('/Applicationform/statusdetails', statusdata)
+
             const { success1, data1 } = result.data
+            setstatusdata(data1[0])
             if (success1 === 1) {
                 if (data1 && data1.length > 0) {
                     const arr = data.map((val) => {
@@ -142,7 +149,7 @@ const Incharge = () => {
     // }, [])
     return (
         <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', height: window.innerHeight - 100, overflowX: "auto" }}>
-            <DasboardCustomLayout title={"Interview Initial Assesment Bar"} displayClose={true} setClose={toRedirectToHome}>
+            <DasboardCustomLayout title={"Interview Inharge"} displayClose={true} setClose={toRedirectToHome}>
                 <Box sx={{ display: "flex", flexDirection: "column", width: '100%' }}>
                     <Box sx={{ py: 0.5, }}>
                         <TableContainer sx={{}}>
@@ -223,6 +230,7 @@ const Incharge = () => {
                 data={data}
                 setOpenRowIndex={setOpenRowIndex}
                 count={count} setcount={setcount}
+                stausdata={stausdata}
             />
             {/* <InchargeMarkModal
                 isModalOpenMark={isModalOpenMark}

@@ -6,7 +6,7 @@ import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 
-const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }) => {
+const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count, stausdata }) => {
     const [totalmark, settotalMark] = useState(0);
     const [subjectmark, setsubMark] = useState(0);
     const [expmark, setexpMark] = useState(0);
@@ -35,6 +35,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
         settotalMark(sum)
 
     }, [subjectmark, expmark, edumark, techmark, presentationmark, analyticalmark, communicationmark, attitudeark, confidencemark, bodylanmark])
+    const { Ceo_level_status, Dms_level_status, Hod_level_staus, Incharge_level_staus, Ms_level_status, operation_level_status } = stausdata
 
     const postdata = useMemo(() => {
         return {
@@ -52,10 +53,18 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
             attitudeark: attitudeark,
             confidencemark: confidencemark,
             bodylanmark: bodylanmark,
-            remark: remark
+            remark: remark,
+            Ceo_level_status: Ceo_level_status === 0 ? Ceo_level_status : Ceo_level_status - 1,
+            Dms_level_status: Dms_level_status === 0 ? Dms_level_status : Dms_level_status - 1,
+            Hod_level_staus: Hod_level_staus === 0 ? Hod_level_staus : Hod_level_staus - 1,
+            Incharge_level_staus: Incharge_level_staus === 0 ? Incharge_level_staus : Incharge_level_staus - 1,
+            Ms_level_status: Ms_level_status === 0 ? Ms_level_status : Ms_level_status - 1,
+            operation_level_status: operation_level_status === 0 ? operation_level_status : operation_level_status - 1
 
         }
-    }, [data, totalmark, subjectmark, remark, expmark, edumark, techmark, presentationmark, analyticalmark, communicationmark, attitudeark, confidencemark, bodylanmark])
+    }, [data, totalmark, subjectmark, remark, expmark, edumark, techmark, presentationmark, analyticalmark,
+        communicationmark, attitudeark, confidencemark, bodylanmark,
+        Ceo_level_status, Dms_level_status, Hod_level_staus, Incharge_level_staus, Ms_level_status, operation_level_status])
 
     const submitmanpower = useCallback(async (event) => {
         event.preventDefault()
@@ -116,13 +125,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={expmark}
-                                                        onChange={(e) => setexpMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}
@@ -142,13 +145,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={edumark}
-                                                        onChange={(e) => seteduMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}
@@ -168,13 +165,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={techmark}
-                                                        onChange={(e) => settechMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}
@@ -194,13 +185,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={presentationmark}
-                                                        onChange={(e) => setpresentationMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}
@@ -220,13 +205,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={analyticalmark}
-                                                        onChange={(e) => setanalyticalMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}
@@ -246,13 +225,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={communicationmark}
-                                                        onChange={(e) => setcommunicationMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}
@@ -272,13 +245,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={attitudeark}
-                                                        onChange={(e) => setattitudeMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}
@@ -298,13 +265,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={confidencemark}
-                                                        onChange={(e) => setconfidenceMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}
@@ -324,13 +285,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={bodylanmark}
-                                                        onChange={(e) => setbodylanMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}
@@ -359,15 +314,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                             sx={{ width: '100%' }}
                                             onChange={(e) => setremark(e.target.value)}
                                         />
-                                        {/* <JoyInput
-                                                variant="plain"
-                                                sx={{ p: 0, m: 0 }}
-                                                type="text"
-                                                value={remark}
-                                                onchange={(remark) => setremark(remark)}
-                                                size="sm"
-                                            /> */}
-                                        {/* </Typography> */}
+
                                     </Box>
                                 </TableCell>
                             </TableRow>
@@ -378,14 +325,7 @@ const DmsMarkModal = ({ setOpenRowIndex, setIsModalOpen, data, setcount, count }
                                 <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                            {/* <Textarea
-                                                        name="Outlined"
-                                                        placeholder="Mark"
-                                                        variant="outlined"
-                                                        value={totalmark}
-                                                        disabled
-                                                        onChange={(e) => settotalMark(e.target.value)}
-                                                    /> */}
+
                                             <JoyInput
                                                 variant="plain"
                                                 sx={{ p: 0, m: 0 }}

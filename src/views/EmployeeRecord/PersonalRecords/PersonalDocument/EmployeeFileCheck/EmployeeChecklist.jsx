@@ -152,7 +152,7 @@ const EmployeeChecklist = ({ selectedRowData, setflag, Files, setFiles, setSrc, 
   ];
   const annualMandatory = [
     { id: 25, name: 'Training Record' },
-    { id: 26, name: 'BLS/ACLS/PALS/NALS/Training' },
+    { id: 26, name: 'BLS ACLS PALS NALS Training' },
     { id: 27, name: 'Performance Appraisal Forms' },
     { id: 28, name: 'Annual Health Check-Up Form' },
 

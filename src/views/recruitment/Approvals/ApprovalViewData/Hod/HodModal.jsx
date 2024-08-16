@@ -9,7 +9,7 @@ const Interviewexp = lazy(() => import('./expview'))
 const Interviewedu = lazy(() => import('./eduview'))
 const HodMarkModal = lazy(() => import('./HodMarkModal'))
 const Assesmentmark = lazy(() => import('./AssesmentMark'))
-const HodModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setcount, count, setOpenRowIndex }) => {
+const HodModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setcount, count, setOpenRowIndex, stausdata }) => {
 
     const [details, setDetails] = useState({
         email: '',
@@ -60,7 +60,7 @@ const HodModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setcount, c
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: 1500,
+                        width: "80%",
                         bgcolor: 'white',
                         boxShadow: 24,
                         p: 3,
@@ -151,7 +151,8 @@ const HodModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setcount, c
                             <Assesmentmark data={data} />
                         </Box>
                         <Box sx={{ mt: 2 }}>
-                            <HodMarkModal data={data} setIsModalOpen={setIsModalOpen} setcount={setcount} count={count} setOpenRowIndex={setOpenRowIndex} />
+                            <HodMarkModal data={data} setIsModalOpen={setIsModalOpen} setcount={setcount} count={count}
+                                setOpenRowIndex={setOpenRowIndex} stausdata={stausdata} />
                         </Box>
                     </Box>
 

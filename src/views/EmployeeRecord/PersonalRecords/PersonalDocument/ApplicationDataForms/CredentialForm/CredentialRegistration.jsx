@@ -33,14 +33,12 @@ const CredentialRegistration = ({ setExpData, ExpData, Employee, registration })
             <Table sx={{ mt: 1 }} >
                 <thead>
                     <tr>
-
                         <th>Name Of The Registration </th>
-                        <th >Registration Issuing Authority </th>
+                        <th>Registration Issuing Authority </th>
                         <th>Registration Number </th>
                         <th>Registration Date </th>
                         <th>Validity </th>
                         <th>Add More </th>
-
                     </tr>
                 </thead>
                 <tbody>

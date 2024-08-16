@@ -376,28 +376,6 @@ const AntecedentForm = ({ setEmpdata, Empdata }) => {
                                     <Typography level="title-md" sx={{ ml: 2, textAlign: "center" }}>Year Wise Original Experience Certificates Verified</Typography>
                                 </Box>
                             </Box>
-
-
-                            {/* <CssVarsProvider>
-                                {
-                                    ExpChecklist?.map((val, idx) => {
-                                        return <Box sx={{
-                                            display: 'flex', p: 1,
-                                            width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" }
-                                        }}
-                                            key={idx}
-                                        >
-                                            <MappingCheckbox
-                                                label={val.name}
-                                                name={val.name}
-                                                value={val.value}
-                                                onChange={setSelectValue}
-                                                checkedValue={selectValue}
-                                            />
-                                        </Box>
-                                    })
-                                }
-                            </CssVarsProvider> */}
                         </td>
 
                     </tr>

@@ -261,7 +261,7 @@ const EmpConversion = React.lazy(() => import('./views/recruitment/Employe Conve
 const Appoinment = React.lazy(() => import('./views/recruitment/AppoinmentLetter/AppoinmentLetter'))
 const Joiningletter = React.lazy(() => import('./views/recruitment/JoiningLetter/JoiningLetter'))
 const Announcementclosing = React.lazy(() => import('./views/recruitment/AnnouncementClosing/Announcementclosing'))
-const HealthCheckUp = React.lazy(() => import('./views/EmployeeRecord/PreEmployementHealthCheckUp/PreEmployementForm'))
+const HealthCheckUp = React.lazy(() => import('./views/EmployeeRecord/AnnualHealthCheckUp/AnnualHealthUpForm'))
 const DepartmentalCalenders = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
 //QR CODE
 //const PreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/PretestEmpList'))
@@ -314,6 +314,11 @@ const SalaryProcessReports = React.lazy(() => import('./views/Attendance/SalaryP
 const CompensatoryRequest = React.lazy(() => import('./views/LeaveManagement/CompOffRequest/CompensatoryRequest'))
 const AttendenceReports = React.lazy(() => import('./views/HrReports/AttendenceReport/AttendenceReport'))
 const DayWiseAttendenceReports = React.lazy(() => import('./views/HrReports/DayWiseAttendence/DayWiseAttendence'))
+const HodApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/HodApproval/HodCredential'))
+const MSApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/MsCredential/MsCredential'))
+const CPApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/CpCredential/CpCredential'))
+const MDApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/MdCredential/MdCredential'))
+const JobAndSkillDescription = React.lazy(() => import('./views/Master/JobAndSkiillDescription/DescriptionMain'))
 
 
 
@@ -564,7 +569,7 @@ const routes = [
   { path: '/Home/Appoinment', exact: true, name: 'Appointment Letter', component: Appoinment },
   { path: '/Home/Joiningletter', exact: true, name: 'Joining Letter', component: Joiningletter },
   { path: '/Home/Announcementclosing', exact: true, name: 'Announcement Closing', component: Announcementclosing },
-  { path: '/Home/HealthCheckUp', exact: true, name: 'Pre Employment Health Checkup Form', component: HealthCheckUp },
+  { path: '/Home/HealthCheckUp', exact: true, name: 'Annual Health Checkup Form', component: HealthCheckUp },
 
 
 
@@ -624,6 +629,13 @@ const routes = [
   { path: '/Home/CompensatoryRequest', exact: true, name: 'Compensatory Off Request', component: CompensatoryRequest },
   { path: '/Home/AttendenceReports', exact: true, name: 'Attendence Reports', component: AttendenceReports },
   { path: '/Home/DayWiseAttendence', exact: true, name: 'Day Wise Attendence Reports', component: DayWiseAttendenceReports },
+  { path: '/Home/HODcredential', exact: true, name: 'HOD Credential Approval', component: HodApprovalCredential },
+  { path: '/Home/MScredential', exact: true, name: 'MS Credential Approval', component: MSApprovalCredential },
+  { path: '/Home/CPcredential', exact: true, name: 'CP Credential Approval', component: CPApprovalCredential },
+  { path: '/Home/MDcredential', exact: true, name: 'MD Credential Approval', component: MDApprovalCredential },
+  { path: '/Home/JobAndSkillDescription', exact: true, name: 'JobAndSkillDescription', component: JobAndSkillDescription },
+
+
 ]
 
 export default routes

@@ -7,7 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 
-const AnnualMandatory = ({ selectedRowData, setFiles, setShowGeneral, Setitem, setid }) => {
+const AnnualMandatory = ({ selectedRowData, setFiles, setShowGeneral, Setitem, setid, setEmpdata }) => {
   const [open3, setOpen3] = useState(false);
   const main = [
     { id: 25, name: 'Training Record' },
@@ -22,6 +22,20 @@ const AnnualMandatory = ({ selectedRowData, setFiles, setShowGeneral, Setitem, s
     setFiles([])
     setid(item.id)
     if (selectedRowData?.em_id > 0) {
+      const postdata = {
+        em_no: selectedRowData?.em_no,
+      };
+      // Data to the form page
+      if (item.id >= 1) {
+        const result = await axioslogin.post('/PersonalChecklist/empdetails', postdata)
+        const { success, data } = result.data
+        if (success === 1) {
+          setEmpdata(data[0])
+        }
+        else {
+          setEmpdata([])
+        }
+      }
       const postData = {
         checklistid: item?.id,
         em_id: selectedRowData?.em_id
@@ -40,7 +54,7 @@ const AnnualMandatory = ({ selectedRowData, setFiles, setShowGeneral, Setitem, s
           setFiles(fileUrls)
         });
       } else {
-        warningNofity("no data uploded")
+        // warningNofity("no data uploded")
       }
     } else {
       warningNofity("no Employee Found")

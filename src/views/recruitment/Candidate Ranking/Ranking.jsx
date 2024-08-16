@@ -55,7 +55,7 @@ const Ranking = () => {
                             //for showing the drop down details
                             const updatedApslno = item.apslno.map((apslnoItem) => {
                                 const foundStatus = filteredStatusData.find((statusItem) => statusItem.application_no === apslnoItem.application_no && statusItem.letter_status === 1
-                                    && statusItem.interview_status === 1 && statusItem.Hr_interview_status === 1 && statusItem.Ceo_Interview_status === 1);
+                                    && statusItem.interview_status === 1 && statusItem.Hr_interview_status === 1);
 
                                 return foundStatus ? {
                                     ...apslnoItem, status: foundStatus.status, letterstatus: foundStatus.letter_status, mark: foundStatus.mark, inchargemark: foundStatus.total_Incharge_inter_mark,

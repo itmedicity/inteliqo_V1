@@ -105,6 +105,7 @@ import {
     getHalfdayRequests, getSectLeaveRequests, getSectHalfdayRequests,
     getSectMisspunchRequests, getEmpCoffRequests, getSectCoffRequests
 } from './Leavereqdata'
+import { getSkillData } from '../reducers/SkillsReducers';
 
 const reducer = combineReducers({
     changeState,
@@ -221,7 +222,8 @@ const reducer = combineReducers({
     getSectHalfdayRequests,
     getSectMisspunchRequests,
     getEmpCoffRequests,
-    getSectCoffRequests
+    getSectCoffRequests,
+    getSkillData,
 })
 
 export default reducer;

@@ -118,16 +118,15 @@ const Document = ({ selectedRowData, setflag, Files, setFiles, setSrc, src, setE
                             {/*  Joining Formalities Documents End */}
 
                             {/*  Annual Mandatory Documents Start */}
-                            <AnnualMandatory selectedRowData={selectedRowData} setFiles={setFiles} setid={setid} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
+                            <AnnualMandatory selectedRowData={selectedRowData} setEmpdata={setEmpdata} setFiles={setFiles} setid={setid} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
                             {/*  Annual Mandatory Documents End */}
 
                             {/*  Special Documents Start */}
-                            <OtherDocuments selectedRowData={selectedRowData} setFiles={setFiles} setid={setid} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
+                            <OtherDocuments selectedRowData={selectedRowData} setEmpdata={setEmpdata} setFiles={setFiles} setid={setid} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
                             {/*  Speical Documents End */}
 
-
                             {/*  Exit Documents Start */}
-                            <ExitDocument selectedRowData={selectedRowData} setFiles={setFiles} setid={setid} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
+                            <ExitDocument selectedRowData={selectedRowData} setEmpdata={setEmpdata} setFiles={setFiles} setid={setid} setflag={setflag} setShowGeneral={setShowGeneral} Setitem={Setitem} />
                         </List>
                     </CssVarsProvider>
                 </Box>

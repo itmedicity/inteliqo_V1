@@ -32,6 +32,8 @@ const ConfirmationLetter = lazy(() => import('./ApplicationDataForms/Confirmatio
 const BioData = lazy(() => import('./ApplicationDataForms/BioData/BioData'))
 const OfferLetter = lazy(() => import('./ApplicationDataForms/OfferLetter/OfferLetter'))
 const Vaccination = lazy(() => import('./ApplicationDataForms/Vaccination/Vaccination'))
+const CredentialAndPrivilageForm = lazy(() => import('./ApplicationDataForms/CredentialAndPreviliageForm/CredentialAndPreForm'))
+
 
 
 
@@ -99,41 +101,43 @@ const Viewpageall = ({ setflag, Files, Empdata, checklistid, itemname, setShowGe
                                                         Files={Files} /> :
                                                         checklistid === 10 ? <IdProof
                                                             Files={Files} /> :
-                                                            checklistid === 14 ? <JobDiscription
-                                                                Files={Files} /> :
-                                                                checklistid === 15 ? <Appointment
-                                                                    Files={Files} Empdata={Empdata} /> :
-                                                                    checklistid === 16 ? <JoiningLetter
+                                                            checklistid === 13 ? <CredentialAndPrivilageForm
+                                                                Files={Files} Empdata={Empdata} /> :
+                                                                checklistid === 14 ? <JobDiscription
+                                                                    Files={Files} /> :
+                                                                    checklistid === 15 ? <Appointment
                                                                         Files={Files} Empdata={Empdata} /> :
-                                                                        checklistid === 17 ? <Competency
-                                                                            Files={Files} /> :
-                                                                            checklistid === 18 ? <Statutory
+                                                                        checklistid === 16 ? <JoiningLetter
+                                                                            Files={Files} Empdata={Empdata} /> :
+                                                                            checklistid === 17 ? <Competency
                                                                                 Files={Files} /> :
-                                                                                checklistid === 22 ? <Vaccination
-                                                                                    Files={Files} Empdata={Empdata} /> :
-                                                                                    checklistid === 23 ? <ProbationPeriod
-                                                                                        Files={Files} /> :
-                                                                                        checklistid === 24 ? <ConfirmationLetter
+                                                                                checklistid === 18 ? <Statutory
+                                                                                    Files={Files} /> :
+                                                                                    checklistid === 22 ? <Vaccination
+                                                                                        Files={Files} Empdata={Empdata} /> :
+                                                                                        checklistid === 23 ? <ProbationPeriod
                                                                                             Files={Files} /> :
-                                                                                            checklistid === 11 ? <AntecedentForm
-                                                                                                setEmpdata={setEmpdata} Empdata={Empdata} /> :
-                                                                                                checklistid === 12 ? <CredentialForm
+                                                                                            checklistid === 24 ? <ConfirmationLetter
+                                                                                                Files={Files} /> :
+                                                                                                checklistid === 11 ? <AntecedentForm
                                                                                                     setEmpdata={setEmpdata} Empdata={Empdata} /> :
-                                                                                                    checklistid === 5 ? <HealthCheckForm
-                                                                                                        setEmpdata={setEmpdata} Empdata={Empdata} Files={Files} /> :
-                                                                                                        checklistid === 19 ? <InductionRecord
-                                                                                                            setEmpdata={setEmpdata} Empdata={Empdata} /> :
-                                                                                                            checklistid === 20 ? <DepartmentOrientation
+                                                                                                    checklistid === 12 ? <CredentialForm
+                                                                                                        setEmpdata={setEmpdata} Empdata={Empdata} /> :
+                                                                                                        checklistid === 5 ? <HealthCheckForm
+                                                                                                            setEmpdata={setEmpdata} Empdata={Empdata} Files={Files} /> :
+                                                                                                            checklistid === 19 ? <InductionRecord
                                                                                                                 setEmpdata={setEmpdata} Empdata={Empdata} /> :
-                                                                                                                checklistid === 21 ? <RightsAndResponsibilites
+                                                                                                                checklistid === 20 ? <DepartmentOrientation
                                                                                                                     setEmpdata={setEmpdata} Empdata={Empdata} /> :
-                                                                                                                    checklistid === 28 ? <AnnualHealthCheckup
+                                                                                                                    checklistid === 21 ? <RightsAndResponsibilites
                                                                                                                         setEmpdata={setEmpdata} Empdata={Empdata} /> :
-                                                                                                                        checklistid === 32 ? <DueClearance
+                                                                                                                        checklistid === 28 ? <AnnualHealthCheckup
                                                                                                                             setEmpdata={setEmpdata} Empdata={Empdata} /> :
-                                                                                                                            checklistid === 33 ? <ExitQuestion
+                                                                                                                            checklistid === 32 ? <DueClearance
                                                                                                                                 setEmpdata={setEmpdata} Empdata={Empdata} /> :
-                                                                                                                                null
+                                                                                                                                checklistid === 33 ? <ExitQuestion
+                                                                                                                                    setEmpdata={setEmpdata} Empdata={Empdata} /> :
+                                                                                                                                    null
 
                     }
                 </Box>

@@ -6,7 +6,7 @@ import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 
-const HrMarkModal = ({ setIsModalOpen, data, setOpenRowIndex, setcount, count }) => {
+const HrMarkModal = ({ setIsModalOpen, data, setOpenRowIndex, setcount, count, stausdata }) => {
 
     const [totalmark, settotalMark] = useState(0);
     const [subjectmark, setsubMark] = useState(0);
@@ -58,6 +58,7 @@ const HrMarkModal = ({ setIsModalOpen, data, setOpenRowIndex, setcount, count })
 
         }
     }, [data, totalmark, subjectmark, expmark, edumark, techmark, remark, presentationmark, analyticalmark, communicationmark, attitudeark, confidencemark, bodylanmark])
+    const { Ceo_level_status, Dms_level_status, Hod_level_staus, Incharge_level_staus, Ms_level_status, operation_level_status } = stausdata
 
     const submitmanpower = useCallback(async (event) => {
         event.preventDefault()
@@ -77,354 +78,283 @@ const HrMarkModal = ({ setIsModalOpen, data, setOpenRowIndex, setcount, count })
         <Box>
 
             <Box sx={{ overflowX: "auto", '::-webkit-scrollbar': { display: "none" } }}>
-                <CustmTypog title={' Interview Assesment Sheet '} />
+
                 {data?.Hrstatus === 0 ?
-                    <TableContainer sx={{ mt: 2 }}>
-                        <Table sx={{ p: 0, border: '1px solid #e0e0e0', width: '100%' }}>
-                            <TableBody>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography fontSize="lg" level="h4" sx={{ ml: 1 }}>COMPETENCY </Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>RATING (Out of 5)</Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Subject Knowledge </Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
+                    <Box>
+                        <CustmTypog title={' Interview Assesment Sheet '} />
+                        <TableContainer sx={{ mt: 2 }}>
+                            <Table sx={{ p: 0, border: '1px solid #e0e0e0', width: '100%' }}>
+                                <TableBody>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1 }}>COMPETENCY </Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>RATING (Out of 5)</Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Subject Knowledge </Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
 
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={subjectmark}
-                                                    onchange={(subjectmark) => setsubMark(subjectmark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Experience</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={expmark}
-                                                     onChange={(e) => setexpMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={expmark}
-                                                    onchange={(expmark) => setexpMark(expmark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Education(Relevant to the position)</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={edumark}
-                                                     onChange={(e) => seteduMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={edumark}
-                                                    onchange={(edumark) => seteduMark(edumark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Technical Skills</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={techmark}
-                                                     onChange={(e) => settechMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={techmark}
-                                                    onchange={(techmark) => settechMark(techmark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Presentation Skills</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={presentationmark}
-                                                     onChange={(e) => setpresentationMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={presentationmark}
-                                                    onchange={(presentationmark) => setpresentationMark(presentationmark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Analytical Skills</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={analyticalmark}
-                                                     onChange={(e) => setanalyticalMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={analyticalmark}
-                                                    onchange={(analyticalmark) => setanalyticalMark(analyticalmark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Communication Skills</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={communicationmark}
-                                                     onChange={(e) => setcommunicationMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={communicationmark}
-                                                    onchange={(communicationmark) => setcommunicationMark(communicationmark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Attitude</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={attitudeark}
-                                                     onChange={(e) => setattitudeMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={attitudeark}
-                                                    onchange={(attitudeark) => setattitudeMark(attitudeark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Confidence</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={confidencemark}
-                                                     onChange={(e) => setconfidenceMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={confidencemark}
-                                                    onchange={(confidencemark) => setconfidenceMark(confidencemark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Body Langauge</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={bodylanmark}
-                                                     onChange={(e) => setbodylanMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={bodylanmark}
-                                                    onchange={(bodylanmark) => setbodylanMark(bodylanmark)}
-                                                    size="sm"
-                                                />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Remark</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex', width: "100%", }}>
-                                            {/* <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}> */}
-                                            <Textarea
-                                                name="Outlined"
-                                                placeholder="Remark"
-                                                variant="outlined"
-                                                value={remark}
-                                                sx={{ width: '100%' }}
-                                                minRows={4}
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={subjectmark}
+                                                        onchange={(subjectmark) => setsubMark(subjectmark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Experience</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
 
-                                                onChange={(e) => setremark(e.target.value)}
-                                            />
-                                            {/* <JoyInput
-                                                variant="plain"
-                                                sx={{ p: 0, m: 0 }}
-                                                type="text"
-                                                value={remark}
-                                                minRows={4}
-                                                onchange={(remark) => setremark(remark)}
-                                                size="sm"
-                                            /> */}
-                                            {/* </Typography> */}
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Total</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
-                                                {/* <Textarea
-                                                     name="Outlined"
-                                                     placeholder="Mark"
-                                                     variant="outlined"
-                                                     value={totalmark}
-                                                     disabled
-                                                     onChange={(e) => settotalMark(e.target.value)}
-                                                 /> */}
-                                                <JoyInput
-                                                    variant="plain"
-                                                    sx={{ p: 0, m: 0 }}
-                                                    type="number"
-                                                    value={totalmark}
-                                                    disabled
-                                                    onchange={(totalmark) => settotalMark(totalmark)}
-                                                    size="sm"
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={expmark}
+                                                        onchange={(expmark) => setexpMark(expmark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Education(Relevant to the position)</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
+
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={edumark}
+                                                        onchange={(edumark) => seteduMark(edumark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Technical Skills</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
+
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={techmark}
+                                                        onchange={(techmark) => settechMark(techmark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Presentation Skills</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
+
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={presentationmark}
+                                                        onchange={(presentationmark) => setpresentationMark(presentationmark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Analytical Skills</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
+
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={analyticalmark}
+                                                        onchange={(analyticalmark) => setanalyticalMark(analyticalmark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Communication Skills</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
+
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={communicationmark}
+                                                        onchange={(communicationmark) => setcommunicationMark(communicationmark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Attitude</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
+
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={attitudeark}
+                                                        onchange={(attitudeark) => setattitudeMark(attitudeark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Confidence</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
+
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={confidencemark}
+                                                        onchange={(confidencemark) => setconfidenceMark(confidencemark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Body Langauge</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
+
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={bodylanmark}
+                                                        onchange={(bodylanmark) => setbodylanMark(bodylanmark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Remark</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex', width: "100%", }}>
+
+                                                <Textarea
+                                                    name="Outlined"
+                                                    placeholder="Remark"
+                                                    variant="outlined"
+                                                    value={remark}
+                                                    sx={{ width: '100%' }}
+                                                    minRows={4}
+                                                    onChange={(e) => setremark(e.target.value)}
                                                 />
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
 
-                            </TableBody>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow sx={{ p: 0 }}>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
+                                            <Typography sx={{ ml: 1 }}>Total</Typography>
+                                        </TableCell>
+                                        <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                                            <Box sx={{ display: 'flex' }}>
+                                                <Typography fontSize="lg" level="h4" sx={{ ml: 1, textTransform: 'capitalize' }}>
 
-                        </Table>
-                        <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 1 }}>
-                            <Button sx={{ p: 0, width: "30%" }} size='sm' variant="outlined" color="success" onClick={submitmanpower}>
-                                Submit
-                            </Button>
-                        </Box>
-                    </TableContainer>
+                                                    <JoyInput
+                                                        variant="plain"
+                                                        sx={{ p: 0, m: 0 }}
+                                                        type="number"
+                                                        value={totalmark}
+                                                        disabled
+                                                        onchange={(totalmark) => settotalMark(totalmark)}
+                                                        size="sm"
+                                                    />
+                                                </Typography>
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
 
-                    : data?.Ceostatus === 1 ?
+                                </TableBody>
+
+                            </Table>
+                            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 1 }}>
+                                <Button sx={{ p: 0, width: "30%" }} size='sm' variant="outlined" color="success" onClick={submitmanpower}>
+                                    Submit
+                                </Button>
+                            </Box>
+                        </TableContainer>
+                    </Box>
+                    : Ceo_level_status === 0 && Dms_level_status === 0 && Hod_level_staus === 0 && Incharge_level_staus === 0 && Ms_level_status === 0 && operation_level_status === 0 ?
                         <Box sx={{ display: "flex", justifyContent: "center" }}>
                             <Typography textColor="var(--joy-palette-success-plainColor)" sx={{ ml: 1 }}>Interview Complete</Typography>
                         </Box >
                         : <Box sx={{ display: "flex", justifyContent: "center" }}>
                             <Typography textColor="var(--joy-palette-success-plainColor)" sx={{ ml: 1 }}>Interview Pending</Typography>
-                        </Box >}
-
-
-
+                        </Box >
+                }
             </Box>
 
         </Box>

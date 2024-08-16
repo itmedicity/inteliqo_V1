@@ -11,7 +11,7 @@ const OperationMarkModal = lazy(() => import('./OperationMarkModal'))
 const Assesmentmark = lazy(() => import('./AssesmentMark'))
 
 
-const OperationModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setcount, count, setOpenRowIndex }) => {
+const OperationModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setcount, count, setOpenRowIndex, stausdata }) => {
 
     const [details, setDetails] = useState({
         email: '',
@@ -62,7 +62,7 @@ const OperationModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setco
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: 1500,
+                        width: "80%",
                         bgcolor: 'white',
                         boxShadow: 24,
                         p: 3,
@@ -153,7 +153,8 @@ const OperationModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setco
                             <Assesmentmark data={data} />
                         </Box>
                         <Box sx={{ mt: 2 }}>
-                            <OperationMarkModal data={data} setIsModalOpen={setIsModalOpen} setcount={setcount} count={count} setOpenRowIndex={setOpenRowIndex} />
+                            <OperationMarkModal data={data} setIsModalOpen={setIsModalOpen} setcount={setcount} count={count}
+                                setOpenRowIndex={setOpenRowIndex} stausdata={stausdata} />
                         </Box>
                     </Box>
 

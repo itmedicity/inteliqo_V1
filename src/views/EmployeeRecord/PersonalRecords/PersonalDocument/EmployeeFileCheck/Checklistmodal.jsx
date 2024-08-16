@@ -68,6 +68,7 @@ const Checklistmodal = ({ isModalOpen, setIsModalOpen, selectedRowData, itemname
             useWebWorker: true,
         }
         const compressedFile = await imageCompression(imageFile, options)
+
         return compressedFile
     }, []);
     const handleOnClick = useCallback(

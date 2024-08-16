@@ -57,7 +57,7 @@ export const py_setting_three = [
     { to: '/Home/TrainerName', name: 'Trainer Name Master', slno: 227 },
     { to: '/Home/SchedulingTime', name: 'Scheduling Time Master', slno: 248 },
     { to: '/Home/CommonRequstMaster', name: 'Common Request Master', slno: 240 },
-
+    { to: '/Home/JobAndSkillDescription', name: 'JobAndSkillDescription', slno: 299 },
 ]
 
 export const userManagement_one = [
@@ -67,5 +67,8 @@ export const userManagement_one = [
     { to: '/Home/GroupRights', name: 'Group Rights', slno: 108 },
     { to: '/Home/Authorisation', name: 'Assign Authorisation', slno: 109 },
     { to: '/Home/HodMark', name: 'HOD Authorisation Mark', slno: 110 },
+
+
+
     // { to: '/Home/Autocompletetest', name: 'Autocomplete test', slno: 110 },
 ]

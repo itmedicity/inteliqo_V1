@@ -13,6 +13,7 @@ const Vacancylistinf = lazy(() => import('./Vacancylistinf'))
 
 const MainModal = ({ isModalOpen, setIsModalOpen, formdata, education, handleOnSave, expdata, edudata, eduname, vacancydata, selectedVacancies, setSelectedVacancies }) => {
     const { name, lname, email, mobile, date } = formdata
+
     return (
         <Box>
             <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>

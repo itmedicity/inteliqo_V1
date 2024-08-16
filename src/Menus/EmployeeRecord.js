@@ -91,7 +91,7 @@ const Employeerecord = [
     {
         men_slno: 289,
         component: CNavItem,
-        name: 'Pre Employment Health Checkup Form',
+        name: 'Annual Health Checkup Form',
         to: '/Home/HealthCheckUp',
     },
     {
@@ -100,7 +100,30 @@ const Employeerecord = [
         name: 'Department Section Change',
         to: '/Home/DeptSecChange',
     },
-
+    {
+        men_slno: 291,
+        component: CNavItem,
+        name: 'HOD Credential Approval',
+        to: '/Home/HODcredential',
+    },
+    {
+        men_slno: 292,
+        component: CNavItem,
+        name: 'MS Credential Approval',
+        to: '/Home/MScredential',
+    },
+    {
+        men_slno: 293,
+        component: CNavItem,
+        name: 'CP Credential Approval',
+        to: '/Home/CPcredential',
+    },
+    {
+        men_slno: 293,
+        component: CNavItem,
+        name: 'MD Credential Approval',
+        to: '/Home/MDcredential',
+    },
 ]
 
 export default Employeerecord;

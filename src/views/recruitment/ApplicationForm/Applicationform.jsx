@@ -260,14 +260,16 @@ const Applicationform = () => {
             <DasboardCustomLayout title={"Application Form"} displayClose={true} setClose={toRedirectToHome} >
                 <Box sx={{ display: 'flex', flex: 1, py: 0.5, height: window.innerHeight - 120 }} >
 
-                    <ContactInformation setformdata={setformdata} formdata={formdata} setValue={setValue} value={value}
+                    <ContactInformation
+                        setformdata={setformdata} formdata={formdata} setValue={setValue} value={value}
                         setReligion={setReligion} setRegion={setRegion} Religion={Religion} Region={Region}
                         seteducation={seteducation} Regionexp={Regionexp} setRegionexp={setRegionexp} Regionedu={Regionedu} handleOnClick={handleOnClick}
                         setRegionedu={setRegionedu} education={education} expdata={expdata} expdataset={expdataset} experience={experience}
                         setexprience={setexprience} education_details={education_details} seteducation_details={seteducation_details}
                         edudata={edudata} edudataset={edudataset} eduname={education1} addressPermnt1={addressPermnt1} setaddressPermnt1={setaddressPermnt1}
                         addressPermnt2={addressPermnt2} setaddressPermnt2={setaddressPermnt2} gender={gender} setGender={setGender}
-                        bloodgrp={bloodgrp} setBloodgrp={setBloodgrp} />
+                        bloodgrp={bloodgrp} setBloodgrp={setBloodgrp}
+                    />
 
                 </Box>
 

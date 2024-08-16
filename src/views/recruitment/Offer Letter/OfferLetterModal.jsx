@@ -27,11 +27,13 @@ const OfferLetterModal = ({ isModalOpen, setIsModalOpen, data, personaldata, cou
         address2: '',
 
     })
+    console.log(details);
 
     const { email, first_name, last_name, dob, mobile_num, application_no } = details;
 
     useEffect(() => {
         if (personaldata && personaldata.length > 0) {
+            console.log(personaldata);
             const { first_name, last_name, dob, mobile_num, reg_name, relg_name, email, application_no, gender, address1, address2 } = personaldata[0]
             // const exp = JSON.parse(personaldata[0].Experience_details)
             // const edu = JSON.parse(personaldata[0].Education_details)
@@ -57,7 +59,6 @@ const OfferLetterModal = ({ isModalOpen, setIsModalOpen, data, personaldata, cou
         else {
             setDetails({})
         }
-
     }, [personaldata])
     return (
         <Box>

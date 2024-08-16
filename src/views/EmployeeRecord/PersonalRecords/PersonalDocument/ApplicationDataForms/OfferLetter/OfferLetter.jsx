@@ -3,7 +3,6 @@ import moment from 'moment'
 import React, { memo } from 'react'
 
 const OfferLetter = ({ Files, Empdata }) => {
-    console.log(Empdata);
     return (
         <>
             {/* for pdf View */}

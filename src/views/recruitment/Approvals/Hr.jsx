@@ -20,6 +20,8 @@ const Hr = () => {
     const [personaldata, setpersonaldata] = useState([]);
     const [count, setcount] = useState(0)
     const [data, setdata] = useState([]);
+    const [stausdata, setstatusdata] = useState([]);
+
     const history = useHistory();
     const toRedirectToHome = () => {
         history.push('/Home');
@@ -101,6 +103,8 @@ const Hr = () => {
         if (success === 1) {
             const result = await axioslogin.post('/Applicationform/statusdetails', statusdata)
             const { success1, data1 } = result.data
+            setstatusdata(data1[0])
+
             if (success1 === 1) {
                 if (data1 && data1.length > 0) {
                     const arr = data.map((val) => {
@@ -165,33 +169,26 @@ const Hr = () => {
                                                     <TableCell size='small' >{val.manpower_required_no}</TableCell>
                                                     <TableCell size='small' >{val.dept_name}</TableCell>
                                                     <TableCell ></TableCell>
-
                                                 </TableRow>
-
                                                 {isRowOpen && (
                                                     <TableRow padding='none' sx={{ backgroundColor: "#F8F6F4" }}>
                                                         <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}></Typography></TableCell>
                                                         <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Name</Typography></TableCell>
                                                         <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Email</Typography></TableCell>
                                                         <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Application No</Typography></TableCell>
-
                                                         <TableCell size='small' ><Typography sx={{ color: "#808B97", }}>Initial Assesment</Typography></TableCell>
                                                     </TableRow>
                                                 )}
 
                                                 {isRowOpen && matchingMainData && matchingMainData.apslno.map((item, idx) => {
-
                                                     if (item?.status === 1) {
-
                                                         return (
                                                             <TableRow key={idx} sx={{ backgroundColor: "#F8F6F4" }}>
                                                                 <TableCell size='small'></TableCell>
                                                                 <TableCell size='small'>{item?.first_name}</TableCell>
                                                                 <TableCell size='small'>{item?.email}</TableCell>
                                                                 <TableCell size='small'>{item?.application_no}</TableCell>
-
                                                                 <TableCell size='small' sx={{ cursor: 'pointer' }} ><PreviewIcon onClick={(e) => handleonclick(e, item)} /></TableCell>
-
                                                             </TableRow>
                                                         );
                                                     }
@@ -214,14 +211,8 @@ const Hr = () => {
                 data={data}
                 setOpenRowIndex={setOpenRowIndex}
                 count={count} setcount={setcount}
-
+                stausdata={stausdata}
             />
-            {/* <HrMarkModal
-                isModalOpenMark={isModalOpenMark}
-                setIsModalOpenMark={setIsModalOpenMark}
-                personaldata={personaldata}
-
-            /> */}
         </Box>
     )
 }

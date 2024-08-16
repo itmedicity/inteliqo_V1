@@ -16,6 +16,8 @@ import moment from 'moment'
 
 const Manpowerexp = lazy(() => import('./Manpowerexp'))
 const ManpowerplaningView = lazy(() => import('./ManpowerplaningView'))
+const JobAndSkillDescription = lazy(() => import('./JobAndSkillDescription/JobAndSkillDescription'))
+
 const ManpowerForm = () => {
     const [desg, changeDesg] = useState(0);
     // const [dept, changeDept] = useState(0);
@@ -384,6 +386,7 @@ const ManpowerForm = () => {
                     </Tooltip>
                 </Box>
             </Box>
+
             <Manpowerexp
                 setExperience_status={setExperience_status}
                 Experience_status={Experience_status}
@@ -408,7 +411,12 @@ const ManpowerForm = () => {
                 setexpto={setexpto}
                 setexpfrom={setexpfrom}
             />
+            {/* JobAndSkillDescription */}
+            <JobAndSkillDescription em_department={em_department} desg={desg} />
+
             <ManpowerplaningView tableData={tableData} setTableData={setTableData} statusData={statusData} />
+
+
         </Box >
     )
 }

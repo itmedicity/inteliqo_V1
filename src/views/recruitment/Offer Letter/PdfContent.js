@@ -1,4 +1,5 @@
 const PdfContent = ({ details, data, date, item }) => {
+    console.log(details);
     return [
         {
             columns: [

@@ -10,7 +10,7 @@ const Interviewedu = lazy(() => import('./eduview'))
 const DmsMarkModal = lazy(() => import('./DmsMarkModal'))
 const Assesmentmark = lazy(() => import('./AssesmentMark'))
 
-const DmsInterviewModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setcount, count, setOpenRowIndex }) => {
+const DmsInterviewModal = ({ isModalOpen, setIsModalOpen, personaldata, data, setcount, count, setOpenRowIndex, stausdata }) => {
     const [details, setDetails] = useState({
         email: '',
         first_name: '',
@@ -60,7 +60,7 @@ const DmsInterviewModal = ({ isModalOpen, setIsModalOpen, personaldata, data, se
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: 1500,
+                        width: "80%",
                         bgcolor: 'white',
                         boxShadow: 24,
                         p: 3,
@@ -150,7 +150,8 @@ const DmsInterviewModal = ({ isModalOpen, setIsModalOpen, personaldata, data, se
                             <Assesmentmark data={data} />
                         </Box>
                         <Box sx={{ mt: 2 }}>
-                            <DmsMarkModal data={data} setIsModalOpen={setIsModalOpen} setcount={setcount} count={count} setOpenRowIndex={setOpenRowIndex} />
+                            <DmsMarkModal data={data} setIsModalOpen={setIsModalOpen} setcount={setcount} count={count}
+                                setOpenRowIndex={setOpenRowIndex} stausdata={stausdata} />
                         </Box>
 
                     </Box>

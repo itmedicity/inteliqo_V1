@@ -19,9 +19,9 @@ const ManpowerplaningView = ({ tableData, statusData }) => {
     }, {});
     return (
 
-        <Box sx={{ mt: 2, width: "100%", display: "flex", overflow: "auto" }}>
+        <Box sx={{ mt: 2, width: "100%", display: "flex", height: '44%' }}>
             <Box sx={{ width: "50%", display: "flex", flexDirection: 'column', }}>
-                <CustmTypog title={'Planning Detials'} />
+                <CustmTypog title={' PLANNING DETIALS'} />
                 <TableContainer sx={{ mt: 2, }}>
                     <Table sx={{ p: 0, border: '1px solid #e0e0e0', width: '100%' }}>
                         <TableHead>
@@ -68,7 +68,7 @@ const ManpowerplaningView = ({ tableData, statusData }) => {
                 </TableContainer>
 
             </Box>
-            <Box sx={{ width: "50%", display: "flex", flexDirection: 'column' }}>
+            <Box sx={{ width: "50%", display: "flex", flexDirection: 'column', }}>
                 <CustmTypog title={'Approval And Rejected Status'} />
                 <Requestdetialspage statusData={statusData} />
             </Box>

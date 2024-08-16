@@ -21,6 +21,8 @@ const Dms = () => {
     const [personaldata, setpersonaldata] = useState([]);
     const [count, setcount] = useState(0)
     const [data, setdata] = useState([]);
+    const [stausdata, setstatusdata] = useState([]);
+
     const history = useHistory();
     const toRedirectToHome = () => {
         history.push('/Home');
@@ -59,12 +61,13 @@ const Dms = () => {
                             //for showing the drop down details
                             const updatedApslno = item.apslno.map((apslnoItem) => {
                                 const foundStatus = filteredStatusData.find((statusItem) => statusItem.application_no === apslnoItem.application_no && statusItem.letter_status === 1
-                                    && statusItem.interview_status === 1 && statusItem.Hr_interview_status === 1 &&
-                                    statusItem.Dms_Interview_status === 0);
+                                    && statusItem.interview_status === 1 && statusItem.Dms_required_status === 1 &&
+                                    statusItem.Dms_Interview_status === 0 && statusItem.Dms_level_status === 1);
 
                                 return foundStatus ? {
                                     ...apslnoItem, status: foundStatus.status, letterstatus: foundStatus.letter_status, mark: foundStatus.mark, inchargemark: foundStatus.total_Incharge_inter_mark,
-                                    Hodmark: foundStatus.Hod_interview_mark, Msmark: foundStatus.Ms_Interview_Mark, Hrmark: foundStatus?.Hr_Interview_Mark,
+                                    Hodmark: foundStatus.Hod_interview_mark, Msmark: foundStatus.Ms_Interview_Mark, Dmsmark: foundStatus.Dms_Interview_Mark, Operationmark: foundStatus.Operation_Interview_Mark,
+                                    Ceomark: foundStatus.Ceo_Interview_Mark, Hrmark: foundStatus?.Hr_Interview_Mark, Hrstatus: foundStatus?.Hr_interview_status, Ceostatus: foundStatus?.Ceo_Interview_status,
                                 } : apslnoItem;
                             });
                             return { ...item, apslno: updatedApslno };
@@ -102,6 +105,7 @@ const Dms = () => {
         if (success === 1) {
             const result = await axioslogin.post('/Applicationform/statusdetails', statusdata)
             const { success1, data1 } = result.data
+            setstatusdata(data1[0])
             if (success1 === 1) {
                 if (data1 && data1.length > 0) {
                     const arr = data.map((val) => {
@@ -219,6 +223,7 @@ const Dms = () => {
                 setOpenRowIndex={setOpenRowIndex}
                 data={data}
                 count={count} setcount={setcount}
+                stausdata={stausdata}
             />
             {/* <DmsMarkModal
                 isModalOpenMark={isModalOpenMark}

@@ -4,24 +4,13 @@ import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 
 const AnnualHealthExam = lazy(() => import('./AnnualHealthExam'))
 
-const AnnualHealthDoc = () => {
+const AnnualHealthDoc = ({ checkup, Employee, setHrdNo, setdatesaved, datesaved, HrdNo, Recorddata, setRecorddata }) => {
     return (
         <Box>
             <Typography level="title-md" sx={{ ml: 1 }}>
                 (To be filled in by the Medical Practitioner)
             </Typography>
-            <Table aria-label="basic table" borderAxis="both" size='sm' variant="outlined" sx={{ mt: 1 }}>
 
-                <tbody>
-                    <tr>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Date Of Consultation</Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Time Of Consultation</Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
-
-                    </tr>
-                </tbody>
-            </Table>
             <Table aria-label="basic table" borderAxis="both" size='sm'>
 
                 <tbody>
@@ -34,11 +23,31 @@ const AnnualHealthDoc = () => {
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Height(cm)</Typography></td>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>BMI</Typography></td>
                     </tr>
+                    <tr>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>{checkup?.pulse}</Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>{checkup?.BP}</Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>{checkup?.Resp}</Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>{checkup?.Temp}</Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>{checkup?.Weight}</Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>{checkup?.Height}</Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>{checkup?.BMI}</Typography></td>
+                    </tr>
                 </tbody>
             </Table>
+
             <Typography level="title-md" sx={{ ml: 1, mt: 1 }}>
                 General Examination
             </Typography>
+            <Table aria-label="basic table" borderAxis="both" size='sm' variant="outlined">
+                <tbody>
+                    <tr>
+                        <td width="15%"><Typography level="title-md" sx={{ ml: 1 }} >Physician Notes </Typography></td>
+                        <td style={{}}>
+                            <Typography level="title-md" sx={{ ml: 1 }} >{checkup?.Physician_note} </Typography>
+                        </td>
+                    </tr>
+                </tbody>
+            </Table>
             <Table aria-label="basic table" borderAxis="both" size='sm' variant="outlined" >
                 <tbody>
                     <tr>
@@ -53,8 +62,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.Hbs_status === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -70,8 +79,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.blood_grouping === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -87,8 +96,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.serology === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -106,8 +115,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.X_ray === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -130,8 +139,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.Titer_greather_100 === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -146,8 +155,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.Titer_12_100 === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -163,8 +172,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.Titer_0_12 === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -188,8 +197,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.First_dose_status === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -205,8 +214,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.Second_dose_status === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -222,8 +231,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.Third_dose_status === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -239,8 +248,8 @@ const AnnualHealthDoc = () => {
                                         sx={{}}
                                         name="workstation"
                                         size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.Booster_dose_status === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -253,7 +262,8 @@ const AnnualHealthDoc = () => {
 
                 </tbody>
             </Table>
-            <AnnualHealthExam />
+            <AnnualHealthExam checkup={checkup} Employee={Employee} setHrdNo={setHrdNo} setdatesaved={setdatesaved} datesaved={datesaved}
+                HrdNo={HrdNo} Recorddata={Recorddata} setRecorddata={setRecorddata} />
         </Box>
     )
 }

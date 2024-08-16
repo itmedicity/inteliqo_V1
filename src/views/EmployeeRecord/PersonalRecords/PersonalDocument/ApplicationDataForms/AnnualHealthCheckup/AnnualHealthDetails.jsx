@@ -1,10 +1,38 @@
 import { Box, Table, Typography } from '@mui/joy'
-import React, { lazy, memo } from 'react'
+import React, { lazy, memo, useEffect, useState } from 'react'
+import { axioslogin } from 'src/views/Axios/Axios'
+import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 
 const AnnualHealthDoc = lazy(() => import('./AnnualHealthDoc'))
 
-const AnnualHealthDetails = () => {
+const AnnualHealthDetails = ({ checkup, Employee, setHrdNo, setdatesaved, datesaved, HrdNo, Recorddata, setRecorddata }) => {
+
+    const [Vaccdata, setVaccination] = useState([])
+
+
+    //for getting the details already entered
+    useEffect(() => {
+        if (Employee.length !== 0) {
+            const getCommonSettings = async () => {
+                const postdata = {
+                    em_no: Employee?.em_no
+                };
+                const result = await axioslogin.post(`/PersonalChecklist/getAll`, postdata)
+                const { success, data } = result.data
+
+                if (success === 1 && data?.length > 0) {
+                    setVaccination(data[0])
+                }
+                else {
+                    setVaccination([])
+                }
+            }
+            getCommonSettings()
+        } else {
+            warningNofity("SomeThing Went Wrong")
+        }
+    }, [Employee])
     return (
         <Box>
             <Table aria-label="basic table" borderAxis="both" size='sm' variant="outlined" sx={{ mt: 1 }}>
@@ -28,9 +56,8 @@ const AnnualHealthDetails = () => {
                                         size="sm"
                                         sx={{}}
                                         name="workstation"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
-
+                                        disabled={true}
+                                        checked={checkup?.vaccination_status_yes === 1 ? true : false}
                                     />
                                 </Box>
                                 <Box>
@@ -54,10 +81,18 @@ const AnnualHealthDetails = () => {
 
                                         </tr>
                                         <tr>
-                                            <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
-                                            <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
-                                            <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
-                                            <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
+                                            <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}>
+                                                {Vaccdata?.firstdose_date === null ? "Not Vaccinated" : Vaccdata?.firstdose_date}
+                                            </Typography></td>
+                                            <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}>
+                                                {Vaccdata?.second_dose_given_date === null ? "Not Vaccinated" : Vaccdata?.second_dose_given_date}
+                                            </Typography></td>
+                                            <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}>
+                                                {Vaccdata?.third_dose_given_date === null ? "Not Vaccinated" : Vaccdata?.third_dose_given_date}
+                                            </Typography></td>
+                                            <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}>
+                                                {Vaccdata?.booster_dose_given_date === null ? "Not Vaccinated" : Vaccdata?.third_dose_given_date}
+                                            </Typography></td>
 
                                         </tr>
                                     </tbody>
@@ -73,8 +108,8 @@ const AnnualHealthDetails = () => {
                                         size="sm"
                                         sx={{}}
                                         name="workstation"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
+                                        disabled={true}
+                                        checked={checkup?.vaccination_status_no === 1 ? true : false}
 
                                     />
                                 </Box>
@@ -93,37 +128,14 @@ const AnnualHealthDetails = () => {
                     </tr>
                 </tbody>
             </Table>
-            <Typography level="title-md" sx={{ ml: 1, mt: 1 }}>
-                Declaration By Applicant
-            </Typography>
 
-            <Typography level="title-md" sx={{ ml: 1, mt: 1 }}>
-                I hereby declare that the information given above are true and correct to the best of my
-                knowledge and belief.I agree if this information is found to be incorrect/ false the company
-                is free to terminate my job approval.
-            </Typography>
-            <Table aria-label="basic table" borderAxis="both" size='sm' variant="outlined" sx={{ mt: 1 }}>
-
-                <tbody>
-                    <tr>
-                        <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}>Name Of Staff</Typography></td>
-                        <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}>Signature</Typography></td>
-                        <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}>Date</Typography></td>
-                    </tr>
-                    <tr>
-                        <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
-                        <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
-                        <td style={{ width: '20%' }}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
-                    </tr>
-                </tbody>
-            </Table>
             <Typography level="title-md" sx={{ ml: 1, mt: 1 }}> Doctor&apos;s Consultation </Typography>
             <Table aria-label="basic table" borderAxis="both" size='sm' variant="outlined" sx={{ mt: 1 }}>
 
                 <tbody>
                     <tr>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Name of the Candidate </Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> </Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1, textTransform: 'capitalize' }}> {Employee?.em_name?.toLowerCase()}</Typography></td>
 
                     </tr>
 
@@ -133,62 +145,12 @@ const AnnualHealthDetails = () => {
                 <tbody>
                     <tr>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Age </Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> </Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> {Employee?.em_age_year}</Typography></td>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Gender </Typography></td>
-                        <td style={{}}>
-                            <Box sx={{ display: "flex" }}>
-                                <Box sx={{ mt: .5 }}>
-                                    <JoyCheckbox
-                                        sx={{}}
-                                        name="workstation"
-                                        size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
-
-                                    />
-                                </Box>
-                                <Box>
-                                    <Typography level="title-md" sx={{ ml: 2, textAlign: "center" }}>Male</Typography>
-                                </Box>
-                            </Box>
-                        </td>
-
-                        <td style={{}}>
-                            <Box sx={{ display: "flex" }}>
-                                <Box sx={{ mt: .5 }}>
-                                    <JoyCheckbox
-                                        sx={{}}
-                                        name="workstation"
-                                        size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
-
-                                    />
-                                </Box>
-                                <Box>
-                                    <Typography level="title-md" sx={{ ml: 2, textAlign: "center" }}>FeMale</Typography>
-                                </Box>
-                            </Box>
-                        </td>
-                        <td style={{}}>
-                            <Box sx={{ display: "flex" }}>
-                                <Box sx={{ mt: .5 }}>
-                                    <JoyCheckbox
-                                        sx={{}}
-                                        name="workstation"
-                                        size="sm"
-                                    // checked={workstation}
-                                    // onchange={(e) => setworkstation(e.target.checked)}
-
-                                    />
-                                </Box>
-                                <Box>
-                                    <Typography level="title-md" sx={{ ml: 2, textAlign: "center" }}>Other</Typography>
-                                </Box>
-                            </Box>
+                        <td><Typography level="title-md" sx={{ ml: 1 }}>{Employee?.em_gender === 1 ? "Male" : Employee?.em_gender === 2 ? "FeMale" : Employee?.em_gender === 3 ? "Other" : null} </Typography>
                         </td>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Dept </Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}></Typography></td>
+                        <td style={{}} width="20%" > <Typography level="title-md" sx={{ ml: 1, textTransform: 'capitalize' }}>{Employee?.dept_name?.toLowerCase()}</Typography></td>
 
                     </tr>
                 </tbody>
@@ -197,19 +159,20 @@ const AnnualHealthDetails = () => {
                 <tbody>
                     <tr>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>MRD No </Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> </Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>{checkup?.mrd_no} </Typography></td>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Unit </Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> </Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> {checkup?.unit}</Typography></td>
                     </tr>
                     <tr>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Blood Group</Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> </Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>{Employee?.group_name} </Typography></td>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Consultant </Typography></td>
-                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> </Typography></td>
+                        <td style={{}}> <Typography level="title-md" sx={{ ml: 1, textTransform: 'capitalize' }}>{checkup?.em_name?.toLowerCase()} </Typography></td>
                     </tr>
                 </tbody>
             </Table>
-            <AnnualHealthDoc />
+            <AnnualHealthDoc checkup={checkup} Employee={Employee} setHrdNo={setHrdNo} setdatesaved={setdatesaved} datesaved={datesaved}
+                HrdNo={HrdNo} Recorddata={Recorddata} setRecorddata={setRecorddata} />
         </Box>
     )
 }

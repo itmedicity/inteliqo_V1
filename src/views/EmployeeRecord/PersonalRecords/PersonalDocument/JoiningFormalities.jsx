@@ -68,7 +68,7 @@ const JoiningFormalities = ({ selectedRowData, setFiles, setflag, setShowGeneral
                     setFiles(fileUrls)
                 });
             } else {
-                warningNofity("no data uploded")
+                // warningNofity("no data uploded")
             }
         } else {
             warningNofity("no Employee Found")

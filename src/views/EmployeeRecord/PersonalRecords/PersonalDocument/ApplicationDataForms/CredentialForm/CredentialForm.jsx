@@ -193,18 +193,18 @@ const CredentialForm = ({ Empdata, setEmpdata }) => {
                 <tbody>
                     <tr>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> House Name</Typography></td>
-                        <td><Typography sx={{ ml: 1 }}>{Employee?.em_name === '' ? "Not Updated" : Employee?.addressPermnt1} </Typography>
+                        <td><Typography sx={{ ml: 1 }}>{Employee?.addressPermnt1 === '' ? "Not Updated" : Employee?.addressPermnt1} </Typography>
                         </td>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Street Name </Typography></td>
-                        <td><Typography sx={{ ml: 1 }}>{Employee?.em_name === '' ? "Not Updated" : Employee?.addressPermnt2} </Typography>
+                        <td><Typography sx={{ ml: 1 }}>{Employee?.addressPermnt2 === '' ? "Not Updated" : Employee?.addressPermnt2} </Typography>
                         </td>
                     </tr>
                     <tr>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>City</Typography></td>
-                        <td><Typography sx={{ ml: 1 }}>{Employee?.em_name === '' ? "Not Updated" : Employee?.addressPermnt2} </Typography>
+                        <td><Typography sx={{ ml: 1 }}>{Employee?.addressPermnt2 === '' ? "Not Updated" : Employee?.addressPermnt2} </Typography>
                         </td>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Pin Code</Typography></td>
-                        <td><Typography sx={{ ml: 1 }}>{Employee?.em_name === '' ? "Not Updated" : Employee?.hrm_pin1} </Typography>
+                        <td><Typography sx={{ ml: 1 }}>{Employee?.hrm_pin1 === '' ? "Not Updated" : Employee?.hrm_pin1} </Typography>
                         </td>
                     </tr>
                     <tr>
@@ -228,18 +228,18 @@ const CredentialForm = ({ Empdata, setEmpdata }) => {
                 <tbody>
                     <tr>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}> House Name</Typography></td>
-                        <td><Typography sx={{ ml: 1 }}>{Employee?.em_name === '' ? "Not Updated" : Employee?.addressPresent1} </Typography>
+                        <td><Typography sx={{ ml: 1 }}>{Employee?.addressPresent1 === '' ? "Not Updated" : Employee?.addressPresent1} </Typography>
                         </td>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Street Name </Typography></td>
-                        <td><Typography sx={{ ml: 1 }}>{Employee?.em_name === '' ? "Not Updated" : Employee?.addressPresent2} </Typography>
+                        <td><Typography sx={{ ml: 1 }}>{Employee?.addressPresent2 === '' ? "Not Updated" : Employee?.addressPresent2} </Typography>
                         </td>
                     </tr>
                     <tr>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>City</Typography></td>
-                        <td><Typography sx={{ ml: 1 }}>{Employee?.em_name === '' ? "Not Updated" : Employee?.addressPresent2} </Typography>
+                        <td><Typography sx={{ ml: 1 }}>{Employee?.addressPresent2 === '' ? "Not Updated" : Employee?.addressPresent2} </Typography>
                         </td>
                         <td style={{}}> <Typography level="title-md" sx={{ ml: 1 }}>Pin Code</Typography></td>
-                        <td><Typography sx={{ ml: 1 }}>{Employee?.em_name === '' ? "Not Updated" : Employee?.hrm_pin2} </Typography>
+                        <td><Typography sx={{ ml: 1 }}>{Employee?.hrm_pin2 === '' ? "Not Updated" : Employee?.hrm_pin2} </Typography>
                         </td>
                     </tr>
                     <tr>

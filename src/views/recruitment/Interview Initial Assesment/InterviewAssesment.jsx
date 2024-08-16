@@ -6,12 +6,17 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { Table, TableBody, TableCell, TableContainer, TableRow, TableHead } from '@mui/material';
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner';
+import PreviewIcon from '@mui/icons-material/Preview';
 
 const Assesmentmodal = lazy(() => import('./Assesmentmodal'))
+const AssignInterviewModal = lazy(() => import('./AssignInterviewModal'))
 
 const InterviewAssesment = () => {
     const [maindata, setmaindata] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [ModalOpen, setModalOpen] = useState(false)
+    const [personaldata, setpersonaldata] = useState([]);
+
     // const [application_no, setappNo] = useState(0)
     const [data, setdata] = useState([]);
     // const [desigid, setdesigid] = useState(0);
@@ -79,6 +84,11 @@ const InterviewAssesment = () => {
         // console.log(item?.first_name);
     }, [])
 
+    const handleClick = useCallback((e, item) => {
+        setModalOpen(true)
+        setpersonaldata(item)
+    }, [])
+
     return (
         <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', height: window.innerHeight - 100, overflowX: "auto" }}>
             <DasboardCustomLayout title={"Interview Initial Assesment Bar"} displayClose={true} setClose={toRedirectToHome}>
@@ -92,6 +102,7 @@ const InterviewAssesment = () => {
                                         <TableCell ><Typography>Desgnation</Typography></TableCell>
                                         <TableCell ><Typography>Required no</Typography></TableCell>
                                         <TableCell ><Typography>Department</Typography></TableCell>
+                                        <TableCell ><Typography></Typography></TableCell>
                                         <TableCell sx={{ cursor: 'pointer' }}><Box sx={{ display: 'flex' }}>
                                             <Typography >Scan Qr </Typography>
                                             <Tooltip title="Click here to scan" >
@@ -99,7 +110,7 @@ const InterviewAssesment = () => {
                                             </Tooltip>
                                         </Box>
                                         </TableCell>
-                                        <TableCell ></TableCell>
+
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -133,8 +144,8 @@ const InterviewAssesment = () => {
                                                         <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Name</Typography></TableCell>
                                                         <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Email</Typography></TableCell>
                                                         <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Application No</Typography></TableCell>
-                                                        <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}></Typography>Mobile No</TableCell>
-                                                        <TableCell size='small' ></TableCell>
+                                                        <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Mobile No</Typography></TableCell>
+                                                        <TableCell size='small' ><Typography sx={{ color: "#808B97", }}>Schedule Interview</Typography></TableCell>
                                                     </TableRow>
                                                 )}
 
@@ -148,7 +159,7 @@ const InterviewAssesment = () => {
                                                                 <TableCell size='small'>{item?.email}</TableCell>
                                                                 <TableCell size='small'>{item?.application_no}</TableCell>
                                                                 <TableCell size='small' >{item?.mobile_num}</TableCell>
-                                                                <TableCell size='small' ></TableCell>
+                                                                <TableCell size='small' ><PreviewIcon onClick={(e) => handleClick(e, item)} /></TableCell>
                                                             </TableRow>
                                                         );
                                                     }
@@ -168,6 +179,13 @@ const InterviewAssesment = () => {
                 setIsModalOpen={setIsModalOpen}
                 isModalOpen={isModalOpen}
             // desigid={desigid}
+            // name={name}
+            // application_no={application_no}
+            />
+            <AssignInterviewModal
+                setModalOpen={setModalOpen}
+                ModalOpen={ModalOpen}
+                personaldata={personaldata}
             // name={name}
             // application_no={application_no}
             />
