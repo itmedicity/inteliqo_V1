@@ -7,6 +7,12 @@ const Leavemanagement = [
         to: '/Home/LeaveRequsition',
     },
     {
+        men_slno: 192,
+        component: CNavItem,
+        name: 'OFF Request',
+        to: '/Home/DoffRequest',
+    },
+    {
         men_slno: 285,
         component: CNavItem,
         name: 'Credit COFF',
@@ -24,17 +30,29 @@ const Leavemanagement = [
         name: 'Overtime Request',
         to: '/Home/OTRequest',
     },
-    {
-        men_slno: 239,
-        component: CNavItem,
-        name: 'Common Request',
-        to: '/Home/CommonReqst',
-    },
+    // {
+    //     men_slno: 239,
+    //     component: CNavItem,
+    //     name: 'Common Request',
+    //     to: '/Home/CommonReqst',
+    // },
     {
         men_slno: 61,
         component: CNavItem,
         name: 'Resignation Request',
         to: '/Home/ResignationRequest',
+    },
+    {
+        men_slno: 290,
+        component: CNavItem,
+        name: 'On Observation Request',
+        to: '/Home/OnObservationRequest',
+    },
+    {
+        men_slno: 191,
+        component: CNavItem,
+        name: 'Manual Request',
+        to: '/Home/ManualRequest',
     },
 
     {
@@ -49,24 +67,24 @@ const Leavemanagement = [
         name: 'Approval - HOD',
         to: '/Home/ApprovalHOD',
     },
-    {
-        men_slno: 123,
-        component: CNavItem,
-        name: 'Appproval-CEO',
-        to: '/Home/ApprovalCEO',
-    },
+    // {
+    //     men_slno: 123,
+    //     component: CNavItem,
+    //     name: 'Appproval-CEO',
+    //     to: '/Home/ApprovalCEO',
+    // },
     {
         men_slno: 28,
         component: CNavItem,
         name: 'Approval - HR',
         to: '/Home/ApprovalHR',
     },
-    {
-        men_slno: 30,
-        component: CNavItem,
-        name: 'Leave Cancel - HR',
-        to: '/Home/LeaveCancelHR',
-    },
+    // {
+    //     men_slno: 30,
+    //     component: CNavItem,
+    //     name: 'Leave Cancel - HR',
+    //     to: '/Home/LeaveCancelHR',
+    // },
     {
         men_slno: 32,
         component: CNavItem,
@@ -91,8 +109,6 @@ const Leavemanagement = [
         name: 'OT Approval - HR',
         to: '/Home/OTApprovalHR',
     },
-
-
     {
         men_slno: 241,
         component: CNavItem,
@@ -105,12 +121,12 @@ const Leavemanagement = [
         name: 'Common Request HOD Approval',
         to: '/Home/CommonReqstHodApprvl',
     },
-    {
-        men_slno: 243,
-        component: CNavItem,
-        name: 'Common Request CEO Approval',
-        to: '/Home/CommonReqstCeoApprvl',
-    },
+    // {
+    //     men_slno: 243,
+    //     component: CNavItem,
+    //     name: 'Common Request CEO Approval',
+    //     to: '/Home/CommonReqstCeoApprvl',
+    // },
     {
         men_slno: 244,
         component: CNavItem,
@@ -123,18 +139,7 @@ const Leavemanagement = [
         name: 'Common Request HR View',
         to: '/Home/CommonReqstHrView',
     },
-    {
-        men_slno: 290,
-        component: CNavItem,
-        name: 'On Observation Request',
-        to: '/Home/OnObservationRequest',
-    },
-    {
-        men_slno: 191,
-        component: CNavItem,
-        name: 'Manual Request',
-        to: '/Home/ManualRequest',
-    },
+
     {
         men_slno: 299,
         component: CNavItem,

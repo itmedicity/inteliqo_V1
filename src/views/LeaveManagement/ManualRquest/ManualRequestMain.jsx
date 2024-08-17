@@ -472,6 +472,20 @@ const ManualRequestMain = () => {
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
+                                                        {val?.shft_desc}
+                                                    </Typography>
+                                                </td>
+                                                <td
+                                                    style={{
+                                                        textAlign: 'center',
+                                                    }}
+                                                >
+                                                    <Typography
+                                                        level="title-md"
+                                                        textColor="var(--joy-palette-success-plainColor)"
+                                                        fontFamily="monospace"
+                                                        sx={{ opacity: '50%' }}
+                                                    >
                                                         {val?.lvereq_desc}
                                                     </Typography>
                                                 </td>
@@ -487,20 +501,6 @@ const ManualRequestMain = () => {
                                                         sx={{ opacity: '50%' }}
                                                     >
                                                         {val?.duty_desc}
-                                                    </Typography>
-                                                </td>
-                                                <td
-                                                    style={{
-                                                        textAlign: 'center',
-                                                    }}
-                                                >
-                                                    <Typography
-                                                        level="title-md"
-                                                        textColor="var(--joy-palette-success-plainColor)"
-                                                        fontFamily="monospace"
-                                                        sx={{ opacity: '50%' }}
-                                                    >
-                                                        {val?.shft_desc}
                                                     </Typography>
                                                 </td>
                                                 <td style={{ textAlign: 'center', }}>

@@ -25,9 +25,11 @@ const ShiftMasterEdit = () => {
         earlyincalculation: '1',
         earlyoutcalculation: '1',
         shift_status: true,
-        nightoff: false
+        nightoff: false,
+        twenty_four: false
     })
-    const { shift_name, shift_code, crossday, dutyday, earlyincalculation, earlyoutcalculation, nightoff, shift_status } = formData
+    const { shift_name, shift_code, crossday, dutyday, earlyincalculation, earlyoutcalculation, nightoff, shift_status,
+        twenty_four } = formData
     //default State
     const defaultState = {
         shift_name: "",
@@ -37,7 +39,8 @@ const ShiftMasterEdit = () => {
         earlyincalculation: '1',
         earlyoutcalculation: '1',
         shift_status: true,
-        nightoff: false
+        nightoff: false,
+        twenty_four: false
     }
     //use State For Check In
     const [checkIn, setCheckIn] = useState(new Date());
@@ -160,7 +163,8 @@ const ShiftMasterEdit = () => {
                     second_half_in,
                     second_half_out,
                     night_off_flag,
-                    shft_status
+                    shft_status,
+                    twenty_four
                 } = data[0]
 
                 const frmData = {
@@ -171,7 +175,8 @@ const ShiftMasterEdit = () => {
                     earlyincalculation: shft_early_in_criteria,
                     earlyoutcalculation: shft_late_out_criteria,
                     nightoff: night_off_flag === 1 ? true : false,
-                    shift_status: shft_status === 1 ? true : false
+                    shift_status: shft_status === 1 ? true : false,
+                    twenty_four: twenty_four === 1 ? true : false
                 }
                 setCheckIn(new Date(shft_chkin_time))
                 setCheckOut(new Date(shft_chkout_time))
@@ -250,6 +255,7 @@ const ShiftMasterEdit = () => {
         shift_end_in_min: crossday === '1' ? checkoutminutescrossday : checkoutinminutes,
         night_off_flag: nightoff === false ? 0 : 1,
         shft_status: shift_status === true ? 1 : 0,
+        twenty_four: twenty_four === true ? 1 : 0
     }
     // console.log('checkIn')
 
@@ -652,7 +658,7 @@ const ShiftMasterEdit = () => {
                                                 label="Night Off"
                                             />
                                         </div>
-                                        <div className="col-md-5 ">
+                                        <div className="col-md-2 pb-2 ">
                                             <FormControlLabel
                                                 className=""
                                                 control={
@@ -666,6 +672,22 @@ const ShiftMasterEdit = () => {
                                                     />
                                                 }
                                                 label="Shift Status"
+                                            />
+                                        </div>
+                                        <div className="col-md-2 pb-2 ">
+                                            <FormControlLabel
+                                                className=""
+                                                control={
+                                                    <Checkbox
+                                                        name="twenty_four"
+                                                        color="secondary"
+                                                        value={twenty_four}
+                                                        checked={twenty_four}
+                                                        className="ml-2"
+                                                        onChange={(e) => updateShiftmasterData(e)}
+                                                    />
+                                                }
+                                                label="24 Hr Shift"
                                             />
                                         </div>
                                     </div>

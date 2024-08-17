@@ -101,7 +101,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                         setDisableCheck(true)
                     }
                     else if (holiday_slno !== 0 && gross_salary < salary_above) {
-                        warningNofity('Cannot Apply for Compensatory Off Request!')
+                        warningNofity('Cannot Apply for Compensatory Off, Salary must be greater than 25k!')
                         setDisableCheck(true)
                     }
                     else if (shift_id !== week_off_day && holiday_slno === 0) {
