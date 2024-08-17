@@ -1,8 +1,8 @@
-import { Button, CssVarsProvider, Typography } from '@mui/joy'
+import React, { memo, useEffect, useMemo } from 'react'
+import { Button, Checkbox, CssVarsProvider, Input, Option, Select, Textarea, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
-import { differenceInDays, getDaysInMonth, startOfMonth, subDays } from 'date-fns'
+import { differenceInDays, format, getDaysInMonth, startOfMonth, subDays, addDays, lastDayOfMonth, intervalToDuration, isValid, formatDuration, differenceInMinutes } from 'date-fns'
 import moment from 'moment'
-import React, { memo, useEffect, } from 'react'
 import { useState } from 'react'
 import { ToWords } from 'to-words';
 import { axioslogin } from 'src/views/Axios/Axios'
@@ -11,10 +11,17 @@ import _ from 'underscore'
 import Files from 'react-files'
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
 import PermMediaOutlinedIcon from '@mui/icons-material/PermMediaOutlined';
-import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import Table from '@mui/joy/Table';
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import { useCallback } from 'react'
+import { processShiftPunchMarkingHrFunc } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc'
 
 const EndofProcess = ({ details }) => {
+
+    console.log(details)
+
     const toWords = new ToWords({
         localeCode: 'en-IN',
         converterOptions: {
@@ -47,8 +54,7 @@ const EndofProcess = ({ details }) => {
         em_id: 0,
         resignation_type: ''
     })
-    const { dept_name, em_no, em_name, request_date, em_doj, relieving_date,
-        desg_name, gross_salary, resignation_type } = empdata;
+    const { dept_name, em_no, em_name, request_date, em_doj, relieving_date, desg_name, gross_salary, resignation_type } = empdata;
 
     const [salary, setSalary] = useState(0)
     const [lop, setLop] = useState(0)
@@ -171,11 +177,61 @@ const EndofProcess = ({ details }) => {
     var numstring = toWords?.convert(Math.abs(tot))
 
 
+
+
+    /*******************************************************************************************/
+
     //NEW CODE FUNCTIONS START HERE
+
+    // DISPATCH SELECTOR
+    const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
+    const commonstate = useSelector((state) => state?.getCommonSettings, _.isEqual)
+    const commonSetting = useMemo(() => commonstate, [commonstate])
+
+    // console.log(commonSetting)
+    const { group_slno, week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
+    const holidayList = [];
+
+
+    // STATE MANAGMENT START HERE
     const [files, setFiles] = useState('')
+    const [exclusions, setExclusions] = useState(false)
+    const [exclusionReason, setExclusionReason] = useState('')
+    const [empSalary, setEmpSalary] = useState(0)
+
+    //DATA FETCHING START HERE
+
+    /**
+     * Retrieves the gross salary of an employee based on their section ID.
+     *
+     * @return {Promise<void>} - A Promise that resolves when the salary is retrieved and set.
+     */
+
+    useEffect(() => {
+        const getEmployeeSalary = async () => {
+            const getGrossSalaryEmpWise = await axioslogin.get(`/common/getgrossSalaryByEmployeeNo/${details.sect_id}`);
+            const { su, dataa } = getGrossSalaryEmpWise.data;
+            if (su === 1) setEmpSalary(dataa)
+        }
+        getEmployeeSalary()
+    }, [details.sect_id])
+
+
+    // HANDLER
     const handleChange = (files) => {
-        setFiles(files)
+        if (files.length > 1) {
+            setExclusions(false)
+        }
+        setFiles(files[0])
     }
+
+    /**
+     * Handles file upload errors based on the error code.
+     *
+     * @param {Object} error - The error object containing the error code.
+     * @param {File} file - The file that caused the error.
+     * @return {void} No return value.
+     */
 
     const handleError = (error, file) => {
         const { code } = error
@@ -190,6 +246,143 @@ const EndofProcess = ({ details }) => {
         }
     }
 
+
+    const dateOfJoinDate = format(new Date(details?.em_doj), "dd-MM-yyyy")
+    const resignationDate = format(new Date(details?.request_date), "dd-MM-yyyy")
+    const notePeriodEndDate = format(new Date(details?.relieving_date), "dd-MM-yyyy")
+
+    // FUNCTIONS for PROCESS THE ATTENDFANCE
+
+    const calculateProceeAttendence = useCallback(async () => {
+
+        const today = format(new Date(), 'yyyy-MM-dd');
+        const lastWorkingDay = format(new Date(notePeriodEndDate), 'yyyy-MM-dd');
+        const startOfMonths = format(startOfMonth(new Date()), 'yyyy-MM-dd')
+
+        if (today <= lastWorkingDay) {
+            warningNofity('Notice Period not yet over')
+            return
+        }
+
+        const postData_getPunchData = {
+            preFromDate: format(subDays(new Date(startOfMonths), 2), 'yyyy-MM-dd 00:00:00'),
+            preToDate: format(addDays(new Date(lastWorkingDay), 1), 'yyyy-MM-dd 23:59:59'),
+            fromDate: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+            toDate: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+            fromDate_dutyPlan: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+            toDate_dutyPlan: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+            fromDate_punchMaster: format(subDays(new Date(startOfMonths), 0), 'yyyy-MM-dd'),
+            toDate_punchMaster: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+            section: details.sect_id,
+            empList: [em_no],
+            loggedEmp: em_no,
+            frDate: format(startOfMonth(new Date(notePeriodEndDate)), 'yyyy-MM-dd'),
+            trDate: format(lastDayOfMonth(new Date(notePeriodEndDate)), 'yyyy-MM-dd'),
+        }
+
+        // GET PUNCH DATA FROM TABLE START
+        const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
+        const { su, result_data } = punch_data.data;
+        // console.log(su, result_data)
+        if (su === 1) {
+            const punchaData = result_data;
+            const empList = [em_no]
+            // PUNCH MARKING HR PROCESS START
+            const result = await processShiftPunchMarkingHrFunc(
+                postData_getPunchData,
+                punchaData,
+                empList,
+                shiftInformation,
+                commonSetting,
+                holidayList,
+                empSalary
+            )
+            const { status, message, errorMessage, punchMastData } = result;
+            if (status === 1) {
+
+                // console.log(punchMastData);
+
+                const tb = punchMastData?.map((e) => {
+                    // console.log(e)
+                    const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
+                    const crossDayStat = crossDay?.shft_cross_day ?? 0;
+
+                    let shiftIn = `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_in), 'HH:mm')}`;
+                    let shiftOut = crossDayStat === 0 ? `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}` :
+                        `${format(addDays(new Date(e.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}`;
+
+                    // GET THE HOURS WORKED IN MINITS
+                    let interVal = intervalToDuration({
+                        start: isValid(new Date(e.punch_in)) ? new Date(e.punch_in) : 0,
+                        end: isValid(new Date(e.punch_out)) ? new Date(e.punch_out) : 0
+                    })
+                    return {
+                        punch_slno: e.punch_slno,
+                        duty_day: e.duty_day,
+                        shift_id: e.shift_id,
+                        emp_id: e.emp_id,
+                        em_no: e.em_no,
+                        punch_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_in,
+                        punch_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_out,
+                        shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+                        shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+                        hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                            formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                        hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                            differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
+                        late_in: e.late_in,
+                        early_out: e.early_out,
+                        shiftIn: e.shift_in,
+                        shiftOut: e.shift_out,
+                        hideStatus: 0,
+                        isWeekOff: (e.shift_id === week_off_day),
+                        isNOff: e.shift_id === noff,
+                        holiday_status: e.holiday_status,
+                        lvereq_desc: e.lvereq_desc,
+                        duty_desc: e.duty_desc,
+                        leave_status: e.leave_status
+                    }
+                })
+                const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+                // setTableArray(array)
+                // setOpenBkDrop(false)
+                succesNofity('Punch Master Updated Successfully')
+            } else {
+                // setOpenBkDrop(false)
+                warningNofity(message, errorMessage)
+            }
+            // console.log(result)
+        } else {
+            warningNofity("Error getting punch Data From DB")
+            // setOpenBkDrop(false)
+        }
+
+
+
+
+
+    }, [notePeriodEndDate, details])
+
+    //HANDLE SUBMIT THE RESIGNATION PROCESS 
+    const handleSave = useCallback(async () => {
+
+        if ((files === '' || files === undefined) && exclusions === false) {
+            warningNofity("Please upload the file")
+            return
+        }
+
+        if (exclusions === true && exclusionReason === '') {
+            warningNofity("Please enter the reason")
+            return
+        }
+
+
+    }, [
+        files,
+        exclusions,
+        exclusionReason
+    ])
+
     return (
         <Box sx={{ width: "100%", p: 1 }} >
             <Paper variant='outlined' sx={{ p: 1, display: "flex", flexDirection: "column", }} >
@@ -203,9 +396,9 @@ const EndofProcess = ({ details }) => {
                             <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Designation :'}>{desg_name}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', flexBasis: '30%' }} >
-                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Date Of Joining :'}>12-02-2024</Typography>
-                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Resignation Date :'}>12-02-2024</Typography>
-                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Notice Period End Date :'}>12-02-2024</Typography>
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Date Of Joining :'}>{dateOfJoinDate}</Typography>
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Resignation Date :'}>{resignationDate}</Typography>
+                            <Typography level='body-md' color='danger' fontFamily="monospace" lineHeight={1.2} startDecorator={'Notice Period End Date :'} >{notePeriodEndDate}</Typography>
                         </Box>
                     </Box>
                 </Box>
@@ -228,7 +421,7 @@ const EndofProcess = ({ details }) => {
                             multiple={false}
                             maxFileSize={2000000}
                             minFileSize={0}
-                            clickable
+                            clickable={!exclusions}
                         >
                             <Box sx={{
                                 display: 'flex', alignItems: 'center', cursor: 'pointer', border: 1, borderColor: '#8dbb8f', borderRadius: 2,
@@ -249,7 +442,7 @@ const EndofProcess = ({ details }) => {
                         </Files>
                         {/* upload file view here model with file open click here */}
                         {
-                            true === true &&
+                            files !== '' &&
                             <Box
                                 sx={{
                                     display: 'flex', justifyContent: 'center', alignItems: 'end', borderBottom: '3px solid grey', mb: 0.3, ml: 5, width: '30%',
@@ -268,10 +461,30 @@ const EndofProcess = ({ details }) => {
                                         }
                                     }}
                                 >
-                                    File name here
+                                    {files?.name}
                                 </Typography>
                             </Box>
                         }
+                        <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }} >
+                            <Checkbox
+                                color="danger"
+                                label="exclusion for due clearence"
+                                size="md"
+                                variant="outlined"
+                                sx={{ px: 2 }}
+                                onChange={(e) => setExclusions(e.target.checked)}
+                            />
+                            <Textarea
+                                color="danger"
+                                minRows={1}
+                                placeholder="reason for exclusion..."
+                                disabled={!exclusions}
+                                value={exclusionReason}
+                                onChange={(e) => setExclusionReason(e.target.value)}
+                                size="sm"
+                                sx={{ display: 'flex', flex: 1, px: 2 }}
+                            />
+                        </Box>
                     </Box>
                 </Box>
                 {/* Attendance process code start here */}
@@ -296,7 +509,7 @@ const EndofProcess = ({ details }) => {
                         <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'} >12-08-2024</Typography>
                         <Button
                             color="primary"
-                            onClick={function () { }}
+                            onClick={calculateProceeAttendence}
                             size="sm"
                             variant="outlined"
                         >
@@ -304,403 +517,156 @@ const EndofProcess = ({ details }) => {
                         </Button>
                     </Box>
                     {/* Processed data show here */}
-                    <Box>
+                    <Box sx={{ display: 'flex', p: 0.5, }} >
                         {
-                            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((item, index) => (
-                                <Box key={index} sx={{ display: 'flex', flexDirection: 'row' }} >
-                                    <Typography level='title-sm' color='neutral' fontFamily="monospace">{item}</Typography>
-                                    <Typography level='title-sm' color='neutral' fontFamily="monospace">Mon</Typography>
-                                    <Typography level='title-sm' color='neutral' fontFamily="monospace">P</Typography>
-                                    <Typography level='title-sm' color='neutral' fontFamily="monospace">LC</Typography>
+                            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((item, index) => (
+                                <Box key={index} sx={{ display: 'flex', flex: 1, borderRadius: 0.5, border: 1, borderColor: 'grey.300', flexDirection: 'column', overflow: 'hidden' }} >
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1 }} variant='outlined' level='title-sm' textAlign='center' color='neutral' fontFamily="monospace">{item}</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1 }} variant='outlined' level='title-sm' textAlign='center' color='neutral' fontFamily="monospace">Mon</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1, fontWeight: 500 }} textColor='#2a4858' variant='outlined' level='body-xs' textAlign='center' color='neutral' >P</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1, fontWeight: 500 }} textColor='#2a4858' variant='outlined' level='body-xs' textAlign='center' color='neutral' >WOFF</Typography>
                                 </Box>
                             ))
                         }
                     </Box>
-                </Box>
-            </Paper>
-
-
-
-            <Paper elevation={0} variant='outlined' square sx={{ px: 3, display: "flex", flexDirection: "column" }} >
-                <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }}>
-                    <CssVarsProvider>
-                        <Typography level="body1" sx={{ textDecoration: 'underline' }}> DETAILS OF DAYS WORKED</Typography>
-                    </CssVarsProvider>
-                </Box>
-            </Paper>
-            <Paper elevation={0} variant='outlined' square sx={{ px: 3, display: "flex", flexDirection: "column" }}>
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                        <CssVarsProvider>
-                            <Typography level="body1">Total No of days</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {differenceInDays(new Date(relieving_date), startOfMonth(new Date(relieving_date)))}</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                </Box>
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                        <CssVarsProvider>
-                            <Typography level="body1">Less: LOP & HLP</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {lop}</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                </Box>
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                        <CssVarsProvider>
-                            <Typography level="body1">Calculated LOP</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {calcLop}</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                </Box>
-                <Box sx={{ display: "flex", width: "100%" }} >
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                        <CssVarsProvider>
-                            <Typography level="body1">No of days worked</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                        <CssVarsProvider>
-                            <Typography level="body1"> {differenceInDays(new Date(relieving_date), startOfMonth(new Date(relieving_date)))}</Typography>
-                        </CssVarsProvider>
+                    <Box sx={{ display: "flex", flex: 1, px: 0.5, border: "1px solid", borderColor: "grey.300", borderRadius: 2, mt: 0.5, flexDirection: 'column', py: 0.5 }} >
+                        <Box sx={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", alignItems: 'center', pt: 0.5 }} >
+                            <Select
+                                placeholder="Extra Earnings & Deductions"
+                                size="sm"
+                                sx={{ display: 'flex', flex: 0.5, px: 2, mr: 1 }}
+                                value={1}
+                            >
+                                <Option>Earnings</Option>
+                                <Option>Deduction</Option>
+                            </Select>
+                            <Input placeholder="Amount" type='number' size="sm" sx={{ display: 'flex', flex: 0.5, px: 2, mr: 1 }} />
+                            <Input placeholder="Remarks" size="sm" sx={{ display: 'flex', flex: 1, px: 2 }} />
+                            <Button
+                                color="success"
+                                onClick={function () { }}
+                                size="sm"
+                                sx={{ mx: 2, px: 1 }}
+                            >
+                                <LibraryAddIcon />
+                            </Button>
+                        </Box>
+                        <Box>
+                            <Table
+                                aria-label="basic table"
+                                size="sm"
+                                sx={{ mt: 1 }}
+                            >
+                                <thead>
+                                    <tr>
+                                        <th style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Earn / Deduction</th>
+                                        <th style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Amount</th>
+                                        <th style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Frozen yoghurt</td>
+                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>159</td>
+                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>6</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Ice cream sandwich</td>
+                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>237</td>
+                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>9</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Eclair</td>
+                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>262</td>
+                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>16</td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </Box>
                     </Box>
                 </Box>
-            </Paper>
-            <Paper square elevation={0} sx={{ px: 3, mt: 1, display: "flex", flexDirection: "column" }} >
-                <Box border={0.5} sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+                <Box sx={{ display: "flex", flex: 1, px: 0.5, border: "1px solid", borderColor: "grey.300", borderRadius: 2, mt: 0.5, flexDirection: 'column', py: 0.5 }}>
+                    <Table
+                        aria-label="basic table"
+                        borderAxis="both"
+                        color="neutral"
+                        size="sm"
+                        variant="outlined"
+                        sx={{ width: '100%', borderRadius: 5, overflow: 'hidden' }}
+                    >
+                        <tbody>
+                            <tr>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }} >Total Days</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#D5FBDD' }} >31</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', }} >LOP Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#FFE1E1' }} >200.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '40%', backgroundColor: '#E4E5E6' }} ></td>
+                            </tr>
+                            <tr>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Leave count</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >NPS Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >250.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Gross Salary</td>
+                            </tr>
+                            <tr >
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday count</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >LWF Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >250.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >350000.00</td>
+                            </tr>
+                            <tr>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >No of HD LOP</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Deduction Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >250.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Net Salary</td>
+                            </tr>
+                            <tr  >
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >No of LC count</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >250.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >28000.00</td>
+                            </tr>
+                            <tr>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Total LOP</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Extra Earnings</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >250.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Total Payable Amount</td>
+                            </tr>
+                            <tr >
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Total Pay Days</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Extra Deduction</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >250.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >280000.00</td>
+                            </tr>
+                            <tr>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday worked</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} ></td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                </Box>
+                <Box sx={{ display: "flex", flex: 1, px: 0.5, borderColor: "grey.300", borderRadius: 2, mt: 0.5, flexDirection: 'row', py: 0.5 }} >
+                    <Box sx={{ flex: 1 }} ></Box>
                     <Box sx={{ flex: 1 }}>
-                        <Box borderBottom={0.5} borderRight={0.5} sx={{ fontWeight: 500, }}>
-                            EARNINGS
-                        </Box>
-                        <Box borderRight={0.5} sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1"></Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">No of days </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box borderRight={0.5} sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">Salary Due</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {differenceInDays(new Date(relieving_date), startOfMonth(new Date(relieving_date)))}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {salary}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box borderRight={0.5} sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">Duty Off</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {dutyoff}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box borderRight={0.5} sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">Holiday Wages</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {holiday}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box borderRight={0.5} sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">Arear</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {arear}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box borderRight={0.5} sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">Comp Off</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {compoff}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box borderRight={0.5} sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">Earned leave</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> 0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {earnleave}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box borderRight={0.5} sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">Caution Deposit</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> 0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {cautiondepo}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Box sx={{ flex: 1 }}>
-                        <Box borderBottom={0.5} sx={{ fontWeight: 500, }}>
-                            DEDUCTIONS
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1"></Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500, }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">No of days </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> </Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">Notice Pay</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{resignation_type === '2' ? totldays : 0}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">  {resignation_type === '2' ? gross_salary : 0}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">KSWF</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> 0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {kswf}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">PF</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> 0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {pf}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">ESI</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> 0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> {esi}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <CssVarsProvider>
-                                    <Typography level="body1">Prof. Tax</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1"> 0</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                                <CssVarsProvider>
-                                    <Typography level="body1">{protax}</Typography>
-                                </CssVarsProvider>
-                            </Box>
-                        </Box>
-                    </Box>
-                </Box>
-                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                    <Box borderBottom={0.5} borderLeft={0.5} borderRight={0.5} sx={{ flex: 1, display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }} >
-                            <CssVarsProvider>
-                                <Typography level="body1"> TOTAL EARNINGS</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "right" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1"> {salary + dutyoff + holiday + arear + compoff + earnleave + cautiondepo}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box borderBottom={0.5} borderRight={0.5} sx={{ flex: 1, display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }} >
-                            <CssVarsProvider>
-                                <Typography level="body1"> TOTAL DEDUCTIONS</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "right" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1"> {resignation_type === '2' ? gross_salary + kswf + pf + esi + protax : kswf + pf + esi + protax}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                </Box>
-                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                    <Box borderBottom={0.5} borderLeft={0.5} sx={{ flex: 1, display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">.</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box borderBottom={0.5} borderRight={0.5} sx={{ flex: 3, display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontStyle: "oblique", }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">. </Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                </Box>
-                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                    <Box borderBottom={0.5} borderLeft={0.5} borderRight={0.5} sx={{ flex: 1, display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "right", }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">{tot < 0 ? 'NET AMOUNT PAYABALE' : 'NET AMOUNT RECEIVABLE'}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box borderBottom={0.5} borderRight={0.5} sx={{ flex: 1, display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }} >
-                            <CssVarsProvider>
-                                <Typography level="body1">RS {(salary + dutyoff + holiday + arear + compoff + earnleave + cautiondepo) - (gross_salary + kswf + pf + esi + protax)}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                </Box>
-                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                    <Box borderBottom={0.5} borderLeft={0.5} borderRight={0.5} sx={{ flex: 1, display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", }} >
-                            <CssVarsProvider>
-                                <Typography level="body1"> In Words</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box borderBottom={0.5} borderRight={0.5} sx={{ flex: 3, display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontStyle: "oblique", }} >
-                            <CssVarsProvider>
-                                <Typography level="body1"> {numstring}</Typography>
-                            </CssVarsProvider>
-                        </Box>
+                        <Button
+                            onClick={handleSave}
+                            size="sm"
+                            color='danger'
+                            variant="outlined"
+                            fullWidth
+                            sx={{ display: "flex", flex: 1 }}
+                        >
+                            Resignation Final Process
+                        </Button>
                     </Box>
                 </Box>
             </Paper>

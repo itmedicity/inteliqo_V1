@@ -1,4 +1,5 @@
-import { Box, Paper, Tooltip, } from '@mui/material'
+import { Box, Paper } from '@mui/material'
+import { Tooltip } from '@mui/joy'
 import React, { Fragment, lazy, memo, useCallback, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
@@ -18,6 +19,9 @@ import { startOfMonth } from 'date-fns';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import { IconButton as OpenIcon } from '@mui/material';
 import NextPlanOutlinedIcon from '@mui/icons-material/NextPlanOutlined';
+import LoopIcon from '@mui/icons-material/Loop';
+import { setCommonSetting } from 'src/redux/actions/Common.Action'
+import { setShiftDetails } from 'src/redux/actions/Shift.Action'
 
 const EndofProcess = lazy(() => import('./EndofProcess'))
 
@@ -38,6 +42,11 @@ const FullandFinalSettlement = () => {
     const [openBkDrop, setOpenBkDrop] = useState(false)
 
     const loginId = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id, _.isEqual)
+
+    useEffect(() => {
+        dispatch(setCommonSetting())
+        dispatch(setShiftDetails())
+    }, [dispatch])
 
     const toRedirectToHome = () => {
         setFlag(0)
@@ -90,9 +99,32 @@ const FullandFinalSettlement = () => {
             headerName: 'Action',
             cellRenderer: params =>
                 <Box sx={{ display: 'flex', alignItems: 'center' }} >
-                    <Tooltip title="View Details" followCursor placement='top' arrow >
-                        <OpenIcon onClick={() => handleClickIcon(params)} sx={{ cursor: 'pointer', p: 0 }}>
-                            <NextPlanOutlinedIcon color='primary' />
+                    <Tooltip title="Click here to End of Service Process" followCursor placement='top' arrow variant='soft' color='danger' >
+                        <OpenIcon
+                            onClick={() => handleClickIcon(params)}
+                            sx={{
+                                cursor: 'pointer',
+                                p: 0,
+                            }}
+                        >
+                            <LoopIcon
+                                color='primary'
+                                sx={{
+                                    '@keyframes rotate': {
+                                        '0%': {
+                                            transform: 'rotate(360deg)',
+                                        },
+                                        '100%': {
+                                            transform: 'rotate(0deg)',
+                                        },
+                                    },
+                                    '&:hover': {
+                                        animation: 'rotate 2.0s linear infinite',
+                                        color: 'success.main',
+                                    }
+                                }}
+
+                            />
                         </OpenIcon>
                     </Tooltip>
                 </Box>
@@ -215,7 +247,7 @@ const FullandFinalSettlement = () => {
                 {
                     flag === 1
                         ? <EndofProcess details={details} />
-                        : <Paper variant='outlined' elevation={2} sx={{ width: '100%', height: screenInnerHeight - 120, p: 1 }}>
+                        : <Paper variant='outlined' elevation={0} sx={{ width: '100%', height: screenInnerHeight - 120, p: 1 }}>
                             {/* <Paper variant='outlined' elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flex: 1, flexDirection: "column", }} > */}
                             <CommonAgGrid
                                 columnDefs={column}
