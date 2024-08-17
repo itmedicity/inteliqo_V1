@@ -162,6 +162,11 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
 
     }, [fromDate, toDate, filterdArray, em_no, em_dept_section])
 
+    useEffect(() => {
+        setTable([])
+        setAddDateDisable(false)
+    }, [fromDate, toDate,])
+
     /************************************************************************************************************************************* */
     //SAVE LEAVE REQUEST FUNCTION
     const handleProcessLeaveRequest = useCallback(async () => {
@@ -221,36 +226,6 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         const requestFromDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s');
                         const requestToDate = format(new Date(toDate), 'yyyy-MM-dd H:m:s');
 
-                        // console.log(masterGroupStatus)
-                        // console.log(loginHod, loginIncharge)
-
-                        // const approveStatus = (masterGroupStatus === true) ?
-                        //     {
-                        //         inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                        //         usCode_inch: loginEmno, usCode_hod: loginEmno
-                        //     } :
-                        //     (loginHod === 1 && loginIncharge === 1) ?
-                        //         {
-                        //             inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                        //             usCode_inch: loginEmno, usCode_hod: loginEmno
-                        //         }
-                        //         :
-                        //         (loginHod === 1 && loginIncharge === 0) ?
-                        //             {
-                        //                 inc_apr: 0, hod_apr: 0, inc_stat: 1, hod_stat: 1, inc_cmnt: 'DIRECT', hod_cmnt: 'DIRECT', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                        //                 usCode_inch: null, usCode_hod: loginEmno
-                        //             }
-                        //             :
-                        //             (loginHod === 0 && loginIncharge === 1) ?
-                        //                 {
-                        //                     inc_apr: 0, hod_apr: 1, inc_stat: 1, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: format(new Date(), 'yyyy-MM-dd H:m:s'), hod_apr_time: null,
-                        //                     usCode_inch: loginEmno, usCode_hod: null
-                        //                 }
-                        //                 :
-                        //                 {
-                        //                     inc_apr: 0, hod_apr: 0, inc_stat: 0, hod_stat: 0, inc_cmnt: 'DIRECT', hod_cmnt: '', inc_apr_time: null, hod_apr_time: null,
-                        //                     usCode_inch: null, usCode_hod: null
-                        //                 }
 
                         const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
 

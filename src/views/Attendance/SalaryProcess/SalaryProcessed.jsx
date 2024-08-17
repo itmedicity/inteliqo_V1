@@ -1,7 +1,7 @@
 import { Box, Button, CssVarsProvider, Input } from '@mui/joy'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { addMonths, endOfMonth, format, getDaysInMonth, isValid, startOfMonth } from 'date-fns'
+import { addMonths, eachDayOfInterval, endOfMonth, format, getDaysInMonth, isValid, startOfMonth } from 'date-fns'
 import React, { memo, useMemo, useState } from 'react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -87,7 +87,7 @@ const SalaryProcessed = () => {
                         const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
                         const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
                         const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
-                        const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD')).length
+                        const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
                         const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
 
                         const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
@@ -189,7 +189,8 @@ const SalaryProcessed = () => {
                         const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
                         const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
                         const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
-                        const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD')).length
+                        const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD'
+                            || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
                         const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
 
                         const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
@@ -258,37 +259,6 @@ const SalaryProcessed = () => {
                 warningNofity("No Employee Under this Department || Department Section")
             }
         }
-
-
-        // // console.log(data, success)
-        // const filterdPunchMaster = data;
-
-        // const filterEmNoFromPunMast = [...new Set(filterdPunchMaster?.map((e) => e.em_no))];
-
-        // console.log(filterEmNoFromPunMast);
-
-        // const punchMasterFilterData = filterEmNoFromPunMast?.map((emno) => {
-        //     return {
-        //         em_no: emno,
-        //         data: filterdPunchMaster?.filter((l) => l.em_no === emno)?.map((el) => {
-        //             return {
-        //                 duty_day: el.duty_day,
-        //                 em_no: el.em_no,
-        //                 duty_desc: el.duty_desc
-        //             }
-        //         })?.sort((a, b) => b.duty_day - a.duty_day)
-        //     }
-        // })?.filter((g) => g.em_no === 13802)
-
-        // // CALCULATION BASED ON WEEEK OF AND HOLIDAY 
-        // const funcForCalcForattendance = await Promise.allSettled(
-        //     punchMasterFilterData?.map(calculateDutyDesc)
-        // ).then((result) => {
-        //     // console.log(result)
-        // })
-
-
-
     }, [value, all, dept, deptSection, commonSettings, allDept, allSection])
 
     const [column] = useState([
@@ -337,31 +307,61 @@ const SalaryProcessed = () => {
                 // const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
                 // const { data: deductData } = result1.data
 
-                const arr = employeeData && employeeData.map((val) => val.em_id)
+                const arr = employeeData?.map((val) => val.em_no)
                 const postdata = {
-                    emp_id: arr,
+                    em_no: arr,
                     from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
                     to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
                 }
-                const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-                const { success, data } = result.data
+                const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
+                const { success, data: punchMasteData } = result.data
                 if (success === 1) {
-                    const finalDataArry = employeeData?.map((val) => {
-                        const empwise = data.filter((value) => value.emp_id === val.em_id)
+
+                    const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) })
+                        ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
+
+                    const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
+                        // console.log(el);
+                        const empArray = punchMasteData?.filter(e => e.em_no === el)
+                        let emName = empArray?.find(e => e.em_no === el).em_name;
+                        let emNo = empArray?.find(e => e.em_no === el).em_no;
+                        let emId = empArray?.find(e => e.em_no === el).emp_id;
+                        let deptName = empArray?.find(e => e.em_no === el).dept_name;
+                        let sectName = empArray?.find(e => e.em_no === el).sect_name;
+
+                        // console.log(dateRange)
+                        // console.log(grossSalary)
                         return {
-                            em_no: val.em_no,
-                            em_name: val.em_name,
-                            dept_name: val.dept_name,
-                            sect_name: val.sect_name,
-                            arr: empwise
+                            em_no: el,
+                            em_name: emName,
+                            dept_name: deptName,
+                            sect_name: sectName,
+                            arr: dateRange?.map((e) => {
+                                // console.log(e)
+                                return {
+                                    attDate: e,
+                                    duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
+                                    duty_status: empArray?.find(em => em.duty_day === e)?.duty_status ?? 0,
+                                    em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
+                                    em_no: empArray?.find(em => em.duty_day === e)?.em_no ?? emNo,
+                                    emp_id: empArray?.find(em => em.duty_day === e)?.emp_id ?? emId,
+                                    hld_desc: empArray?.find(em => em.duty_day === e)?.hld_desc ?? null,
+                                    holiday_slno: empArray?.find(em => em.duty_day === e)?.holiday_slno ?? 0,
+                                    holiday_status: empArray?.find(em => em.duty_day === e)?.holiday_status ?? 0,
+                                    leave_status: empArray?.find(em => em.duty_day === e)?.leave_status ?? 0,
+                                    duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
+                                    lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+                                }
+                            }),
                         }
                     })
+
                     DeptWiseAttendanceViewFun(format(startOfMonth(new Date(value)), 'yyyy-MM-dd'), holidayList).then((values) => {
                         const fileName = "Attendance_Report";
                         const headers = ["Name", "Emp Id", "Department", "Department Section", ...values.map(val => val.date)];
                         const days = ["Days", "", "", "", ...values.map(val => val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days)];
                         // Rows for Excel file
-                        const rows = finalDataArry.map(row => {
+                        const rows = resultss.map(row => {
                             const rowData = [
                                 row.em_name,
                                 row.em_no,
@@ -379,10 +379,8 @@ const SalaryProcessed = () => {
                         ExporttoExcel(excelData, fileName);
 
                     })
-
-                }
-                else {
-                    warningNofity("No Punch Details")
+                } else {
+                    warningNofity("No Punch Details or Not a Valid date")
                 }
             } else {
                 warningNofity("Error While Fetching data!")
@@ -397,32 +395,64 @@ const SalaryProcessed = () => {
             const { succes, dataa: employeeData } = result1.data
             if (succes === 1 && isValid(value) && value !== null) {
 
-                const arr = employeeData?.map((val) => val.em_id)
+
+                const arr = employeeData?.map((val) => val.em_no)
                 const postdata = {
-                    emp_id: arr,
+                    em_no: arr,
                     from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
                     to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
                 }
-                const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-                const { success, data } = result.data
+                const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
+                const { success, data: punchMasteData } = result.data
                 if (success === 1) {
-                    const finalDataArry = employeeData?.map((val) => {
-                        const empwise = data.filter((value) => value.emp_id === val.em_id)
+
+                    const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) })
+                        ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
+
+                    const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
+                        // console.log(el);
+                        const empArray = punchMasteData?.filter(e => e.em_no === el)
+                        let emName = empArray?.find(e => e.em_no === el).em_name;
+                        let emNo = empArray?.find(e => e.em_no === el).em_no;
+                        let emId = empArray?.find(e => e.em_no === el).emp_id;
+                        let deptName = empArray?.find(e => e.em_no === el).dept_name;
+                        let sectName = empArray?.find(e => e.em_no === el).sect_name;
+
+                        // console.log(dateRange)
+                        // console.log(grossSalary)
                         return {
-                            em_no: val.em_no,
-                            em_name: val.em_name,
-                            dept_name: val.dept_name,
-                            sect_name: val.sect_name,
-                            arr: empwise
+                            em_no: el,
+                            em_name: emName,
+                            dept_name: deptName,
+                            sect_name: sectName,
+                            arr: dateRange?.map((e) => {
+                                // console.log(e)
+                                return {
+                                    attDate: e,
+                                    duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
+                                    duty_status: empArray?.find(em => em.duty_day === e)?.duty_status ?? 0,
+                                    em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
+                                    em_no: empArray?.find(em => em.duty_day === e)?.em_no ?? emNo,
+                                    emp_id: empArray?.find(em => em.duty_day === e)?.emp_id ?? emId,
+                                    hld_desc: empArray?.find(em => em.duty_day === e)?.hld_desc ?? null,
+                                    holiday_slno: empArray?.find(em => em.duty_day === e)?.holiday_slno ?? 0,
+                                    holiday_status: empArray?.find(em => em.duty_day === e)?.holiday_status ?? 0,
+                                    leave_status: empArray?.find(em => em.duty_day === e)?.leave_status ?? 0,
+                                    duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
+                                    lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+                                }
+                            }),
                         }
                     })
+
+
 
                     DeptWiseAttendanceViewFun(format(startOfMonth(new Date(value)), 'yyyy-MM-dd'), holidayList).then((values) => {
                         const fileName = "Attendance_Report";
                         const headers = ["Name", "Emp Id", "Department", "Department Section", ...values.map(val => val.date)];
                         const days = ["Days", "", "", "", ...values.map(val => val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days)];
                         // Rows for Excel file
-                        const rows = finalDataArry.map(row => {
+                        const rows = resultss.map(row => {
                             const rowData = [
                                 row.em_name,
                                 row.em_no,

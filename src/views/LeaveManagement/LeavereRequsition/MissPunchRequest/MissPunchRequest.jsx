@@ -68,6 +68,10 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
         setMasterGroupStatus(groupStatus)
     }, [groupStatus])
 
+    const state = useSelector((state) => state?.getCommonSettings)
+    const commonStates = useMemo(() => state, [state])
+    const { holiday_leave_request } = commonStates;
+
     const handleChangeDate = useCallback(async (date) => {
         setFromDate(date)
         setCheckInCheck(false)
@@ -165,7 +169,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
             const { success, data } = result.data;
             if (success === 1) {
                 const { holiday_status } = data[0]
-                if (holiday_status === 1) {
+                if (holiday_status === 1 && holiday_leave_request === 1) {
                     warningNofity("Cannot Apply for No punch request on Holiday")
                     setDropOpen(false)
                 } else {
@@ -214,7 +218,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
         }
     }, [reason, checkInCheck, checkOutCheck, em_department, em_dept_section, em_id, em_no, fromDate,
         planSlno, shiftId, loginEmno, loginHod, loginIncharge, masterGroupStatus, setRequestType,
-        shft_chkin_time, shft_chkout_time, setCount, deptApprovalLevel, shiftDesc
+        shft_chkin_time, shft_chkout_time, setCount, deptApprovalLevel, shiftDesc, holiday_leave_request
     ])
 
     return (

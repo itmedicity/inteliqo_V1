@@ -384,7 +384,7 @@ const ShiftUpdation = () => {
                                 shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
                                 shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
                                 hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                                    formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                    formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
                                 hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
                                     differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
                                 late_in: e.late_in,
@@ -474,7 +474,7 @@ const ShiftUpdation = () => {
                                     shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
                                     shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
                                     hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                                        formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                        formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
                                     hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
                                         differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
                                     late_in: e.late_in,
@@ -835,7 +835,7 @@ const ShiftUpdation = () => {
                                     <Suspense>
                                         {
                                             tableArray?.map((val, ind) => {
-                                                return <TableRows key={ind} no={ind} data={val} disable={disable} punchData={punchDta} punchMaster={punchMast} setTableArray={setTableArray} />
+                                                return <TableRows key={ind} no={ind} data={val} disable={disable} punchData={punchDta} punchMaster={punchMast} setTableArray={setTableArray} empSalary={empSalary} />
                                             })
                                         }
                                     </Suspense>

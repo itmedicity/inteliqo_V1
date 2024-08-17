@@ -49,9 +49,9 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
             return { ...val, emno: emno }
         });
         //NATIONAL HOLIDAY
-        const Holiday = reqDetl?.filter(val => val.leave_typeid === 3 || val.leave_typeid === 4)?.map(val => {
-            return { ...val, emno: emno }
-        });
+        // const Holiday = reqDetl?.filter(val => val.leave_typeid === 3 || val.leave_typeid === 4)?.map(val => {
+        //     return { ...val, emno: emno }
+        // });
         //EARN LEAVE
         const earnLeave = reqDetl?.filter(val => val.leave_typeid === 8)?.map(val => {
             return { ...val, emno: emno }
@@ -101,19 +101,19 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                 })
 
                 //UPDATE HOLIDAY 
-                const holidayLeavePromise = new Promise(async (resolve, reject) => {
-                    if (Holiday?.length > 0) {
-                        const resulthl = await axioslogin.post(`/LeaveRequestApproval/updateHolidayLeaveTable`, Holiday);
-                        const { success, message } = resulthl.data;
-                        if (success === 1) {
-                            resolve('Holiday Leave Request updated')
-                        } else {
-                            reject(`HL Updation ! Error ${message}`)
-                        }
-                    } else {
-                        resolve(1)
-                    }
-                })
+                // const holidayLeavePromise = new Promise(async (resolve, reject) => {
+                //     if (Holiday?.length > 0) {
+                //         const resulthl = await axioslogin.post(`/LeaveRequestApproval/updateHolidayLeaveTable`, Holiday);
+                //         const { success, message } = resulthl.data;
+                //         if (success === 1) {
+                //             resolve('Holiday Leave Request updated')
+                //         } else {
+                //             reject(`HL Updation ! Error ${message}`)
+                //         }
+                //     } else {
+                //         resolve(1)
+                //     }
+                // })
 
                 //EARN LEAVE 
                 const earnLeavePromise = new Promise(async (resolve, reject) => {
@@ -192,7 +192,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
                         return {
                             ...val,
                             duty_status: val.leave_typeid === 1 && val.leaveCount === 0.5 ? 0.5 : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 0.5 : 1,
-                            lvereq_desc: val.leave_typeid === 11 ? 'COFF' : val.leave_typeid === 7 && val.leaveCount !== 0.5 ? 'SL' : val.leave_typeid === 8 ? 'EL' : val.leave_typeid === 1 && val.leaveCount !== 0.5 ? 'CL' : val.leave_typeid === 1 && val.leaveCount === 0.5 ? 'HD' : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 'HD' : 'ML',
+                            lvereq_desc: val.leave_typeid === 11 ? 'COFF' : val.leave_typeid === 7 && val.leaveCount !== 0.5 ? 'SL' : val.leave_typeid === 8 ? 'EL' : val.leave_typeid === 1 && val.leaveCount !== 0.5 ? 'CL' : val.leave_typeid === 1 && val.leaveCount === 0.5 ? 'HDCL' : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 'HDSL' : 'ML',
                             duty_desc: val.leave_typeid === 11 ? 'COFF' : val.leave_typeid === 7 && val.leaveCount !== 0.5 ? 'SL' : val.leave_typeid === 8 ? 'EL' : val.leave_typeid === 1 && val.leaveCount !== 0.5 ? 'CL' : val.leave_typeid === 1 && val.leaveCount === 0.5 ? 'HCL' : val.leave_typeid === 7 && val.leaveCount === 0.5 ? 'HSL' : 'ML',
                             leave_dates: format(new Date(val.leave_dates), 'yyyy-MM-dd ')
                         }
@@ -213,28 +213,34 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount }) => {
 
                 Promise.all([
                     casualLeavePromise,
-                    holidayLeavePromise,
+                    // holidayLeavePromise,
                     earnLeavePromise,
                     coffLeavePromise,
-                    updateEsiLeavePunchMaster,
-                    updateLwpPunchMaster,
-                    updateLeavePunchMasterTable
+                    // updateEsiLeavePunchMaster,
+                    // updateLwpPunchMaster,
+                    // updateLeavePunchMasterTable
                 ]).then(async (result) => {
                     if (result) {
-                        const resultdel = await axioslogin.patch(`/LeaveRequestApproval/hrLeaveapprv`, formData);
-                        const { success } = await resultdel.data;
-                        if (success === 1) {
-                            setOpenBkDrop(false)
-                            setCount(Math.random())
-                            succesNofity('Leave Request Approved')
-                            setOpen(false)
-                        }
-                        else {
-                            setCount(Math.random())
-                            errorNofity('Error Updating Leave Request')
-                            setOpenBkDrop(false)
-                            setOpen(false)
-                        }
+                        Promise.all([
+                            updateEsiLeavePunchMaster,
+                            updateLwpPunchMaster,
+                            updateLeavePunchMasterTable
+                        ]).then(async (result) => {
+                            const resultdel = await axioslogin.patch(`/LeaveRequestApproval/hrLeaveapprv`, formData);
+                            const { success } = await resultdel.data;
+                            if (success === 1) {
+                                setOpenBkDrop(false)
+                                setCount(Math.random())
+                                succesNofity('Leave Request Approved')
+                                setOpen(false)
+                            }
+                            else {
+                                setCount(Math.random())
+                                errorNofity('Error Updating Leave Request')
+                                setOpenBkDrop(false)
+                                setOpen(false)
+                            }
+                        })
                     }
                 }).catch(error => {
                     setCount(Math.random())

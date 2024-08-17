@@ -1,28 +1,29 @@
-import { CssVarsProvider, IconButton, Typography } from '@mui/joy'
+import { CssVarsProvider, IconButton, Input, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
-import { addDays, format, isAfter, isBefore, isEqual } from 'date-fns'
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { addDays, format, } from 'date-fns'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { setInstitution } from 'src/redux/actions/InstitutionType.Action'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import TextInput from 'src/views/Component/TextInput'
-import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
-import CategorySelectRedux from 'src/views/MuiComponents/CategorySelectRedux'
-import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
-import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
-import DesignationSelectRedux from 'src/views/MuiComponents/DesignationSelectRedux'
-import InstitutionTypeSelectRedux from 'src/views/MuiComponents/InstitutionTypeSelectRedux'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import { ToastContainer } from 'react-toastify'
 import moment from 'moment'
 import { employeeNumber } from 'src/views/Constant/Constant'
 import CloseIcon from '@mui/icons-material/Close';
-import { useHistory } from 'react-router-dom'
+import JoyBranchSelect from 'src/views/MuiComponents/JoyComponent/JoyBranchSelect'
+import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
+import JoyDepartmentSection from 'src/views/MuiComponents/JoyComponent/JoyDepartmentSection'
+import { setDepartment } from 'src/redux/actions/Department.action'
+import { useDispatch } from 'react-redux'
+import JoyInstitutionSelect from 'src/views/MuiComponents/JoyComponent/JoyInstitutionSelect'
+import JoyDesignationSelect from 'src/views/MuiComponents/JoyComponent/JoyDesignationSelect'
+import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategorySelect'
+import ContractConfirmationModal from './ContractConfirmationModal'
+import PermanentConfirationModal from './PermanentConfirationModal'
 
 const CompanyInfoPage = ({ emno, empid, setOpen }) => {
 
-    const history = useHistory()
 
     const empNo = useMemo(() => emno, [emno]);
     const empId = useMemo(() => empid, [empid])
@@ -43,15 +44,25 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
     const [probsataus, setProbstatus] = useState(0)
 
     const [probationperiod, setProbationPeriod] = useState('');
-    const [oldprob_end_date, setProb_end_date] = useState('')
+    //const [oldprob_end_date, setProb_end_date] = useState('')
 
-    const [oldContractEnd, setOldContractEnd] = useState('')
+    // const [oldContractEnd, setOldContractEnd] = useState('')
 
-    const [emptype, setEmptype] = useState(0)
-    const [oldemptype, setoldEmptype] = useState(0)
+    // const [emptype, setEmptype] = useState(0)
+    //const [oldemptype, setoldEmptype] = useState(0)
     const [count, setCount] = useState(0)
     const [data, setTableData] = useState();
     const [emname, setEmname] = useState('')
+    const [newcontract_status, setNewContract_status] = useState(0)
+    const [oldContractStatus, setOldContractStatus] = useState(0)
+    const [openModal, setOpenModal] = useState(false)
+    const [permanentModal, setPermanentMoal] = useState(false)
+
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setDepartment());
+    }, [dispatch])
 
     const getDate = useCallback((e) => {
         var startdate = e.target.value
@@ -97,7 +108,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
             if (success === 1) {
                 const { em_branch, em_department, em_prob_end_date,
                     em_dept_section, em_institution_type, em_category,
-                    em_designation, em_contract_end_date, em_name } = data[0]
+                    em_designation, em_name } = data[0]
                 setBranch(em_branch === null ? 0 : em_branch)
                 setDept(em_department === null ? 0 : em_department)
                 setDeptSection(em_dept_section === null ? 0 : em_dept_section)
@@ -107,8 +118,8 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                 setDesignation(em_designation === null ? 0 : em_designation)
                 setoldDesg(em_designation === null ? 0 : em_designation)
                 setProbationPeriod(em_prob_end_date === null ? '' : em_prob_end_date)
-                setProb_end_date(em_prob_end_date === null ? '' : em_prob_end_date)
-                setOldContractEnd(em_contract_end_date === null ? '' : em_contract_end_date)
+                // setProb_end_date(em_prob_end_date === null ? '' : em_prob_end_date)
+                // setOldContractEnd(em_contract_end_date === null ? '' : em_contract_end_date)
                 setEmname(em_name)
 
             } else {
@@ -131,8 +142,10 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                 const result = await axioslogin.get(`/empcat/${category}`)
                 const { success, data } = result.data
                 if (success === 1) {
-                    const { ecat_cont_period, ecat_prob_period, emp_type } = data[0]
-                    setEmptype(emp_type)
+                    console.log(data);
+                    const { ecat_cont_period, ecat_prob_period, ecat_cont } = data[0]
+                    setNewContract_status(ecat_cont)
+                    // setEmptype(emp_type)
                     setProbationPeriod(addDays(new Date, ecat_prob_period))
                     if (ecat_cont_period > 0) {
                         setempStatus(1)
@@ -150,15 +163,19 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                 }
             }
             getEmpType()
-        } else {
+        } else if (oldCate !== 0) {
             const getOldEmptype = async () => {
                 const result = await axioslogin.get(`/empcat/${oldCate}`)
                 const { success, data } = result.data
+                // console.log(data);
                 if (success === 1) {
-                    const { emp_type } = data[0]
-                    setoldEmptype(emp_type)
+                    const { ecat_cont } = data[0]
+                    setOldContractStatus(ecat_cont)
+                    // console.log("old", emp_type);
+                    // setoldEmptype(emp_type)
                 } else {
-                    setoldEmptype(0)
+                    // setoldEmptype(0)
+                    setOldContractStatus(0)
                 }
             }
             getOldEmptype()
@@ -176,7 +193,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
             com_category: oldCate,
             com_category_new: category,
             em_category: category,
-            em_prob_end_date: isEqual(new Date(probationperiod), new Date()) ? moment(probationperiod).format('YYYY-MM-DD') : '2000-01-01',
+            em_prob_end_date: probsataus === 1 ? moment(probationperiod).format('YYYY-MM-DD') : '2000-01-31',
             contract_status: empstatus === 1 ? 1 : 0,
             probation_status: probsataus === 1 ? 1 : 0,
             create_user: employeeNumber(),
@@ -187,7 +204,12 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
             com_designation_new: designation,
             em_designation: designation,
             ineffective_date: oldDesg !== designation ? ineffectdate : null,
-            category_ineffect_date: oldCate !== category ? cateineffectdate : null
+            category_ineffect_date: oldCate !== category ? cateineffectdate : null,
+            // em_cont_start: cateineffectdate,
+            // em_cont_end: cateineffectdate !== null ? format(addDays(new Date(cateineffectdate), 365), 'yyyy-MM-dd') : null,
+            // em_prob_end_date: '2000-01-01',
+            em_conf_end_date: cateineffectdate,
+            // status: 0
         }
     }, [branch, dept, institute, category, oldCate,
         probationperiod, empstatus, probsataus, empNo, empId, designation, oldDesg,
@@ -195,57 +217,55 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
 
 
 
-    const submitCompany = async () => {
-
-        const submitData = async () => {
-            const result = await axioslogin.post('/empmast/company', updateData)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setCount(count + 1)
-                succesNofity(message);
-                history.push(`/Home/Prfle/${empNo}/${empId}`)
-                setOpen(0)
-            } else if (success === 0) {
-                infoNofity(message.sqlMessage);
-            } else {
-                infoNofity(message)
-            }
-        }
-
+    const submitCompany = useCallback(async () => {
+        // const submitData = async () => {
+        //     const result = await axioslogin.post('/empmast/company', updateData)
+        //     const { message, success } = result.data;
+        //     if (success === 1) {
+        //         setCount(count + 1)
+        //         succesNofity(message);
+        //         history.push(`/Home/Prfle/${empNo}/${empId}`)
+        //         setOpen(0)
+        //     } else if (success === 0) {
+        //         infoNofity(message.sqlMessage);
+        //     } else {
+        //         infoNofity(message)
+        //     }
+        // }
         if (oldDesg !== designation && ineffectdate === '') {
             warningNofity("Fill the Designation With Effective Date")
         } else if (oldCate !== category && cateineffectdate === '') {
             warningNofity("Fill the Employee Category With Effective Date")
+        } else if (oldContractStatus === 1 && newcontract_status === 0) {
+            warningNofity("Cannot Change Employee Category Contract to Permanent, Please Close Contract First!!")
+        } else if (oldContractStatus === 0 && newcontract_status === 1) {
+            setOpenModal(true)
         }
         else {
-            if (oldemptype === 2 && emptype === 1) {
-                warningNofity("Cannot Change Employee Category Contract to Permanent, Please Close Contract First!!")
-            } else if (oldemptype === 1 && emptype === 2) {
-                warningNofity("Cannot Change Employee Category Permanent to Contract")
-            } else {
-                if (isBefore(new Date(oldContractEnd), new Date()) && isAfter(new Date(oldprob_end_date), new Date())) {
-                    warningNofity("Cannot change Category contract end date exceeded")
-                }
-                else {
-                    submitData()
-                }
-            }
+            setPermanentMoal(true)
+
         }
-    }
-    const close = async () => {
+    }, [oldDesg, designation, ineffectdate, cateineffectdate, newcontract_status,
+        oldContractStatus, category, oldCate,])
+
+    const close = useCallback(async () => {
         setOpen(0)
-    }
+    }, [setOpen])
 
     return (
         <Fragment>
             <ToastContainer />
+            <ContractConfirmationModal open={openModal} data={updateData} setOpen={setOpenModal}
+                count={count} setCount={setCount} />
+            <PermanentConfirationModal open={permanentModal} data={updateData} setOpen={setPermanentMoal}
+                count={count} setCount={setCount} />
             <Box sx={{
                 width: "100%",
                 height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 },
                 overflow: 'auto',
                 '::-webkit-scrollbar': { display: "none" }
             }} >
-                <Paper square elevation={3} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
+                <Paper variant='outlined' square elevation={0} sx={{ display: "flex", p: 1, alignItems: "center", }}  >
                     <Box sx={{ flex: 1, pl: 20, fontWeight: 500, }} >
                         <CssVarsProvider>
                             <Typography textColor="text.secondary" >
@@ -261,7 +281,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                         </CssVarsProvider>
                     </Box>
                 </Paper>
-                <Paper square elevation={3} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", width: "100" }} >
+                <Paper square elevation={0} sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", width: "100" }} >
                     <Box sx={{ display: "flex", flexDirection: "column", flex: 1, px: 0.5, }}>
                         <Box sx={{ display: "flex", flexDirection: "row", width: "100" }}>
                             <Box sx={{ width: "20%" }}>
@@ -272,9 +292,9 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ width: "30%" }} >
-                                <BranchSelectRedux value={branch} setValue={setBranch} />
+                                <JoyBranchSelect value={branch} setValue={setBranch} />
                             </Box>
-                            <Box sx={{ width: "20%", pl: 0.5 }}>
+                            <Box sx={{ width: "20%", ml: 0.5 }}>
                                 <CssVarsProvider>
                                     <Typography textColor="text.secondary" >
                                         Department Name
@@ -282,7 +302,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ width: "30%" }} >
-                                <DeptSelectByRedux value={dept} setValue={setDept} />
+                                <JoyDepartment deptValue={dept} getDept={setDept} />
                             </Box>
                         </Box>
                         {/* first row end */}
@@ -297,7 +317,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ width: "30%" }} >
-                                <DeptSecSelectByRedux dept={dept} value={deptSection} setValue={setDeptSection} />
+                                <JoyDepartmentSection sectValues={deptSection} getSection={setDeptSection} dept={dept} />
                             </Box>
                             <Box sx={{ width: "20%", pl: 0.5 }}>
                                 <CssVarsProvider>
@@ -307,7 +327,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ width: "30%" }} >
-                                <InstitutionTypeSelectRedux value={institute} setValue={setInstitute} />
+                                <JoyInstitutionSelect value={institute} setValue={setInstitute} />
                             </Box>
                         </Box>
                         {/* second row end */}
@@ -321,7 +341,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ width: "30%" }} >
-                                <DesignationSelectRedux value={designation} setValue={setDesignation} />
+                                <JoyDesignationSelect desgValue={designation} getDesg={setDesignation} />
                             </Box>
                             <Box sx={{ width: "20%", pl: 0.5 }}>
                                 <CssVarsProvider>
@@ -331,16 +351,16 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ width: "30%" }} >
-                                <TextInput
+                                <Input
                                     type="date"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Date"
-                                    min={new Date()}
-                                    value={ineffectdate}
-                                    name="ineffectdate"
-                                    changeTextValue={(e) => {
-                                        getDate(e)
+                                    slotProps={{
+                                        input: {
+                                            max: moment(new Date()).format('YYYY-MM-DD'),
+                                        },
                                     }}
+                                    // value={ineffectdate}
+                                    name="ineffectdate"
+                                    onChange={(e) => getDate(e)}
                                 />
                             </Box>
                         </Box>
@@ -356,7 +376,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ width: "30%" }}>
-                                <CategorySelectRedux value={category} setValue={setCategory} />
+                                <JoyCategorySelect value={category} setValue={setCategory} />
                             </Box>
                             <Box sx={{ width: "20%", pl: 0.5 }}>
                                 <CssVarsProvider>
@@ -366,29 +386,28 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
                                 </CssVarsProvider>
                             </Box>
                             <Box sx={{ width: "30%" }} >
-                                <TextInput
+                                <Input
                                     type="date"
-                                    classname="form-control form-control-sm"
-                                    Placeholder="Date"
-                                    min={new Date()}
-                                    value={cateineffectdate}
-                                    name="cateineffectdate"
-                                    //disabled={true}
-                                    changeTextValue={(e) => {
-                                        getCateDate(e)
+                                    slotProps={{
+                                        input: {
+                                            max: moment(new Date()).format('YYYY-MM-DD'),
+                                        },
                                     }}
+                                    //value={cateineffectdate}
+                                    name="cateineffectdate"
+                                    onChange={(e) => getCateDate(e)}
                                 />
                             </Box>
                         </Box>
                         {/* fourth row end */}
                     </Box>
                 </Paper>
-                <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={data}
                         sx={{
-                            height: 600,
+                            height: 400,
                             width: "100%"
                         }}
                         rowHeight={30}
@@ -419,4 +438,4 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
     )
 }
 
-export default CompanyInfoPage
+export default memo(CompanyInfoPage) 

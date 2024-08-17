@@ -54,7 +54,7 @@ const OneHourRequest = ({ count, setCount }) => {
     const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
     const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { cmmn_grace_period, comp_hour_count } = state;
+    const { cmmn_grace_period, comp_hour_count, holiday_leave_request } = state;
 
     useEffect(() => {
         const getdepartmentShift = async () => {
@@ -257,7 +257,7 @@ const OneHourRequest = ({ count, setCount }) => {
                             const { success, data } = result.data;
                             if (success === 1) {
                                 const { holiday_status } = data[0]
-                                if (holiday_status === 1) {
+                                if (holiday_status === 1 && holiday_leave_request === 1) {
                                     warningNofity("Cannot Apply for One request on Holiday")
                                 } else {
                                     const result = await axioslogin.post('/CommonReqst', postData)
@@ -308,7 +308,7 @@ const OneHourRequest = ({ count, setCount }) => {
                             const { success, data } = result.data;
                             if (success === 1) {
                                 const { holiday_status } = data[0]
-                                if (holiday_status === 1) {
+                                if (holiday_status === 1 && holiday_leave_request === 1) {
                                     warningNofity("Cannot Apply for One request on Holiday")
                                 } else {
                                     const result = await axioslogin.post('/CommonReqst', postData)
@@ -345,7 +345,7 @@ const OneHourRequest = ({ count, setCount }) => {
             }
         }
     }, [postData, checkinBox, checkoutBox, cmmn_grace_period, count, em_dept_section, fromDate, holidayData,
-        punchCheck, punchData, punchInTime, punchOutTime, reason, setCount])
+        punchCheck, punchData, punchInTime, punchOutTime, reason, setCount, holiday_leave_request])
 
     return (
         <Fragment>

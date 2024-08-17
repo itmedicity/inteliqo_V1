@@ -85,8 +85,8 @@ const EmployeeRecordEdit = () => {
     const [prob_status, setProb_status] = useState(0)
 
 
-    //const [oldCategory, setOldCategory] = useState(0)
-    //const [oldContract_Status, setOldContract_Status] = useState(0)
+    const [oldCategory, setOldCategory] = useState(0)
+    const [oldContract_Status, setOldContract_Status] = useState(0)
     const [oldprob_end_date, setOldprob_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
     const [old_cont_end_date, setOld_cont_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
     //const [oldprob_status, setOld_prob_Status] = useState(0)
@@ -172,7 +172,26 @@ const EmployeeRecordEdit = () => {
             }
             getcategorydata()
         }
-    }, [category, dateofjoining])
+
+        if (oldCategory !== 0) {
+            const getOldContractDetail = async () => {
+                const result = await axioslogin.get(`/empcat/${oldCategory}`)
+                const { data, success } = result.data
+                if (success === 1) {
+                    const { ecat_cont } = data[0]
+                    setOldContract_Status(ecat_cont)
+                } else {
+                    setOldContract_Status(0)
+                }
+
+
+            }
+            getOldContractDetail()
+        }
+
+
+
+    }, [category, dateofjoining, oldCategory])
 
     useEffect(() => {
         const getEmployeedetails = async () => {
@@ -214,6 +233,7 @@ const EmployeeRecordEdit = () => {
                 setDept(em_department)
                 setRegion1(em_region)
                 setCategory(em_category)
+                setOldCategory(em_category)
                 setBloodgrp(blood_slno)
                 setDoct(em_doc_type === null ? 0 : em_doc_type)
                 setSalutation(em_salutation)
@@ -404,25 +424,28 @@ const EmployeeRecordEdit = () => {
                 infoNofity(message)
             }
         }
-        if (contractflag === 1) {
-            // updateContractEmp(submitdata)
 
+        if (contractflag === 0 && oldContract_Status === 1) {
+            warningNofity("You can't Edit Contract Employee to Permanent, Please close contract first!!")
+        } else if (contractflag === 1 && oldContract_Status === 1) {
             if (isBefore(new Date(cont_date), new Date()) && cont_date !== '2000-01-31') {
                 infoNofity("Employee Contract Date Already Exceeded, You Can Edit This Employee Through Contract Renewal Process!")
             } else {
                 updateContractEmp(submitdata)
             }
-        } else {
+        } else if (oldContract_Status === 0 && contractflag === 1) {
+            warningNofity("You can't Edit Employee Permanent to Any Contract")
+        }
+        else {
             if (isBefore(new Date(probdate), new Date()) && probdate !== '2000-01-31') {
                 infoNofity("Employee Probation date already Exceeded!!You Can Edit This Employee Through Company Information!")
             } else {
                 updateFunction(submitdata)
             }
-
         }
     }, [submitdata, oldprob_end_date, old_cont_end_date, id, clearForm,
         cont_gracedate, cont_perioddate,
-        contractflag, dateofjoining, no, probationendDate, history])
+        contractflag, dateofjoining, no, probationendDate, history, oldContract_Status])
 
     return (
         <>

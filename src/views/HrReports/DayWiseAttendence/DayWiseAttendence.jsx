@@ -17,7 +17,7 @@ import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { getAttendanceCalculation, getLateInTimeIntervel, } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import { infoNofity } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { addDays, addHours, differenceInHours, format, endOfMonth, isValid, max, min, subHours, formatDuration, intervalToDuration } from "date-fns";
 import { axioslogin } from 'src/views/Axios/Axios';
 import Table from '@mui/joy/Table';
@@ -27,6 +27,9 @@ import { getHolidayList } from 'src/redux/actions/LeaveProcess.action';
 import DownloadIcon from '@mui/icons-material/Download';
 import { ExporttoExcel } from './ExportToExcel';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import { setDept } from 'src/redux/actions/Dept.Action';
+import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action';
 
 
 
@@ -40,6 +43,8 @@ const DayWiseAttendence = () => {
     const [todate, Settodate] = useState(moment(new Date()));
     const [dateArray, setDateArray] = useState([])
     const [empArray, setEmpArray] = useState([])
+    const [all, setAll] = useState(false)
+
     const commonSettings = useSelector((state) => state?.getCommonSettings)
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
     const toRedirectToHome = () => {
@@ -55,6 +60,8 @@ const DayWiseAttendence = () => {
         dispatch(setCommonSetting())
         dispatch(setShiftDetails())
         dispatch(getHolidayList());
+        dispatch(setDept())
+        dispatch(setDeptWiseSection());
     }, [dispatch])
 
     const {
@@ -78,9 +85,15 @@ const DayWiseAttendence = () => {
 
     }, [deptSecName, fromdate, todate, deptName])
 
+
+    const deptSect = useSelector((state) => state?.getDeptSectList?.deptSectionList)
+    const departments = useSelector((state) => state?.getdept?.departmentlist,)
+    const allDept = useMemo(() => departments, [departments])
+    const allSection = useMemo(() => deptSect, [deptSect])
+
     const getData = useCallback(async (e) => {
 
-        if (deptName !== 0 && deptSecName === undefined) {
+        if (deptName !== 0 && deptSecName === undefined && all === false) {
             setOpenBkDrop(true)
             const postDataDept = {
                 dept_id: deptName
@@ -251,7 +264,7 @@ const DayWiseAttendence = () => {
                 setOpenBkDrop(false)
                 infoNofity("No employee to show")
             }
-        } else if (deptName !== 0 && deptSecName !== 0) {
+        } else if (deptName !== 0 && deptSecName !== 0 && all === false) {
             setOpenBkDrop(true)
             const getEmpData = {
                 dept_id: deptName,
@@ -417,10 +430,186 @@ const DayWiseAttendence = () => {
                 setOpenBkDrop(false)
                 infoNofity("No employee to show")
             }
+        } else if (all === true && deptName === 0 && deptSecName === 0) {
+            setOpenBkDrop(true)
+            const deptArray = allDept?.map(val => val.dept_id)
+            const sectArray = allSection?.map(val => val.sect_id)
+            const getEmpData = {
+                em_department: deptArray,
+                em_dept_section: sectArray,
+            }
+            const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
+            const { succes, dataa: employeeData } = result1.data
+            if (succes === 1) {
+                const empData = employeeData;
+                const arr = employeeData?.map((val) => val.em_no)
+                const getPunchMast_PostData = {
+                    fromDate_punchMaster: format(new Date(fromdate), 'yyyy-MM-dd'),
+                    toDate_punchMaster: isValid(new Date(todate)) ? format(addDays(new Date(todate), 2), 'yyyy-MM-dd ') : null,
+                    empList: arr,
+                    preFromDate: format(new Date(fromdate), 'yyyy-MM-dd'),
+                    preToDate: isValid(new Date(todate)) ? format(addDays(new Date(todate), 2), 'yyyy-MM-dd ') : null,
+                }
+                const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", getPunchMast_PostData); //GET PUNCH MASTER DATA
+                const { success, planData: punchMasterData } = punch_master_data.data;
+                if (success === 1) {
+                    const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", getPunchMast_PostData);
+                    const { su, result_data: punchaMasData } = punch_data.data;
+                    if (su === 1) {
+                        const maindata = await Promise.allSettled(
+
+                            punchMasterData?.map(async (data, index) => {
+                                const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
+                                // const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+                                const shiftMergedPunchMaster = {
+                                    ...data,
+                                    shft_chkin_start: sortedShiftData?.shft_chkin_start,
+                                    shft_chkin_end: sortedShiftData?.shft_chkin_end,
+                                    shft_chkout_start: sortedShiftData?.shft_chkout_start,
+                                    shft_chkout_end: sortedShiftData?.shft_chkout_end,
+                                    shft_cross_day: sortedShiftData?.shft_cross_day,
+                                    // gross_salary: sortedSalaryData?.gross_salary,
+                                    earlyGoingMaxIntervl: cmmn_early_out,
+                                    gracePeriodInTime: cmmn_grace_period,
+                                    maximumLateInTime: cmmn_late_in,
+                                    salaryLimit: salary_above,
+                                    woff: week_off_day,
+                                    naShift: notapplicable_shift,
+                                    defaultShift: default_shift,
+                                    noff: noff,
+                                    holidayStatus: sortedShiftData?.holiday_status
+                                }
+                                // const employeeBasedPunchData = punchaMasData.filter((e) => e.emp_code == data.em_no)
+                                const employeeBasedPunchData = punchaMasData.filter((e) => String(e.emp_code) === String(data.em_no));
+
+                                return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
+                            })
+                        ).then((data) => {
+                            if (data?.length > 0) {
+                                const punchMasterMappedData = data?.map((e) => e.value)
+                                return Promise.allSettled(
+                                    punchMasterMappedData?.map(async (val) => {
+                                        const holidayStatus = val.holiday_status;
+                                        const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
+                                        const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
+
+                                        const shift_in = new Date(val.shift_in);
+                                        const shift_out = new Date(val.shift_out);
+                                        let interVal = intervalToDuration({
+                                            start: isValid(new Date(val.punch_in)) ? new Date(val.punch_in) : 0,
+                                            end: isValid(new Date(val.punch_out)) ? new Date(val.punch_out) : 0
+                                        })
+                                        //SALARY LINMIT
+                                        const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
+                                        const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+                                        const getAttendanceStatus = await getAttendanceCalculation(
+                                            punch_In,
+                                            shift_in,
+                                            punch_out,
+                                            shift_out,
+                                            cmmn_grace_period,
+                                            getLateInTime,
+                                            holidayStatus,
+                                            val.shift_id,
+                                            val.defaultShift,
+                                            val.naShift,
+                                            val.noff,
+                                            val.woff,
+                                            salaryLimit,
+                                            val.maximumLateInTime
+                                        )
+
+                                        return {
+
+                                            punch_slno: val.punch_slno,
+                                            punch_in: val.punch_in,
+                                            punch_out: val.punch_out,
+                                            hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                                            late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                                            early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
+                                            duty_status: getAttendanceStatus?.duty_status,
+                                            holiday_status: val.holiday_status,
+                                            leave_status: val.leave_status,
+                                            lvereq_desc: val?.leave_status === 1 ? val?.lvereq_desc : getAttendanceStatus?.lvereq_desc,
+                                            duty_desc: val?.leave_status === 1 ? val?.duty_desc : getAttendanceStatus?.duty_desc,
+                                            lve_tble_updation_flag: val.lve_tble_updation_flag,
+                                            name: val?.em_name,
+                                            dept: val?.dept_name,
+                                            sect: val?.sect_name,
+                                            Duty: (moment(val?.duty_day).format("DD-MM-yyyy")),
+                                            Shift_in: (moment(val?.shift_in).format("DD-MM-yyyy HH:mm")),
+                                            Shift_Out: (moment(val?.shift_out).format("DD-MM-yyyy HH:mm ")),
+                                            // hrsWorked: formatDuration({ hours: val?.hrs_worked.hours, minutes: val?.hrs_worked.minutes }),
+                                            worked: (isValid(new Date(val.punch_in)) && val.punch_in !== null) && (isValid(new Date(val.punch_out)) && val.punch_out !== null) ?
+                                                formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                            late: val?.late_in,
+                                            early: val?.early_out,
+                                            em_no: val?.em_no,
+                                        }
+
+                                    })
+
+                                ).then(async (element) => {
+
+                                    if (element?.length > 0) {
+                                        const extractedValues = element?.map(item => item.value);
+                                        return { status: 1, data: extractedValues }
+                                        // setTableData(extractedValues)
+                                    } else {
+                                        return { status: 0, message: "something went wrong", errorMessage: '' }
+                                    }
+                                })
+
+
+                            } else {
+                                return { status: 0, message: "something went wrong", errorMessage: '' }
+                            }
+                        })
+                        if (maindata?.status === 1) {
+                            const mainarray = maindata?.data
+
+                            //to get the Holiday and add the details to the Emp Array
+
+                            DeptWiseAttendanceViewFun(fromdate, holidayList).then((values) => {
+                                const datearr = values?.filter(item => item.dateFormat >= fromdate && item.dateFormat <= todate);
+                                setDateArray(datearr);
+                                // setDateArray(values)
+                                const newFun = (val) => {
+                                    const arr = mainarray.filter(item => val.em_no === item.em_no)
+                                    const array = arr.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+                                    return {
+                                        ...val,
+                                        "arr": array.slice(0, -2)
+                                    }
+                                }
+                                const newEmp = empData?.map(newFun)
+                                setEmpArray(newEmp);
+                                setOpenBkDrop(false)
+                            })
+                        } else {
+                            setOpenBkDrop(false)
+                            setEmpArray([])
+                        }
+                    } else {
+                        setOpenBkDrop(false)
+                        infoNofity("Punch Data not found")
+                        setEmpArray([])
+                    }
+                } else {
+                    setOpenBkDrop(false)
+                    infoNofity("Dutyplan not done for this department")
+                    setEmpArray([])
+                }
+            } else {
+                warningNofity("Error While Fetching Data!")
+            }
+
+
         }
 
     }, [fromdate, todate, postPunchData, shiftInformation, cmmn_early_out, deptSecName, deptName, holidayList,
-        cmmn_grace_period, cmmn_late_in, salary_above, week_off_day, notapplicable_shift, default_shift, noff])
+        cmmn_grace_period, cmmn_late_in, salary_above, week_off_day, notapplicable_shift, default_shift, noff,
+        all, allDept, allSection])
 
     const punchInOutMapping = async (shiftMergedPunchMaster, employeeBasedPunchData) => {
         const crossDay = shiftMergedPunchMaster?.shft_cross_day;
@@ -540,6 +729,14 @@ const DayWiseAttendence = () => {
                         <Box sx={{ flex: 1, px: 0.5, width: '50%' }}>
                             <DepartmentSectionRedx getSection={setDepartSecName} />
                         </Box>
+                        <Box sx={{ px: 0.3, mt: 1 }} >
+                            <JoyCheckbox
+                                label='All'
+                                name="all"
+                                checked={all}
+                                onchange={(e) => setAll(e.target.checked)}
+                            />
+                        </Box>
                         <Box sx={{ display: "flex", flexDirection: "row", }}>
                             <Box sx={{ flex: 1, px: 0.5, display: "flex", }} >
                                 <Typography sx={{ p: 1 }}>From:</Typography>
@@ -549,6 +746,7 @@ const DayWiseAttendence = () => {
                                         views={['day']}
                                         value={fromdate}
                                         maxDate={new Date()}
+                                        inputFormat="dd-MM-yyyy"
                                         size="small"
                                         onChange={(e) => {
                                             Setfromdate(moment(e).format("YYYY-MM-DD"));
@@ -575,6 +773,7 @@ const DayWiseAttendence = () => {
                                         views={['day']}
                                         value={todate}
                                         // minDate={new Date()}
+                                        inputFormat="dd-MM-yyyy"
                                         maxDate={endOfMonth(new Date(fromdate))}
                                         size="small"
                                         onChange={(e) => {
