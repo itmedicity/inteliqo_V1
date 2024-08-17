@@ -29,8 +29,8 @@ const PreLogInpage = () => {
 
     const postdata = useMemo(() => {
         return {
-            em_no: EmpId,
-            em_mobile: Mob,
+            em_no: parseInt(EmpId),
+            em_mobile: parseInt(Mob),
         }
     }, [EmpId, Mob])
 
@@ -62,6 +62,9 @@ const PreLogInpage = () => {
                 }
                 else {
                     warningNofity("Training Not scheduled")
+                    setData([])
+                    Setcount(0);
+                    SetView(0)
                 }
             }
             GetData(postdata)

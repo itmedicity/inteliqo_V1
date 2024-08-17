@@ -31,37 +31,70 @@ const Induction_test_login = () => {
         return {
             em_no: parseInt(EmpId),
             em_mobile: parseInt(Mob),
-            topic_slno: parseInt(topic_slno),
-            slno: parseInt(slno)
+            // topic_slno: parseInt(topic_slno),
+            // slno: parseInt(slno)
         }
     }, [EmpId, Mob, topic_slno, slno])
     //api call
     const LogInData = useCallback(async () => {
         if (EmpId !== '' && Mob !== '' && topic_slno !== 0) {
-            const GetData = async () => {
-                const result = await axioslogin.post('/InductionTest/inductlogEmpDetails', postdata)
-                const { data } = result.data
-                if (data?.length > 0) {
-                    setData(data)
+            // const GetData = async () => {
+            //     const result = await axioslogin.post('/InductionTest/inductlogEmpDetails', postdata)
+            //     const { data } = result.data
+            //     if (data?.length > 0) {
+            //         setData(data)
+            //         Setcount(count + 1);
+            //         SetView(1)
+            //         reset();
+            //     }
+            //     else {
+            //         warningNofity("Training Not scheduled For this Employee")
+            //         setData([])
+            //         Setcount(0);
+            //         SetView(0)
+            //     }
+            // }
+            // GetData(postdata)
+
+            const result1 = await axioslogin.post('/InductionTest/inductlogEmpDetails', postdata)
+            const { data, success } = result1.data
+            if (success === 2 && data?.length > 0) {
+                const { em_id } = data[0]
+                const obj = {
+                    preId: parseInt(em_id),
+                    postId: parseInt(em_id),
+                    em_no: parseInt(EmpId),
+                    em_mobile: parseInt(Mob),
+                    topic_slno: parseInt(topic_slno),
+                    slno: parseInt(slno)
+
+                }
+                const result2 = await axioslogin.post('/InductionTest/inductlogEmpDatas', obj)
+                const { datas, success } = result2.data
+                if (success === 2) {
+                    setData(datas)
                     Setcount(count + 1);
                     SetView(1)
                     reset();
                 }
                 else {
-                    warningNofity("Training Not scheduled For this Employee")
                     setData([])
                     Setcount(0);
                     SetView(0)
                 }
             }
-            GetData(postdata)
+            else {
+                warningNofity("Training Not scheduled")
+                // setData([])
+                // Setcount(0);
+                // SetView(0)
+            }
         }
         else {
             warningNofity("Please Enter Valid Employee ID and Registered Mobile Number")
             reset();
         }
     }, [postdata, setData, SetView, reset, Setcount, count, EmpId, Mob, topic_slno])
-
 
     return (
         <Fragment>

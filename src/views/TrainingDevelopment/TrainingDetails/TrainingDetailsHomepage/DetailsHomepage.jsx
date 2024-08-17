@@ -76,7 +76,13 @@ const DetailsHomepage = () => {
         }
         const getdeptdatas = (async () => {
             const emid = parseInt(em_id)
-            const result = await axioslogin.get(`/TrainingDetails/getDepartmental/${emid}`)
+            const obj = {
+                emid: emid,
+                preId: emid,
+                postId: emid
+            }
+            const result = await axioslogin.post(`/TrainingDetails/getDepartmental`, obj)
+            // const result = await axioslogin.get(`/TrainingDetails/getDepartmental/${emid}`)
             const { success, data } = result.data;
             if (success === 2) {
                 getHod(emid).then((value) => {
@@ -120,7 +126,7 @@ const DetailsHomepage = () => {
     }, [])
 
     const [columnDef] = useState([
-        { headerName: 'Sl No', field: 'slno', filter: true, width: 100 },
+        { headerName: 'Sl No', field: 'slnum', filter: true, width: 100 },
         { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 150 },
         {
@@ -204,7 +210,7 @@ const DetailsHomepage = () => {
                         const object = {
                             em_name: val.em_name,
                             em_no: val.em_no,
-                            slno: val.slnum,
+                            slnum: val.slnum,
                             em_id: val.em_id,
                             dept_id: val.dept_id,
                             dept_name: val.dept_name,

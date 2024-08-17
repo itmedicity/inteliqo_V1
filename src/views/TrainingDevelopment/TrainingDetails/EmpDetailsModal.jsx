@@ -67,7 +67,13 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
         const GetData = (async () => {
             if (em_id !== 0) {
                 const emid = parseInt(em_id)
-                const result = await axioslogin.get(`/TrainingDetails/getDepartmental/${emid}`)
+                const obj = {
+                    emid: emid,
+                    preId: emid,
+                    postId: emid
+                }
+                // const result = await axioslogin.get(`/TrainingDetails/getDepartmental/${emid}`)
+                const result = await axioslogin.post(`/TrainingDetails/getDepartmental`, obj)
                 const { success, data } = result.data;
                 if (success === 2) {
                     SetDepartData(data)
@@ -151,7 +157,7 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
         })
         SetShowDepartData(deptdata)
     }, [DepartData, SetShowDepartData])
-    console.log(InductionData)
+
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -256,7 +262,10 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
                 {
                     ShowDepartData?.length !== 0 ?
 
-                        <Table>
+                        < Table sx={{
+                            overflow: 'auto',
+                            '::-webkit-scrollbar': { display: "none" }, height: 200
+                        }}>
                             <thead>
                                 <tr>
                                     <th style={{ width: "5%" }}>Slno</th>
