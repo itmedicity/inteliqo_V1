@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import Box from '@mui/joy/Box';
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
@@ -77,7 +77,7 @@ const DoffCancelModal = ({ open, setOpen, empData, setCount }) => {
         }
 
 
-    }, [empData, setCount, setOpen, reason])
+    }, [empData, setCount, setOpen, reason, em_id])
 
     return (
         <Modal

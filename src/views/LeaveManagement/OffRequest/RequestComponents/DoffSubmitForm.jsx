@@ -5,13 +5,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import moment from 'moment';
-import { Button, IconButton, Input, Option, Select, Textarea, Tooltip, Typography } from '@mui/joy';
-import { getDepartmentShiftDetails } from 'src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction';
-import { addDays, addMonths, format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { Button, IconButton, Input, Textarea, Tooltip, Typography } from '@mui/joy';
+import { addDays, format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useSelector } from 'react-redux';
-import { getCommonSettings, getEmployeeInformationLimited, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
+import { getEmployeeInformationLimited, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,7 +21,6 @@ const DoffSubmitForm = () => {
 
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [fromDate, setFromDate] = useState(moment(new Date()))
-    const [disableDate, setDisableDate] = useState(false)
     const [planSlno, setPlanSlno] = useState(0)
     const [requiredDate, setRequiredDate] = useState(moment(new Date()))
 
@@ -39,20 +37,8 @@ const DoffSubmitForm = () => {
 
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
     const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
-    const { groupmenu, em_id: loginEmid } = empInformationFromRedux;
+    const { em_id: loginEmid } = empInformationFromRedux;
 
-
-    //CHEK THE AURHORISED USER GROUP
-    const [masterGroupStatus, setMasterGroupStatus] = useState(false);
-    const getcommonSettings = useSelector((state) => getCommonSettings(state, groupmenu))
-    const groupStatus = useMemo(() => getcommonSettings, [getcommonSettings])
-
-    // const apprLevel = useSelector((state) => getLeaveReqApprovalLevel(state))
-    // const deptApprovalLevel = useMemo(() => apprLevel, [apprLevel])
-
-    useEffect(() => {
-        setMasterGroupStatus(groupStatus)
-    }, [groupStatus])
 
     useEffect(() => {
         const getDoff = async () => {
@@ -111,7 +97,7 @@ const DoffSubmitForm = () => {
     }, [em_id])
 
     const SubmitDoffRequest = useCallback(async () => {
-
+        setOpenBkDrop(true)
         const savedata = {
             em_no: em_no,
             em_id: em_id,
@@ -125,7 +111,9 @@ const DoffSubmitForm = () => {
         }
 
         if (reson === '') {
+            setOpenBkDrop(false)
             warningNofity("Add Reason!")
+
         } else {
             const holidayData = {
                 em_id: em_id,
@@ -149,25 +137,31 @@ const DoffSubmitForm = () => {
                         const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
                         if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
                             warningNofity("Punch Marking Monthly Process Done !! Can't Apply DOFF Request!!  ")
+                            setOpenBkDrop(false)
                         } else {
                             const result = await axioslogin.post('/OffRequest/create', savedata)
                             const { success, message } = result.data;
                             if (success === 1) {
                                 succesNofity(message)
                                 setCount(Math.random())
+                                setOpenBkDrop(false)
                             } else {
                                 warningNofity(message)
+                                setOpenBkDrop(false)
                             }
                         }
                     } else {
                         errorNofity("Error getting PunchMarkingHR ")
+                        setOpenBkDrop(false)
                     }
                 } else {
                     warningNofity("Attendance Description Must be P or LC")
+                    setOpenBkDrop(false)
                 }
 
             } else {
                 warningNofity("Duty plan data not found, Contact IT")
+                setOpenBkDrop(false)
             }
         }
 

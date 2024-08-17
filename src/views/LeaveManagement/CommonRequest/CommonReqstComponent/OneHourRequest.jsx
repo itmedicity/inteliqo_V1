@@ -12,11 +12,13 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 
 const OneHour = lazy(() => import('./OneHourCancelModal'))
 
 const OneHourRequest = () => {
 
+    const [openBkDrop, setOpenBkDrop] = useState(false)
     const [fromDate, setFromDate] = useState(new Date())
     const [shiftDesc, setShiftDesc] = useState('Data Not Found');
     const [selectedShift, setSelectedShift] = useState(0)
@@ -180,12 +182,15 @@ const OneHourRequest = () => {
     }, [])
 
     const submitRequest = useCallback(async () => {
+        setOpenBkDrop(true)
 
         const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmid)
 
         if (checkinBox === false && checkoutBox === false) {
+            setOpenBkDrop(false)
             warningNofity("Check In || Check Out Needs To Check")
         } else if (reason === '') {
+            setOpenBkDrop(false)
             warningNofity("Reason Is Mandatory")
         }
         else {
@@ -228,6 +233,7 @@ const OneHourRequest = () => {
                 const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
 
                 if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                    setOpenBkDrop(false)
                     warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                 } else {
                     //check in time correct
@@ -237,6 +243,7 @@ const OneHourRequest = () => {
                         const result = punchData.find((val) => val)
                         const dd = isBefore(new Date(result.punch_time), new Date(relaxTime)) && isAfter(new Date(result.punch_time), new Date(punchInTime)) || isEqual(new Date(result.punch_time), new Date(punchInTime)) ? 1 : 0
                         if (dd === 0) {
+                            setOpenBkDrop(false)
                             warningNofity("Can't Apply For One Hour Request!!");
                             setSelectedShift(0)
                             setFromDate(new Date())
@@ -258,7 +265,9 @@ const OneHourRequest = () => {
                                 setPunchOutTime(0)
                                 setCheckInCheck(false)
                                 setCheckOutCheck(false)
+                                setOpenBkDrop(false)
                             } else {
+                                setOpenBkDrop(false)
                                 warningNofity(message)
                                 setSelectedShift(0)
                                 setFromDate(new Date())
@@ -284,6 +293,7 @@ const OneHourRequest = () => {
                             setPunchOutTime(0)
                             setCheckInCheck(false)
                             setCheckOutCheck(false)
+                            setOpenBkDrop(false)
                         } else {
 
                             const result = await axioslogin.post('/CommonReqst', postData)
@@ -298,6 +308,7 @@ const OneHourRequest = () => {
                                 setPunchOutTime(0)
                                 setCheckInCheck(false)
                                 setCheckOutCheck(false)
+                                setOpenBkDrop(false)
                             } else {
                                 warningNofity(message)
                                 setSelectedShift(0)
@@ -307,12 +318,14 @@ const OneHourRequest = () => {
                                 setPunchOutTime(0)
                                 setCheckInCheck(false)
                                 setCheckOutCheck(false)
+                                setOpenBkDrop(false)
                             }
 
                         }
                     }
                 }
             } else {
+                setOpenBkDrop(false)
                 errorNofity("Error getting PunchMarkingHR ")
             }
         }
@@ -366,6 +379,7 @@ const OneHourRequest = () => {
     return (
 
         <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', py: 0.5 }}>
+            <CustomBackDrop open={openBkDrop} text="Your Request Is Processing. Please Wait..." />
             <OneHour open={deleteOpen} setOpen={setDeleteOpen} empData={empdata} setCount={setCount} />
             <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
                 <Box sx={{ alignItems: 'center', display: 'flex' }} >

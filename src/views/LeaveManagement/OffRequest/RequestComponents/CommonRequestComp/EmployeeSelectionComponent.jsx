@@ -28,8 +28,6 @@ const EmployeeSelectionComponent = ({ setRequestType }) => {
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
     const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
     const { hod, incharge, em_no, em_id, em_department, em_dept_section, } = empInformationFromRedux;
-    const commonState = useSelector((state) => state?.getCommonSettings);
-    const commonSetting = useMemo(() => commonState, [commonState])
 
     // POST DATA FOR EMPLOYE IS NOT A HOD AOR INCHARGE
     const employeePostData = useMemo(() => {

@@ -1,28 +1,19 @@
 
 import { Button, LinearProgress, Tooltip } from '@mui/joy';
 import { Box, Paper } from '@mui/material';
-import React, { memo, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { getCommonSettings, getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
+import React, { memo, Suspense, useCallback, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux';
+import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import InchargeHodPage from '../../CompOffRequest/InchargeHodPage';
 import NormalEmployeeLeveReqPage from '../../LeavereRequsition/NormalEmployeeLeveReqPage';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const DoffEmployeeSelction = ({ setShowForm, steEmployeeData }) => {
-    const dispatch = useDispatch()
-
-    const [masterGroupStatus, setMasterGroupStatus] = useState(false);
 
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
     const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
-    const { hod, incharge, em_no, em_id, em_department, em_dept_section, groupmenu } = empInformationFromRedux;
-
-    const getcommonSettings = useSelector((state) => getCommonSettings(state, groupmenu))
-    const groupStatus = useMemo(() => getcommonSettings, [getcommonSettings])
-    useEffect(() => {
-        setMasterGroupStatus(groupStatus)
-    }, [groupStatus])
+    const { hod, incharge, em_no, em_id, em_department, em_dept_section, } = empInformationFromRedux;
 
 
     // POST DATA FOR EMPLOYE IS NOT A HOD AOR INCHARGE

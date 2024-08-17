@@ -1,6 +1,6 @@
 import { Tab, TabList, TabPanel, Tabs } from '@mui/joy';
 import { Box } from '@mui/material';
-import React, { lazy, memo, useCallback, useEffect, useState } from 'react'
+import React, { lazy, memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 
@@ -11,32 +11,29 @@ const Commonpage = lazy(() => import('./RequestComponents/CommonRequest'))
 const OverTimePage = lazy(() => import('./RequestComponents/OvertimeRequest'))
 
 const OffrequestCombinePage = () => {
-    const [value, setValue] = useState('1')
 
     const [menurights, setMenurights] = useState([])
 
-    const handleChange = useCallback((e, newValue) => {
-        setValue(newValue)
-    }, [])
-
+    //all menu slno
     const modulerights = useSelector((state) => state?.getModuleRightList?.modulerightsList)
 
+    //static menu rights
+    const menuList = [
+        { slno: 285, name: 'Credit Off Request', component: <COFFPage /> },
+        { slno: 236, name: 'Night Off Request', component: <NightOffPage /> },
+        { slno: 300, name: 'DOFF Request', component: <DoffPage /> },
+        { slno: 239, name: 'Common Request', component: <Commonpage /> },
+        { slno: 31, name: 'Over Time Request', component: <OverTimePage /> },
+    ]
+
     useEffect(() => {
-        let array = menuList.filter((value) => {
-            return modulerights.find((val) => {
+        let array = menuList?.filter((value) => {
+            return modulerights?.find((val) => {
                 return value.slno === val.menu_slno;
             })
         });
         setMenurights(array)
     }, [])
-
-    const menuList = [
-        { slno: 285, name: 'Credit Off Request', component: <COFFPage /> },
-        { slno: 236, name: 'Night Off Request', component: <NightOffPage /> },
-        { slno: 192, name: 'DOFF Request', component: <DoffPage /> },
-        { slno: 239, name: 'Common Request', component: <Commonpage /> },
-        { slno: 31, name: 'Over Time Request', component: <OverTimePage /> },
-    ]
 
     return (
         <CustomLayout title="OFF Request" displayClose={true} >
@@ -51,26 +48,24 @@ const OffrequestCombinePage = () => {
                 },
 
             }}>
-                <>
-                    <Tabs
-                        aria-label="Basic tabs" defaultValue={0}
-                        onChange={handleChange}>
-                        <TabList tabFlex={1} variant="plain">
-                            {
-                                menurights?.map((val, ind) => {
-                                    return <Tab key={ind} color='success' >{val.name}</Tab>
-                                })
-                            }
-                        </TabList>
+                <Tabs
+                    aria-label="Basic tabs" defaultValue={0}
+                >
+                    <TabList tabFlex={1} variant="plain">
                         {
                             menurights?.map((val, ind) => {
-                                return <TabPanel key={ind} value={ind}>
-                                    {val.component}
-                                </TabPanel>
+                                return <Tab key={ind} color='success' >{val.name}</Tab>
                             })
                         }
-                    </Tabs>
-                </>
+                    </TabList>
+                    {
+                        menurights?.map((val, ind) => {
+                            return <TabPanel key={ind} value={ind}>
+                                {val.component}
+                            </TabPanel>
+                        })
+                    }
+                </Tabs>
             </Box>
         </CustomLayout>
     )
