@@ -1,4 +1,5 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
+import { Option, Select } from '@mui/joy';
+import { FormControl, MenuItem, } from '@mui/material';
 import React, { memo, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setempDeptSect } from 'src/redux/actions/AuthorizationDeptSectionAction';
@@ -23,27 +24,21 @@ const ApprovalDeptSectSelection = ({ em_id, value, setValue, updateDeptSect }) =
     }, [DeptSect, updateDeptSect])
 
     return (
-
-        <FormControl fullWidth
-            size='small'   >
-            <Select
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                size="small"
-                fullWidth
-                variant='outlined'
-            >
-                <MenuItem value={0} disabled>
-                    All Department Section
-                </MenuItem>
-                {
-                    deptSectValues && deptSectValues.map((val, index) => {
-                        return <MenuItem key={index} value={val.dept_section}>{val.sect_name}</MenuItem>
-                    })
-                }
-            </Select>
-        </FormControl>
-
+        <Select
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+            }}
+            size='md'
+            variant='outlined'
+        >
+            <Option disabled value={0}> Select Department Section </Option>
+            {
+                deptSectValues?.map((val, index) => {
+                    return <Option key={index} value={val.dept_section}>{val.sect_name}</Option>
+                })
+            }
+        </Select>
     )
 }
 

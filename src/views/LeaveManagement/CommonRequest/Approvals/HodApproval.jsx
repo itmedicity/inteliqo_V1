@@ -19,7 +19,7 @@ const HodApproval = () => {
 
     const dispatch = useDispatch()
     const [deptSection, setDeptSection] = useState(0)
-    const [selectValue, setSelectValue] = useState(1)
+    const [selectValue, setSelectValue] = useState(2)
     const [tableData, setTableData] = useState([])//for displaying table data
     const [DeptSect, updateDeptSect] = useState([])
 
@@ -30,7 +30,7 @@ const HodApproval = () => {
     const [count, setCount] = useState(0)
 
     const request = [
-        { value: 1, name: "Enable Miss Punch for OT" },
+        //  { value: 1, name: "Enable Miss Punch for OT" },
         { value: 2, name: "On Duty Request" },
         { value: 3, name: "One Hour Request" }
     ]
@@ -119,7 +119,10 @@ const HodApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
 
             } else {
                 infoNofity("No On Duty request pending for this department!!")
@@ -163,7 +166,10 @@ const HodApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No On Duty request pending for this department!!")
                 setTableData([])
@@ -211,7 +217,10 @@ const HodApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No One Hour request pending for this department!!")
                 setTableData([])
@@ -257,7 +266,10 @@ const HodApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No One Hour request pending for this department!!")
                 setTableData([])
@@ -306,7 +318,10 @@ const HodApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No request pending for this department!!")
                 setTableData([])
@@ -353,7 +368,10 @@ const HodApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No request pending for this department!!")
                 setTableData([])
