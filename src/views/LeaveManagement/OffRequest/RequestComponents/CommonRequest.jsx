@@ -41,7 +41,7 @@ const CommonRequest = () => {
     }, [hod, incharge, em_id, dispatch])
 
     return (
-        <Box sx={{ display: 'flex', flex: 1, mt: 0.3, flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', flex: 1, mt: 0.3, flexDirection: 'column', p: 0, py: 0.5, }}>
             <Suspense fallback={
                 <Box sx={{ display: 'flex', flex: 1, zIndex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <CircularProgress

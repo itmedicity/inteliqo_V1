@@ -36,7 +36,7 @@ const CompensatoryRequest = () => {
         setCount(0)
     }, [hod, incharge, em_id, dispatch, employeeData, count])
     return (
-        <Box sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', flex: 1, p: 0, py: 0.5, mt: 0.3, flexDirection: 'column', }}>
             <Suspense fallback={
                 <Box sx={{ display: 'flex', flex: 1, zIndex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <CircularProgress

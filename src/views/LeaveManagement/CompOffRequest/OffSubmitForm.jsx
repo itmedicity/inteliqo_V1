@@ -229,7 +229,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
     }, [])
 
     return (
-        <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', mt: 0.5 }}>
+        <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', mt: 0.5, py: 0.5 }}>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Submitting COFF Request" />
             <Box sx={{ display: "flex", flex: 1, px: 0.5, alignItems: 'center' }} >
                 <Box sx={{ flex: 1, px: 0.5, mt: 0.5 }} >
