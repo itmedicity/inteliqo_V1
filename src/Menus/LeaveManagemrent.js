@@ -12,24 +12,24 @@ const Leavemanagement = [
         name: 'OFF Request',
         to: '/Home/DoffRequest',
     },
-    {
-        men_slno: 285,
-        component: CNavItem,
-        name: 'Credit COFF',
-        to: '/Home/CompensatoryRequest',
-    },
-    {
-        men_slno: 236,
-        component: CNavItem,
-        name: 'Night Off Request',
-        to: '/Home/NightOffRequest',
-    },
-    {
-        men_slno: 31,
-        component: CNavItem,
-        name: 'Overtime Request',
-        to: '/Home/OTRequest',
-    },
+    // {
+    //     men_slno: 285,
+    //     component: CNavItem,
+    //     name: 'Credit COFF',
+    //     to: '/Home/CompensatoryRequest',
+    // },
+    // {
+    //     men_slno: 236,
+    //     component: CNavItem,
+    //     name: 'Night Off Request',
+    //     to: '/Home/NightOffRequest',
+    // },
+    // {
+    //     men_slno: 31,
+    //     component: CNavItem,
+    //     name: 'Overtime Request',
+    //     to: '/Home/OTRequest',
+    // },
     // {
     //     men_slno: 239,
     //     component: CNavItem,

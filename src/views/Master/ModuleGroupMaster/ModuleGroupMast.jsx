@@ -11,14 +11,19 @@ import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import UserGroupWithName from '../GroupRights/UserGroupWithName'
 
 const ModuleGroupMast = () => {
   const [count, setCount] = useState(0)
   const [slno, setSlno] = useState(0)
   const [tableData, setTableData] = useState([])
   const [flag, setFlag] = useState(0)
+  const [groupname, setGroupName] = useState('')
+  const [groupslno, setGroupslno] = useState(0)
+
+
   const [formData, setFormData] = useState({
-    module_group_name: '',
+    // module_group_name: '',
     module_recruitment: false,
     module_emprecord: false,
     module_attenmangemnt: false,
@@ -35,7 +40,7 @@ const ModuleGroupMast = () => {
 
   // destructuring the form element vlaues
   const {
-    module_group_name,
+    // module_group_name,
     module_recruitment,
     module_emprecord,
     module_attenmangemnt,
@@ -59,7 +64,7 @@ const ModuleGroupMast = () => {
   // COnvert Data For Submitting false to 1 and 0
   const postData = useMemo(() => {
     return {
-      module_group_name,
+      module_group_name: groupname,
       module_slno: {
         module_home: 1,
         module_recruitment: module_recruitment === true ? 2 : 0,
@@ -76,13 +81,13 @@ const ModuleGroupMast = () => {
         module_contractRenew: module_contractRenew === true ? 14 : 0
       },
     }
-  }, [module_group_name, module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
+  }, [module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
     module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation,
     module_dashboard, module_reports, module_vaccination, module_contractRenew])
 
   const postEditData = useMemo(() => {
     return {
-      module_group_name,
+      module_group_name: groupname,
       module_slno: {
         module_home: 1,
         module_recruitment: module_recruitment === true ? 2 : 0,
@@ -100,13 +105,13 @@ const ModuleGroupMast = () => {
       },
       mdgrp_slno: slno,
     }
-  }, [module_group_name, module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
+  }, [module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
     module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation, slno,
     module_dashboard, module_reports, module_vaccination, module_contractRenew])
 
   const resetForm = useMemo(() => {
     return {
-      module_group_name: '',
+      //module_group_name: '',
       module_recruitment: false,
       module_emprecord: false,
       module_attenmangemnt: false,
@@ -124,6 +129,7 @@ const ModuleGroupMast = () => {
 
   const submitModuleGroupMast = useCallback(async (e) => {
     e.preventDefault()
+
     if (flag === 1) {
       const result = await axioslogin.patch('/modulegroup', postEditData)
       const { success, message } = result.data
@@ -207,13 +213,17 @@ const ModuleGroupMast = () => {
         <Grid container spacing={1}>
           <Grid item xl={3} lg={2}>
             <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
+              <UserGroupWithName value={groupslno} setValue={setGroupslno} setuserName={setGroupName} />
+            </Box>
+            <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
               <InputComponent
                 placeholder={'Module Group Name'}
                 type="text"
                 size="sm"
-                name="module_group_name"
-                value={module_group_name}
-                onchange={(e) => getModuleGroupFormData(e)}
+                name="groupname"
+                disabled={true}
+                value={groupname}
+              // onchange={(e) => getModuleGroupFormData(e)}
               />
             </Box>
             <Box sx={{ pl: 1, mt: 0.5 }} >
