@@ -19,8 +19,9 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
 
     const [completedData, SetCompletedData] = useState([]);
     useEffect(() => {
-        const CompletedData = trainingcompleted?.map((val) => {
+        const CompletedData = trainingcompleted?.map((val, ndx) => {
             const object = {
+                serialNo: ndx + 1,
                 deparment_sect: val.deparment_sect,
                 department: val.department,
                 posttest_status: val.posttest_status,
@@ -55,7 +56,7 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
 
 
     const [columnDef] = useState([
-        { headerName: 'SlNo', field: 'sn', filter: true, width: 100 },
+        { headerName: 'SlNo', field: 'serialNo', filter: true, width: 100 },
         { headerName: 'Emp ID', field: 'em_no', filter: true, width: 100 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 200 },
         { headerName: 'Department_sec', field: 'sect_name', filter: true, width: 250 },

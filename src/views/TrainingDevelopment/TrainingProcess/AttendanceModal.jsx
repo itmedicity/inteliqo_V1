@@ -25,8 +25,9 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
     const maparr = useMemo(() => attendance, [attendance])
 
     useEffect(() => {
-        const displayData = maparr?.map((val) => {
+        const displayData = maparr?.map((val, ndx) => {
             const object = {
+                serialNo: ndx + 1,
                 em_id: val.em_id,
                 em_name: val.em_name,
                 posttest_permission: val.posttest_permission,
@@ -67,8 +68,8 @@ const AttendanceModal = ({ count, Setcount, open, Setopen, attendance }) => {
         }
     }, [dataArray])
 
-
     const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'serialNo', filter: true, width: 150 },
         { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         {
