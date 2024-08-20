@@ -19,6 +19,7 @@ const DoffCancelModal = ({ open, setOpen, empData, setCount }) => {
     const { em_id, } = employeeProfileDetl;
 
 
+
     const closeRequest = useCallback(() => {
         setOpen(false)
     }, [setOpen])
@@ -29,51 +30,67 @@ const DoffCancelModal = ({ open, setOpen, empData, setCount }) => {
             dutyday: empData?.required_date
         }
 
-        const postData = {
+        const getID = {
             startDate: format(new Date(empData?.required_date), 'yyyy-MM-dd'),
             em_id: empData?.em_id
         }
 
-        const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
+        const dutyID = {
+            startDate: format(new Date(empData?.duty_date), 'yyyy-MM-dd'),
+            em_id: empData?.em_id
+        }
+
+
+        const result = await axioslogin.post('LeaveRequest/gethafdayshift/', getID);
         const { success, data: pladata } = result.data;
         if (success === 1) {
-            const { plan_slno, } = pladata[0];
+            const { plan_slno: doffPlanSlno } = pladata[0];
             const result = await axioslogin.post('/attendCal/attendanceshiftdetl', punchmast);
             const { success, data } = result.data;
             if (success === 1) {
                 const { punch_slno } = data[0];
-                const postData = {
-                    punch_in: null,
-                    punch_out: null,
-                    hrs_worked: 0,
-                    late_in: 0,
-                    early_out: 0,
-                    duty_status: 0,
-                    duty_desc: 'A',
-                    lvereq_desc: 'A',
-                    delete_user: em_id,
-                    delete_comments: reason,
-                    duty_off_slno: empData?.duty_off_slno,
-                    punch_slno: punch_slno,
-                    planSlno: [plan_slno]
 
-                }
-                const result = await axioslogin.post('/OffRequest/delete', postData)
-                const { success, message } = result.data;
+                const result = await axioslogin.post('LeaveRequest/gethafdayshift/', dutyID);
+                const { success, data: dutydata } = result.data;
                 if (success === 1) {
-                    succesNofity(message)
-                    setCount(Math.random())
-                    setOpen(false)
-                } else {
-                    warningNofity("Error While Updating Data")
-                }
+                    const { plan_slno } = dutydata[0];
 
+                    const postData = {
+                        punch_in: null,
+                        punch_out: null,
+                        hrs_worked: 0,
+                        late_in: 0,
+                        early_out: 0,
+                        duty_status: 0,
+                        duty_desc: 'A',
+                        lvereq_desc: 'A',
+                        delete_user: em_id,
+                        delete_comments: reason,
+                        duty_off_slno: empData?.duty_off_slno,
+                        punch_slno: punch_slno,
+                        plan_slno: plan_slno,
+                        doffPlanSlno: doffPlanSlno,
+                        shift_id: 1
+                    }
+
+                    const result = await axioslogin.post('/OffRequest/delete', postData)
+                    const { success, message } = result.data;
+                    if (success === 1) {
+                        succesNofity(message)
+                        setCount(Math.random())
+                        setOpen(false)
+                    } else {
+                        warningNofity("Error While Updating Data")
+                    }
+                } else {
+                    errorNofity("Error While getting Dutyplan data! Please Contact IT")
+                }
 
             } else {
                 errorNofity("Error While getting Punchmast data! Please Contact IT")
             }
         } else {
-
+            errorNofity("Error While getting Dutyplan data! Please Contact IT")
         }
 
 

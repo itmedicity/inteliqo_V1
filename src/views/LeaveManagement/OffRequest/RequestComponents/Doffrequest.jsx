@@ -2,6 +2,7 @@ import { CircularProgress } from '@mui/joy';
 import { Box } from '@mui/material';
 import React, { lazy, memo, Suspense, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import { getEmployeeInformation, getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action';
 import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
 
@@ -23,6 +24,7 @@ const Doffrequest = () => {
     useEffect(() => {
         dispatch(getHodBasedDeptSectionName(em_id));
         dispatch(getEmployeeInformation(employeeData?.emID))
+        dispatch(setCommonSetting());
     }, [hod, incharge, em_id, dispatch, employeeData])
 
 

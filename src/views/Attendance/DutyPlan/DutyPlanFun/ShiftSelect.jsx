@@ -18,7 +18,7 @@ const ShiftSelect = ({ data }) => {
     const commonSettings = useMemo(() => commonState, [commonState]);
     const shiftData = useMemo(() => data, [data]);
 
-    const { notapplicable_shift, default_shift, week_off_day } = commonSettings;
+    const { notapplicable_shift, default_shift, week_off_day, doff } = commonSettings;
 
     const [shift, setShift] = useState(default_shift);
     // console.log(shiftData)
@@ -65,7 +65,7 @@ const ShiftSelect = ({ data }) => {
             {
                 deptShift && deptShift.map((val, index) =>
                     <option
-                        disabled={val.shiftcode === notapplicable_shift || val.shiftcode === default_shift ? true : false}
+                        disabled={val.shiftcode === notapplicable_shift || val.shiftcode === default_shift || val.shiftcode === doff ? true : false}
                         key={index}
                         value={val.shiftcode}
                     >{val.shiftDescription}</option>

@@ -31,6 +31,7 @@ const DoffSubmitForm = () => {
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [empdata, setEmpdata] = useState({})
     const [count, setCount] = useState(0)
+    const [doffPlanSlno, setDoffPlanSlno] = useState(0)
 
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
     const { em_no, em_id, em_dept_section, } = selectedEmpInform;
@@ -39,6 +40,9 @@ const DoffSubmitForm = () => {
     const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
     const { em_id: loginEmid } = empInformationFromRedux;
 
+    const state = useSelector((state) => state?.getCommonSettings)
+    const commonStates = useMemo(() => state, [state])
+    const { doff } = commonStates;
 
     useEffect(() => {
         const getDoff = async () => {
@@ -96,6 +100,24 @@ const DoffSubmitForm = () => {
         }
     }, [em_id])
 
+    useEffect(() => {
+        const getOffShift = async () => {
+            const postData = {
+                startDate: format(new Date(requiredDate), 'yyyy-MM-dd'),
+                em_id: em_id
+            }
+            const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { plan_slno, } = data[0];
+                setDoffPlanSlno(plan_slno)
+            } else {
+                setDoffPlanSlno(0)
+            }
+        }
+        getOffShift()
+    }, [requiredDate])
+
     const SubmitDoffRequest = useCallback(async () => {
         setOpenBkDrop(true)
         const savedata = {
@@ -107,7 +129,9 @@ const DoffSubmitForm = () => {
             reason: reson,
             duty_day: format(new Date(requiredDate), 'yyyy-MM-dd'),
             emp_id: em_id,
-            planSlno: [planSlno]
+            shift_id: doff,
+            plan_slno: planSlno,
+            doffPlanSlno: doffPlanSlno
         }
 
         if (reson === '') {
@@ -165,7 +189,7 @@ const DoffSubmitForm = () => {
             }
         }
 
-    }, [reson, em_id, fromDate, em_dept_section, em_no, loginEmid, requiredDate, planSlno])
+    }, [reson, em_id, fromDate, em_dept_section, em_no, loginEmid, requiredDate, planSlno, doff])
 
 
     const [columndef] = useState([
