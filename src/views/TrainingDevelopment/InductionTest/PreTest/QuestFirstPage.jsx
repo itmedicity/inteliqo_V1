@@ -45,10 +45,12 @@ const QuestFirstPage = () => {
         training_topic_name: '',
         question_count: 0,
         dept_id: 0,
-        sect_id: 0
+        sect_id: 0,
+        schedule_slno: 0,
+        induct_detail_date: ''
     });
 
-    const { em_id, dept_id, em_name, sect_id, topic_slno, slno } = datas;
+    const { em_id, dept_id, em_name, sect_id, topic_slno, slno, schedule_slno, induct_detail_date } = datas;
 
     const { id, emId, tslno, qcount } = useParams()
 
@@ -102,7 +104,7 @@ const QuestFirstPage = () => {
 
     useEffect(() => {
         if (Object.keys(Emp_Details).length !== 0) {
-            const { em_id, em_name, induction_slno, topic_slno, training_topic_name, question_count, dept_id, sect_id } = Emp_Details[0];
+            const { em_id, em_name, induction_slno, topic_slno, training_topic_name, question_count, dept_id, sect_id, schedule_slno, induct_detail_date } = Emp_Details[0];
             const obj = {
                 em_id: em_id,
                 em_name: em_name,
@@ -111,8 +113,9 @@ const QuestFirstPage = () => {
                 training_topic_name: training_topic_name,
                 question_count: question_count,
                 dept_id: dept_id,
-                sect_id: sect_id
-
+                sect_id: sect_id,
+                schedule_slno: schedule_slno,
+                induct_detail_date: induct_detail_date
             }
             setQuestcount(question_count)
             setDatas(obj);
@@ -151,9 +154,11 @@ const QuestFirstPage = () => {
             emp_topic: parseInt(topic_slno),
             pretest_status: 1,
             mark: correct,
-            create_user: em_id
+            create_user: em_id,
+            schedule_slno: schedule_slno,
+            schedule_date: induct_detail_date
         }
-    }, [em_id, dept_id, sect_id, correct, topic_slno, slno])
+    }, [em_id, dept_id, sect_id, correct, topic_slno, slno, schedule_slno, induct_detail_date])
 
     useEffect(() => {
         if (checkInsert === 1) {

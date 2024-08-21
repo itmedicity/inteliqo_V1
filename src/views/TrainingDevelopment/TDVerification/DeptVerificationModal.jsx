@@ -5,6 +5,8 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
+import DeptPreMark from './DeptPreMark';
+import DeptPostMark from './DeptPostMark';
 
 const DeptVerificationModal = ({ open, Setopen, modalData, setcount, count }) => {
 
@@ -41,7 +43,6 @@ const DeptVerificationModal = ({ open, Setopen, modalData, setcount, count }) =>
     }, [data, count, em_id, setcount, Setopen])
 
     const getColor = (val) => val === 1 ? '#C6EBC5' : '#F6F5F5'
-
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -70,15 +71,15 @@ const DeptVerificationModal = ({ open, Setopen, modalData, setcount, count }) =>
                 <Box sx={{ p: 0.5 }}>
                     <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                         <Box><Typography>Department:</Typography></Box>
-                        <Box><Typography style={{ textTransform: "capitalize" }}> {dept_name.toLowerCase()}</Typography></Box>
+                        <Box><Typography style={{ textTransform: "capitalize" }}> {dept_name?.toLowerCase()}</Typography></Box>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                         <Box><Typography>Department Section:</Typography></Box>
-                        <Box><Typography style={{ textTransform: "capitalize" }}>{sect_name.toLowerCase()}</Typography></Box>
+                        <Box><Typography style={{ textTransform: "capitalize" }}>{sect_name?.toLowerCase()}</Typography></Box>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                         <Box><Typography>Topic:</Typography></Box>
-                        <Box><Typography style={{ textTransform: "capitalize" }}>{training_topic_name.toLowerCase()}</Typography></Box>
+                        <Box><Typography style={{ textTransform: "capitalize" }}>{training_topic_name?.toLowerCase()}</Typography></Box>
                     </Box>
                 </Box>
                 <CustmTypog title={"Departmental Training Details"} />
@@ -108,10 +109,12 @@ const DeptVerificationModal = ({ open, Setopen, modalData, setcount, count }) =>
                                     <td>{row?.em_no}</td>
                                     <td>{row?.em_name.toLowerCase()}</td>
                                     <td>{row?.date}</td>
-                                    <td>{row?.pre_mark === null ? "Not Attended" : row?.pre_mark}</td>
-                                    <td>{row?.post_mark === null ? "Not Attended" : row?.post_mark}</td>
+                                    {/* <td>{row?.pre_mark === null ? "Not Attended" : row?.pre_mark}</td> */}
+                                    <td> <DeptPreMark emId={row?.emp_ID} scheduled_slno={row?.scheduled_slno} /> </td>
+                                    <td> <DeptPostMark emId={row?.emp_ID} scheduled_slno={row?.scheduled_slno} /> </td>
+                                    {/* <td>{row?.post_mark === null ? "Not Attended" : row?.post_mark}</td> */}
                                     <td>{row?.hours}</td>
-                                    <td>{row?.hours}</td>
+                                    <td>{row?.tnd_verification_status === 1 ? "Verified" : "Not Verified"}</td>
                                 </tr>
                             ))}
                         </tbody>

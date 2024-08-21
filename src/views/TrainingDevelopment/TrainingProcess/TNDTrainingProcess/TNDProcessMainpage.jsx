@@ -1,71 +1,43 @@
 import { Box, Grid, IconButton, Paper, Typography } from '@mui/material'
-import React, { memo, useEffect, useMemo } from 'react';
+import React, { memo, useEffect } from 'react';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useCallback } from 'react';
 import { useState } from 'react';
-import _ from 'underscore';
 import UpcomingIcon from '@mui/icons-material/Upcoming';
 import NextPlanIcon from '@mui/icons-material/NextPlan';
-import UpcomingTrainings from './UpcomingTrainings';
-import NextMonthTrainings from './NextMonthTrainings';
-import { useDispatch, useSelector } from 'react-redux';
-import { BelowAverageEmployeeList, DepartmentalTrainingDetails, TodaysTraining, TrainingCompletedList, TrainingEmpDatas, TrainingEmpDetailsAll, TrainingProcessdetails } from 'src/redux/actions/Training.Action';
 import moment from 'moment';
-import { addDays, endOfMonth, format } from 'date-fns';
-import TodayTrainings from './TodayTrainings';
-import DueTrainings from './DueTrainings';
-import PendingList from './PendingList';
+import { addDays, endOfMonth } from 'date-fns';
 import PendingIcon from '@mui/icons-material/Pending';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import TodayIcon from '@mui/icons-material/Today';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import BelowAVGListEmpList from './BelowAVGListEmpList';
+import TrainingCompletedDepats from './TrainingCompletedDepats';
+import UpcomingDeptTrainings from './UpcomingDeptTrainings';
+import NextMonthDeptTrainings from './NextMonthDeptTrainings';
+import BlowAverageDeptEmpList from './BlowAverageDeptEmpList';
+import { axioslogin } from 'src/views/Axios/Axios';
+import TodaysDeptTrainings from './TodaysDeptTrainings';
+import DeptPendingEmpList from './DeptPendingEmpList';
 
-const TrainingProcess = () => {
+const TNDProcessMainpage = () => {
     const [show, setShow] = useState(0);
     const [count, Setcount] = useState(0);
     const [upcomingData, setUpcomingData] = useState([]);
     const [NextmonthData, setNextmonthData] = useState([]);
     const [tabledata, setTableData] = useState([]);
     const [empdata, Setempdata] = useState([]);
+    const [blwAvgEmp, SetblwAvgEmp] = useState([]);
+    const [todaysDeptTrainings, SettodaysDeptTrainings] = useState([]);
+    const [CompletedList, SetCompletedList] = useState([]);
 
-    const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
-    const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_department, em_dept_section } = employeeProfileDetl;
-
-    const dispatch = useDispatch()
-
-    useEffect(() => {
-        dispatch(TrainingProcessdetails())
-        dispatch(DepartmentalTrainingDetails())
-    }, [dispatch, count])
-
-    useEffect(() => {
-        const obj = {
-            em_department: em_department,
-            em_dept_section: em_dept_section
-        }
-        dispatch(TrainingCompletedList(obj))
-        dispatch(TodaysTraining(obj))
-        dispatch(TrainingEmpDetailsAll(obj))
-        dispatch(TrainingEmpDatas(obj))
-        dispatch(BelowAverageEmployeeList(obj))
-    }, [dispatch, em_department, em_dept_section, count])
-    //new
-    const trainingcompleted = useSelector((state) => state?.gettrainingData?.TrainingCompleted?.TrainingCompletedList, _.isEqual);
-    const todays = useSelector((state) => state?.gettrainingData?.TodaysTrainings?.TodaysTrainingsList, _.isEqual);
-    const TrainingEmpData = useSelector((state) => state?.gettrainingData?.trainingEmpDetails?.trainingEmpDetailsList, _.isEqual);
-    const empdatas = useSelector((state) => state?.gettrainingData?.trainingEmp?.trainingEmpList, _.isEqual);
-    //belowAvgEmp
-    const BelowAvgList = useSelector((state) => state?.gettrainingData?.BelowAvgEmp?.BelowAvgEmpList, _.isEqual);
 
     const Upcominglen = upcomingData?.length;
     const Nextmonthlen = NextmonthData?.length;
     //new
-    const completed_list = trainingcompleted?.length;
-    const today = todays?.length;
+    const completed_list = CompletedList?.length;
+    const today = todaysDeptTrainings?.length;
     const emplen = empdata?.length;
-    const belowEmp = BelowAvgList?.length;
+    const belowEmp = blwAvgEmp?.length;
 
     const itemsList = [
         { id: 1, icons: <AssignmentTurnedInIcon sx={{ color: "#81c784" }} />, itemname: "Training Completed Employee List", count: completed_list },
@@ -78,52 +50,6 @@ const TrainingProcess = () => {
     ]
 
     useEffect(() => {
-        const displayData = TrainingEmpData?.map((val) => {
-            const object = {
-                schedule_topics: val.schedule_topics,
-                schedule_date: val.schedule_date,
-                topic_slno: val.topic_slno,
-                training_topic_name: val.training_topic_name,
-                date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
-            }
-            return object;
-        })
-        setTableData(displayData)
-    }, [TrainingEmpData])
-
-
-    useEffect(() => {
-        const displayData = empdatas?.map((val) => {
-            const object = {
-                em_id: val.em_id,
-                em_name: val.em_name,
-                posttest_permission: val.posttest_permission,
-                posttest_status: val.posttest_status,
-                pretest_status: val.pretest_status,
-                question_count: val.question_count,
-                schedule_date: val.schedule_date,
-                datefmt: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
-                sn: val.sn,
-                slno: val.slno,
-                topic: val.topic,
-                topic_slno: val.topic_slno,
-                training_status: val.training_status,
-                training_topic_name: val.training_topic_name,
-                schedule_topics: val.schedule_topics,
-                schedule_remark: val.schedule_remark,
-                schedule_trainers: val.schedule_trainers,
-                emp_dept: val.emp_dept,
-                emp_dept_sectn: val.emp_dept_sectn,
-                schedule_year: val.schedule_year,
-                em_no: val.em_no
-            }
-            return object;
-        })
-        Setempdata(displayData)
-    }, [empdatas, Setempdata])
-
-
-    useEffect(() => {
         const upcomingfilter = tabledata?.filter((val) => moment(new Date(val.schedule_date)).format('MM') === moment(new Date()).format('MM')
             && moment(new Date(val.schedule_date)).format('DD') > moment(new Date()).format('DD'))
         setUpcomingData(upcomingfilter);
@@ -134,7 +60,7 @@ const TrainingProcess = () => {
         setNextmonthData(filterNextmonth)
     }, [tabledata, setUpcomingData, setNextmonthData])
 
-    const ViewList = useCallback((e, val) => {
+    const ViewList = useCallback(async (e, val) => {
         if (val.id === 1) {
             setShow(1)
         } else if (val.id === 2) {
@@ -155,15 +81,59 @@ const TrainingProcess = () => {
         }
     }, [setShow])
 
+
+    useEffect(() => {
+        const CompletedTrainings = async () => {
+            const result = await axioslogin.get(`/TrainingProcess/GetAllDeptCompletedTrainings`);
+            const { success, data } = result.data;
+            if (success === 2) {
+                const UptoToday = data?.filter((val) => {
+                    const trainingDate = new Date(val.schedule_date);
+                    return trainingDate <= new Date();
+                });
+                SetCompletedList(UptoToday)
+                setTableData(data)
+            }
+        }
+        CompletedTrainings()
+
+        const TodaysTrainings = async () => {
+            const result = await axioslogin.get(`/TrainingProcess/getAllDeptTodaysTrainings`);
+            const { success, data } = result.data;
+            if (success === 2) {
+                SettodaysDeptTrainings(data)
+            }
+        }
+        TodaysTrainings()
+
+        const DeptPendingEmpList = async () => {
+            const result = await axioslogin.get(`/TrainingProcess/getAllDeptEmpPendings`);
+            const { success, data } = result.data;
+            if (success === 2) {
+                Setempdata(data)
+            }
+        }
+        DeptPendingEmpList()
+
+        const DeptBlwAvgEmpList = async () => {
+            const result = await axioslogin.get(`/TrainingProcess/getAllDeptBelowAvgEmpList`);
+            const { success, data } = result.data;
+            if (success === 2) {
+                SetblwAvgEmp(data)
+            }
+        }
+        DeptBlwAvgEmpList()
+    }, [])
+
     return (
         <Box sx={{ width: "100%", p: 1 }}>
             {
-                show === 1 ? <DueTrainings show={show} setShow={setShow} count={count} Setcount={Setcount} trainingcompleted={trainingcompleted} /> :
-                    show === 2 ? <TodayTrainings show={show} setShow={setShow} count={count} Setcount={Setcount} todays={todays} /> :
-                        show === 3 ? <UpcomingTrainings setShow={setShow} upcomingData={upcomingData} /> :
-                            show === 4 ? <NextMonthTrainings setShow={setShow} NextmonthData={NextmonthData} /> :
-                                show === 5 ? <PendingList setShow={setShow} empdata={empdata} count={count} Setcount={Setcount} /> :
-                                    show === 7 ? <BelowAVGListEmpList BelowAvgList={BelowAvgList} setShow={setShow} count={count} Setcount={Setcount} /> :
+                show === 1 ? <TrainingCompletedDepats show={show} setShow={setShow} count={count} Setcount={Setcount} trainingcompleted={CompletedList} /> :
+                    show === 2 ? <TodaysDeptTrainings show={show} setShow={setShow} count={count} Setcount={Setcount} todays={todaysDeptTrainings} /> :
+                        show === 3 ? <UpcomingDeptTrainings setShow={setShow} upcomingData={upcomingData} /> :
+                            show === 4 ? <NextMonthDeptTrainings setShow={setShow} NextmonthData={NextmonthData} /> :
+                                show === 5 ? <DeptPendingEmpList setShow={setShow} empdata={empdata} count={count} Setcount={Setcount} /> :
+                                    show === 7 ? <BlowAverageDeptEmpList BelowAvgList={blwAvgEmp} setShow={setShow} count={count} Setcount={Setcount} /> :
 
 
                                         <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 1, gap: 3 }}
@@ -264,4 +234,4 @@ const TrainingProcess = () => {
     )
 }
 
-export default memo(TrainingProcess)
+export default memo(TNDProcessMainpage) 

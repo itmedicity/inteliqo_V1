@@ -6,75 +6,68 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import SearchIcon from '@mui/icons-material/Search';
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
-import { CssVarsProvider, IconButton, Input } from '@mui/joy'
 import CustomInnerHeightDashBoard from 'src/views/Component/MuiCustomComponent/CustomInnerHeightDashBoard'
+import { CssVarsProvider, IconButton, Input } from '@mui/joy'
 import JoySelectTopic from 'src/views/MuiComponents/JoyComponent/JoySelectTopic'
 import { format } from 'date-fns'
 
-const DueTrainings = ({ setShow, trainingcompleted }) => {
+const NextMonthDeptTrainings = ({ setShow, NextmonthData, }) => {
+    const [tabledata, setTableData] = useState([])
     const [filterdate, setFilterDate] = useState(moment());
     const [pickdate, setPickdate] = useState();
     const [flag, setFlag] = useState(0);
-    const [topic, setTopic] = useState(0)
+    const [topic, setTopic] = useState([])
 
-    const [completedData, SetCompletedData] = useState([]);
     useEffect(() => {
-        const CompletedData = trainingcompleted?.map((val, ndx) => {
+        const displayData = NextmonthData?.map((val, ndx) => {
             const object = {
-                serialNo: ndx + 1,
-                deparment_sect: val.deparment_sect,
+                sn: ndx + 1,
                 department: val.department,
-                posttest_status: val.posttest_status,
+                deparment_sect: val.deparment_sect,
                 schedule_topics: val.schedule_topics,
-                schedule_date: val.schedule_date,
                 date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
-                schedule_year: val.schedule_year,
                 slno: val.slno,
-                topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                em_name: val.em_name,
                 sect_name: val.sect_name,
-                sn: val.sn,
-                em_no: val.em_no
+                dept_name: val.dept_name
             }
             return object;
         })
-        SetCompletedData(CompletedData)
+        setTableData(displayData)
         if (flag === 1) {
-            const ScheduleDate = CompletedData?.filter((val) => {
+            const ScheduleDate = displayData?.filter((val) => {
                 return val.date === pickdate && val.topic_slno === topic
 
             })
             if (ScheduleDate?.length !== 0) {
-                SetCompletedData(ScheduleDate);
+                setTableData(ScheduleDate);
             }
             else {
                 infoNofity("No training Scheduled")
             }
         }
-    }, [trainingcompleted, flag, topic, pickdate])
-
+    }, [NextmonthData, flag, topic, pickdate])
 
     const [columnDef] = useState([
-        { headerName: 'SlNo', field: 'serialNo', filter: true, width: 100 },
-        { headerName: 'Emp ID', field: 'em_no', filter: true, width: 100 },
-        { headerName: 'Employee Names', field: 'em_name', filter: true, width: 200 },
-        { headerName: 'Department_sec', field: 'sect_name', filter: true, width: 250 },
+        { headerName: 'Sl No', field: 'sn', filter: true, width: 150 },
+        { headerName: 'Department', field: 'dept_name', filter: true, width: 250 },
+        { headerName: 'Department Section', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
-        { headerName: 'schedule Date', field: 'date', filter: true, width: 100 },
+        { headerName: 'schedule Date', field: 'date', filter: true, width: 150 },
     ])
 
     const handleDateChange = useCallback(() => {
-        setPickdate(moment(filterdate).format("YYYY-MM-DD"));
+        const selectdate = moment(filterdate, "DD-MM-YYYY").toDate();
+        const getdate = moment(selectdate).format("DD-MM-YYYY")
+        setPickdate(getdate);
         setFlag(1);
     }, [filterdate])
 
     const toClose = useCallback(() => {
         setShow(0)
     }, [setShow])
-
     return (
-        <CustomInnerHeightDashBoard title="Training Completed Employee List" toClose={toClose} >
+        <CustomInnerHeightDashBoard title="Next Month Training List" toClose={toClose} >
             <Box sx={{ width: "100%", p: 0.2, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
                 <Paper elevation={0} sx={{ display: 'flex', px: 1, py: 0.5 }}>
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
@@ -97,7 +90,6 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
                             />
                         </LocalizationProvider>
                     </Box>
-
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                         <JoySelectTopic setTopic={setTopic} topic={topic} />
 
@@ -115,7 +107,7 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
                 <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid
                         columnDefs={columnDef}
-                        tableData={completedData}
+                        tableData={tabledata}
                         sx={{
                             height: 400,
                             width: "100%"
@@ -128,6 +120,4 @@ const DueTrainings = ({ setShow, trainingcompleted }) => {
         </CustomInnerHeightDashBoard >
     )
 }
-export default memo(DueTrainings)
-
-
+export default memo(NextMonthDeptTrainings) 

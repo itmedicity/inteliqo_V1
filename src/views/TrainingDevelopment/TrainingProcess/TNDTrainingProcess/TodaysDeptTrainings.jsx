@@ -2,15 +2,16 @@ import { Box } from '@mui/material'
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage'
-import AttendanceModal from './AttendanceModal'
 import LaunchIcon from '@mui/icons-material/Launch';
 import { IconButton as OpenIcon } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux'
 import { TrainingAttendance } from 'src/redux/actions/Training.Action'
+import _ from 'underscore'
 import { Paper } from '@material-ui/core'
 import { format } from 'date-fns'
+import AttendanceModal from '../AttendanceModal';
 
-const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
+const TodaysDeptTrainings = ({ setShow, count, Setcount, todays }) => {
     const [todayData, SetTodayData] = useState([])
     const [open, Setopen] = useState(false);
     const [topic, setTopic] = useState(0);
@@ -23,12 +24,11 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
         }
     }, [dispatch, topic, count])
 
-    const attendance = useSelector((state) => state?.gettrainingData?.Attendance?.AttendanceList);
+    const attendance = useSelector((state) => state?.gettrainingData?.Attendance?.AttendanceList, _.isEqual);
 
     useEffect(() => {
-        const displayData = todays?.map((val, ndx) => {
+        const displayData = todays?.map((val) => {
             const object = {
-                serlNo: ndx + 1,
                 deparment_sect: val.deparment_sect,
                 department: val.department,
                 schedule_year: val.schedule_year,
@@ -36,7 +36,10 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
                 date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                 slno: val.slno,
                 topic_slno: val.topic_slno,
-                training_topic_name: val.training_topic_name
+                training_topic_name: val.training_topic_name,
+                dept_name: val.dept_name,
+                sect_name: val.sect_name,
+                serialNo: val.serialNo
             }
             return object;
         })
@@ -51,9 +54,10 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
     }, [Setopen, setTopic])
 
     const [columnDef] = useState([
-        { headerName: 'Sl.No', field: 'serlNo', filter: true, width: 150 },
+        { headerName: 'Sl No', field: 'serialNo', filter: true, width: 150 },
+        { headerName: 'Department', field: 'dept_name', filter: true, width: 250 },
+        { headerName: 'Department Section', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
-        { headerName: 'schedule Date', field: 'date', filter: true, width: 150 },
         {
             headerName: 'Action', cellRenderer: params =>
                 <OpenIcon sx={{ paddingY: 0.5 }}
@@ -65,10 +69,10 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
     ])
     return (
         <Paper elevation={0}>
-            <CustomDashboardPage title="Today Training List" displayClose={true} setClose={setShow} >
+            <CustomDashboardPage title="Today Departmental Trainings" displayClose={true} setClose={setShow} >
                 {open === true ? <AttendanceModal count={count} Setcount={Setcount} open={open} Setopen={Setopen} attendance={attendance} />
-
-                    : <Box sx={{ width: "100%", height: 500, overflow: 'auto' }}>
+                    :
+                    <Box sx={{ width: "100%", height: 500, overflow: 'auto' }}>
                         <CommonAgGrid
                             columnDefs={columnDef}
                             tableData={todayData}
@@ -86,4 +90,4 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
         </Paper>
     )
 }
-export default memo(TodayTrainings)
+export default memo(TodaysDeptTrainings) 
