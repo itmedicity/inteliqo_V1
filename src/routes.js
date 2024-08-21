@@ -298,7 +298,7 @@ const OndutyReport = React.lazy(() => import('./views/HrReports/OnDutyReport/Ond
 const ManualRequest = React.lazy(() => import('./views/LeaveManagement/ManualRquest/ManualRequestMain'))
 const CreditedLeaveCount = React.lazy(() => import('./views/HrReports/LeaveCountReport/CreditedLeaveCountReport'))
 const ApprovedLeaveCancel = React.lazy(() => import('./views/LeaveManagement/ApprovedleaveCancel/LeaveCancelByHR'))
-const DOFFRequest = React.lazy(() => import('./views/LeaveManagement/DOFFRequest/DOFFRequestMain'))
+const OffRequest = React.lazy(() => import('./views/LeaveManagement/OffRequest/OffrequestCombinePage'))
 
 
 const routes = [
@@ -578,7 +578,7 @@ const routes = [
   { path: '/Home/ManualRequest', exact: true, name: 'Manual Request', component: ManualRequest },
   { path: '/Home/CreditedLeaveCount', exact: true, name: 'Credited Leave Count Report', component: CreditedLeaveCount },
   { path: '/Home/ApprovedLeaveCancel', exact: true, name: 'Approved Leave Cancel By HR', component: ApprovedLeaveCancel },
-  { path: '/Home/DoffRequest', exact: true, name: 'DOFF Request', component: DOFFRequest }
+  { path: '/Home/DoffRequest', exact: true, name: 'DOFF Request', component: OffRequest }
 
 ]
 

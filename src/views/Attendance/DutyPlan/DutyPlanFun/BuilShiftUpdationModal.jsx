@@ -27,7 +27,7 @@ const BuilShiftUpdationModal = ({ open, handleChange, emNo, updation }) => {
     const commonSettings = useMemo(() => commonState, [commonState]);
     const shiftPlanData = useMemo(() => planData, [planData]);
 
-    const { notapplicable_shift, default_shift, week_off_day } = commonSettings;
+    const { notapplicable_shift, default_shift, week_off_day, doff } = commonSettings;
 
     const [shift, setShift] = useState(0);
     const [checked, setChecked] = useState(false);
@@ -103,7 +103,7 @@ const BuilShiftUpdationModal = ({ open, handleChange, emNo, updation }) => {
                                     deptShift && deptShift.map((val, index) => (
                                         <MenuItem
                                             value={val.shiftcode} key={index}
-                                            disabled={val.shiftcode === notapplicable_shift || val.shiftcode === default_shift ? true : false}
+                                            disabled={val.shiftcode === notapplicable_shift || val.shiftcode === default_shift || val.shiftcode === doff ? true : false}
                                         >{val.shiftDescription}</MenuItem>
                                     ))
                                 }

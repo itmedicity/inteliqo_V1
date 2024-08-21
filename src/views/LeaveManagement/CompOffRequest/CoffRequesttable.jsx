@@ -85,7 +85,7 @@ const CoffRequesttable = () => {
     ])
 
     return (
-        <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", width: "100%" }} >
+        <Paper square elevation={0} sx={{ p: 0, mt: 0.8, display: 'flex', flexDirection: "column", width: "100%" }} >
             <CommonAgGrid
                 columnDefs={columnDef}
                 tableData={empData}

@@ -46,9 +46,9 @@ export const allLeavesConvertAnArray = (state) => {
     }
     const casualLeaves = state?.getCreditedCasualLeave?.casualLeave;
     const earnLeaves = state?.getCreditedEarnLeave?.earnLeave;
-    const compansatoryOff = state?.getCreitedCompansatoryOffLeave?.compansatory;
+    // const compansatoryOff = state?.getCreitedCompansatoryOffLeave?.compansatory;
+    const compansatoryOff = state?.getEmpCoffData?.coffData;
     const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
-
 
     // Push casual leaves to the array if available
     if (casualLeaves?.length > 0) {
@@ -197,6 +197,7 @@ export const allLeavesConvertAnArray = (state) => {
     }
 
     creditedLeavesArray.status = true
+
     // Return the array with all credited leaves
     return creditedLeavesArray;
 

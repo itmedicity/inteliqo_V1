@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { memo } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { getEmployeeApprovalLevel } from 'src/redux/actions/LeaveReqst.action'
+import { getEmpCoffData, getEmployeeApprovalLevel } from 'src/redux/actions/LeaveReqst.action'
 import LeaveRequestType from './Func/LeaveRequestType'
 import { Button, CssVarsProvider, Tooltip } from '@mui/joy'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -19,7 +19,8 @@ import LinearProgress from '@mui/joy/LinearProgress';
 import {
     getEmployeeInformation,
     getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
-    getCreitedCompansatoryOffLeave, getCreditedEarnLeave,
+    // getCreitedCompansatoryOffLeave,
+    getCreditedEarnLeave,
 } from 'src/redux/actions/LeaveReqst.action';
 import { getannualleave } from 'src/redux/actions/Profile.action'
 
@@ -36,6 +37,8 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
     const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
     const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
     const { hod, incharge, em_no, em_id, em_department, em_dept_section, } = empInformationFromRedux;
+    const commonState = useSelector((state) => state?.getCommonSettings);
+    const commonSetting = useMemo(() => commonState, [commonState])
 
     // POST DATA FOR EMPLOYE IS NOT A HOD AOR INCHARGE
     const employeePostData = useMemo(() => {
@@ -80,15 +83,20 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
             dispatch(getCreditedCasualLeave(emNo)); //GET ALL CASUAL LEAVES 
             dispatch(getCreitedCommonLeave(emNo)); //GET COMMON LEAVES
             dispatch(getCreitedHolidayLeave(emNo)); // GET ALL HOLIDAYS LEAVES
-            dispatch(getCreitedCompansatoryOffLeave(emID)); // GET COMPANSATORY OFF LEAVES
+            // dispatch(getCreitedCompansatoryOffLeave(emID)); // GET COMPANSATORY OFF LEAVES
             dispatch(getCreditedEarnLeave(emNo)); // GET ALL EARN LEAVES
             dispatch(getannualleave(emID))  //GET ALL LEAVES COUNT
             dispatch(getEmployeeInformation(emID)) // LEAVE REQUESTED EMPLOYEE PERSONAL INFORMATION
             dispatch(getEmployeeApprovalLevel(emID))
-            // dispatch(getEmpCoffData(postData)) // 
+            const postData = {
+                count: commonSetting?.comp_day_count,
+                em_id: emID
+            }
+            dispatch(getEmpCoffData(postData)) // 
+
         }
 
-    }, [levReq, setRequestType, userPostData, hod, incharge, employeePostData, dispatch])
+    }, [levReq, setRequestType, userPostData, hod, incharge, employeePostData, dispatch, commonSetting])
 
 
     /****************************** */
