@@ -83,7 +83,7 @@ const ModuleGroupMast = () => {
     }
   }, [module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
     module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation,
-    module_dashboard, module_reports, module_vaccination, module_contractRenew])
+    module_dashboard, module_reports, module_vaccination, module_contractRenew, groupname])
 
   const postEditData = useMemo(() => {
     return {
@@ -107,7 +107,7 @@ const ModuleGroupMast = () => {
     }
   }, [module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
     module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation, slno,
-    module_dashboard, module_reports, module_vaccination, module_contractRenew])
+    module_dashboard, module_reports, module_vaccination, module_contractRenew, groupname])
 
   const resetForm = useMemo(() => {
     return {
