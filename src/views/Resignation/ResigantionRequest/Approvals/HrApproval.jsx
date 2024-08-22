@@ -4,8 +4,6 @@ import { ToastContainer } from 'react-toastify'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
-import BeenhereIcon from '@mui/icons-material/Beenhere';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
@@ -110,8 +108,8 @@ const HrApproval = () => {
         { headerName: 'Slno ', field: 'slno', filter: true },
         { headerName: 'Emp ID', field: 'em_no', filter: true },
         { headerName: 'Emp Name ', field: 'em_name', },
-        { headerName: 'Department', field: 'dept_name', filter: true },
-        { headerName: 'Department Section', field: 'sect_name', filter: true },
+        { headerName: 'Department', field: 'dept_name', filter: true, minWidth: 200 },
+        { headerName: 'Department Section', field: 'sect_name', filter: true, minWidth: 200 },
         { headerName: 'Contract Close Date', field: 'em_cont_close_date', wrapText: true, minWidth: 250 },
         {
             headerName: 'Action',

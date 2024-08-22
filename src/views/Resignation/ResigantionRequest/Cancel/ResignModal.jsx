@@ -1,7 +1,6 @@
 import { Button, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import moment from 'moment';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
@@ -29,7 +28,7 @@ const ResignModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
         em_id: 0
     })
     const { em_name, em_no, request_date, resig_slno,
-        sect_name, status, resign_reason, relieving_date, inch_coment, } = details;
+        sect_name, resign_reason, relieving_date, inch_coment, } = details;
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {

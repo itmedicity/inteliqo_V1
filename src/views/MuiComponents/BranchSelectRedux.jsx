@@ -1,4 +1,5 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
+
+import { Option, Select } from '@mui/joy';
 import React, { memo, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setBranch } from 'src/redux/actions/Branch.Action';
@@ -12,25 +13,19 @@ const BranchSelectRedux = ({ value, setValue, }) => {
     const branchData = useMemo(() => empBranch, [empBranch]);
 
     return (
-        <FormControl fullWidth
-            size='small'   >
-            <Select
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                size="small"
-                fullWidth
-                variant='outlined'
-            >
-                <MenuItem value={0} disabled >
-                    Select Branch
-                </MenuItem>
-                {
-                    branchData && branchData.map((val, index) => {
-                        return <MenuItem key={index} value={val.branch_slno}>{val.branch_name}</MenuItem>
-                    })
-                }
-            </Select>
-        </FormControl>
+        <Select
+            value={value}
+            onChange={(e, newValue) => setValue(newValue)}
+            size='md'
+            variant='outlined'
+        >
+            <Option disabled value={0}>   Select Branch </Option>
+            {
+                branchData?.map((val, index) => {
+                    return <Option key={index} value={val.branch_slno}>{val.branch_name}</Option>
+                })
+            }
+        </Select>
     )
 }
 

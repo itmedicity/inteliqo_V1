@@ -8,9 +8,8 @@ import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
 import { Box, IconButton, Paper, Tooltip } from '@mui/material'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
-import { Button, CssVarsProvider } from '@mui/joy'
+import { Button, } from '@mui/joy'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import RemarkModal from './RemarkModal';
 import ToggleOffOutlinedIcon from '@mui/icons-material/ToggleOffOutlined';
@@ -111,20 +110,17 @@ const EmployeeInactiveHR = () => {
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                         <DeptSecSelectByRedux dept={dept} value={deptSect} setValue={setDeptSect} />
                     </Box>
-                    <Box sx={{}} >
-                        <CssVarsProvider>
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="primary"
-                                sx={{ height: '100%' }}
-                                onClick={() => {
-                                    getemployeedetails()
-                                }}
-                            >
-                                <AddCircleOutlineIcon />
-                            </Button>
-                        </CssVarsProvider>
+                    <Box sx={{ mt: 0.5, px: 0.3 }} >
+                        <Button
+                            aria-label="Like"
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => {
+                                getemployeedetails()
+                            }}
+                        >
+                            <AddCircleOutlineIcon />
+                        </Button>
                     </Box>
                 </Paper>
                 <Paper square sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >

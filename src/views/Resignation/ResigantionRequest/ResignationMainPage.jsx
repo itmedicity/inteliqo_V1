@@ -187,7 +187,7 @@ const ResignationMainPage = () => {
             infoNofity(message)
         } else {
             setProgress(0)
-            errorNofity("Error Occured!!!!! Please Contact EDP")
+            errorNofity("Error Occured!!!!! Please Contact IT")
         }
 
     }, [resignation_type, resignation_reason, hod, incharge, authorization_incharge,
@@ -289,7 +289,7 @@ const ResignationMainPage = () => {
                                     size='md'
                                     variant='outlined'
                                 >
-                                    <Option value={0}>Select Resignation Type</Option>
+                                    <Option disabled value={0}>Select Resignation Type</Option>
                                     <Option value={1}>Regular Resignation Process</Option>
                                     <Option value={2}>24-Hour Resignation Process</Option>
                                 </Select>

@@ -8,8 +8,6 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import ApprovalDeptSectSelection from 'src/views/MuiComponents/ApprovalDeptSectSelection'
 import _ from 'underscore'
-import BeenhereIcon from '@mui/icons-material/Beenhere';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import InchargeApprovalModal from './InchargeApprovalModal'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import { screenInnerHeight } from 'src/views/Constant/Constant'
@@ -33,8 +31,7 @@ const Inchargeapproval = () => {
             const { success, data } = result.data
             if (success === 1) {
                 setTableData(data)
-            }
-            else if (success === 0) {
+            } else if (success === 0) {
                 setTableData([])
             }
         }

@@ -4,13 +4,10 @@ import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import BeenhereIcon from '@mui/icons-material/Beenhere';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 import { Box } from '@mui/joy'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import { ScreenRotation } from '@material-ui/icons'
 import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const ResigModal = lazy(() => import('./ResignModal'))

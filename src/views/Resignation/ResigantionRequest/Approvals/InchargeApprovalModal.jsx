@@ -1,7 +1,6 @@
 import { Button, Checkbox, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
 import { Box, FormControlLabel, Paper } from '@mui/material'
 import React, { memo, useEffect, useMemo, useState } from 'react'
-import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import moment from 'moment';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
@@ -34,8 +33,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
     })
     const { em_name, em_no, request_date, resig_slno,
         sect_name, status, resign_reason, relieving_date, inch_coment,
-        dept_id, sect_id, em_id, resignation_type, attachment, attachment_type,
-        replacement_required_incharge, replacement_required_hod } = details;
+        dept_id, sect_id, em_id, resignation_type, attachment, attachment_type, } = details;
     const [remark, setRemark] = useState('')
     const [replacement, setreplacement] = useState(false)
     const [dueDept, SetDueDept] = useState({})
@@ -323,7 +321,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
             }
         }
     }, [remark, replacement, resig_slno, loginId, slno, dueDept,
-        salaryPenalty, setOpen, setCount])
+        setOpen, setCount])
 
     const [open1, setOpen1] = useState(false);
 
@@ -525,7 +523,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                             sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}
                         >
                             <ImageViewer
-                                fileURL={`${PUBLIC_NAS_FOLDER}ResignationReq/${attachment}`}
+                                fileURL={`${PUBLIC_NAS_FOLDER}/ResignationReq/${attachment}`}
                                 fileType={attachment_type}
                             />,
                         </Box>

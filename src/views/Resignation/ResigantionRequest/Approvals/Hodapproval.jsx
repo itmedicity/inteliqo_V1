@@ -7,8 +7,6 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import ApprovalDeptSectSelection from 'src/views/MuiComponents/ApprovalDeptSectSelection'
 import _ from 'underscore'
-import BeenhereIcon from '@mui/icons-material/Beenhere';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { lazy } from 'react'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import { screenInnerHeight } from 'src/views/Constant/Constant'
