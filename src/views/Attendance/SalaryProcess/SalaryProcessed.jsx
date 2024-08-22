@@ -85,7 +85,7 @@ const SalaryProcessed = () => {
                         const empwise = data.filter((value) => value.emp_id === val.em_id)
 
                         const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
-                        const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
+                        //  const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
                         const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
                         const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
                         const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
@@ -102,17 +102,13 @@ const SalaryProcessed = () => {
 
                         const workday =
                             (empwise?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
-                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' ||
+                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
                                 val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
                                 val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
                                 val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
                                 val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length
 
                         const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
-
-
-
-
 
                         const totalDays = getDaysInMonth(new Date(value))
                         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
@@ -123,10 +119,6 @@ const SalaryProcessed = () => {
                         //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
                         const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
 
-
-
-
-
                         return {
                             em_no: val.em_no,
                             em_name: val.em_name,
@@ -134,6 +126,7 @@ const SalaryProcessed = () => {
                             dept_name: val.dept_name,
                             sect_name: val.sect_name,
                             ecat_name: val.ecat_name,
+                            desg_name: val.desg_name,
                             inst_emp_type: val.inst_emp_type,
                             empSalary: val.gross_salary,
                             em_account_no: val.em_account_no,
@@ -187,7 +180,7 @@ const SalaryProcessed = () => {
                         const empwise = data.filter((value) => value.emp_id === val.em_id)
 
                         const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
-                        const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
+                        //const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
                         const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
                         const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD'
                             || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
@@ -205,7 +198,7 @@ const SalaryProcessed = () => {
 
                         const workday =
                             (empwise?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
-                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' ||
+                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
                                 val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
                                 val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
                                 val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
@@ -223,7 +216,6 @@ const SalaryProcessed = () => {
                         //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
                         const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
 
-
                         return {
                             em_no: val.em_no,
                             em_name: val.em_name,
@@ -231,6 +223,7 @@ const SalaryProcessed = () => {
                             dept_name: val.dept_name,
                             sect_name: val.sect_name,
                             ecat_name: val.ecat_name,
+                            desg_name: val.desg_name,
                             inst_emp_type: val.inst_emp_type,
                             empSalary: val.gross_salary,
                             em_account_no: val.em_account_no,
@@ -268,6 +261,7 @@ const SalaryProcessed = () => {
         { headerName: 'Department', field: 'dept_name', minWidth: 250 },
         { headerName: 'Department Section ', field: 'sect_name', minWidth: 250 },
         { headerName: 'Category ', field: 'ecat_name', minWidth: 250 },
+        { headerName: 'Designation ', field: 'desg_name', minWidth: 250 },
         { headerName: 'Institution ', field: 'inst_emp_type', minWidth: 250 },
 
         { headerName: 'Account Number', field: 'em_account_no' },

@@ -16,8 +16,8 @@ const CustomLayout = ({ children, title, displayClose }) => {
     }
 
     return (
-        <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', height: screenInnerHeight - 85 }} >
-            <Paper sx={{ flex: 1, }} >
+        <Box sx={{ flex: 1 }} >
+            <Paper sx={{ flex: 1, height: screenInnerHeight - 90 }} >
                 <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", flex: 1, height: 30, }} >
                         <Paper square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', justifyContent: "space-between" }} >

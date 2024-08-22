@@ -46,10 +46,11 @@ const TndDeptVerificationMain = () => {
 
     const getRows = useCallback(async (params) => {
         const GetDeptData = params.data
-        const { dept_id, sect_id } = GetDeptData
+        const { dept_id, sect_id, slno } = GetDeptData
         const obj = {
             dept_id: dept_id,
-            sect_id: sect_id
+            sect_id: sect_id,
+            slno: slno
         }
         const result = await axioslogin.post(`/TrainingVerification/getDeptEmpList`, obj)
         const { success, data } = result.data;
@@ -80,6 +81,7 @@ const TndDeptVerificationMain = () => {
                     dept_name: val.dept_name,
                     sect_name: val.sect_name,
                     sect_id: val.sect_id,
+                    scheduled_slno: val.scheduled_slno
                 }
                 return obj;
             })

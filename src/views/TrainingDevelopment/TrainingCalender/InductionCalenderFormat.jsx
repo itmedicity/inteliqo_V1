@@ -6,15 +6,13 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useDispatch, useSelector } from 'react-redux';
 import { InductionTrainingCalender } from 'src/redux/actions/Training.Action';
-import CalenderDetails from './CalenderDetails';
 import Typography from '@mui/joy/Typography';
+import { Tooltip } from '@mui/joy';
 import { InductRedux } from './InductRedux';
 
 const InductionCalenderFormat = () => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [count, SetCount] = useState(0)
-    const [open, SetOpen] = useState(false)
-    const [modalData, SetmodalData] = useState([])
 
     const dispatch = useDispatch()
 
@@ -112,16 +110,11 @@ const InductionCalenderFormat = () => {
         setCurrentMonth(previousMonthDate);
     }, [currentMonth]);
 
-    const handleModal = useCallback((val) => {
-        const { trainingInfo } = val;
-        SetmodalData(trainingInfo)
-        SetOpen(true)
-    }, [])
-
     return (
         <Fragment>
             <Paper>
-                {open === true ? <CalenderDetails SetOpen={SetOpen} open={open} modalData={modalData} /> : null}
+                {/* Preview & Edit */}
+                {/* Employee Schedule */}
                 <Box sx={{ width: "100%", }}>
                     <Box sx={{
                         borderTopRightRadius: 10, borderTopLeftRadius: 10, color: "white", p: 0.3,
@@ -157,40 +150,40 @@ const InductionCalenderFormat = () => {
                                         key={dayIndex}
                                         sx={{
                                             border: 0.4,
-                                            height: 140,
+                                            //height: 140,
                                             width: "14.28%",
                                             p: 1,
                                             borderColor: '#dadce0',
-                                            backgroundColor: day ? "white" : "white"
+                                            backgroundColor: day ? "white" : "white",
+                                            overflowY: 'auto',
+                                            '::-webkit-scrollbar': { display: "none" }, height: 140
+
                                         }}
                                     >
                                         {day.calenderDate && (
                                             <Typography level='body-md' >{day.calenderDate}</Typography>
                                         )}
                                         {day.trainingInfo && day.trainingInfo.length > 0 && (
-                                            <Box sx={{ cursor: "pointer", }} onClick={() => handleModal(day)}>
-                                                {day.trainingInfo?.filter((e, i) => i <= 4)?.map((training, index) => (
+
+                                            <Box>
+                                                {day.trainingInfo?.filter((e, i) => i <= 6)?.map((training, index) => (
                                                     <Box
+                                                        key={index}
                                                         sx={{
                                                             borderRadius: 1,
                                                             p: 0.2,
                                                             pl: 0.5,
                                                             backgroundColor: "#039be5",
                                                             textTransform: "capitalize",
-                                                            marginBottom: 0.3
+                                                            marginBottom: 0.3,
                                                         }}
-                                                        key={index}
+
                                                     >
                                                         <Typography level='body-xs' noWrap style={{ color: "white" }}>
-                                                            {training?.type_name?.toLowerCase()}
+                                                            {training?.topic?.toLowerCase()}
                                                         </Typography>
                                                     </Box>
                                                 ))}
-                                                {day.trainingInfo.length > 1 && (
-                                                    <Box sx={{ textAlign: "right" }} onClick={() => handleModal(day)}>
-                                                        <Typography level='title-sm' >show more ...</Typography>
-                                                    </Box>
-                                                )}
                                             </Box>
                                         )}
                                     </Box>
@@ -199,9 +192,13 @@ const InductionCalenderFormat = () => {
                         ))}
                     </Box>
                 </Box>
+
             </Paper>
         </Fragment >
     );
 };
 
 export default memo(InductionCalenderFormat);
+
+
+

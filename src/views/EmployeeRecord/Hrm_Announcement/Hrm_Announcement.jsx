@@ -93,8 +93,9 @@ const Hrm_Announcement = () => {
                             placeholder="Announcement Titile"
                             type="text"
                             size="sm"
-                            name="announcement"
-                            onchange={setannouncement}
+                            name="announcemnthead"
+                            // onChange={(e) => setannouncemnthead(e.target.value)}
+                            onchange={setannouncemnthead}
                         />
                     </Box>
                     <Box sx={{ display: 'flex', flex: 3 }} >
@@ -106,7 +107,7 @@ const Hrm_Announcement = () => {
                             size="sm"
                             minRows={1}
                             maxRows={2}
-                            onChange={(e) => setannouncemnthead(e.target.value)}
+                            onChange={(e) => setannouncement(e.target.value)}
                             sx={{ flex: 1 }}
                         />
                     </Box>

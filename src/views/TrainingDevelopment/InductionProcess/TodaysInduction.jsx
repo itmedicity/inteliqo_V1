@@ -28,6 +28,7 @@ const TodaysInduction = ({ setShow, count, Setcount, todays }) => {
     useEffect(() => {
         const displayData = todays?.map((val) => {
             const object = {
+                slno: val.slno,
                 induct_detail_date: val.induct_detail_date,
                 date: format(new Date(val.induct_detail_date), "dd-MM-yyyy"),
                 schedule_slno: val.schedule_slno,
@@ -48,6 +49,7 @@ const TodaysInduction = ({ setShow, count, Setcount, todays }) => {
     }, [Setopen, setTopic])
 
     const [columnDef] = useState([
+        { headerName: 'SlNo.', field: 'slno', filter: true, width: 100 },
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
         { headerName: 'schedule Date', field: 'date', filter: true, width: 150 },
         {

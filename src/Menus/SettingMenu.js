@@ -58,10 +58,10 @@ export const py_setting_three = [
 ]
 
 export const userManagement_one = [
-    { to: '/Home/ModuleGroupMaster', name: 'Module Group Master', slno: 105 },
-    { to: '/Home/ModuleUserRights', name: 'User Group Rights', slno: 106 },
-    { to: '/Home/UserGroup', name: 'Group Master', slno: 107 },
-    { to: '/Home/GroupRights', name: 'Group Rights', slno: 108 },
+    { to: '/Home/UserGroup', name: 'User Group Master', slno: 107 },
+    { to: '/Home/ModuleGroupMaster', name: 'User Group To Module Master', slno: 105 },
+    { to: '/Home/ModuleUserRights', name: 'Employee User Group Rights', slno: 106 },
+    { to: '/Home/GroupRights', name: 'User Group Rights', slno: 108 },
     { to: '/Home/Authorisation', name: 'Assign Authorisation', slno: 109 },
     { to: '/Home/HodMark', name: 'HOD Authorisation Mark', slno: 110 },
     // { to: '/Home/Autocompletetest', name: 'Autocomplete test', slno: 110 },

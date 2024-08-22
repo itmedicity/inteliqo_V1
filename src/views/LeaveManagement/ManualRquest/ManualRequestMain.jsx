@@ -137,7 +137,6 @@ const ManualRequestMain = () => {
         return compressedFile
     }, []);
 
-
     const submitData = useCallback(async () => {
         if (remrk === '') {
             warningNofity(" Add any Reason!")
@@ -219,7 +218,6 @@ const ManualRequestMain = () => {
             }
         }
     }, [table, remrk, em_id, setRemark, deptsection, fromDate, selectFile, emply, handleImageUpload])
-
 
 
     const getArray = useCallback(async (e, val) => {
@@ -593,7 +591,9 @@ const ManualRequestMain = () => {
                                     {/* <Box sx={{  pr: 1, color: '#78C1F3' }}>{index + 1}.</Box> */}
                                     <Box sx={{}}> <Typography level='body-xs'>{file?.name}</Typography></Box>
                                     <Box sx={{
-                                        p: 0, cursor: 'pointer', '&:hover': {
+                                        p: 0,
+                                        cursor: 'pointer',
+                                        '&:hover': {
                                             color: '#FF6868',
                                         }
                                     }}>
@@ -602,7 +602,6 @@ const ManualRequestMain = () => {
                                                 <CloseSharpIcon fontSize='small' />
                                             </Box>
                                         </Tooltip>
-
                                     </Box>
                                 </Box>
                             ))}

@@ -1,10 +1,9 @@
 import React, { memo, useMemo } from 'react'
 import { useSelector } from 'react-redux';
-import _ from 'underscore';
 import { Option, Select } from '@mui/joy';
 
 const JoyTrainerMultipleSelect = ({ value, setValue }) => {
-    const data = useSelector((state) => state?.gettrainingData?.trainerNames?.trainerNamesList, _.isEqual)
+    const data = useSelector((state) => state?.gettrainingData?.trainerNames?.trainerNamesList)
     const Trainers = useMemo(() => data, [data])
 
     return (
