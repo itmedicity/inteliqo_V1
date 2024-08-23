@@ -40,11 +40,11 @@ const InchargeHodPage = ({ state, setState }) => {
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
         // IF THE LOGGED EMPLOYEE IS HOD OR INCHARGE
-        if (hod === 1 || incharge === 1 && masterGroupStatus === true) {
+        if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
             setDisables(false)
             setHodBasedSection([])
 
-        } else if (hod === 1 || incharge === 1 && masterGroupStatus === false) {
+        } else if ((hod === 1 || incharge === 1) && masterGroupStatus === false) {
             setDisables(true)
             setDeptID(0)
             const fetchData = async (em_id) => {
