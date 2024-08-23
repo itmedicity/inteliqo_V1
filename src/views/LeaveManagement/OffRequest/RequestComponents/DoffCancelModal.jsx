@@ -8,7 +8,7 @@ import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
-import { format } from 'date-fns';
+import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
 
 const DoffCancelModal = ({ open, setOpen, empData, setCount }) => {
     const [reason, setReason] = useState('')
@@ -17,8 +17,6 @@ const DoffCancelModal = ({ open, setOpen, empData, setCount }) => {
     const employeeState = useSelector((state) => state.getProfileData.ProfileData);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id, } = employeeProfileDetl;
-
-
 
     const closeRequest = useCallback(() => {
         setOpen(false)
@@ -40,58 +38,78 @@ const DoffCancelModal = ({ open, setOpen, empData, setCount }) => {
             em_id: empData?.em_id
         }
 
-
-        const result = await axioslogin.post('LeaveRequest/gethafdayshift/', getID);
-        const { success, data: pladata } = result.data;
-        if (success === 1) {
-            const { plan_slno: doffPlanSlno } = pladata[0];
-            const result = await axioslogin.post('/attendCal/attendanceshiftdetl', punchmast);
-            const { success, data } = result.data;
-            if (success === 1) {
-                const { punch_slno } = data[0];
-
-                const result = await axioslogin.post('LeaveRequest/gethafdayshift/', dutyID);
-                const { success, data: dutydata } = result.data;
+        const monthStartDate = format(startOfMonth(new Date(empData?.required_date)), 'yyyy-MM-dd')
+        const postData = {
+            month: monthStartDate,
+            section: empData?.sect_id
+        }
+        const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
+        const { success, data } = checkPunchMarkingHr.data
+        if (success === 0 || success === 1) {
+            const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(empData?.required_date)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+            const lastDay_month = format(lastDayOfMonth(new Date(empData?.required_date)), 'yyyy-MM-dd')
+            if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                setOpen(false)
+                warningNofity("Punch Marking Monthly Process Done !! Can't Apply DOFF Request!!  ")
+            } else {
+                const result = await axioslogin.post('LeaveRequest/gethafdayshift/', getID);
+                const { success, data: pladata } = result.data;
                 if (success === 1) {
-                    const { plan_slno } = dutydata[0];
-
-                    const postData = {
-                        punch_in: null,
-                        punch_out: null,
-                        hrs_worked: 0,
-                        late_in: 0,
-                        early_out: 0,
-                        duty_status: 0,
-                        duty_desc: 'A',
-                        lvereq_desc: 'A',
-                        delete_user: em_id,
-                        delete_comments: reason,
-                        duty_off_slno: empData?.duty_off_slno,
-                        punch_slno: punch_slno,
-                        plan_slno: plan_slno,
-                        doffPlanSlno: doffPlanSlno,
-                        shift_id: 1
-                    }
-
-                    const result = await axioslogin.post('/OffRequest/delete', postData)
-                    const { success, message } = result.data;
+                    const { plan_slno: doffPlanSlno } = pladata[0];
+                    const result = await axioslogin.post('/attendCal/attendanceshiftdetl', punchmast);
+                    const { success, data } = result.data;
                     if (success === 1) {
-                        succesNofity(message)
-                        setCount(Math.random())
-                        setOpen(false)
+                        const { punch_slno } = data[0];
+
+                        const result = await axioslogin.post('LeaveRequest/gethafdayshift/', dutyID);
+                        const { success, data: dutydata } = result.data;
+                        if (success === 1) {
+                            const { plan_slno } = dutydata[0];
+
+                            const postData = {
+                                punch_in: null,
+                                punch_out: null,
+                                hrs_worked: 0,
+                                late_in: 0,
+                                early_out: 0,
+                                duty_status: 0,
+                                duty_desc: 'A',
+                                lvereq_desc: 'A',
+                                delete_user: em_id,
+                                delete_comments: reason,
+                                duty_off_slno: empData?.duty_off_slno,
+                                punch_slno: punch_slno,
+                                plan_slno: plan_slno,
+                                doffPlanSlno: doffPlanSlno,
+                                shift_id: 1
+                            }
+
+                            const result = await axioslogin.post('/OffRequest/delete', postData)
+                            const { success, message } = result.data;
+                            if (success === 1) {
+                                succesNofity(message)
+                                setCount(Math.random())
+                                setOpen(false)
+                            } else {
+                                warningNofity("Error While Updating Data")
+                            }
+                        } else {
+                            errorNofity("Error While getting Dutyplan data! Please Contact IT")
+                        }
+
                     } else {
-                        warningNofity("Error While Updating Data")
+                        errorNofity("Error While getting Punchmast data! Please Contact IT")
                     }
                 } else {
                     errorNofity("Error While getting Dutyplan data! Please Contact IT")
                 }
-
-            } else {
-                errorNofity("Error While getting Punchmast data! Please Contact IT")
             }
         } else {
-            errorNofity("Error While getting Dutyplan data! Please Contact IT")
+            setOpen(false)
+            errorNofity("Error getting PunchMarkingHR ")
         }
+
+
 
 
     }, [empData, setCount, setOpen, reason, em_id])
