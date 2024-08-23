@@ -6,7 +6,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import moment from 'moment';
 import { Button, Checkbox, IconButton, Input, Option, Select, Textarea, Tooltip, Typography } from '@mui/joy';
-import { addDays, addHours, format, isValid, lastDayOfMonth, startOfMonth, subHours } from 'date-fns';
+import { addDays, addHours, format, isEqual, isValid, lastDayOfMonth, startOfMonth, subHours } from 'date-fns';
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useSelector } from 'react-redux';
@@ -201,8 +201,10 @@ const DoffSubmitForm = () => {
         const holidayStatus = holiday_status;
 
         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_In, punch_out, shift_out)
-
-        if (isValid(punch_In) === true && isValid(punch_out) === true) {
+        if (isEqual(new Date(punch_In), new Date(punch_out))) {
+            infoNofity("Both selected Punch Time Are Same!")
+        }
+        else if (isValid(punch_In) === true && isValid(punch_out) === true) {
 
             const salaryLimit = gross_salary > salary_above ? true : false;
 
