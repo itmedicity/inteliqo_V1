@@ -10,7 +10,7 @@ import { Box } from '@mui/material';
 import { Chip, Option, Select } from '@mui/joy';
 import { addDays, addHours, format, isValid, subHours } from 'date-fns';
 import moment from 'moment';
-import { errorNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity, } from 'src/views/CommonCode/Commonfunc';
 import { useCallback } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 // import { Actiontypes } from 'src/redux/constants/action.type';
@@ -73,7 +73,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
     // console.log(shiftIn, shiftOut)
 
     const startPunchInTime = subHours(new Date(shiftIn), 16); //last 24 hours from shift in time
-    const endPunchOutTime = addHours(new Date(shiftOut), 16); //last 24 hours from shift out time
+    const endPunchOutTime = addHours(new Date(shiftOut), 20); //last 24 hours from shift out time
 
     // console.log(startPunchInTime, endPunchOutTime)
 
@@ -189,26 +189,31 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
         sortedSalaryData])
 
     const deletePunch = useCallback(async () => {
-        const postData = {
-            punch_in: null,
-            punch_out: null,
-            hrs_worked: 0,
-            late_in: 0,
-            early_out: 0,
-            duty_status: 0,
-            duty_desc: 'A',
-            lvereq_desc: 'A',
-            punch_slno: data?.punch_slno,
-        }
-        let result = await axioslogin.post("/attendCal/deletePunchMasterSingleRow", postData);
-        const { success } = result.data;
-        if (success === 1) {
-            setTableArray([])
-            succesNofity('Punch Data Cleared')
+        if (data?.leave_status === 1) {
+            warningNofity("Can't Delete Data, A Request Is Exist In This Date!")
             setOpen(false)
         } else {
-            errorNofity('Punch Data Not Updated ! Contact HR/IT')
-            setOpen(false)
+            const postData = {
+                punch_in: null,
+                punch_out: null,
+                hrs_worked: 0,
+                late_in: 0,
+                early_out: 0,
+                duty_status: 0,
+                duty_desc: 'A',
+                lvereq_desc: 'A',
+                punch_slno: data?.punch_slno,
+            }
+            let result = await axioslogin.post("/attendCal/deletePunchMasterSingleRow", postData);
+            const { success } = result.data;
+            if (success === 1) {
+                setTableArray([])
+                succesNofity('Punch Data Cleared')
+                setOpen(false)
+            } else {
+                errorNofity('Punch Data Not Updated ! Contact HR/IT')
+                setOpen(false)
+            }
         }
     }, [data, setOpen, setTableArray])
 
