@@ -22,14 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, empSalary }) => {
 
-    // console.log(data);
-
-    // const dispatch = useDispatch()
-    //const { UPDATE_PUNCHMASTER_TABLE } = Actiontypes
-
     const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
-
-    // console.log(sortedSalaryData);
 
     const selectedDate = format(new Date(data?.duty_day), 'yyyy-MM-dd');
 
@@ -38,14 +31,8 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
     const [outTime, setOutTime] = useState(null)
     const [message, setMessage] = useState(false)
     const [disable, setDisable] = useState(false)
-    // console.log(punchData)
-    // console.log(data)
-    // console.log(punchMast)
-    // console.log(selectedDate)
 
     //FETCH DATA'S
-    // const punchData = useSelector((state) => state.getPunchData.punchDta)
-    // const shiftData = useSelector((state) => state.getShiftData.shiftData)
     const shiftData = useSelector((state) => state?.getShiftList?.shiftDetails)
     const commonSettings = useSelector((state) => state?.getCommonSettings)
 
@@ -57,7 +44,9 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
         week_off_day, // week off SHIFT ID
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
-        noff // night off SHIFT ID
+        noff, // night off SHIFT ID
+        halfday_time_count,
+        punch_taken_hour_count
     } = commonSettings; //COMMON SETTING
 
     //FIND THE CROSS DAY
@@ -70,12 +59,8 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
     let shiftOut = crossDayStat === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data?.shiftOut), 'HH:mm')}` :
         `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(data?.shiftOut), 'HH:mm')}`;
 
-    // console.log(shiftIn, shiftOut)
-
     const startPunchInTime = subHours(new Date(shiftIn), 16); //last 24 hours from shift in time
-    const endPunchOutTime = addHours(new Date(shiftOut), 20); //last 24 hours from shift out time
-
-    // console.log(startPunchInTime, endPunchOutTime)
+    const endPunchOutTime = addHours(new Date(shiftOut), punch_taken_hour_count); //last 24 hours from shift out time
 
     //filter punch data based on in and out time
     const filterdPunchData = punchData
@@ -104,23 +89,8 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
         ?.filter((e) => e !== false)?.filter((el) => startPunchInTime <= el && el <= endPunchOutTime)
         ?.map((e) => format(new Date(e), 'yyyy-MM-dd HH:mm'))
 
-    // console.log(filterdPunchMasterDataSelectedDate)
     // FILTER AND REMOVE FROM filterdPunchData ARRAY USING THIS ARRAY filterdPunchMasterDataAll punch master in and out punch 
     const filterData = filterdPunchData?.filter((el) => !filterdPunchMasterDataAll?.includes(el))?.concat(filterdPunchMasterDataSelectedDate)
-    // console.log(removedPTime)
-
-    //GET DUTY DAY ALREADY UPDATED PUNCH IN AND OUT FROM PUNCH MASTER TABLE
-    // const updatedPunchMasterDta = punchMast?.filter((e) => e.duty_day === selectedDate)
-    //     ?.map((e) => [e.punch_in !== null && isValid(new Date(e.punch_in)) && new Date(e.punch_in), e.punch_out !== null && isValid(new Date(e.punch_out)) && new Date(e.punch_out)])
-
-
-    // const filterData = filterdPunchData
-    //     // ?.filter((val) => filterdPunchMasterData?.find((e) => format(new Date(e), 'yyyy-MM-dd HH:mm') === format(new Date(val), 'yyyy-MM-dd HH:mm')) === undefined)
-    //     ?.concat(updatedPunchMasterDta)
-    //     ?.flat()
-    //     ?.filter((e) => e !== false)
-
-    // console.log(filterData)
 
     //UPDATE DATA TO PUNCH MASTER
 
@@ -134,25 +104,23 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
         const leave_status = data?.leave_status
 
         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_In, punch_out, shift_out)
-        // console.log(getLateInTime)
 
         setMessage(false)
         if (inTime === outTime) {
             setMessage(true)
-            // console.log(data)
         } else if (leave_status === 1) {
             setDisable(true)
         }
         else {
 
             if (isValid(punch_In) === true && isValid(punch_out) === true) {
-                // console.log(data)
 
                 const salaryLimit = sortedSalaryData.gross_salary > salary_above ? true : false;
 
-
                 const getAttendance = await getAttendanceCalculation(
-                    punch_In, shift_In, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, default_shift, notapplicable_shift, noff, week_off_day, salaryLimit, cmmn_late_in
+                    punch_In, shift_In, punch_out, shift_out, cmmn_grace_period, getLateInTime,
+                    holidayStatus, shiftId, default_shift, notapplicable_shift, noff, week_off_day,
+                    salaryLimit, cmmn_late_in, halfday_time_count
                 )
 
                 const postData = {
@@ -166,7 +134,6 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
                     lvereq_desc: getAttendance?.lvereq_desc,
                     punch_slno: data?.punch_slno,
                 }
-                // console.log(postData)
                 let result = await axioslogin.post("/attendCal/updatePunchMasterSingleRow", postData);
                 const { success } = result.data;
                 if (success === 1) {
@@ -177,7 +144,6 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
                     errorNofity('Punch Data Not Updated ! Contact HR/IT')
                     setOpen(false)
                 }
-                // console.log(result)
             } else {
                 //one of the date or both dates are not a valid dates
                 setMessage(true)
@@ -186,7 +152,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
 
     }, [inTime, outTime, shiftIn, shiftOut, data, default_shift, notapplicable_shift, noff,
         week_off_day, salary_above, cmmn_late_in, cmmn_grace_period, setOpen, setTableArray,
-        sortedSalaryData])
+        sortedSalaryData, halfday_time_count])
 
     const deletePunch = useCallback(async () => {
         if (data?.leave_status === 1) {
