@@ -26,23 +26,18 @@ export const processPunchMarkingHrFunc = async (
 
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
-    // console.log(getDutyPlan)
     const { succes, shiftdetail } = getDutyPlan.data;
     if (succes === 1 && shiftdetail?.length > 0) {
         const dutyplanInfo = shiftdetail; //DUTY PLAN
         const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
-        // console.log(postData_getPunchData)
         const { fromDate, toDate } = postData_getPunchData;
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
         const { success, planData } = punch_master_data.data;
-        // console.log(planData?.filter((e) => e.em_no === 4516))
         if (success === 1 && planData?.length > 0) {
             const punchMasterFilterData = await planData?.filter((e) => new Date(fromDate) <= new Date(e.duty_day) && new Date(e.duty_day) <= new Date(toDate))
-            // console.log(punchMasterFilterData?.filter((e) => e.em_no === 4516))
             const punchMasterData = punchMasterFilterData; //PUNCHMSTER DATA
             return Promise.allSettled(
                 punchMasterData?.map(async (data, index) => {
-                    // console.log(data)
                     const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
                     const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
                     const shiftMergedPunchMaster = {
@@ -69,7 +64,6 @@ export const processPunchMarkingHrFunc = async (
                 })
             ).then((data) => {
                 const punchMasterMappedData = data?.map((e) => e.value)
-                // console.log(punchMasterMappedData?.filter((e) => e.em_no === 4516))
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
                         const holidayStatus = val.holiday_status;
@@ -124,10 +118,6 @@ export const processPunchMarkingHrFunc = async (
                     const processedData = elementValue?.filter((v) => v.lve_tble_updation_flag === 0)
                     const punchMaterDataBasedOnPunchSlno = processedData?.map((e) => e.punch_slno)
                     // PUNCH MASTER UPDATION
-                    // console.log(processedData?.filter(e => e.em_no === 4516))
-                    // console.log(processedData?.filter(e => e.em_no === 13802))
-                    // console.log(planData?.filter(e => e.em_no === 13802))
-                    // const a = planData?.filter(e => e.em_no === 13802)
                     const filterAndAdditionPlanData = await planData?.map((el) => {
                         return {
                             ...el,
@@ -135,7 +125,6 @@ export const processPunchMarkingHrFunc = async (
                             lvereq_desc: processedData?.find((e) => e.punch_slno === el.punch_slno)?.duty_desc ?? el.duty_desc // same as updation in lvereq_desc 
                         }
                     })
-                    // console.log(filterAndAdditionPlanData?.filter(e => e.em_no === 6261))
 
                     /**** CALCUALETE HOLIDAY CHEKING AND WEEKLY OFF CHECKING *****/
 
@@ -149,27 +138,16 @@ export const processPunchMarkingHrFunc = async (
                         }
                     })
 
-                    console.log(punchMasterFilterData);
-
                     // CALCULATION BASED ON WEEEK OF AND HOLIDAY 
                     return Promise.allSettled(
                         punchMasterFilterData?.flatMap((ele) => {
                             return ele?.data?.map(async (e, idx, array) => {
-
-                                // console.log(array);
-                                // let holidayStat = e.duty_desc === 'H' ? await holidayStatus(e, array, holiday_policy_count) : e.duty_desc;
-                                // console.log(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate);
                                 let weekDayStat = e.duty_desc === 'WOFF' ? await weekOffStatus(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate) : e.duty_desc;
-
-                                // console.log(weekDayStat);
-
 
                                 return {
                                     ...e,
                                     lvereq_desc: e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc,
                                     duty_desc: e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
-                                    // lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc,
-                                    // duty_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
                                 }
                             })
                         })
@@ -187,33 +165,23 @@ export const processPunchMarkingHrFunc = async (
                             arr?.flatMap((ele) => {
                                 return ele?.data?.map(async (e, idx, array) => {
                                     let holidayStat = e.duty_desc === 'H' ? await holidayStatus(e, array, holiday_policy_count) : e.duty_desc;
-                                    // console.log(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate);
-                                    // let weekDayStat = e.duty_desc === 'WOFF' ? await weekOffStatus(e, idx, array, weekoff_policy_max_count, weekoff_policy_min_count, fromDate) : e.duty_desc;
-
-                                    // console.log(e);
-
 
                                     return {
                                         ...e,
                                         lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc,
                                         duty_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc
-                                        // lvereq_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc,
-                                        // duty_desc: e.duty_desc === 'H' ? holidayStat : e.duty_desc === 'WOFF' ? weekDayStat : e.duty_desc
+
                                     }
                                 })
                             })
 
                         ).then(async (results) => {
                             const PunchMAsterPolicyBasedFilterResult = results?.map((e) => e.value)
-                            // console.log(PunchMAsterPolicyBasedFilterResult)
-                            // console.log(punchMaterDataBasedOnPunchSlno)
                             const processedPostData = PunchMAsterPolicyBasedFilterResult?.filter((e) => punchMaterDataBasedOnPunchSlno?.some((el) => el === e.punch_slno))
-                            // console.log(processedPostData?.filter(e => e.em_no === 4516))
                             const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedPostData);
                             const { success, message } = updatePunchMaster.data;
                             if (success === 1) {
                                 // PUNCH MARKING HR TABLE UPDATION
-                                // console.log(postData_getPunchData)
                                 const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postData_getPunchData);
                                 const { sus } = updatePunchMarkingHR.data;
                                 if (sus === 1) {
@@ -252,7 +220,9 @@ export const processPunchMarkingHrFunc = async (
 }
 
 export const getAttendanceCalculation = async (
-    punch_In, shift_in, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, defaultShift, NAShift, NightOffShift, WoffShift, salaryLimit, maximumLateInTime
+    punch_In, shift_in, punch_out, shift_out, cmmn_grace_period, getLateInTime,
+    holidayStatus, shiftId, defaultShift, NAShift, NightOffShift, WoffShift,
+    salaryLimit, maximumLateInTime, halfday_time_count
 ) => {
     const {
         // hrsWorked, 
@@ -277,16 +247,10 @@ export const getAttendanceCalculation = async (
             const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime) || isEqual(punch_out, halfDayStartTime);
 
             const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 6;
-            const halfDayWorkingHour = differenceInMinutes(new Date(punch_out), new Date(punch_In)) >= halfDayInMinits;
+            const halfDayWorkingHour = differenceInHours(new Date(punch_out), new Date(punch_In)) >= halfday_time_count;
             //  isBeforeHafDayInTime === true ==> punch in time greater than half in time (full day not half day)
-            //console.log(holidayStatus);
             if (holidayStatus === 0) {
                 // HOLIDAY === NO
-
-                // console.log("earlyOut", earlyOut);
-                // console.log("lateIn", lateIn);
-                // console.log("isBeforeHafDayInTime", isBeforeHafDayInTime);
-                // console.log("maximumLateInTime", maximumLateInTime);
 
                 // { out time == 0 minit  ~~ intime <= 30 minits ~~  in time before half day in time === true  } 
                 return earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
@@ -320,7 +284,6 @@ export const getAttendanceCalculation = async (
                                                 { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'Lose off Pay' }
 
             } else {
-                // console.log(getLateInTime)
                 // HOLIDAY === YES
                 return workingHours === true && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ? // new Entry by Ajith on  April 24th 2024, 6:31:15 pm
                     {
@@ -428,12 +391,10 @@ export const getAttendanceCalculation = async (
 
 //GET THE LATEIN 
 export const getLateInTimeIntervel = async (punch_In, shift_in, punch_out, shift_out) => {
-    //console.log(punch_In, shift_in, punch_out, shift_out)
 
     if ((punch_In !== null && punch_In !== undefined && isValid(punch_In) === true) && (punch_out !== null && punch_out !== undefined && isValid(punch_out) === true)) {
         //HOURS WORKED
         const hoursWorked = differenceInMinutes(punch_out, punch_In)
-        // console.log(hoursWorked)
         if (isAfter(punch_In, shift_in) === true) {
             //GET LATE IN TIME
             const getLateInMinits = differenceInMinutes(punch_In, shift_in)
@@ -530,23 +491,21 @@ export const processShiftPunchMarkingHrFunc = async (
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
         noff, // night off SHIFT ID,
-        max_late_day_count
+        max_late_day_count,
+        halfday_time_count
     } = commonSettings; //COMMON SETTING
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
     const { succes, shiftdetail } = getDutyPlan.data;
-    // console.log(succes, shiftdetail)
     if (succes === 1 && shiftdetail?.length > 0) {
         const dutyplanInfo = shiftdetail; //DUTY PLAN
         const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
         const { success, planData } = punch_master_data.data;
-        // console.log(success, planData)
         if (success === 1 && planData?.length > 0) {
             const punchMasterData = planData; //PUNCHMSTER DATA
             return Promise.allSettled(
                 punchMasterData?.map(async (data, index) => {
-                    // console.log(data)
                     const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
                     const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
                     const shiftMergedPunchMaster = {
@@ -572,11 +531,9 @@ export const processShiftPunchMarkingHrFunc = async (
                     return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
                 })
             ).then((data) => {
-                // console.log(data)
                 const punchMasterMappedData = data?.map((e) => e.value)
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
-                        // console.log(val)
                         const holidayStatus = val.holiday_status;
                         const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
                         const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
@@ -588,7 +545,7 @@ export const processShiftPunchMarkingHrFunc = async (
                         const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
 
                         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
-                        // console.log(getLateInTime)
+
                         const getAttendanceStatus = await getAttendanceCalculation(
                             punch_In,
                             shift_in,
@@ -603,7 +560,8 @@ export const processShiftPunchMarkingHrFunc = async (
                             val.noff,
                             val.woff,
                             salaryLimit,
-                            val.maximumLateInTime
+                            val.maximumLateInTime,
+                            halfday_time_count
                         )
                         return {
                             punch_slno: val.punch_slno,
@@ -621,10 +579,9 @@ export const processShiftPunchMarkingHrFunc = async (
                         }
                     })
                 ).then(async (element) => {
-                    // console.log(element)
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
                     const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
-                    // console.log(processedData)
+
                     // PUNCH MASTER UPDATION
                     const postDataForUpdatePunchMaster = {
                         postData_getPunchData: postData_getPunchData,
@@ -634,7 +591,6 @@ export const processShiftPunchMarkingHrFunc = async (
                     const updatePunchMaster = await axioslogin.post("/attendCal/monthlyUpdatePunchMaster/", postDataForUpdatePunchMaster);
                     const { success, message, data } = updatePunchMaster.data;
                     if (success === 1) {
-                        // console.log(updatePunchMaster.data)
                         return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', punchMastData: data }
                     } else {
                         return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message, punchMastData: [] }
