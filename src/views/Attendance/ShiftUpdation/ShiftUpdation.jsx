@@ -408,7 +408,7 @@ const ShiftUpdation = () => {
                     // console.log(lastUpdateDate)
                     const today = format(new Date(), 'yyyy-MM-dd');
                     const selectedDate = format(new Date(value), 'yyyy-MM-dd');
-                    const todayStatus = selectedDate < today ? true : false; // selected date less than today date
+                    const todayStatus = selectedDate <= today ? true : false; // selected date less than today date
                     const postData_getPunchData = {
                         preFromDate: format(subDays(new Date(lastUpdateDate), 2), 'yyyy-MM-dd 00:00:00'),
                         preToDate: todayStatus === true ? format(addDays(lastDayOfMonth(new Date(value)), 1), 'yyyy-MM-dd 23:59:59') : format(addDays(new Date(value), 1), 'yyyy-MM-dd 23:59:59'),
