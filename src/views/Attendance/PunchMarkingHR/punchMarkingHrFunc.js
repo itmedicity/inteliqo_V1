@@ -21,7 +21,8 @@ export const processPunchMarkingHrFunc = async (
         noff, // night off SHIFT ID,
         holiday_policy_count, //HOLIDAY PRESENT AND ABSENT CHECKING COUNT 
         weekoff_policy_max_count, // WEEK OFF ELIGIBLE MAX DAY COUNT
-        weekoff_policy_min_count
+        weekoff_policy_min_count,
+        halfday_time_count
     } = commonSettings; //COMMON SETTING
 
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
@@ -92,7 +93,8 @@ export const processPunchMarkingHrFunc = async (
                             val.noff,
                             val.woff,
                             salaryLimit,
-                            val.maximumLateInTime
+                            val.maximumLateInTime,
+                            halfday_time_count
                         )
                         return {
                             em_no: val.em_no,
