@@ -6,15 +6,15 @@ import { QR_URL } from '../../Constant/Static'
 
 const ORScanmodalPage = ({ QRdata, QRmodal, setQRmodal }) => {
 
-    const { question_count, slno, topic_slno, em_id
-    } = QRdata[0]
+    const data = useMemo(() => QRdata, [QRdata])
+
+    const { question_count, slno, topic_slno, em_id } = data;
 
     const handleClose = useCallback(() => {
         setQRmodal(false);
     }, [setQRmodal]);
 
     const Questlink = `${QR_URL}/OnlinePostTest/${slno}/${em_id}/${topic_slno}/${question_count}`
-
     return (
         <Fragment>
             <Modal

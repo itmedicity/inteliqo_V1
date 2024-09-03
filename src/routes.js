@@ -211,7 +211,8 @@ const TrainingQuestions = React.lazy(() => import('./views/Master/TrainingQuesti
 const SchedulingTime = React.lazy(() => import('./views/Master/SchedulingTimeMaster/SchedulingTime'))
 const TrainingSchedule = React.lazy(() => import('./views/Master/TrainingScheduleMaster/TrainingSchedule'))
 // const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalTrainingSchedule'))
-const TrainingProcess = React.lazy(() => import('./views/TrainingDevelopment/TrainingProcess/TrainingProcess'))
+// const TrainingProcess = React.lazy(() => import('./views/TrainingDevelopment/TrainingProcess/TrainingProcess'))
+const TrainingProcess = React.lazy(() => import('./views/TrainingDevelopment/TrainingProcess/RightBasedLogin'))
 const TrainingEmployeeSchedule = React.lazy(() => import('./views/TrainingDevelopment/TrainingEmployeeSchedule/TrainingEmployeeSchedule'))
 const AfterJoiningTraining = React.lazy(() => import('./views/TrainingDevelopment/TrainingSchedule/TrainingAfterJoining'))
 const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
@@ -319,7 +320,21 @@ const MSApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/App
 const CPApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/CpCredential/CpCredential'))
 const MDApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/MdCredential/MdCredential'))
 const JobAndSkillDescription = React.lazy(() => import('./views/Master/JobAndSkiillDescription/DescriptionMain'))
-
+// const TDVerification = React.lazy(() => import('./views/TrainingDevelopment/TDVerification/TDVerificationMainPage'))
+const TDVerification = React.lazy(() => import('./views/TrainingDevelopment/TDVerification/TnDVerification'))
+const TopicQuestionMaster = React.lazy(() => import('./views/TrainingDevelopment/TrainingTopicQuestion/QuestionTopicMainPage'))
+const TrainingInductionCalender = React.lazy(() => import('./views/TrainingDevelopment/TrainingCalender/InductionCalenderFormat'))
+const OnObservationRequest = React.lazy(() => import('./views/LeaveManagement/OnObservation/OnobservationRequest'))
+const DutyplanforIncharge = React.lazy(() => import('./views/Attendance/DutyPlan/InchargeDutyplan'))
+const DutyplanReport = React.lazy(() => import('./views/HrReports/DutyplanReport/DutyPlanReport'))
+const DeptTrainingCalendar = React.lazy(() => import('./views/TrainingDevelopment/TrainingCalender/DeptTrainingCalendar/DeptTrainingCalendarMain'))
+const FeedbackPage = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/FeedbackPage'))
+const FeedbackPageWithoutTest = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/FeedbackWithoutTest'))
+const OndutyReport = React.lazy(() => import('./views/HrReports/OnDutyReport/OndutyReport'))
+const ManualRequest = React.lazy(() => import('./views/LeaveManagement/ManualRquest/ManualRequestMain'))
+const CreditedLeaveCount = React.lazy(() => import('./views/HrReports/LeaveCountReport/CreditedLeaveCountReport'))
+const ApprovedLeaveCancel = React.lazy(() => import('./views/LeaveManagement/ApprovedleaveCancel/LeaveCancelByHR'))
+const OffRequest = React.lazy(() => import('./views/LeaveManagement/OffRequest/OffrequestCombinePage'))
 
 
 const routes = [
@@ -571,21 +586,14 @@ const routes = [
   { path: '/Home/Announcementclosing', exact: true, name: 'Announcement Closing', component: Announcementclosing },
   { path: '/Home/HealthCheckUp', exact: true, name: 'Annual Health Checkup Form', component: HealthCheckUp },
 
-
-
   //QR CODE
   // { path: '/Home/PreTest', exact: true, name: 'Pre Test', component: PreTest },
   { path: '/OnlinePreTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Pre Test', component: OnlinePreTest },
   { path: '/OnlineTraining/:id/:emId', exact: true, name: 'Online Training', component: QROnlineTraining },
   { path: '/OnlinePostTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Post Test', component: OnlinePostTest },
-  // { path: '/Home/PostTest', exact: true, name: 'Post Test', component: PostTest },
   { path: '/Home/OnlineTraining', exact: true, name: 'Online Training', component: OnlineTraining },
-
-  //Retest
   { path: '/Home/EmpDashboardPage', exact: true, name: 'Employee Dashboard', component: EmployeeDashboard },
   { path: '/OnlineReTest/:slno/:emId/:tslno/:qcount', exact: true, name: 'Online Retest', component: OnlineRetest },
-
-  //Departmental Training Report
   { path: '/Home/DepartmentalTrainingReport', exact: true, name: 'Departmental Training Report', component: DepartmentalTrainingReport },
   { path: '/Home/DepartmentalCalender', exact: true, name: 'Monthly Report', component: DepartmentalCalender },
   { path: '/Home/DepartmentalTrainingReportDetails', exact: true, name: 'Departmental Training Report Details', component: DepartmentalTrainingReportDetails },
@@ -594,10 +602,8 @@ const routes = [
   { path: '/Home/TrainingCompletionEmpReport', exact: true, name: 'Departmental Training Completion Employee Reports', component: TrainingCompletionEmpReport },
   { path: '/Home/TrainingPendingReport', exact: true, name: 'Departmental Training Pending Employee Reports', component: TrainingPendingReport },
   { path: '/Home/TrainingRetestEmpReport', exact: true, name: 'Departmental Training Retest Employee Reports', component: TrainingRetestEmpReport },
-
-  //CommonPreTest
   { path: '/Home/CommonPreTestPage', exact: true, name: 'Common PreTest', component: CommonPreTestPage },
-  { path: '/PreLogInpage/:topic_slno', exact: true, name: 'PreTest LogIn', component: PreLogInpage },
+  { path: '/PreLogInpage/:topic_slno/:slno', exact: true, name: 'PreTest LogIn', component: PreLogInpage },
   { path: '/Home/CommonPostTestPage', exact: true, name: 'Common PostTest', component: CommonPostTestPage },
   { path: '/RetestEmpDetails/:emId/:tslno', exact: true, name: 'Retest Emp Detailst', component: RetestEmpDetails },
   { path: '/Home/InductionTraining', exact: true, name: 'Induction Training', component: InductionTraining },
@@ -634,8 +640,20 @@ const routes = [
   { path: '/Home/CPcredential', exact: true, name: 'CP Credential Approval', component: CPApprovalCredential },
   { path: '/Home/MDcredential', exact: true, name: 'MD Credential Approval', component: MDApprovalCredential },
   { path: '/Home/JobAndSkillDescription', exact: true, name: 'JobAndSkillDescription', component: JobAndSkillDescription },
-
-
+  { path: '/Home/TDVerification', exact: true, name: 'T and D Verification', component: TDVerification },
+  { path: '/Home/TopicQuestionMaster', exact: true, name: 'Topic Question Master', component: TopicQuestionMaster },
+  { path: '/Home/TrainingInductionCalender', exact: true, name: 'Training Induction Calender', component: TrainingInductionCalender },
+  { path: '/Home/OnObservationRequest', exact: true, name: 'On Observation Request', component: OnObservationRequest },
+  { path: '/Home/DutyplanforIncharge', exact: true, name: 'Dutyplan for Incharge', component: DutyplanforIncharge },
+  { path: '/Home/DutyplanReport', exact: true, name: 'Dutyplan Report', component: DutyplanReport },
+  { path: '/Home/DeptTrainingCalendar', exact: true, name: 'Departmental Training Calendar', component: DeptTrainingCalendar },
+  { path: '/FeedbackPage/:topic_no/:schedule_no/:EmId', exact: true, name: 'Feedback Page', component: FeedbackPage },
+  { path: '/FeedbackPageWithoutTest/:topic_no/:schedule_no/:EmId', exact: true, name: 'Feedback Page Without Test', component: FeedbackPageWithoutTest },
+  { path: '/Home/OndutyReport', exact: true, name: 'On Duty Report', component: OndutyReport },
+  { path: '/Home/ManualRequest', exact: true, name: 'Manual Request', component: ManualRequest },
+  { path: '/Home/CreditedLeaveCount', exact: true, name: 'Credited Leave Count Report', component: CreditedLeaveCount },
+  { path: '/Home/ApprovedLeaveCancel', exact: true, name: 'Approved Leave Cancel By HR', component: ApprovedLeaveCancel },
+  { path: '/Home/DoffRequest', exact: true, name: 'DOFF Request', component: OffRequest }
 ]
 
 export default routes

@@ -7,13 +7,13 @@ import { QR_URL } from '../../Constant/Static'
 const PreQRmodal = ({ QRdata, QRmodal, setQRmodal }) => {
 
     const data = useMemo(() => QRdata, [QRdata])
-    const { topic_slno } = data
+    const { topic_slno, slno } = data
 
     const handleClose = useCallback(() => {
         setQRmodal(false);
     }, [setQRmodal]);
 
-    const loginpage = `${QR_URL}/PreLogInpage/${topic_slno}`
+    const loginpage = `${QR_URL}/PreLogInpage/${topic_slno}/${slno}`
 
     return (
         <Fragment>

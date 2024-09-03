@@ -4,11 +4,11 @@ import { Paper } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
 import { QR_URL } from '../../Constant/Static'
 
-const InductionQRModal = ({ QRdata, QRmodal, setQRmodal }) => {
+const InductionQRModal = ({ QRdata, QRmodal, setQRmodal, em_id }) => {
 
+    const EmId = parseInt(em_id)
     const data = useMemo(() => QRdata, [QRdata])
-
-    const { topic_slno, schedule_slno } = data;
+    const { topic_slno, schedule_slno, topic_post, topic_pre } = data;
 
     const handleClose = useCallback(() => {
         setQRmodal(false);
@@ -16,6 +16,9 @@ const InductionQRModal = ({ QRdata, QRmodal, setQRmodal }) => {
 
     const loginpage = `${QR_URL}/InductLogInpage/${topic_slno}/${schedule_slno}`
 
+    console.log(loginpage);
+
+    const feedback = `${QR_URL}/FeedbackPageWithoutTest/${topic_slno}/${schedule_slno}/${EmId}`
     return (
         <Fragment>
             <Modal
@@ -38,7 +41,8 @@ const InductionQRModal = ({ QRdata, QRmodal, setQRmodal }) => {
                     />
                     <Paper sx={{ px: 1, p: 2 }}>
                         <QRCodeSVG
-                            value={loginpage}
+                            // value={loginpage}
+                            value={topic_pre === 1 && topic_post === 1 ? loginpage : feedback}
                             size={200}
                             level='Q'
                             style={{ marginLeft: 7 }}

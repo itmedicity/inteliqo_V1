@@ -1,6 +1,6 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
 import React, { Fragment, memo, useEffect, useState } from 'react'
 import { axioslogin } from '../Axios/Axios';
+import { Option, Select } from '@mui/joy';
 
 const SelectTrainingName = ({ value, setValue }) => {
     const [view, setView] = useState([]);
@@ -19,27 +19,22 @@ const SelectTrainingName = ({ value, setValue }) => {
 
     return (
         <Fragment>
-            <FormControl
-                fullWidth
-                size='small'
+
+            <Select
+                value={value}
+                onChange={(event, newValue) => {
+                    setValue(newValue);
+                }}
+                size='md'
+                variant='outlined'
             >
-                <Select
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    size="small"
-                    fullWidth
-                    variant='outlined'
-                >
-                    <MenuItem disabled value={0}  >
-                        Select Training Names
-                    </MenuItem>
-                    {
-                        view?.map((val, index) => {
-                            return <MenuItem key={index} value={val.name_slno}>{val.training_name}</MenuItem>
-                        })
-                    }
-                </Select>
-            </FormControl>
+                <Option disabled value={0}>Select Training Names</Option>
+                {
+                    view?.map((val, index) => {
+                        return <Option key={index} value={val.name_slno}>{val.training_name}</Option>
+                    })
+                }
+            </Select>
         </Fragment>
     )
 }

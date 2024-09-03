@@ -57,7 +57,9 @@ const {
     FETCH_INDUCTION_TRAININGS,
     FETCH_TRAINER_APPRVL_DATA,
     FETCH_TRAINER_APPRVL_INDUCT_DATA,
-    FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA
+    FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA,
+    FETCH_CALENDER_DETAILS,
+    FETCH_MONTHWISE_DEPT_SCHEDULE
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -221,8 +223,8 @@ export const DepartmentalScheduledTopicsDpDw = (dept) => async (dispatch) => {
         dispatch({ type: FETCH_DEPARTMENTAL_SCHEDULED_TOPIC_DPDW, payload: [], status: false })
     }
 }
-export const TrainingCompletedList = (id) => async (dispatch) => {
-    const result = await axioslogin.get(`/TrainingProcess/trainingcompleted/${id}`)
+export const TrainingCompletedList = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingProcess/trainingcompleted`, obj)
     const { data, success } = result.data
     if (success === 2) {
         dispatch({ type: FETCH_TRAINING_COMPLETED_LIST, payload: data, status: true })
@@ -231,8 +233,8 @@ export const TrainingCompletedList = (id) => async (dispatch) => {
         dispatch({ type: FETCH_TRAINING_COMPLETED_LIST, payload: [], status: false })
     }
 }
-export const TodaysTraining = (id) => async (dispatch) => {
-    const result = await axioslogin.get(`/TrainingProcess/todaystrainings/${id}`)
+export const TodaysTraining = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingProcess/todaystrainings`, obj)
     const { data, success } = result.data
     if (success === 2) {
         dispatch({ type: FETCH_TODAYS_TRAINING__LIST, payload: data, status: true })
@@ -251,8 +253,8 @@ export const TrainingAttendance = (topic) => async (dispatch) => {
         dispatch({ type: FETCH_TRAINING_ATTENDANCE_DETAILS, payload: [], status: false })
     }
 }
-export const TrainingEmpDetailsAll = (id) => async (dispatch) => {
-    const result = await axioslogin.get(`/TrainingProcess/showEmpDetails/${id}`)
+export const TrainingEmpDetailsAll = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingProcess/showEmpDetails`, obj)
     const { data, success } = result.data
     if (success === 2) {
         dispatch({ type: FETCH_TRAINING_EMP_DETAILS_ALL, payload: data, status: true })
@@ -261,8 +263,8 @@ export const TrainingEmpDetailsAll = (id) => async (dispatch) => {
         dispatch({ type: FETCH_TRAINING_EMP_DETAILS_ALL, payload: [], status: false })
     }
 }
-export const TrainingEmpDatas = (id) => async (dispatch) => {
-    const result = await axioslogin.get(`/TrainingProcess/trainingEmployees/${id}`)
+export const TrainingEmpDatas = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingProcess/trainingEmployees`, obj)
     const { data, success } = result.data
     if (success === 2) {
         dispatch({ type: FETCH_TRAINING_EMP_LIST, payload: data, status: true })
@@ -328,9 +330,8 @@ export const PostTestEmpDetails = (id) => async (dispatch) => {
     }
 }
 
-//Below Average Employee Names List
-export const BelowAverageEmployeeList = (id) => async (dispatch) => {
-    const result = await axioslogin.get(`/TrainingEmployee_Dashboard/belowAvgEmp/${id}`)
+export const BelowAverageEmployeeList = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingEmployee_Dashboard/belowAvgEmp`, obj)
     const { data, success } = result.data
     if (success === 2) {
         dispatch({ type: FETCH_BELOW_AVERAGE_EMP_LIST, payload: data, status: true })
@@ -644,6 +645,26 @@ export const DashboardTrainingPreTopics = (id) => async (dispatch) => {
     }
     else {
         dispatch({ type: FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA, payload: [], status: false })
+    }
+}
+export const InductionTrainingCalender = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/InductionTraining/getInductionCalenderDatas`, obj)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_CALENDER_DETAILS, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_CALENDER_DETAILS, payload: [], status: false })
+    }
+}
+export const MonthWiseDeptSchedules = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainingAfterJoining/GetMonthWiseDeptSchedules`, obj)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_MONTHWISE_DEPT_SCHEDULE, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_MONTHWISE_DEPT_SCHEDULE, payload: [], status: false })
     }
 }
 

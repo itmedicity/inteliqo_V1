@@ -67,7 +67,13 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
         const GetData = (async () => {
             if (em_id !== 0) {
                 const emid = parseInt(em_id)
-                const result = await axioslogin.get(`/TrainingDetails/getDepartmental/${emid}`)
+                const obj = {
+                    emid: emid,
+                    preId: emid,
+                    postId: emid
+                }
+                // const result = await axioslogin.get(`/TrainingDetails/getDepartmental/${emid}`)
+                const result = await axioslogin.post(`/TrainingDetails/getDepartmental`, obj)
                 const { success, data } = result.data;
                 if (success === 2) {
                     SetDepartData(data)
@@ -151,154 +157,156 @@ const EmpDetailsModal = ({ open, Setopen, selected }) => {
         })
         SetShowDepartData(deptdata)
     }, [DepartData, SetShowDepartData])
+
     return (
-        <div>
-            <Modal
-                aria-labelledby="modal-title"
-                aria-describedby="modal-desc"
-                open={open}
-                onClose={Handleclose}
-                sx={{ display: 'flex' }}
-            >
-                <ModalDialog size="lg" sx={{ width: "80%" }}>
-                    <ModalClose
-                        variant="outlined"
-                        sx={{
-                            top: 'calc(-1/4 * var(--IconButton-size))',
-                            right: 'calc(-1/4 * var(--IconButton-size))',
-                            boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
-                            borderRadius: '50%',
-                            bgcolor: 'background.body'
-                        }}
-                    />
-                    <Typography
-                        fontSize="xl2"
-                        lineHeight={1}
-                        startDecorator={
-                            <FormatListBulletedIcon sx={{ color: '#535C91' }} />
-                        }
-                        sx={{ display: 'flex', alignItems: 'flex-start', mr: 1, color: "#9290C3" }}>
-                        Training Record
-                    </Typography>
-
-                    <CustmTypog title={"Employee Details"} />
-                    <Table borderAxis="bothBetween">
-                        <tbody style={{ textTransform: "capitalize" }}>
-                            <tr>
-                                <td>Name</td>
-                                <td>{em_name.toLowerCase()}</td>
-                            </tr>
-                            <tr>
-                                <td>Employee ID</td>
-                                <td>{em_no}</td>
-                            </tr>
-                            <tr>
-                                <td>Department</td>
-                                <td>{dept_name.toLowerCase()}</td>
-                            </tr>
-                            <tr>
-                                <td>Department Section</td>
-                                <td>{sect_name.toLowerCase()}</td>
-                            </tr>
-                            <tr>
-                                <td>Designation</td>
-                                <td>{desg_name.toLowerCase()}</td>
-                            </tr>
-                        </tbody>
-                    </Table>
-
-
-                    {/* Induction */}
-                    <CustmTypog title={"Induction Training Details"} />
-                    {
-                        InductionData?.length !== 0 ?
-                            <Table>
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: "5%" }}>Slno</th>
-                                        <th>Date</th>
-                                        <th>Topic</th>
-                                        <th>Trainers</th>
-                                        <th>Online Mode</th>
-                                        <th>Offline Mode</th>
-                                        <th>Pre-Post Status</th>
-                                        <th>Pre-Test Mark</th>
-                                        <th>Post-Test Mark</th>
-                                        <th>Retest</th>
-                                        <th>Retest Mark</th>
-                                        <th>Eligible/Not</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {ShowInductionData?.map((row, indx) => (
-                                        <tr key={indx}>
-                                            <td>{row?.int_slno}</td>
-                                            <td>{row?.induction_date}</td>
-                                            <td style={{ textTransform: "capitalize" }}>{row?.training_topic_name.toLowerCase()}</td>
-                                            <td><InductTraineerDetail traineer={row?.trainers} /></td>
-                                            <td>{row?.online_mode === 1 ? "Online" : "Not Attend"}</td>
-                                            <td>{row?.offline_mode === 1 ? "Offline" : "Not Attend"}</td>
-                                            <td>{row?.allowPrepost}</td>
-                                            <td>{row?.pretest_status === 1 ? row?.induct_pre_mark : "Not Attend"}</td>
-                                            <td>{row?.posttest_status === 1 ? row?.induct_post_mark : "Not Attend"}</td>
-                                            <td>{row?.Re_test}</td>
-                                            <td>{row?.Re_test === 1 ? row?.Re_mark : "Not Attend"}</td>
-                                            <td>{row?.induct_post_mark >= 2 && row.posttest_status === 1 || row.Re_test === 1 && row.Re_mark >= 2 ? "Eligible" : "Not Eligible"}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                            : <Box> Not Attended</Box>
+        <Modal
+            aria-labelledby="modal-title"
+            aria-describedby="modal-desc"
+            open={open}
+            onClose={Handleclose}
+            sx={{ display: 'flex' }}
+        >
+            <ModalDialog size="lg" sx={{ width: "80%" }}>
+                <ModalClose
+                    variant="outlined"
+                    sx={{
+                        top: 'calc(-1/4 * var(--IconButton-size))',
+                        right: 'calc(-1/4 * var(--IconButton-size))',
+                        boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
+                        borderRadius: '50%',
+                        bgcolor: 'background.body'
+                    }}
+                />
+                <Typography
+                    fontSize="xl2"
+                    lineHeight={1}
+                    startDecorator={
+                        <FormatListBulletedIcon sx={{ color: '#535C91' }} />
                     }
-                    {/* departmental */}
-                    <CustmTypog title={"Departmental Training Details"} />
-                    {
-                        ShowDepartData?.length !== 0 ?
+                    sx={{ display: 'flex', alignItems: 'flex-start', mr: 1, color: "#9290C3" }}>
+                    Training Record
+                </Typography>
 
-                            <Table>
-                                <thead>
-                                    <tr>
-                                        <th style={{ width: "5%" }}>Slno</th>
-                                        <th>Date</th>
-                                        <th>Topic</th>
-                                        <th>Trainers</th>
-                                        <th>Online Mode</th>
-                                        <th>Offline Mode</th>
-                                        <th>Pre-Post Status</th>
-                                        <th>Pre-Test Mark</th>
-                                        <th>Post-Test Mark</th>
-                                        <th>Retest</th>
-                                        <th>Retest Mark</th>
-                                        <th>Eligible/Not</th>
+                <CustmTypog title={"Employee Details"} />
+                <Table borderAxis="bothBetween">
+                    <tbody style={{ textTransform: "capitalize" }}>
+                        <tr>
+                            <td>Name</td>
+                            <td>{em_name.toLowerCase()}</td>
+                        </tr>
+                        <tr>
+                            <td>Employee ID</td>
+                            <td>{em_no}</td>
+                        </tr>
+                        <tr>
+                            <td>Department</td>
+                            <td>{dept_name.toLowerCase()}</td>
+                        </tr>
+                        <tr>
+                            <td>Department Section</td>
+                            <td>{sect_name.toLowerCase()}</td>
+                        </tr>
+                        <tr>
+                            <td>Designation</td>
+                            <td>{desg_name.toLowerCase()}</td>
+                        </tr>
+                    </tbody>
+                </Table>
+
+
+                {/* Induction */}
+                <CustmTypog title={"Induction Training Details"} />
+                {
+                    InductionData?.length !== 0 ?
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "5%" }}>Slno</th>
+                                    <th>Date</th>
+                                    <th>Topic</th>
+                                    <th>Trainers</th>
+                                    <th>Online Mode</th>
+                                    <th>Offline Mode</th>
+                                    <th>Pre-Post Status</th>
+                                    <th>Pre-Test Mark</th>
+                                    <th>Post-Test Mark</th>
+                                    <th>Retest</th>
+                                    <th>Retest Mark</th>
+                                    <th>Eligible/Not</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {ShowInductionData?.map((row, indx) => (
+                                    <tr key={indx}>
+                                        <td>{row?.int_slno}</td>
+                                        <td>{row?.induction_date}</td>
+                                        <td style={{ textTransform: "capitalize" }}>{row?.training_topic_name.toLowerCase()}</td>
+                                        <td><InductTraineerDetail traineer={row?.trainers} /></td>
+                                        <td>{row?.online_mode === 1 ? "Online" : "Not Attend"}</td>
+                                        <td>{row?.offline_mode === 1 ? "Offline" : "Not Attend"}</td>
+                                        <td>{row?.allowPrepost}</td>
+                                        <td>{row?.pretest_status === 1 ? row?.induct_pre_mark : "Not Attend"}</td>
+                                        <td>{row?.posttest_status === 1 ? row?.induct_post_mark : "Not Attend"}</td>
+                                        <td>{row?.Re_test}</td>
+                                        <td>{row?.Re_test === 1 ? row?.Re_mark : "Not Attend"}</td>
+                                        <td>{row?.induct_post_mark >= 2 && row.posttest_status === 1 || row.Re_test === 1 && row.Re_mark >= 2 ? "Eligible" : "Not Eligible"}</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {ShowDepartData?.map((row, indx) => (
-                                        <tr key={indx}>
-                                            <td>{row?.Dept_slno}</td>
-                                            <td>{row?.schedule_date}</td>
-                                            <td style={{ textTransform: "capitalize" }}>{row?.training_topic_name.toLowerCase()}</td>
-                                            <td><TraineerDetail traineer={row?.schedule_trainers} /></td>
-                                            <td>{row?.online_mode === 1 ? "Online" : "Not Attend"}</td>
-                                            <td>{row?.offline_mode === 1 ? "Offline" : "Not Attend"}</td>
-                                            <td>{row?.allowPrepost}</td>
-                                            <td>{row?.pretest_status === 1 ? row?.dept_pre_mark : "Not Attend"}</td>
-                                            <td>{row?.posttest_status === 1 ? row?.dept_post_mark : "Not Attend"}</td>
-                                            <td>{row?.Re_test}</td>
-                                            <td>{row?.Re_mark}</td>
-                                            <td>{row?.dept_post_mark >= 2 && row.posttest_status === 1 || row.Re_test === 1 && row.dept_retest_mark >= 2 ? "Eligible" : "Not Eligible"}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table> :
+                                ))}
+                            </tbody>
+                        </Table>
+                        : <Box> Not Attended</Box>
+                }
+                {/* departmental */}
+                <CustmTypog title={"Departmental Training Details"} />
+                {
+                    ShowDepartData?.length !== 0 ?
 
-                            <Box> Not Attended</Box>
-                    }
+                        < Table sx={{
+                            overflow: 'auto',
+                            '::-webkit-scrollbar': { display: "none" }, height: 200
+                        }}>
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "5%" }}>Slno</th>
+                                    <th>Date</th>
+                                    <th>Topic</th>
+                                    <th>Trainers</th>
+                                    <th>Online Mode</th>
+                                    <th>Offline Mode</th>
+                                    <th>Pre-Post Status</th>
+                                    <th>Pre-Test Mark</th>
+                                    <th>Post-Test Mark</th>
+                                    <th>Retest</th>
+                                    <th>Retest Mark</th>
+                                    <th>Eligible/Not</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {ShowDepartData?.map((row, indx) => (
+                                    <tr key={indx}>
+                                        <td>{row?.Dept_slno}</td>
+                                        <td>{row?.schedule_date}</td>
+                                        <td style={{ textTransform: "capitalize" }}>{row?.training_topic_name.toLowerCase()}</td>
+                                        <td><TraineerDetail traineer={row?.schedule_trainers} /></td>
+                                        <td>{row?.online_mode === 1 ? "Online" : "Not Attend"}</td>
+                                        <td>{row?.offline_mode === 1 ? "Offline" : "Not Attend"}</td>
+                                        <td>{row?.allowPrepost}</td>
+                                        <td>{row?.pretest_status === 1 ? row?.dept_pre_mark : "Not Attend"}</td>
+                                        <td>{row?.posttest_status === 1 ? row?.dept_post_mark : "Not Attend"}</td>
+                                        <td>{row?.Re_test}</td>
+                                        <td>{row?.Re_mark}</td>
+                                        <td>{row?.dept_post_mark >= 2 && row.posttest_status === 1 || row.Re_test === 1 && row.dept_retest_mark >= 2 ? "Eligible" : "Not Eligible"}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table> :
 
-                </ModalDialog>
-            </Modal >
-        </div>
+                        <Box> Not Attended</Box>
+                }
+
+            </ModalDialog>
+        </Modal >
     )
 }
 

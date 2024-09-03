@@ -19,7 +19,7 @@ const InchargeApproval = () => {
 
     const dispatch = useDispatch()
     const [deptSection, setDeptSection] = useState(0)
-    const [selectValue, setSelectValue] = useState(1)
+    const [selectValue, setSelectValue] = useState(2)
     const [tableData, setTableData] = useState([])//for displaying table data
     const [DeptSect, updateDeptSect] = useState([])
 
@@ -30,7 +30,7 @@ const InchargeApproval = () => {
     const [count, setCount] = useState(0)
 
     const request = [
-        { value: 1, name: "Enable Miss Punch for OT" },
+        // { value: 1, name: "Enable Miss Punch for OT" },
         { value: 2, name: "On Duty Request" },
         { value: 3, name: "One Hour Request" }
     ]
@@ -56,7 +56,7 @@ const InchargeApproval = () => {
         { headerName: 'ID#', field: 'emno', filter: true, minWidth: 100 },
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department Section', field: 'section', filter: true, minWidth: 200 },
-        { headerName: 'Request Date', field: 'section', filter: true, minWidth: 200 },
+        { headerName: 'Request Date', field: 'reqDate', filter: true, minWidth: 200 },
         { headerName: 'Status ', field: 'status', minWidth: 200, filter: true },
         {
             headerName: 'Action',
@@ -120,13 +120,16 @@ const InchargeApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
 
             } else {
                 infoNofity("No On Duty request pending for this department!!")
                 setTableData([])
             }
-        } else if (selectValue === 2 && deptSection === 0) {
+        } else if (selectValue === 2 && deptSection !== 0) {
             const filteronDuty = onDutyData && onDutyData.filter((val) => {
                 return (val.dept_sect_id === deptSection && val.incharge_req_status === 1)
             })
@@ -163,7 +166,10 @@ const InchargeApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No On Duty request pending for this department!!")
                 setTableData([])
@@ -211,7 +217,10 @@ const InchargeApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No One Hour request pending for this department!!")
                 setTableData([])
@@ -257,7 +266,10 @@ const InchargeApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No One Hour request pending for this department!!")
                 setTableData([])
@@ -306,7 +318,10 @@ const InchargeApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No request pending for this department!!")
                 setTableData([])
@@ -353,7 +368,10 @@ const InchargeApproval = () => {
                         ceoComment: val.ceo_approval_comment
                     }
                 })
-                setTableData(arr)
+                const arr1 = arr?.filter((k) => {
+                    return (k.hr_apprv !== 1)
+                })
+                setTableData(arr1)
             } else {
                 infoNofity("No request pending for this department!!")
                 setTableData([])

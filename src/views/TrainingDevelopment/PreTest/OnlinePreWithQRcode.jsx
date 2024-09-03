@@ -46,10 +46,12 @@ const OnlinePreWithQRcode = () => {
         question_count: 0,
         dept_id: 0,
         desg_slno: 0,
-        sect_id: 0
+        sect_id: 0,
+        scheduled_slno: 0,
+        schedule_date: ''
     });
 
-    const { em_id, dept_id, em_name, sect_id, desg_slno, topic_slno, slno } = datas;
+    const { em_id, dept_id, em_name, sect_id, desg_slno, topic_slno, slno, scheduled_slno, schedule_date } = datas;
 
     const { id, emId, tslno, qcount } = useParams()
 
@@ -102,7 +104,7 @@ const OnlinePreWithQRcode = () => {
 
     useEffect(() => {
         if (Object.keys(Emp_Details).length !== 0) {
-            const { em_id, em_name, slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id } = Emp_Details[0];
+            const { em_id, em_name, slno, topic_slno, training_topic_name, question_count, dept_id, desg_slno, sect_id, scheduled_slno, schedule_date } = Emp_Details[0];
             const obj = {
                 em_id: em_id,
                 em_name: em_name,
@@ -112,7 +114,9 @@ const OnlinePreWithQRcode = () => {
                 question_count: question_count,
                 dept_id: dept_id,
                 desg_slno: desg_slno,
-                sect_id: sect_id
+                sect_id: sect_id,
+                scheduled_slno: scheduled_slno,
+                schedule_date: schedule_date
             }
             setQuestcount(question_count)
             setDatas(obj);
@@ -153,9 +157,11 @@ const OnlinePreWithQRcode = () => {
             pretest_status: 1,
             mark: correct,
             create_user: em_id,
-            posttest_permission: 1
+            posttest_permission: 1,
+            scheduled_slno: scheduled_slno,
+            schedule_date: schedule_date
         }
-    }, [em_id, dept_id, sect_id, desg_slno, correct, topic_slno, slno])
+    }, [em_id, dept_id, sect_id, desg_slno, correct, topic_slno, slno, scheduled_slno, schedule_date])
 
     useEffect(() => {
         if (checkInsert === 1) {
@@ -252,7 +258,7 @@ const OnlinePreWithQRcode = () => {
                         </Box>
                 }
             </Box>
-            {open === true ? <QRPretestSubmitModal id={id} tslno={tslno} emId={emId} data={data} open={open} setopen={setopen} /> : null}
+            {open === true ? <QRPretestSubmitModal scheduled_slno={scheduled_slno} id={id} tslno={tslno} emId={emId} data={data} open={open} setopen={setopen} /> : null}
         </Fragment >
     )
 }

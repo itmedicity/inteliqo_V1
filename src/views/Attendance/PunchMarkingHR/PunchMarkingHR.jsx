@@ -272,7 +272,7 @@ const PunchMarkingHR = () => {
                                 })
                                 ?.map((e) => e.punMasterArray)
                                 ?.flat()
-                                ?.filter((e) => e.lvereq_desc === 'HD')
+                                ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
                                 ?.map((e) => e.punch_slno)
 
                             // console.log(filterLcData)

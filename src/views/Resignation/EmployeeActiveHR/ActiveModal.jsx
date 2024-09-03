@@ -17,7 +17,7 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
             sect_id: 0
         }
     )
-    const { emno, name, section,  emid } = details;
+    const { emno, name, section, emid } = details;
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
@@ -41,7 +41,7 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
         setOpen(false)
     }, [setOpen])
 
-    const saveData=useCallback(async()=>{
+    const saveData = useCallback(async () => {
         const postData = {
             em_id: emid
         }
@@ -52,17 +52,17 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
             remark: reason,
             create_user: employeeNumber()
         }
-        
+
         if (reason === '') {
             setOpen(false)
             infoNofity("Please Add Remark!")
         } else {
-           
-        const result = await axioslogin.patch('/empmast/empmsater/active', postData)
-        const { success } = result.data
-        if (success === 2) {
-           
-            setCount(Math.random())
+
+            const result = await axioslogin.patch('/empmast/empmsater/active', postData)
+            const { success } = result.data
+            if (success === 2) {
+
+                setCount(Math.random())
                 const result = await axioslogin.post('/empmast/insert/active', activedata)
                 const { success } = result.data
                 if (success === 1) {
@@ -72,16 +72,16 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
                 } else {
                     warningNofity("Error while Activating an Employee")
                 }
-          
-        } else {
-            setOpen(false)
-            warningNofity("Error while Activating an Employee")
-        }
-    }
-    },[emid,emno,reason,setCount,setOpen])
 
-  return (
-    <Modal
+            } else {
+                setOpen(false)
+                warningNofity("Error while Activating an Employee")
+            }
+        }
+    }, [emid, emno, reason, setCount, setOpen])
+
+    return (
+        <Modal
             aria-labelledby="modal-title"
             aria-describedby="modal-desc"
             open={open}
@@ -153,7 +153,7 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
                 </Box>
             </ModalDialog>
         </Modal>
-  )
+    )
 }
 
 export default memo(ActiveModal)

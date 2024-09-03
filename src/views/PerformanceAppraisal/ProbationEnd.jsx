@@ -52,7 +52,7 @@ const ProbationEnd = () => {
 
     const [columnDef] = useState([
         {
-            headerName: 'Action',
+            headerName: 'Action', minWidth: 150,
             cellRenderer: params =>
                 <Fragment>
                     <Tooltip title="Direct Permanent Confirmation" followCursor placement='top' arrow >
@@ -68,14 +68,14 @@ const ProbationEnd = () => {
                 </Fragment>
         },
         // { headerName: 'ID', field: 'em_id', wrapText: true, minWidth: 50, filter: true },
-        { headerName: 'Emp ID# ', field: 'em_no', filter: true, minWidth: 100 },
-        { headerName: 'Name ', field: 'em_name', filter: true, minWidth: 100 },
-        { headerName: 'Department ', field: 'dept_name', filter: true, minWidth: 100 },
-        { headerName: 'Department Section ', field: 'sect_name', filter: true, minWidth: 100 },
-        { headerName: 'Designation ', field: 'desg_name', minWidth: 100 },
-        { headerName: 'Date of joining ', field: 'em_doj', minWidth: 100 },
+        { headerName: 'Emp ID# ', field: 'em_no', filter: true, minWidth: 150 },
+        { headerName: 'Name ', field: 'em_name', filter: true, minWidth: 200 },
+        { headerName: 'Department ', field: 'dept_name', filter: true, minWidth: 200 },
+        { headerName: 'Department Section ', field: 'sect_name', filter: true, minWidth: 200 },
+        { headerName: 'Designation ', field: 'desg_name', minWidth: 200 },
+        { headerName: 'Date of joining ', field: 'em_doj', minWidth: 150 },
         { headerName: 'Category ', field: 'ecat_name', wrapText: true, minWidth: 250, },
-        { headerName: 'Probation End ', field: 'em_prob_end_date', minWidth: 100 },
+        { headerName: 'Probation End ', field: 'em_prob_end_date', minWidth: 150 },
 
     ])
     //redirect to company information page
@@ -292,7 +292,7 @@ const ProbationEnd = () => {
                                     height: 600,
                                     width: "100%"
                                 }}
-                                rowHeight={30}
+                                rowHeight={40}
                                 headerHeight={30}
                             />
                         </Paper>

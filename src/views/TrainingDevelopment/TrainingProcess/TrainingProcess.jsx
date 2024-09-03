@@ -9,13 +9,12 @@ import NextPlanIcon from '@mui/icons-material/NextPlan';
 import UpcomingTrainings from './UpcomingTrainings';
 import NextMonthTrainings from './NextMonthTrainings';
 import { useDispatch, useSelector } from 'react-redux';
-import { AllotedToPostTest, BelowAverageEmployeeList, DepartmentalTrainingDetails, TodaysTraining, TrainingCompletedList, TrainingEmpDatas, TrainingEmpDetailsAll, TrainingProcessdetails } from 'src/redux/actions/Training.Action';
+import { BelowAverageEmployeeList, DepartmentalTrainingDetails, TodaysTraining, TrainingCompletedList, TrainingEmpDatas, TrainingEmpDetailsAll, TrainingProcessdetails } from 'src/redux/actions/Training.Action';
 import moment from 'moment';
-import { addDays, endOfMonth } from 'date-fns';
+import { addDays, endOfMonth, format } from 'date-fns';
 import TodayTrainings from './TodayTrainings';
 import DueTrainings from './DueTrainings';
 import PendingList from './PendingList';
-import AllowPostTest from './AllowPostTest';
 import PendingIcon from '@mui/icons-material/Pending';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import TodayIcon from '@mui/icons-material/Today';
@@ -32,7 +31,7 @@ const TrainingProcess = () => {
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_department } = employeeProfileDetl;
+    const { em_department, em_dept_section } = employeeProfileDetl;
 
     const dispatch = useDispatch()
 
@@ -42,19 +41,21 @@ const TrainingProcess = () => {
     }, [dispatch, count])
 
     useEffect(() => {
-        dispatch(TrainingCompletedList(em_department))
-        dispatch(TodaysTraining(em_department))
-        dispatch(TrainingEmpDetailsAll(em_department))
-        dispatch(TrainingEmpDatas(em_department))
-        dispatch(AllotedToPostTest(em_department))
-        dispatch(BelowAverageEmployeeList(em_department))
-    }, [dispatch, em_department, count])
+        const obj = {
+            em_department: em_department,
+            em_dept_section: em_dept_section
+        }
+        dispatch(TrainingCompletedList(obj))
+        dispatch(TodaysTraining(obj))
+        dispatch(TrainingEmpDetailsAll(obj))
+        dispatch(TrainingEmpDatas(obj))
+        dispatch(BelowAverageEmployeeList(obj))
+    }, [dispatch, em_department, em_dept_section, count])
     //new
     const trainingcompleted = useSelector((state) => state?.gettrainingData?.TrainingCompleted?.TrainingCompletedList, _.isEqual);
     const todays = useSelector((state) => state?.gettrainingData?.TodaysTrainings?.TodaysTrainingsList, _.isEqual);
     const TrainingEmpData = useSelector((state) => state?.gettrainingData?.trainingEmpDetails?.trainingEmpDetailsList, _.isEqual);
     const empdatas = useSelector((state) => state?.gettrainingData?.trainingEmp?.trainingEmpList, _.isEqual);
-    const allot = useSelector((state) => state?.gettrainingData?.AllotPosttest?.AllotPosttestList, _.isEqual);
     //belowAvgEmp
     const BelowAvgList = useSelector((state) => state?.gettrainingData?.BelowAvgEmp?.BelowAvgEmpList, _.isEqual);
 
@@ -83,7 +84,7 @@ const TrainingProcess = () => {
                 schedule_date: val.schedule_date,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name,
-                date: moment(val.schedule_date).format('YYYY-MM-DD'),
+                date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
             }
             return object;
         })
@@ -101,7 +102,7 @@ const TrainingProcess = () => {
                 pretest_status: val.pretest_status,
                 question_count: val.question_count,
                 schedule_date: val.schedule_date,
-                datefmt: moment(val.schedule_date).format("YYYY-MM-DD"),
+                datefmt: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                 sn: val.sn,
                 slno: val.slno,
                 topic: val.topic,
@@ -123,15 +124,14 @@ const TrainingProcess = () => {
 
 
     useEffect(() => {
-        const upcomingfilter = tabledata?.filter((val) => moment(new Date(val.date)).format('MM') === moment(new Date()).format('MM')
-            && moment(new Date(val.date)).format('DD') > moment(new Date()).format('DD'))
+        const upcomingfilter = tabledata?.filter((val) => moment(new Date(val.schedule_date)).format('MM') === moment(new Date()).format('MM')
+            && moment(new Date(val.schedule_date)).format('DD') > moment(new Date()).format('DD'))
         setUpcomingData(upcomingfilter);
 
         const getEndofMonth = endOfMonth(new Date())
         const nextmonth = addDays(new Date(getEndofMonth), 1) //get next month eg.dec 1 2023
-        const filterNextmonth = tabledata?.filter((val) => moment(new Date(val.date)).format('MM') === moment(new Date(nextmonth)).format('MM'))
+        const filterNextmonth = tabledata?.filter((val) => moment(new Date(val.schedule_date)).format('MM') === moment(new Date(nextmonth)).format('MM'))
         setNextmonthData(filterNextmonth)
-
     }, [tabledata, setUpcomingData, setNextmonthData])
 
     const ViewList = useCallback((e, val) => {
@@ -154,6 +154,7 @@ const TrainingProcess = () => {
             setShow(7)
         }
     }, [setShow])
+
     return (
         <Box sx={{ width: "100%", p: 1 }}>
             {
@@ -162,102 +163,101 @@ const TrainingProcess = () => {
                         show === 3 ? <UpcomingTrainings setShow={setShow} upcomingData={upcomingData} /> :
                             show === 4 ? <NextMonthTrainings setShow={setShow} NextmonthData={NextmonthData} /> :
                                 show === 5 ? <PendingList setShow={setShow} empdata={empdata} count={count} Setcount={Setcount} /> :
-                                    show === 6 ? <AllowPostTest setShow={setShow} allot={allot} count={count} Setcount={Setcount} /> :
-                                        show === 7 ? <BelowAVGListEmpList BelowAvgList={BelowAvgList} setShow={setShow} count={count} Setcount={Setcount} /> :
+                                    show === 7 ? <BelowAVGListEmpList BelowAvgList={BelowAvgList} setShow={setShow} count={count} Setcount={Setcount} /> :
 
 
-                                            <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 1, gap: 3 }}
-                                            >
-                                                <Grid sx={{ p: 1 }} container spacing={2}>
-                                                    {itemsList?.map((item, index) => (
-                                                        <Grid item xs={12} sm={6} md={4} key={index}>
-                                                            <Paper
-                                                                key={index}
-                                                                variant="outlined"
-                                                                sx={{
-                                                                    display: 'flex',
-                                                                    flexDirection: 'column',
-                                                                    p: 1,
-                                                                    width: '100%',
-                                                                }}
-                                                            >
-                                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                                                    <Box
-                                                                        sx={{
-                                                                            width: 40,
-                                                                            height: 40,
-                                                                            backgroundColor: '#E2F6CA',
-                                                                            borderRadius: '50%',
-                                                                            display: 'flex',
-                                                                            justifyContent: 'center',
-                                                                            alignItems: 'center',
-                                                                            opacity: 0.7,
-                                                                        }}
-                                                                    >
-                                                                        {item.icons}
-                                                                    </Box>
-                                                                    <Box
-                                                                        sx={{
-                                                                            display: 'flex',
-                                                                            flexDirection: 'row',
-                                                                            alignItems: 'center',
-                                                                            flex: 1,
-                                                                        }}
-                                                                    >
-                                                                        <Box
-                                                                            sx={{
-                                                                                padding: '4px',
-                                                                                borderRadius: '8px',
-                                                                                marginRight: 'auto',
-                                                                            }}
-                                                                        >
-                                                                            <Typography sx={{ fontSize: 18 }}>{item.itemname}</Typography>
-                                                                        </Box>
-                                                                    </Box>
-                                                                    <Box
-                                                                        sx={{
-                                                                            display: 'flex',
-                                                                            justifyContent: 'center',
-                                                                            alignItems: 'center',
-                                                                            border: '2px solid #E2F6CA',
-                                                                            padding: '4px',
-                                                                            borderRadius: '8px',
-                                                                            width: '15%',
-                                                                        }}
-                                                                    >
-                                                                        <Typography sx={{ fontWeight: 'bold', fontSize: 17, color: '#81c784' }}>
-                                                                            {item.count}
-                                                                        </Typography>
-                                                                    </Box>
+                                        <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 1, gap: 3 }}
+                                        >
+                                            <Grid sx={{ p: 1 }} container spacing={2}>
+                                                {itemsList?.map((item, index) => (
+                                                    <Grid item xs={12} sm={6} md={4} key={index}>
+                                                        <Paper
+                                                            key={index}
+                                                            variant="outlined"
+                                                            sx={{
+                                                                display: 'flex',
+                                                                flexDirection: 'column',
+                                                                p: 1,
+                                                                width: '100%',
+                                                            }}
+                                                        >
+                                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                                <Box
+                                                                    sx={{
+                                                                        width: 40,
+                                                                        height: 40,
+                                                                        backgroundColor: '#E2F6CA',
+                                                                        borderRadius: '50%',
+                                                                        display: 'flex',
+                                                                        justifyContent: 'center',
+                                                                        alignItems: 'center',
+                                                                        opacity: 0.7,
+                                                                    }}
+                                                                >
+                                                                    {item.icons}
                                                                 </Box>
-
                                                                 <Box
                                                                     sx={{
                                                                         display: 'flex',
-                                                                        borderTop: 2,
-                                                                        borderColor: '#D6E6F2',
-                                                                        marginTop: 3,
+                                                                        flexDirection: 'row',
                                                                         alignItems: 'center',
-                                                                        cursor: 'pointer',
-                                                                    }}
-                                                                    onClick={(e) => {
-                                                                        ViewList(e, item)
+                                                                        flex: 1,
                                                                     }}
                                                                 >
-                                                                    <Box sx={{ p: 1, mt: 1 }}>
-                                                                        <Typography>View</Typography>
-                                                                    </Box>
-                                                                    <Box sx={{ ml: 1, mt: 1 }}>
-                                                                        <IconButton size="small" color="success">
-                                                                            <ArrowRightAltIcon />
-                                                                        </IconButton>
+                                                                    <Box
+                                                                        sx={{
+                                                                            padding: '4px',
+                                                                            borderRadius: '8px',
+                                                                            marginRight: 'auto',
+                                                                        }}
+                                                                    >
+                                                                        <Typography sx={{ fontSize: 18 }}>{item.itemname}</Typography>
                                                                     </Box>
                                                                 </Box>
-                                                            </Paper>
-                                                        </Grid>
-                                                    ))}
-                                                </Grid>
-                                            </Box>
+                                                                <Box
+                                                                    sx={{
+                                                                        display: 'flex',
+                                                                        justifyContent: 'center',
+                                                                        alignItems: 'center',
+                                                                        border: '2px solid #E2F6CA',
+                                                                        padding: '4px',
+                                                                        borderRadius: '8px',
+                                                                        width: '15%',
+                                                                    }}
+                                                                >
+                                                                    <Typography sx={{ fontWeight: 'bold', fontSize: 17, color: '#81c784' }}>
+                                                                        {item.count}
+                                                                    </Typography>
+                                                                </Box>
+                                                            </Box>
+
+                                                            <Box
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    borderTop: 2,
+                                                                    borderColor: '#D6E6F2',
+                                                                    marginTop: 3,
+                                                                    alignItems: 'center',
+                                                                    cursor: 'pointer',
+                                                                }}
+                                                                onClick={(e) => {
+                                                                    ViewList(e, item)
+                                                                }}
+                                                            >
+                                                                <Box sx={{ p: 1, mt: 1 }}>
+                                                                    <Typography>View</Typography>
+                                                                </Box>
+                                                                <Box sx={{ ml: 1, mt: 1 }}>
+                                                                    <IconButton size="small" color="success">
+                                                                        <ArrowRightAltIcon />
+                                                                    </IconButton>
+                                                                </Box>
+                                                            </Box>
+                                                        </Paper>
+                                                    </Grid>
+                                                ))}
+                                            </Grid>
+                                        </Box>
             }
         </Box>
 

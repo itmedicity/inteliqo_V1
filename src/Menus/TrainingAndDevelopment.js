@@ -65,6 +65,19 @@ const TrainingAndDevelopment = [
         name: 'Induction Training Calender',
         to: '/Home/InductionCalender',
     },
+    // {
+    //     men_slno: 288,
+    //     component: CNavItem,
+    //     name: 'Training Calender',
+    //     to: '/Home/TrainingInductionCalender',
+    // },
+    {
+        men_slno: 288,
+        component: CNavItem,
+        name: 'Training Calender',
+        to: '/Home/DeptTrainingCalendar',
+    },
+
     {
         men_slno: 274,
         component: CNavItem,
@@ -95,7 +108,18 @@ const TrainingAndDevelopment = [
         name: 'HOD Approvals',
         to: '/Home/HODApprovals',
     },
-
+    {
+        men_slno: 295,
+        component: CNavItem,
+        name: 'Training Verification',
+        to: '/Home/TDVerification',
+    },
+    {
+        men_slno: 296,
+        component: CNavItem,
+        name: 'Topic & Question Master',
+        to: '/Home/TopicQuestionMaster',
+    },
 
 ]
 

@@ -20,7 +20,7 @@ const PreLogInpage = () => {
     const [view, SetView] = useState(0)
     const [data, setData] = useState([])
 
-    const { topic_slno } = useParams()
+    const { topic_slno, slno } = useParams()
 
     const reset = useCallback(() => {
         SetEmpId('')
@@ -29,26 +29,42 @@ const PreLogInpage = () => {
 
     const postdata = useMemo(() => {
         return {
-            em_no: EmpId,
-            em_mobile: Mob,
-            topic_slno: topic_slno
+            em_no: parseInt(EmpId),
+            em_mobile: parseInt(Mob),
         }
-    }, [EmpId, Mob, topic_slno])
+    }, [EmpId, Mob])
 
     //api call
     const LogInData = useCallback(async () => {
         if (EmpId !== '' && Mob !== '' && topic_slno !== 0) {
             const GetData = async () => {
-                const result = await axioslogin.post('/CommonPreTestPage/logEmpDetails', postdata)
-                const { data } = result.data
-                if (data.length > 0) {
-                    setData(data)
-                    Setcount(count + 1);
-                    SetView(1)
-                    reset();
+                const result1 = await axioslogin.post('/CommonPreTestPage/logEmpDetails', postdata)
+                const { data, success } = result1.data
+                if (success === 2 && data?.length > 0) {
+                    const { em_id } = data[0]
+                    const obj = {
+                        preId: parseInt(em_id),
+                        postId: parseInt(em_id),
+                        em_no: parseInt(EmpId),
+                        em_mobile: parseInt(Mob),
+                        topic_slno: parseInt(topic_slno),
+                        slno: parseInt(slno)
+
+                    }
+                    const result2 = await axioslogin.post('/CommonPreTestPage/logEmpDatas', obj)
+                    const { datas, success } = result2.data
+                    if (success === 2) {
+                        setData(datas)
+                        Setcount(count + 1);
+                        SetView(1)
+                        reset();
+                    }
                 }
                 else {
                     warningNofity("Training Not scheduled")
+                    setData([])
+                    Setcount(0);
+                    SetView(0)
                 }
             }
             GetData(postdata)
@@ -57,7 +73,32 @@ const PreLogInpage = () => {
             warningNofity("Please Enter Valid Employee ID and Registered Mobile Number")
             reset();
         }
-    }, [postdata, setData, SetView, reset, Setcount, count, EmpId, Mob, topic_slno])
+    }, [postdata, setData, SetView, reset, Setcount, count, EmpId, Mob, topic_slno, slno])
+
+
+
+    // const LogInData = useCallback(async () => {
+    //     if (EmpId !== '' && Mob !== '' && topic_slno !== 0) {
+    //         const GetData = async () => {
+    //             const result = await axioslogin.post('/CommonPreTestPage/logEmpDetails', postdata)
+    //             const { data } = result.data
+    //             if (data.length > 0) {
+    //                 setData(data)
+    //                 Setcount(count + 1);
+    //                 SetView(1)
+    //                 reset();
+    //             }
+    //             else {
+    //                 warningNofity("Training Not scheduled")
+    //             }
+    //         }
+    //         GetData(postdata)
+    //     }
+    //     else {
+    //         warningNofity("Please Enter Valid Employee ID and Registered Mobile Number")
+    //         reset();
+    //     }
+    // }, [postdata, setData, SetView, reset, Setcount, count, EmpId, Mob, topic_slno])
 
     return (
         <Fragment>
@@ -101,7 +142,7 @@ const PreLogInpage = () => {
                             </Box>
                         </Box>
                     </Paper>
-                    : <EmpDetailsShow data={data} />
+                    : <EmpDetailsShow data={data} SetView={SetView} />
             }
 
         </Fragment >

@@ -5,11 +5,10 @@ import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDa
 import AttendanceModal from './AttendanceModal'
 import LaunchIcon from '@mui/icons-material/Launch';
 import { IconButton as OpenIcon } from '@mui/material';
-import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 import { TrainingAttendance } from 'src/redux/actions/Training.Action'
-import _ from 'underscore'
 import { Paper } from '@material-ui/core'
+import { format } from 'date-fns'
 
 const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
     const [todayData, SetTodayData] = useState([])
@@ -24,18 +23,17 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
         }
     }, [dispatch, topic, count])
 
-
-
-    const attendance = useSelector((state) => state?.gettrainingData?.Attendance?.AttendanceList, _.isEqual);
+    const attendance = useSelector((state) => state?.gettrainingData?.Attendance?.AttendanceList);
 
     useEffect(() => {
-        const displayData = todays?.map((val) => {
+        const displayData = todays?.map((val, ndx) => {
             const object = {
+                serlNo: ndx + 1,
                 deparment_sect: val.deparment_sect,
                 department: val.department,
                 schedule_year: val.schedule_year,
                 schedule_date: val.schedule_date,
-                date: moment(val.schedule_date).format("YYYY-MM-DD"),
+                date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                 slno: val.slno,
                 topic_slno: val.topic_slno,
                 training_topic_name: val.training_topic_name
@@ -53,6 +51,7 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
     }, [Setopen, setTopic])
 
     const [columnDef] = useState([
+        { headerName: 'Sl.No', field: 'serlNo', filter: true, width: 150 },
         { headerName: 'Training Topic', field: 'training_topic_name', filter: true, width: 250 },
         { headerName: 'schedule Date', field: 'date', filter: true, width: 150 },
         {
@@ -85,7 +84,6 @@ const TodayTrainings = ({ setShow, count, Setcount, todays }) => {
                 }
             </CustomDashboardPage>
         </Paper>
-
     )
 }
 export default memo(TodayTrainings)

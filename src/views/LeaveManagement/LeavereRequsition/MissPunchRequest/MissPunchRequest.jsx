@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, Grid, Input, Sheet, Textarea, Tooltip } from '@m
 import { Paper } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { format, lastDayOfMonth, startOfMonth, subDays } from 'date-fns';
 import moment from 'moment';
 import React, { useCallback, memo, useState, useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux';
@@ -67,6 +67,10 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
     useEffect(() => {
         setMasterGroupStatus(groupStatus)
     }, [groupStatus])
+
+    const state = useSelector((state) => state?.getCommonSettings)
+    const commonStates = useMemo(() => state, [state])
+    const { holiday_leave_request } = commonStates;
 
     const handleChangeDate = useCallback(async (date) => {
         setFromDate(date)
@@ -165,7 +169,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
             const { success, data } = result.data;
             if (success === 1) {
                 const { holiday_status } = data[0]
-                if (holiday_status === 1) {
+                if (holiday_status === 1 && holiday_leave_request === 1) {
                     warningNofity("Cannot Apply for No punch request on Holiday")
                     setDropOpen(false)
                 } else {
@@ -214,7 +218,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
         }
     }, [reason, checkInCheck, checkOutCheck, em_department, em_dept_section, em_id, em_no, fromDate,
         planSlno, shiftId, loginEmno, loginHod, loginIncharge, masterGroupStatus, setRequestType,
-        shft_chkin_time, shft_chkout_time, setCount, deptApprovalLevel, shiftDesc
+        shft_chkin_time, shft_chkout_time, setCount, deptApprovalLevel, shiftDesc, holiday_leave_request
     ])
 
     return (
@@ -226,7 +230,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                         <DatePicker
                             views={['day']}
                             inputFormat="dd-MM-yyyy"
-                            maxDate={new Date()}
+                            maxDate={subDays(new Date(), 1)}
                             value={fromDate}
                             size="small"
                             onChange={handleChangeDate}

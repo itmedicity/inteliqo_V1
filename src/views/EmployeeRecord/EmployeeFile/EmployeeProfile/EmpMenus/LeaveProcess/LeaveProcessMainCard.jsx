@@ -20,10 +20,11 @@ import {
   getEmployeeCurrentLeaveProcessInfom,
   processedLeaveList,
   newProcessedEmployeeData,
-  categoryChangedNewObject,
-  updateInactiveLeaves,
+  // categoryChangedNewObject,
+  // updateInactiveLeaves,
   updateOldLeaveProcessedData,
   insertNewLeaveProcessData,
+  incativeExistLeave,
 } from './Functions/LeaveProcessFun'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { getProcessserialnum } from 'src/views/Constant/Constant'
@@ -232,7 +233,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       em_prob_end_date, ecat_prob, ecat_training, probation_status)
 
     if (contractStatus.status === true) {
-     
+
       //   // 4->
       if (processedLveDetl.newProcess === true) {
         //NEW PROCESS --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
@@ -261,75 +262,75 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
         //Category changed in 'hrm_emp_mast' ( check both the table ''hrm_emp_mast' & 'hrm_process_table' )
 
         // 1 -- > first create a new object with current category and currenct active 'hrm_emp_process' table data
-        categoryChangedNewObject(category, leaveProcess, processSlno, employeeIDs)
-          .then((newCategoryObject) => {
-            // new category based data to insert into DB
-            /***
-             * 2 --> Inactive the All credited leaves ( Casual leace, holidays, earn Leave )
-             * if only inactive the following criteria
-             * if previous category have the CL but the current category dont have the CL
-             * then inactive all the credited CL Leaves
-             *
-             **/
+        // categoryChangedNewObject(category, leaveProcess, processSlno, employeeIDs)
+        //   .then((newCategoryObject) => {
+        // new category based data to insert into DB
+        /***
+         * 2 --> Inactive the All credited leaves ( Casual leace, holidays, earn Leave )
+         * if only inactive the following criteria
+         * if previous category have the CL but the current category dont have the CL
+         * then inactive all the credited CL Leaves
+         *
+         **/
 
-            updateInactiveLeaves(category, leaveProcess)
-              .then((updateStatus) => {
-                // updatation Status old leaves if excist
-                const { success } = updateStatus
-                if (success === 1) {
-                  //3 --> Inactive the current Active or Old 'hrm_emp_process' table data / status - 'N'
-                  updateOldLeaveProcessedData(leaveProcess)
-                    .then((updateStatus) => {
-                      let { success } = updateStatus
-                      if (success === 1) {
-                        //4 --> Insert new object data for  'hrm_emp_process' table with Active status
+        incativeExistLeave(category, leaveProcess)
+          .then((updateStatus) => {
+            // updatation Status old leaves if excist
+            const { success } = updateStatus
+            if (success === 1) {
+              //3 --> Inactive the current Active or Old 'hrm_emp_process' table data / status - 'N'
+              updateOldLeaveProcessedData(leaveProcess)
+                .then((updateStatus) => {
+                  let { success } = updateStatus
+                  if (success === 1) {
+                    //4 --> Insert new object data for  'hrm_emp_process' table with Active status
 
-                        insertNewLeaveProcessData(newCategoryObject)
-                          .then((insertMessage) => {
-                            let { success, message } = insertMessage
-                            if (success === 1) {
-                              succesNofity(insertMessage)
-                              setprocessBtn(false)
-                              setUpdateStat(updateStat + 1)
-                              // setProcessSpinner(false)
-                            } else {
-                              warningNofity(
-                                `error ! ${message} , LeaveProcessMainCard line # 221, Contact Information Technology`,
-                              )
-                            }
-                          })
-                          .catch((error) =>
-                            warningNofity(
-                              `error ! ${error} , LeaveProcessMainCard line # 222, Contact Information Technology`,
-                            ),
+                    insertNewLeaveProcessData(newEmployeeProcesedData)
+                      .then((insertMessage) => {
+                        let { success, message } = insertMessage
+                        if (success === 1) {
+                          succesNofity(insertMessage)
+                          setprocessBtn(false)
+                          setUpdateStat(updateStat + 1)
+                          // setProcessSpinner(false)
+                        } else {
+                          warningNofity(
+                            `error ! ${message} , LeaveProcessMainCard line # 221, Contact Information Technology`,
                           )
-                      } else {
-                        warningNofity('Error !, Contact IT')
-                      }
-                    })
-                    .catch((error) =>
-                      warningNofity(
-                        `error ! ${error} , LeaveProcessMainCard line # 228, Contact Information Technology`,
-                      ),
-                    )
-                } else {
+                        }
+                      })
+                      .catch((error) =>
+                        warningNofity(
+                          `error ! ${error} , LeaveProcessMainCard line # 222, Contact Information Technology`,
+                        ),
+                      )
+                  } else {
+                    warningNofity('Error !, Contact IT')
+                  }
+                })
+                .catch((error) =>
                   warningNofity(
-                    'Somthing went Wrong in Old Leave Updation in Category change Process, contact Information Technology',
-                  )
-                  return
-                }
-              })
-              .catch((error) =>
-                warningNofity(
-                  `error ! ${error} , LeaveProcessMainCard line # 235, Contact Information Technology`,
-                ),
+                    `error ! ${error} , LeaveProcessMainCard line # 228, Contact Information Technology`,
+                  ),
+                )
+            } else {
+              warningNofity(
+                'Somthing went Wrong in Old Leave Updation in Category change Process, contact Information Technology',
               )
+              return
+            }
           })
           .catch((error) =>
             warningNofity(
-              `error ! ${error} , LeaveProcessMainCard line # 237, Contact Information Technology`,
+              `error ! ${error} , LeaveProcessMainCard line # 235, Contact Information Technology`,
             ),
           )
+        // })
+        // .catch((error) =>
+        //   warningNofity(
+        //     `error ! ${error} , LeaveProcessMainCard line # 237, Contact Information Technology`,
+        //   ),
+        // )
       }
       else if (processedLveDetl.dateExceed === true) {
         //Next updation date is exceed the current date
@@ -340,7 +341,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       warningNofity(contractStatus.message)
     }
   }, [ecat_prob, leaveProcess, contract_status, em_cont_end, em_prob_end_date, probation_status,
-    updateStat, newEmployeeProcesedData, processedLveDetl, category, employeeIDs, processSlno, ecat_training,])
+    updateStat, newEmployeeProcesedData, processedLveDetl, category, ecat_training,])
 
   return (
     <CustomLayout title="Leave Process">

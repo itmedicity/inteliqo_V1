@@ -120,7 +120,7 @@ const Groupmaster = () => {
 
     return (
 
-        <MasterLayout title="Group Master" displayClose={true} >
+        <MasterLayout title="User Group Master" displayClose={true} >
             <ToastContainer />
             <Box sx={{ width: "100%" }} >
                 <Grid container spacing={1}>

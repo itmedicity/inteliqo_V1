@@ -1,5 +1,5 @@
 import { Button, CssVarsProvider, Typography, Select, Option, } from '@mui/joy'
-import { Box, Checkbox, FormControl, Grid, IconButton, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip } from '@mui/material'
+import { Box, Checkbox, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material'
 import React, { Fragment, Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
@@ -363,6 +363,7 @@ const Personaldetails = () => {
             emp_yeargae: age,
             em_region: region1,
             hrm_region2: region2,
+            em_gender: gender,
             create_user: employeeNumber()
         }
 

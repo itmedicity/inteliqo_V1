@@ -1,16 +1,16 @@
-import { Box, Tooltip } from '@mui/material'
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import { Box } from '@mui/material'
+import React, { memo, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import _ from 'underscore';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
+// import HowToRegIcon from '@mui/icons-material/HowToReg';
 import moment from 'moment';
-import { axioslogin } from 'src/views/Axios/Axios';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+// import { axioslogin } from 'src/views/Axios/Axios';
+// import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
-import DoneIcon from '@mui/icons-material/Done';
-import { IconButton as OpenIcon } from '@mui/material';
+// import DoneIcon from '@mui/icons-material/Done';
+// import { IconButton as OpenIcon } from '@mui/material';
 
-const TrainerInductAprvls = ({ em_id, hod, InductionFlag, Setcount, count }) => {
+const TrainerInductAprvls = ({ InductionFlag, count }) => {
 
     const [ShowData, setShowData] = useState([]);
 
@@ -32,7 +32,9 @@ const TrainerInductAprvls = ({ em_id, hod, InductionFlag, Setcount, count }) => 
                     induction_slno: val.induction_slno,
                     date: moment(val.induction_date).format("DD-MM-YYYY"),
                     training_apprvl_user: val.trainer_induct_apprvl_user,
-                    training_apprvl_date: val.trainer_induct_apprvl_date
+                    training_apprvl_date: val.trainer_induct_apprvl_date,
+                    training_iduct_tnd_verify_status: val.training_iduct_tnd_verify_status,
+                    status: val.training_iduct_tnd_verify_status === 1 ? "Completed" : "Pending"
                 }
                 return object;
             })
@@ -40,58 +42,58 @@ const TrainerInductAprvls = ({ em_id, hod, InductionFlag, Setcount, count }) => 
         }
     }, [tarinerAppvlsInduct, count, InductionFlag, setShowData])
 
-    const handleSelect = useCallback((params) => {
-        const data = params.data
-        const { induction_slno, employeeId } = data;
-        const obj = {
-            training_apprvl_status: 1,
-            training_apprvl_user: em_id,
-            training_apprvl_date: moment(new Date()).format("YYYY:MM:DD HH:mm:ss"),
-            induction_slno: induction_slno,
-            employeeId: employeeId
-        }
-        const HodApprovals = {
-            training_induct_hod_aprvl_status: 1,
-            training_induct_hod_apprvls_user: em_id,
-            training_induct_hod_apprvls_date: moment(new Date()).format("YYYY:MM:DD HH:mm:ss"),
-            induction_slno: induction_slno,
-            EmployeeID: employeeId
-        }
-        if (hod === 1) {
-            const InductVeriftn = (async (obj) => {
-                const result = await axioslogin.patch(`/TrainingDetails/updte_trainer_Induct_veriftn`, obj)
-                const { success } = result.data;
-                if (success === 1) {
-                    const result = await axioslogin.patch(`/TrainingDetails/updte_hod_Induct_veriftn`, HodApprovals)
-                    const { message, success } = result.data;
-                    if (success === 1) {
-                        succesNofity(message)
-                        Setcount(count + 1)
-                    }
-                    else {
-                        warningNofity("Not verified")
-                    }
-                }
-                else {
-                    warningNofity("Not verified")
-                }
-            })
-            InductVeriftn(obj)
-        } else {
-            const InductVeriftn = (async (obj) => {
-                const result = await axioslogin.patch(`/TrainingDetails/updte_trainer_Induct_veriftn`, obj)
-                const { message, success } = result.data;
-                if (success === 1) {
-                    succesNofity(message)
-                    Setcount(count + 1)
-                }
-                else {
-                    warningNofity("Not verified")
-                }
-            })
-            InductVeriftn(obj)
-        }
-    }, [em_id, hod, Setcount, count])
+    // const handleSelect = useCallback((params) => {
+    //     const data = params.data
+    //     const { induction_slno, employeeId } = data;
+    //     const obj = {
+    //         training_apprvl_status: 1,
+    //         training_apprvl_user: em_id,
+    //         training_apprvl_date: moment(new Date()).format("YYYY:MM:DD HH:mm:ss"),
+    //         induction_slno: induction_slno,
+    //         employeeId: employeeId
+    //     }
+    //     const HodApprovals = {
+    //         training_induct_hod_aprvl_status: 1,
+    //         training_induct_hod_apprvls_user: em_id,
+    //         training_induct_hod_apprvls_date: moment(new Date()).format("YYYY:MM:DD HH:mm:ss"),
+    //         induction_slno: induction_slno,
+    //         EmployeeID: employeeId
+    //     }
+    //     if (hod === 1) {
+    //         const InductVeriftn = (async (obj) => {
+    //             const result = await axioslogin.patch(`/TrainingDetails/updte_trainer_Induct_veriftn`, obj)
+    //             const { success } = result.data;
+    //             if (success === 1) {
+    //                 const result = await axioslogin.patch(`/TrainingDetails/updte_hod_Induct_veriftn`, HodApprovals)
+    //                 const { message, success } = result.data;
+    //                 if (success === 1) {
+    //                     succesNofity(message)
+    //                     Setcount(count + 1)
+    //                 }
+    //                 else {
+    //                     warningNofity("Not verified")
+    //                 }
+    //             }
+    //             else {
+    //                 warningNofity("Not verified")
+    //             }
+    //         })
+    //         InductVeriftn(obj)
+    //     } else {
+    //         const InductVeriftn = (async (obj) => {
+    //             const result = await axioslogin.patch(`/TrainingDetails/updte_trainer_Induct_veriftn`, obj)
+    //             const { message, success } = result.data;
+    //             if (success === 1) {
+    //                 succesNofity(message)
+    //                 Setcount(count + 1)
+    //             }
+    //             else {
+    //                 warningNofity("Not verified")
+    //             }
+    //         })
+    //         InductVeriftn(obj)
+    //     }
+    // }, [em_id, hod, Setcount, count])
 
     //Induct
     const [columnDef] = useState([
@@ -100,26 +102,28 @@ const TrainerInductAprvls = ({ em_id, hod, InductionFlag, Setcount, count }) => 
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 200 },
         { headerName: 'Training Topics', field: 'training_topic_name', filter: true, width: 200 },
         { headerName: 'Schedule Date', field: 'date', filter: true, width: 200 },
-        {
-            headerName: 'Verification',
-            cellRenderer: params => {
-                if (params.data.training_apprvl_status === 1) {
-                    return <OpenIcon
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
-                        <Tooltip title="Verified">
-                            <DoneIcon />
-                        </Tooltip>
-                    </OpenIcon>
-                } else {
-                    return <OpenIcon onClick={() => handleSelect(params)}
-                        sx={{ paddingY: 0.5 }} >
-                        <Tooltip title="Verify">
-                            <HowToRegIcon color='primary' />
-                        </Tooltip>
-                    </OpenIcon>
-                }
-            }
-        }
+        { headerName: 'Training Status', field: 'status', filter: true, width: 200 },
+
+        // {
+        //     headerName: 'Verification',
+        //     cellRenderer: params => {
+        //         if (params.data.training_apprvl_status === 1) {
+        //             return <OpenIcon
+        //                 sx={{ paddingY: 0.5, cursor: 'none' }}  >
+        //                 <Tooltip title="Verified">
+        //                     <DoneIcon />
+        //                 </Tooltip>
+        //             </OpenIcon>
+        //         } else {
+        //             return <OpenIcon onClick={() => handleSelect(params)}
+        //                 sx={{ paddingY: 0.5 }} >
+        //                 <Tooltip title="Verify">
+        //                     <HowToRegIcon color='primary' />
+        //                 </Tooltip>
+        //             </OpenIcon>
+        //         }
+        //     }
+        // }
     ])
 
     return (

@@ -16,6 +16,8 @@ const InductionPostTest = React.lazy(() => import('./views/TrainingDevelopment/I
 const OnlineInductReTest = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/InductionRetest/SystemInductionRetest/TestMainPage'))
 const InductQREmpDetails = React.lazy(() => import('./views/TrainingDevelopment/EmployeeDashboard/InductionRetest/QRInductionRetest/InductQREmpDetails'))
 const ORInductionTraining = React.lazy(() => import('./views/TrainingDevelopment/OnlineTrainings/ORInductionTraining'))
+const FeedbackPage = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/FeedbackPage'))
+const FeedbackPageWithoutTest = React.lazy(() => import('./views/TrainingDevelopment/InductionTest/FeedbackWithoutTest'))
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -41,7 +43,7 @@ function App() {
           </Route>
           <Route path="/OnlineReTest/:slno/:emId/:tslno/:qcount" render={(props) => <RetestQuestions />}  >
           </Route>
-          <Route path="/PreLogInpage/:topic_slno" render={(props) => <PreLogInpage />}  >
+          <Route path="/PreLogInpage/:topic_slno/:slno" render={(props) => <PreLogInpage />}  >
           </Route>
           <Route path="/RetestEmpDetails/:emId/:tslno" render={(props) => <RetestEmpDetail />}  >
           </Route>
@@ -56,6 +58,10 @@ function App() {
           <Route path="/InductQREmpDetails/:emId/:tslno" render={(props) => <InductQREmpDetails />}  >
           </Route>
           <Route path="/InductOnlineTraining/:id/:emId" render={(props) => <ORInductionTraining />}  >
+          </Route>
+          <Route path="/FeedbackPage/:topic_no/:schedule_no/:EmId" render={(props) => <FeedbackPage />}  >
+          </Route>
+          <Route path="/FeedbackPageWithoutTest/:topic_no/:schedule_no/:EmId" render={(props) => <FeedbackPageWithoutTest />}  >
           </Route>
         </Switch>
       </React.Suspense>

@@ -1,32 +1,108 @@
-import { Button, CssVarsProvider, Typography } from '@mui/joy'
-import { Box, FormControl, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField } from '@mui/material'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { lastDayOfMonth, startOfMonth } from 'date-fns'
-import moment from 'moment'
-import React, { Fragment, memo, useEffect, useState } from 'react'
-import { useMemo } from 'react'
-import { useSelector } from 'react-redux'
-import { ToastContainer } from 'react-toastify'
-import { axioslogin } from 'src/views/Axios/Axios'
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import CommonCheckBox from 'src/views/Component/CommonCheckBox'
-import _ from 'underscore'
+
+import { Box, Button, Checkbox, IconButton, Input, Option, Select, Table, Textarea, Tooltip, Typography } from '@mui/joy';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import React, { lazy, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { useSelector } from 'react-redux';
+import { getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
+import { axioslogin } from 'src/views/Axios/Axios';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { addDays, format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { Paper } from '@mui/material';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
+import BeenhereIcon from '@mui/icons-material/Beenhere';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid';
+
+const DeleteOnduty = lazy(() => import('./OnDutyCancelModal'))
 
 const OnDutyRequest = () => {
 
-    const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
-    const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
-
-    const { em_no, em_id, em_department, em_dept_section, hod: empHodStat } = selectedEmployeeDetl?.[0];
-
-    const [fromDate, setFromDate] = useState(moment(new Date()))
-    const [toDate, setToDate] = useState(moment(new Date()))
-    const [viewTable, setViewTable] = useState(0)
+    const [fromDate, setFromDate] = useState(new Date())
+    const [toDate, setToDate] = useState(new Date())
     const [dates, setDates] = useState([])
     const [remark, setRemark] = useState('')
     const [deptShift, setDeptShift] = useState([])
     const [selectedShift, setSelectedShift] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [count, setCount] = useState(0)
+    const [deleteOpen, setDeleteOpen] = useState(false)
+    const [empdata, setEmpdata] = useState({})
+
+    const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
+    const { em_no, em_id, em_department, em_dept_section, } = selectedEmpInform;
+
+    const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
+    const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
+    const { hod: loginHod, incharge: loginIncharge, em_id: loginEmid, groupmenu } = empInformationFromRedux;
+
+    const apprLevel = useSelector((state) => getLeaveReqApprovalLevel(state))
+    const deptApprovalLevel = useMemo(() => apprLevel, [apprLevel])
+
+    //CHEK THE AURHORISED USER GROUP
+    const [masterGroupStatus, setMasterGroupStatus] = useState(false);
+    const getcommonSettings = useSelector((state) => getCommonSettings(state, groupmenu))
+    const groupStatus = useMemo(() => getcommonSettings, [getcommonSettings])
+
+
+
+    useEffect(() => {
+        setMasterGroupStatus(groupStatus)
+    }, [groupStatus])
+
+
+    useEffect(() => {
+        const getOnDuty = async (em_id) => {
+            const getID = {
+                em_id: em_id
+            }
+            const result = await axioslogin.post('/CommonReqst/onduty/empwise', getID)
+            const { data, success } = result.data;
+            if (success === 1) {
+                const array1 = data && data.filter((val) => {
+                    return (val.em_id === em_id)
+                })
+                const newOnduty = array1.map((val) => {
+                    return {
+                        ...val,
+                        typeslno: 2,
+                        em_no: val.em_no,
+                        type: 'On Duty Request',
+                        slno: val.onduty_slno,
+                        serialno: val.serialno,
+                        empname: val.em_name,
+                        sectname: val.sect_name,
+                        reqDate: format(new Date(val.request_date), 'dd-MM-yyyy'),
+                        dutyDate: format(new Date(val.on_duty_date), 'dd-MM-yyyy'),
+                        reason: val.onduty_reason,
+                        inchStatus: val.incharge_approval_status,
+                        hodStatus: val.hod_approval_status,
+                        hrstatus: val.hr_approval_status,
+                        cancelStatus: val.cancel_status,
+                        status: val.cancel_status === 1 ? 'Request Cancelled' :
+                            (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
+                                (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Approved' :
+                                    (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                        (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                            (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                    (val.hod_req_status === 1 && val.hod_approval_status === 0 && val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                                        (val.hod_req_status === 0 && val.hod_approval_status === 0 && val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                                            (val.hod_req_status === 1 && val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                                                (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
+                    }
+                })
+                setTableData(newOnduty)
+                setCount(0)
+            } else {
+                setTableData([])
+            }
+        }
+        if (em_id !== 0) {
+            getOnDuty(em_id)
+        }
+
+    }, [em_id, count])
 
     useEffect(() => {
         const getdepartmentShift = async () => {
@@ -51,29 +127,28 @@ const OnDutyRequest = () => {
         getdepartmentShift();
     }, [em_department, em_dept_section])
 
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
-    const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
-    const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
-
-    const Displaydata = async () => {
-        var dateArray = [];
-        var currentDate = moment(fromDate);
-        var stopDate = moment(toDate);
-        while (currentDate <= stopDate) {
-            dateArray.push(moment(currentDate).format('YYYY-MM-DD'))
-            currentDate = moment(currentDate).add(1, 'days');
-        }
-        const arr = dateArray.map((val) => {
-            const obj = {
-                "date": val,
-                "inValue": false,
-                "outValue": false
+    const Displaydata = useCallback(async () => {
+        if (selectedShift === 0) {
+            warningNofity("Plaese select any shift")
+        } else {
+            var dateArray = [];
+            var currentDate = fromDate;
+            var stopDate = toDate;
+            while (currentDate <= stopDate) {
+                dateArray.push(format(new Date(currentDate), 'yyyy-MM-dd'),)
+                currentDate = addDays(new Date(currentDate), 1);
             }
-            return obj
-        })
-        setDates(arr)
-        setViewTable(1)
-    }
+            const arr = dateArray.map((val) => {
+                const obj = {
+                    "date": val,
+                    "inValue": false,
+                    "outValue": false
+                }
+                return obj
+            })
+            setDates(arr)
+        }
+    }, [fromDate, selectedShift, toDate])
 
     const getValue = async (e, val) => {
         let arr = dates.map((item) => item.date === val.date ? { ...item, inValue: e } : item)
@@ -84,48 +159,41 @@ const OnDutyRequest = () => {
         setDates(arr)
     }
 
-    const Submitrequest = async () => {
+    const Submitrequest = useCallback(async () => {
+
+        const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmid)
+
         const postArray = dates.map((val) => {
             const obj = {
                 em_id: em_id,
                 em_no: em_no,
                 dept_id: em_department,
                 dept_sect_id: em_dept_section,
-                request_date: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
-                on_duty_date: val.date,
+                request_date: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                on_duty_date: format(new Date(val.date), 'yyyy-MM-dd'),
                 shift_id: selectedShift,
                 in_time: val.inValue === true ? 1 : 0,
                 out_time: val.outValue === true ? 1 : 0,
                 onduty_reason: remark,
-                attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
-                incharge_req_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
-                    (authorization_incharge === 1 && incharge === 0) ? 1 :
-                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-                incharge_approval_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
-                    (hod === 1) ? 1 :
-                        (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-                incharge_approval_comment: (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                    (hod === 1) ? "DIRECT" :
-                        (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
-                incharge_approval_date: (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                    (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                        (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
-                hod_req_status: (authorization_hod === 1 && hod === 1) ? 1 :
-                    (authorization_hod === 1 && hod === 0) ? 1 :
-                        (authorization_hod === 0 && hod === 1) ? 1 : 0,
-                hod_approval_status: (authorization_hod === 1 && hod === 1) ? 1 :
-                    (authorization_hod === 0 && hod === 1) ? 1 : 0,
-                hod_approval_comment: (authorization_hod === 1 && hod === 1) ? "DIRECT" :
-                    (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
-                hod_approval_date: (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                    (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : '0000-00-00 00:00:00',
-                ceo_req_status: empHodStat === 1 ? 1 : 0,
-                hr_req_status: 1
+                attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
+                incharge_req_status: approveStatus.inc_apr,
+                incharge_approval_status: approveStatus.inc_stat,
+                incharge_approval_comment: approveStatus.inc_cmnt,
+                incharge_approval_date: approveStatus.inc_apr_time,
+                incharge_empid: approveStatus.usCode_inch,
+                hod_req_status: approveStatus.hod_apr,
+                hod_approval_status: approveStatus.hod_stat,
+                hod_approval_comment: approveStatus.hod_cmnt,
+                ceo_req_status: 0,
+                hr_req_status: 1,
+                hod_approval_date: approveStatus.hod_apr_time,
+                hod_empid: approveStatus.usCode_hod,
+
             }
             return obj
         })
 
-        const monthStartDate = moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
+        const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
         const dateCheck = {
             month: monthStartDate,
             section: em_dept_section
@@ -137,28 +205,28 @@ const OnDutyRequest = () => {
             const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
             const { success, data } = checkPunchMarkingHr.data
             if (success === 0 || success === 1) {
-                const lastUpdateDate = data?.length === 0 ? moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD') : moment(new Date(data[0]?.last_update_date)).format('YYYY-MM-DD')
-                const lastDay_month = moment(lastDayOfMonth(new Date(fromDate))).format('YYYY-MM-DD')
-
+                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
                 if (lastUpdateDate === lastDay_month) {
                     warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                 } else {
                     const result = await axioslogin.post('/CommonReqst/onduty/create', postArray)
                     const { message, success } = result.data;
                     if (success === 1) {
+                        setCount(Math.random())
                         succesNofity(message)
-                        setFromDate(moment(new Date()))
-                        setToDate(moment(new Date()))
-                        setViewTable(0)
+                        setFromDate(new Date())
+                        setToDate(new Date())
                         setRemark('')
                         setSelectedShift(0)
+                        setDates([])
                     } else {
                         errorNofity(message)
-                        setFromDate(moment(new Date()))
-                        setToDate(moment(new Date()))
-                        setViewTable(0)
+                        setFromDate(new Date())
+                        setToDate(new Date())
                         setRemark('')
                         setSelectedShift(0)
+                        setDates([])
                     }
                 }
             } else {
@@ -166,159 +234,240 @@ const OnDutyRequest = () => {
             }
         }
 
-    }
-    return (
-        <Fragment>
-            <ToastContainer />
-            <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
-                <Box sx={{ pl: 0., width: '20%', mt: 0.2 }} >
-                    <FormControl
-                        fullWidth={true}
-                        margin="dense"
-                        size='small'
+    }, [em_dept_section, fromDate, remark, em_id, em_no, em_department, selectedShift, dates,
+        deptApprovalLevel, masterGroupStatus, loginEmid, loginIncharge, loginHod])
+
+
+    const [columndef] = useState([
+        { headerName: 'Emp ID', field: 'em_no', minWidth: 100, filter: true },
+        { headerName: 'Emp Name', field: 'empname', minWidth: 200, filter: true },
+        { headerName: 'Department Section ', field: 'sectname', minWidth: 250, filter: true },
+        { headerName: 'Request Type ', field: 'type', minWidth: 200, filter: true },
+        { headerName: 'Duty Date ', field: 'dutyDate', filter: true, minWidth: 200 },
+        { headerName: 'Request Date', field: 'reqDate', filter: true, minWidth: 200 },
+        { headerName: 'Reason ', field: 'reason', minWidth: 200 },
+        { headerName: 'Status', field: 'status', filter: true, minWidth: 250 },
+        {
+            headerName: 'Action', minWidth: 100,
+            cellRenderer: params => {
+                if (params.data.hrstatus === 1 || params.data.inchStatus === 1 || params.data.hodStatus === 1 || params.data.cancelStatus === 1) {
+                    return <IconButton
+                        sx={{ paddingY: 0.5 }} >
+                        <BeenhereIcon />
+                    </IconButton>
+                } else {
+                    return <IconButton sx={{ paddingY: 0.5 }}
+                        onClick={() => deleteRequest(params)}
                     >
-                        <Select
-                            fullWidth
-                            variant="outlined"
-                            margin='dense'
-                            size='small'
-                            defaultValue={0}
-                            value={selectedShift}
-                            onChange={(e) => {
-                                setSelectedShift(e.target.value)
-                            }}
-                        >
-                            <MenuItem value={0} disabled>Select Shift</MenuItem>
-                            {
-                                deptShift?.map((val) => {
-                                    return <MenuItem value={val.shiftcode}
-                                        name={val.shiftDescription} key={val.shiftcode} >{val.shiftDescription}</MenuItem>
-                                })
-                            }
-                        </Select>
-                    </FormControl>
-                </Box>
-                <Box sx={{ pl: 1, mt: 2 }} >
-                    <CssVarsProvider>
-                        <Typography textColor="text.secondary" >
-                            From Date
-                        </Typography>
-                    </CssVarsProvider>
-                </Box>
-                <Box sx={{ p: 0.5, mt: 0.2 }} >
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DatePicker
-                            views={['day']}
-                            inputFormat="DD-MM-YYYY"
-                            value={fromDate}
-                            onChange={setFromDate}
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex', pt: 0.5 }} />
-                            )}
-                        />
-                    </LocalizationProvider>
-                </Box>
-                <Box sx={{ pl: 1, mt: 2 }} >
-                    <CssVarsProvider>
-                        <Typography textColor="text.secondary" >
-                            To Date
-                        </Typography>
-                    </CssVarsProvider>
-                </Box>
-                <Box sx={{ p: 0.5, mt: 0.2 }} >
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DatePicker
-                            views={['day']}
-                            inputFormat="DD-MM-YYYY"
-                            value={toDate}
-                            onChange={setToDate}
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex', pt: 0.5 }} />
-                            )}
-                        />
-                    </LocalizationProvider>
-                </Box>
-                <Box sx={{ px: 0.5, mt: 0.9 }}>
-                    <CssVarsProvider>
-                        <Button
-                            variant="outlined"
-                            component="label"
-                            size="md"
-                            color="primary"
-                            onClick={Displaydata}
-                        >
-                            Select Date
-                        </Button>
-                    </CssVarsProvider>
-                </Box>
-            </Box>
-            <Box sx={{ width: 500 }}>
-                {
-                    viewTable === 1 ? <TableContainer sx={{}}>
-                        <Table size="small" >
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="center">Date</TableCell>
-                                    <TableCell align="center">In</TableCell>
-                                    <TableCell align="center">Out</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {
-                                    dates?.map((val, ind) => {
-                                        return <TableRow key={ind}>
-                                            <TableCell align="center">{val.date}</TableCell>
-                                            <TableCell align="center"><CommonCheckBox
-                                                checked={val?.inValue || false}
-                                                onChange={(e) => {
-                                                    getValue(e.target.checked, val)
-                                                }}
-                                            /></TableCell>
-                                            <TableCell align="center"><CommonCheckBox
-                                                name="out"
-                                                // value={contractTpPermanent}
-                                                checked={val?.outValue || false}
-                                                onChange={(e) => {
-                                                    getoutvalue(e.target.checked, val)
-                                                }}
-                                            /></TableCell>
-
-                                        </TableRow>
-                                    })
-                                }
-
-                            </TableBody>
-                        </Table>
-                    </TableContainer> : null
+                        <DeleteIcon color='primary' />
+                    </IconButton>
                 }
+            }
+        },
+    ])
+
+    const deleteRequest = useCallback(async (params) => {
+        const data = params.data
+        const { hrstatus } = data;
+        if (hrstatus === 1) {
+            warningNofity("HR Approval is Already done! You can't delete request")
+        }
+        else if (hrstatus === 2) {
+            warningNofity("HR Rejected, You can't delete request")
+        } else {
+            setDeleteOpen(true)
+            setEmpdata(data)
+        }
+    }, [])
+
+    return (
+        <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', mt: 0.5, }}>
+            <DeleteOnduty open={deleteOpen} setOpen={setDeleteOpen} empData={empdata} setCount={setCount} />
+            <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%', mt: 0.5 }}>
+                <Box sx={{ width: '30%', px: 0.5 }} >
+                    <Select
+                        defaultValue={selectedShift}
+                        onChange={(event, newValue) => {
+                            setSelectedShift(newValue);
+                        }}
+                        size='sm'
+                        sx={{ width: '100%' }}
+                        variant='outlined'
+                        color='primary'
+                    >
+                        <Option value={0} disabled >Select Shift ...</Option>
+                        {
+                            deptShift?.map((val, index) => {
+                                return <Option key={index} value={val.shiftcode}>{val.shiftDescription}</Option>
+                            })
+                        }
+                    </Select>
+                </Box>
+                <Box sx={{ alignItems: 'center', display: 'flex' }} >
+                    <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >From Date</Typography>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                            views={['day']}
+                            inputFormat="dd-MM-yyyy"
+                            value={fromDate}
+                            size="small"
+                            onChange={setFromDate}
+                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                    <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                    {InputProps?.endAdornment}
+                                </Box>
+                            )}
+                        />
+                    </LocalizationProvider>
+                </Box>
+                <Box sx={{ alignItems: 'center', display: 'flex' }} >
+                    <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >To Date</Typography>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                            views={['day']}
+                            inputFormat="dd-MM-yyyy"
+                            minDate={new Date(fromDate)}
+                            maxDate={lastDayOfMonth(new Date(fromDate))}
+                            value={toDate}
+                            size="small"
+                            onChange={setToDate}
+                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                    <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                    {InputProps?.endAdornment}
+                                </Box>
+                            )}
+                        />
+                    </LocalizationProvider>
+                </Box>
+                <Box sx={{ px: 0.5, }}>
+                    <Button
+                        variant="outlined"
+                        component="label"
+                        size="md"
+                        color="primary"
+                        onClick={Displaydata}
+                    >
+                        Select Date
+                    </Button>
+
+                </Box>
             </Box>
+            <Box sx={{}}>
+                <Paper variant="outlined"
+                    sx={{
+                        maxHeight: screenInnerHeight * 40 / 100, p: 1, m: 0.3, overflow: 'auto',
+
+                    }} >
+                    <Table
+                        aria-label="basic table"
+                        color="neutral"
+                        size="sm"
+                        variant="plain"
+                    >
+                        <thead>
+                            <tr>
+                                <th style={{ textAlign: 'center', }}> Date</th>
+                                <th style={{ textAlign: 'center', }}>IN </th>
+                                <th style={{ textAlign: 'center', }}>OUT</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                dates?.map((val, idx) =>
+                                    <tr key={idx} style={{ p: 0, m: 0 }} >
+                                        <td style={{ textAlign: 'center', }}>
+                                            <Box  >
+
+                                                <Typography
+                                                    level="title-md"
+                                                    textColor="var(--joy-palette-success-plainColor)"
+                                                    fontFamily="monospace"
+                                                    sx={{ opacity: '80%' }}
+                                                >
+                                                    {val.date}
+                                                </Typography>
+                                            </Box>
+                                        </td>
+                                        <td style={{ textAlign: 'center' }} >
+                                            <Box>
+                                                <Checkbox
+                                                    checked={val?.inValue || false}
+                                                    // disabled={val?.duty_desc !== 'A' ? true : val?.shift_id === default_shift ? true : false}
+                                                    onChange={(e) => {
+                                                        getValue(e.target.checked, val)
+                                                    }}
+                                                />
+                                            </Box>
+                                        </td>
+                                        <td style={{ textAlign: 'center', }}>
+                                            <Box>
+                                                <Checkbox
+                                                    checked={val?.outValue || false}
+                                                    onChange={(e) => {
+                                                        getoutvalue(e.target.checked, val)
+                                                    }}
+                                                />
+                                            </Box>
+                                        </td>
+                                    </tr>
+                                )
+                            }
+                        </tbody>
+                    </Table>
+                </Paper>
+            </Box>
+
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                 <Box sx={{ pr: 1, flex: 1 }}>
-                    <TextareaAutosize
-                        style={{ width: "100%", display: "flex" }}
-                        minRows={2}
-                        placeholder="Add Remark"
-                        value={remark}
-                        name="remark"
-                        onChange={(e) => setRemark(e.target.value)}
-                    />
+                    <Tooltip title="reason" followCursor placement='top' arrow variant='outlined' color='success'  >
+                        <Box sx={{ p: 1 }} >
+                            <Textarea
+                                label="Outlined"
+                                placeholder="Reason"
+                                variant="outlined"
+                                color="warning"
+                                size="md"
+                                minRows={1}
+                                maxRows={2}
+                                name='remark'
+                                value={remark}
+                                onChange={(e) => setRemark(e.target.value)}
+                                sx={{ flex: 1 }}
+                            />
+                        </Box>
+                    </Tooltip>
                 </Box>
                 <Box sx={{ px: 0.5, mt: 0.9 }}>
-                    <CssVarsProvider>
-                        <Button
-                            variant="outlined"
-                            component="label"
-                            size="md"
-                            color="primary"
-                            onClick={Submitrequest}
-                        >
-                            Save Request
-                        </Button>
-                        {/* </Tooltip> */}
-                    </CssVarsProvider>
+                    <Button
+                        variant="outlined"
+                        component="label"
+                        size="md"
+                        color="primary"
+                        onClick={Submitrequest}
+                    >
+                        Save Request
+                    </Button>
                 </Box>
             </Box>
-        </Fragment>
+
+            <Paper square sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                <CommonAgGrid
+                    columnDefs={columndef}
+                    tableData={tableData}
+                    sx={{
+                        height: 400,
+                        width: "100%"
+                    }}
+                    rowHeight={30}
+                    headerHeight={30}
+                />
+            </Paper>
+
+        </Paper>
     )
 }
 

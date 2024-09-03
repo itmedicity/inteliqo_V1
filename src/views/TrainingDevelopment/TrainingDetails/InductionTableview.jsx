@@ -29,7 +29,8 @@ const InductionTableview = ({ Inductdata }) => {
                 sect_name: val.sect_name,
                 desg_slno: val.desg_slno,
                 desg_name: val.desg_name,
-                hod: val.hod
+                hod: val.hod,
+                training_iduct_tnd_verify_status: val.training_iduct_tnd_verify_status
 
             }
             return object;
@@ -118,6 +119,7 @@ const InductionTableview = ({ Inductdata }) => {
                                                 training_topic_name: mapdata.training_topic_name.toLowerCase(),
                                                 Remark: mapdata.pretest_status === 1 && mapdata.posttest_status === 1 && mapdata.induct_post_mark >= 2 ? "Eligible" : "Not Eligible",
                                                 training_induct_hod_aprvl_status: mapdata.training_induct_hod_aprvl_status,
+                                                training_iduct_tnd_verify_status: mapdata.training_iduct_tnd_verify_status,
                                                 training_status: mapdata.training_status
                                             }
                                         })
@@ -141,6 +143,7 @@ const InductionTableview = ({ Inductdata }) => {
                                                 training_topic_name: mapdata.training_topic_name.toLowerCase(),
                                                 Remark: mapdata.pretest_status === 1 && mapdata.posttest_status === 1 && mapdata.induct_post_mark >= 2 ? "Eligible" : "Not Eligible",
                                                 training_induct_hod_aprvl_status: mapdata.training_induct_hod_aprvl_status,
+                                                training_iduct_tnd_verify_status: mapdata.training_iduct_tnd_verify_status,
                                                 training_status: mapdata.training_status
                                             }
                                         })

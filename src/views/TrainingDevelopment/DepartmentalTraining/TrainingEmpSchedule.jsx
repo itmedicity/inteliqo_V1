@@ -152,6 +152,11 @@ const TrainingEmpSchedule = ({ Scheduledata, open, setOpen, setFlag, count, Setc
         setUpdateFlag(2)
     }, [seteditTrainer])
 
+    const UpdateDate = useCallback((e) => {
+        setUpdateFlag(3)
+        setScheduleDate(moment(e).format("YYYY-MM-DD"))
+    }, [setScheduleDate, setUpdateFlag])
+
     const updateTrainers = useMemo(() => {
         return {
             slno: slno,
@@ -178,8 +183,7 @@ const TrainingEmpSchedule = ({ Scheduledata, open, setOpen, setFlag, count, Setc
             }
             InsertData(postdata)
         }
-        else if (updateFlag === 1) {
-
+        else if (updateFlag === 3) {
             //Edit
             const editDate = async (patchdata) => {
                 const result = await axioslogin.patch('/TrainingAfterJoining/ScheduledateUpdate', patchdata)
@@ -283,9 +287,10 @@ const TrainingEmpSchedule = ({ Scheduledata, open, setOpen, setFlag, count, Setc
                                             minDate={moment(new Date(start)).format('YYYY-MM-DD')}
                                             value={scheduleDate}
                                             size="small"
-                                            onChange={(e) => {
-                                                setScheduleDate(moment(e).format("YYYY-MM-DD"));
-                                            }}
+                                            onChange={(e) => { UpdateDate(e) }}
+                                            // onChange={(e) => {
+                                            //     setScheduleDate(moment(e).format("YYYY-MM-DD"));
+                                            // }}
                                             renderInput={({ inputRef, inputProps, InputProps }) => (
                                                 <Box sx={{ display: 'flex', alignItems: 'center', }}>
                                                     <CssVarsProvider>

@@ -56,7 +56,9 @@ const {
     FETCH_INDUCTION_TRAININGS,
     FETCH_TRAINER_APPRVL_DATA,
     FETCH_TRAINER_APPRVL_INDUCT_DATA,
-    FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA
+    FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA,
+    FETCH_CALENDER_DETAILS,
+    FETCH_MONTHWISE_DEPT_SCHEDULE
 } = Actiontypes;
 
 const TrainingData = {
@@ -284,6 +286,14 @@ const TrainingData = {
     DashboardPreTopics: {
         DashboardPreTopicsList: [],
         DashboardPreTopicsStatus: false
+    },
+    InductionCalenderDatas: {
+        InductionCalenderDatasList: [],
+        InductionCalenderDatasStatus: false
+    },
+    MothWiseDeptSchedules: {
+        MothWiseDeptSchedulesList: [],
+        MothWiseDeptSchedulesStatus: false
     },
 }
 
@@ -792,6 +802,24 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     ...state.DashboardPreTopics,
                     DashboardPreTopicsList: payload,
                     DashboardPreTopicsStatus: true
+                }
+            }
+        case FETCH_CALENDER_DETAILS:
+            return {
+                ...state,
+                InductionCalenderDatas: {
+                    ...state.InductionCalenderDatas,
+                    InductionCalenderDatasList: payload,
+                    InductionCalenderDatasStatus: true
+                }
+            }
+        case FETCH_MONTHWISE_DEPT_SCHEDULE:
+            return {
+                ...state,
+                MothWiseDeptSchedules: {
+                    ...state.MothWiseDeptSchedules,
+                    MothWiseDeptSchedulesList: payload,
+                    MothWiseDeptSchedulesStatus: true
                 }
             }
         default:

@@ -384,7 +384,7 @@ const ShiftUpdation = () => {
                                 shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
                                 shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
                                 hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                                    formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                    formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
                                 hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
                                     differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
                                 late_in: e.late_in,
@@ -395,8 +395,8 @@ const ShiftUpdation = () => {
                                 isWeekOff: (e.shift_id === week_off_day),
                                 isNOff: e.shift_id === noff,
                                 lvereq_desc: e.lvereq_desc,
-                                duty_desc: e.duty_desc
-
+                                duty_desc: e.duty_desc,
+                                leave_status: e.leave_status
                             }
                         })
                         const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
@@ -408,7 +408,7 @@ const ShiftUpdation = () => {
                     // console.log(lastUpdateDate)
                     const today = format(new Date(), 'yyyy-MM-dd');
                     const selectedDate = format(new Date(value), 'yyyy-MM-dd');
-                    const todayStatus = selectedDate < today ? true : false; // selected date less than today date
+                    const todayStatus = selectedDate <= today ? true : false; // selected date less than today date
                     const postData_getPunchData = {
                         preFromDate: format(subDays(new Date(lastUpdateDate), 2), 'yyyy-MM-dd 00:00:00'),
                         preToDate: todayStatus === true ? format(addDays(lastDayOfMonth(new Date(value)), 1), 'yyyy-MM-dd 23:59:59') : format(addDays(new Date(value), 1), 'yyyy-MM-dd 23:59:59'),
@@ -447,6 +447,8 @@ const ShiftUpdation = () => {
                         const { status, message, errorMessage, punchMastData } = result;
                         if (status === 1) {
 
+                            // console.log(punchMastData);
+
                             const tb = punchMastData?.map((e) => {
                                 // console.log(e)
                                 const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
@@ -472,7 +474,7 @@ const ShiftUpdation = () => {
                                     shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
                                     shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
                                     hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                                        formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                        formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
                                     hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
                                         differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
                                     late_in: e.late_in,
@@ -484,7 +486,8 @@ const ShiftUpdation = () => {
                                     isNOff: e.shift_id === noff,
                                     holiday_status: e.holiday_status,
                                     lvereq_desc: e.lvereq_desc,
-                                    duty_desc: e.duty_desc
+                                    duty_desc: e.duty_desc,
+                                    leave_status: e.leave_status
                                 }
                             })
                             const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
@@ -832,7 +835,7 @@ const ShiftUpdation = () => {
                                     <Suspense>
                                         {
                                             tableArray?.map((val, ind) => {
-                                                return <TableRows key={ind} no={ind} data={val} disable={disable} punchData={punchDta} punchMaster={punchMast} setTableArray={setTableArray} />
+                                                return <TableRows key={ind} no={ind} data={val} disable={disable} punchData={punchDta} punchMaster={punchMast} setTableArray={setTableArray} empSalary={empSalary} />
                                             })
                                         }
                                     </Suspense>

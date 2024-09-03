@@ -9,8 +9,8 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { IconButton as OpenIcon } from '@mui/material';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import moment from 'moment';
 import SaveIcon from '@mui/icons-material/Save';
+import { format } from 'date-fns';
 
 const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => {
 
@@ -18,7 +18,6 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
     const [question_count, setQuestion_count] = useState(0);
     const [dataArray, setDataArray] = useState([])
     const [topicArray, setTopicArray] = useState([])
-    // const [markData, setMarkData] = useState([]);
 
     const Handleclose = useCallback((e) => {
         Setopen(false)
@@ -39,7 +38,7 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
                 em_id: val.em_id,
                 em_name: val.em_name,
                 em_no: val.em_no,
-                date: moment(val.induction_date).format('YYYY-MM-DD'),
+                date: format(new Date(val.induction_date), "dd-MM-yyyy"),
                 attandance_status: 0,
                 training_status: val.training_status,
                 topic_training: val.topic_training,
@@ -47,12 +46,12 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
                 topic_posttest: val.topic_posttest,
                 topic_online: val.topic_online,
                 topic_offline: val.topic_offline,
-                topic_bothmode: val.topic_bothmode
+                topic_bothmode: val.topic_bothmode,
+                serial_no: val.serial_no
             }
             return object;
         })
         setTableData(displayData)
-        // setMarkData(displayData)
     }, [maparr])
 
 
@@ -73,7 +72,6 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
         }
     }, [tableData, setTopicArray])
 
-
     const markAttendance = useCallback((params) => {
         const data = params.data
         setDataArray(data)
@@ -91,10 +89,10 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
         }
     }, [dataArray])
 
-
     const [columnDef] = useState([
-        { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
-        { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
+        { headerName: 'SlNo', field: 'serial_no', filter: true, width: 110 },
+        { headerName: 'Employee ID', field: 'em_no', filter: true, width: 120 },
+        { headerName: 'Employee Names', field: 'em_name', filter: true, width: 230 },
         {
             headerName: 'Mark Attendance',
             cellRenderer: params => {
@@ -176,7 +174,7 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
             onClose={Handleclose}
             sx={{ display: 'flex' }}
         >
-            <ModalDialog size="lg" sx={{ width: "60%", height: 600 }}>
+            <ModalDialog size="lg" sx={{ width: "60%", height: 550 }}>
                 <ModalClose
                     variant="outlined"
                     sx={{
@@ -195,49 +193,49 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
                     }
                     sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                 >
-                    Training Attendance Marking
+                    Induction Training Attendance Marking
                 </Typography>
-                <Box sx={{ overflow: 'auto', mt: 1 }}>
+                <Box sx={{ mt: 1 }}>
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={tableData}
                         sx={{
-                            height: 500,
+                            height: 400,
                             width: "100%", mt: 1
                         }}
                         rowHeight={30}
                         headerHeight={30}
                     />
-                </Box>
-                <Box sx={{ display: "flex", flexDirection: "row", mt: 2, width: "100%", justifyContent: "flex-end", gap: 3 }} >
-                    <Box>
-                        {topic_training === 0 || topic_pretest !== 0 || topic_posttest !== 0 || topic_online !== 0 || topic_offline !== 0 || topic_bothmode !== 0 ?
-                            <Box sx={{ display: "flex", flexDirection: "row", }}>
-                                <Typography sx={{ mt: 0.5 }}>Random Question Count</Typography>
-                                <Box >
-                                    <input
-                                        type='number'
-                                        name='question count'
-                                        value={question_count}
-                                        onChange={(e) => { setQuestion_count(e.target.value) }}
-                                    />
+                    <Box sx={{ display: "flex", flexDirection: "row", mt: 2, width: "100%", justifyContent: "flex-end", gap: 3 }} >
+                        <Box>
+                            {topic_training === 0 || topic_pretest !== 0 || topic_posttest !== 0 || topic_online !== 0 || topic_offline !== 0 || topic_bothmode !== 0 ?
+                                <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+                                    <Typography sx={{ mt: 0.5 }}>Random Question Count</Typography>
+                                    <Box >
+                                        <input
+                                            type='number'
+                                            name='question count'
+                                            value={question_count}
+                                            onChange={(e) => { setQuestion_count(e.target.value) }}
+                                        />
+                                    </Box>
                                 </Box>
-                            </Box>
-                            : null}
-                    </Box>
-                    <Box>
-                        <CssVarsProvider>
-                            <Button
-                                variant="outlined"
-                                color="success"
-                                onClick={handleSubmit}
-                                size="sm"
-                                sx={{ py: 0, color: '#81c784' }}
+                                : null}
+                        </Box>
+                        <Box>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    color="success"
+                                    onClick={handleSubmit}
+                                    size="sm"
+                                    sx={{ py: 0, color: '#81c784' }}
 
-                            >
-                                <SaveIcon sx={{ fontSize: 25 }} />
-                            </Button>
-                        </CssVarsProvider>
+                                >
+                                    <SaveIcon sx={{ fontSize: 25 }} />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
                     </Box>
                 </Box>
             </ModalDialog>
