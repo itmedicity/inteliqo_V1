@@ -56,6 +56,7 @@ const EmployeeCompnt = ({ em_no }) => {
                 let emNo = empArray?.find(e => e.em_no === el).em_no;
                 let emId = empArray?.find(e => e.em_no === el).emp_id;
                 let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
+                let unauthorized = empArray?.find(e => e.em_no === el).unauthorized_absent_status;
 
                 // console.log(dateRange)
                 // console.log(empArray)
@@ -95,6 +96,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                     totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
                     totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "HP").length ?? 0),
+                    unauthorized: unauthorized
                     // totalCalcDay:
                 }
             })
@@ -306,7 +308,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                                             width: 60,
                                                             borderLeft: '0.1px solid #dddfe2',
                                                             height: 10,
-                                                            backgroundColor: '#f4f6f8'
+                                                            backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8',
                                                         }}
                                                     >
                                                         <Box sx={{
@@ -337,7 +339,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                                             width: 60,
                                                             borderLeft: '0.1px solid #dddfe2',
                                                             height: 10,
-                                                            backgroundColor: '#CDF8DF'
+                                                            backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#CDF8DF'
                                                         }}
                                                     >
                                                         <Box sx={{

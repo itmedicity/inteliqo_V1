@@ -18,6 +18,7 @@ const DeptSelectByRedux = ({ value, setValue }) => {
             value={value}
             onChange={(e, newValue) => setValue(newValue)}
             size='md'
+            sx={{ width: '100%' }}
             variant='outlined'
         >
             <Option disabled value={0}>  Select Department </Option>

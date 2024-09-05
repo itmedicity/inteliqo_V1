@@ -1,18 +1,19 @@
-import { Box, Button, Chip, CssVarsProvider, Divider, Input, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
-import React, { memo, useCallback, useEffect, useState } from 'react'
-import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
+import { Box, Button, Chip, Divider, Input, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { employeeNumber } from 'src/views/Constant/Constant';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import moment from 'moment';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
+import MappingCheckbox from 'src/views/MuiComponents/MappingCheckbox';
+import { format } from 'date-fns';
+import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
+import { useSelector } from 'react-redux';
 
-const RemarkModal = ({ open, setOpen, data, setCount }) => {
+const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
+
     const [reason, setReason] = useState('')
-    const [value, setValue] = useState(new Date());
     const [details, setDetails] = useState(
         {
             emno: '',
@@ -23,7 +24,19 @@ const RemarkModal = ({ open, setOpen, data, setCount }) => {
             sect_id: 0
         }
     )
-    const { emno, name, section, dept_id, sect_id, emid } = details;
+    const { emno, name, section, emid } = details;
+    const [selectValue, setSelectValue] = useState(0)
+    const [absentDate, setAbsentDate] = useState(new Date())
+
+
+    const confirmationArray = [
+        { serialno: 1, name: 'Unauthorized Absent' },
+        { serialno: 2, name: 'Inactive ' },
+    ]
+
+    const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
+    const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
+    const { em_id: loginEmid } = empInformationFromRedux;
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
@@ -47,60 +60,55 @@ const RemarkModal = ({ open, setOpen, data, setCount }) => {
         const postData = {
             em_id: emid,
             em_no: emno,
+            resign_status: selectValue === 3 ? 1 : 0,
+            em_status: selectValue === 1 ? 0 : 1,
+            unauthorized_absent_status: selectValue === 1 ? 1 : 0,
+            unauthorised_absent_date: selectValue === 1 ? format(new Date(absentDate), 'yyyy-MM-dd') : null,
         }
-        const postDeptData = {
-            dept_id: dept_id,
-            sect_id: sect_id,
-        }
+
         const inactivedata = {
             em_id: emid,
             em_no: emno,
             remark: reason,
-            resign_date: moment(new Date(value)).format('YYYY-MM-DD'),
-            create_user: employeeNumber()
+            resign_status: selectValue === 3 ? 1 : 0,
+            unauthorized_absent_status: selectValue === 1 ? 1 : 0,
+            unauthorised_absent_date: selectValue === 1 ? format(new Date(absentDate), 'yyyy-MM-dd') : null,
+            create_user: loginEmid
         }
         if (reason === '') {
             setOpen(false)
             infoNofity("Please Add Remark!")
         } else {
-            const results = await axioslogin.post('/Duedepartment/duedept', postDeptData)
-            const { success1, data1 } = results.data
-            if (success1 === 1) {
-                const { due_dept_code } = data1[0]
-                const duedepartment = JSON.parse(due_dept_code)
-                const duedeptdetl = duedepartment.map((val) => {
-                    return { deptcode: val.deptcode, deptname: val.deptdesc, emp_id: emid }
-                })
 
-                //inactive employee
-                const result = await axioslogin.patch('/empmast/empmaster/Inactiveemp', postData)
+            const duedeptdetl = dueDepartment.map((val) => {
+                return { deptcode: val.deptcode, deptname: val.deptdesc, emp_id: emid }
+            })
+
+            //inactive employee
+            const result = await axioslogin.patch('/Resignation/Inactiveemp', postData)
+            const { success } = result.data
+            if (success === 2) {
+                setCount(Math.random())
+                const result = await axioslogin.post('/dueclearence', duedeptdetl)
                 const { success } = result.data
-                if (success === 2) {
-                    setCount(Math.random())
-                    const result = await axioslogin.post('/dueclearence', duedeptdetl)
+                if (success === 1) {
+                    const result = await axioslogin.post('/empmast/insert/inactive', inactivedata)
                     const { success } = result.data
                     if (success === 1) {
-                        const result = await axioslogin.post('/empmast/insert/inactive', inactivedata)
-                        const { success } = result.data
-                        if (success === 1) {
-                            setOpen(false)
-                            succesNofity("Employee Inactivated")
-                            setCount(Math.random())
-                        } else {
-                            warningNofity("Error while Inactive")
-                        }
-                    } else {
                         setOpen(false)
+                        succesNofity("Employee Inactivated")
+                        setCount(Math.random())
+                    } else {
                         warningNofity("Error while Inactive")
                     }
+                } else {
+                    setOpen(false)
+                    warningNofity("Error while Inactive")
                 }
             }
-            else {
-                warningNofity("Please Map Due Clearence Department for this department Section ")
-            }
         }
-
-    }, [dept_id, sect_id, emid, reason, emno, setCount, setOpen, value])
+    }, [emid, reason, emno, setCount, setOpen, dueDepartment, selectValue,
+        absentDate, loginEmid])
 
     const CloseModel = useCallback(() => {
         setOpen(false)
@@ -112,9 +120,12 @@ const RemarkModal = ({ open, setOpen, data, setCount }) => {
             aria-describedby="modal-desc"
             open={open}
             onClose={() => setOpen(false)}
-            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            sx={{
+                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                // width: '100%'
+            }}
         >
-            <ModalDialog size="lg"  >
+            <ModalDialog size="lg" sx={{ width: 500 }} >
                 <ModalClose
                     variant="outlined"
                     sx={{
@@ -172,49 +183,63 @@ const RemarkModal = ({ open, setOpen, data, setCount }) => {
                     </Chip>
                 </Divider>
 
-                <Box sx={{ display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center', }} >
-                    <Box sx={{ display: "flex", flex: 1, justifyContent: 'Left', alignItems: 'center', pr: 5 }} >
-                        <CssVarsProvider>
-                            <Typography level="body1" >Inactive Date</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex", flex: 1, justifyContent: 'Left', }} >
-                        <CssVarsProvider>
-                            <Typography level="body1" >{moment(new Date()).format('DD-MM-YYYY')}</Typography>
-                        </CssVarsProvider>
-                    </Box>
+                <Box sx={{ display: 'flex', flex: 2 }}>
+                    {
+                        confirmationArray?.map((val, idx) => {
+                            return <Box sx={{
+                                display: 'flex', p: 1,
+                                width: { xl: "100%", lg: "100%", md: "100%", sm: "100%" }
+                            }}
+                                key={idx}
+                            >
+                                <MappingCheckbox
+                                    label={val.name}
+                                    name={val.name}
+                                    value={val.serialno}
+                                    onChange={setSelectValue}
+                                    checkedValue={selectValue}
+                                />
+                            </Box>
+                        })
+                    }
                 </Box>
+                {
+                    selectValue === 1 ? <Box sx={{ display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center', }} >
 
-                <Box sx={{ display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center', }} >
-                    <Box sx={{ display: "flex", flex: 1, justifyContent: 'left', alignItems: 'center', pr: 5 }} >
-                        <CssVarsProvider>
-                            <Typography level="body1" >Resigned Date</Typography>
-                        </CssVarsProvider>
-                    </Box>
-                    <Box sx={{ display: "flex" }} >
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                views={['day']}
-                                // minDate={subMonths(new Date(), 1)}
-                                maxDate={new Date()}
-                                value={value}
-                                size="small"
-                                onChange={(newValue) => {
-                                    setValue(newValue);
-                                }}
-                                inputFormat="dd/MM/yyyy"
-                                renderInput={({ inputRef, inputProps, InputProps }) => (
-                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
-                                        <CssVarsProvider>
-                                            <Input ref={inputRef} {...inputProps} style={{}} disabled={true} sx={{ textAlign: 'right', }} />
-                                        </CssVarsProvider>
-                                        {InputProps?.endAdornment}
-                                    </Box>
-                                )}
-                            />
-                        </LocalizationProvider>
-                    </Box>
-                </Box>
+                        <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }} >
+                            <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >Unauthorized Absent Date</Typography>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    views={['day']}
+                                    inputFormat="dd-MM-yyyy"
+                                    value={absentDate}
+                                    size="small"
+                                    onChange={setAbsentDate}
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                            {InputProps?.endAdornment}
+                                        </Box>
+                                    )}
+                                />
+                            </LocalizationProvider>
+                        </Box>
+                    </Box> : null
+                }
+                {
+                    selectValue === 2 ? <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', }} >
+
+
+                        <Input
+                            size="md"
+                            fullWidth
+                            variant="outlined"
+                            value={format(new Date(), 'dd-MM-yyyy')}
+                            disabled
+                        />
+
+                    </Box> : null
+                }
                 <Box sx={{ pt: 0.5 }} >
                     <Textarea
                         name="Outlined"

@@ -1,9 +1,13 @@
 import { Box, Button, Chip, Divider, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { employeeNumber } from 'src/views/Constant/Constant';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import { format } from 'date-fns';
+import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
+import { useSelector } from 'react-redux';
 
 const ActiveModal = ({ open, setOpen, data, setCount }) => {
     const [reason, setReason] = useState('')
@@ -14,21 +18,28 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
             section: '',
             emid: 0,
             dept_id: 0,
-            sect_id: 0
+            sect_id: 0,
+            em_designation: 0
         }
     )
-    const { emno, name, section, emid } = details;
+    const { emno, name, section, emid, dept_id, sect_id, em_designation } = details;
+    const [resignation, setResignation] = useState(false)
+
+    const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
+    const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
+    const { em_id: loginEmid } = empInformationFromRedux;
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
-            const { sect_name, em_name, em_no, em_id, dept_id, sect_id } = data[0]
+            const { sect_name, em_name, em_no, em_id, dept_id, sect_id, em_designation } = data[0]
             const details = {
                 emno: em_no,
                 name: em_name,
                 section: sect_name,
                 emid: em_id,
                 dept_id: dept_id,
-                sect_id: sect_id
+                sect_id: sect_id,
+                em_designation: em_designation
             }
             setDetails(details)
         }
@@ -56,7 +67,47 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
         if (reason === '') {
             setOpen(false)
             infoNofity("Please Add Remark!")
-        } else {
+        } else if (resignation === true) {
+            console.log("hgfj");
+            const resigndta = {
+                dept_id: dept_id,
+                sect_id: sect_id,
+                em_id: emid,
+                em_no: emno,
+                designation: em_designation,
+                resignation_type: 2,
+                request_date: format(new Date(), 'yyyy-MM-dd'),
+                relieving_date: format(new Date(), 'yyyy-MM-dd'),
+                resign_reason: reason,
+                notice_period: 1,
+                incharge_required: 0,
+                inch_app_status: 0,
+                inch_coment: 'HR DIRECT',
+                inch_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                inch_id: 0,
+                hod_required: 0,
+                hod_app_status: 0,
+                hod_coment: 'HR DIRECT',
+                hod_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                hod_id: 0,
+                hr_required: 1,
+                hr_app_status: 1,
+                hr_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                hr_coment: 'HR DIRECT',
+                hr_id: loginEmid,
+                resign_status: 'A'
+            }
+            const result = await axioslogin.post('/Resignation/insert/resignation', resigndta)
+            const { success, message } = result.data;
+            if (success === 1) {
+                succesNofity(message)
+                setOpen(false)
+            } else {
+                errorNofity(message)
+                setOpen(false)
+            }
+        }
+        else {
 
             const result = await axioslogin.patch('/empmast/empmsater/active', postData)
             const { success } = result.data
@@ -78,7 +129,8 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
                 warningNofity("Error while Activating an Employee")
             }
         }
-    }, [emid, emno, reason, setCount, setOpen])
+    }, [emid, emno, reason, setCount, setOpen, resignation, dept_id, sect_id, em_designation,
+        loginEmid])
 
     return (
         <Modal
@@ -133,6 +185,14 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
                     <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >
                         {section}
                     </Typography>
+                </Box>
+                <Box sx={{ mt: 1.5, px: 2 }} >
+                    <JoyCheckbox
+                        label='Resignation Process'
+                        name="resignation"
+                        checked={resignation}
+                        onchange={(e) => setResignation(e.target.checked)}
+                    />
                 </Box>
                 <Divider>
                     <Chip variant="outlined" color="info" size="sm">

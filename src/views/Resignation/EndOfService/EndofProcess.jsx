@@ -1,17 +1,16 @@
 import React, { memo, useEffect, useMemo } from 'react'
-import { Button, Checkbox, CssVarsProvider, Input, Option, Select, Textarea, Typography } from '@mui/joy'
+import { Button, Checkbox, Input, LinearProgress, Option, Select, Textarea, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
-import { differenceInDays, format, getDaysInMonth, startOfMonth, subDays, addDays, lastDayOfMonth, intervalToDuration, isValid, formatDuration, differenceInMinutes } from 'date-fns'
+import { format, getDaysInMonth, startOfMonth, subDays, addDays, lastDayOfMonth, intervalToDuration, isValid, formatDuration, differenceInMinutes, isAfter } from 'date-fns'
 import moment from 'moment'
 import { useState } from 'react'
-import { ToWords } from 'to-words';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
 import Files from 'react-files'
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
 import PermMediaOutlinedIcon from '@mui/icons-material/PermMediaOutlined';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import Table from '@mui/joy/Table';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
@@ -20,27 +19,38 @@ import { processShiftPunchMarkingHrFunc } from 'src/views/Attendance/PunchMarkin
 
 const EndofProcess = ({ details }) => {
 
-    console.log(details)
 
-    const toWords = new ToWords({
-        localeCode: 'en-IN',
-        converterOptions: {
-            currency: true,
-            ignoreDecimal: false,
-            ignoreZeroCurrency: false,
-            doNotAddOnly: false,
-            currencyOptions: { // can be used to override defaults for the selected locale
-                name: 'Rupee',
-                plural: 'Rupees',
-                symbol: '₹',
-                fractionalUnit: {
-                    name: 'Paisa',
-                    plural: 'Paise',
-                    symbol: '',
-                },
-            }
-        }
-    });
+    // STATE MANAGMENT START HERE
+    const [files, setFiles] = useState('')
+    const [exclusions, setExclusions] = useState(false)
+    const [exclusionReason, setExclusionReason] = useState('')
+    const [empSalary, setEmpSalary] = useState(0)
+    const [earnValue, setEarnvalue] = useState(0)
+    const [displayArray, setdisplayArray] = useState([])
+    // const [open1, setOpen1] = useState(false);
+    const [totalDays, setTotaldays] = useState(0)
+    const [leaveCount, setLeaveCount] = useState(0)
+    const [holidayCount, setHolidayCount] = useState(0)
+    const [hdLop, setHdLop] = useState(0)
+    const [lcCount, setLcCount] = useState(0)
+    const [lopCount, setLopCount] = useState(0)
+    const [payDays, setPayDays] = useState(0)
+    const [holidayWorked, setHolidayWorked] = useState(0)
+    const [attendanceProcess, setAttendnaceProcess] = useState(0)
+    const [earnAmount, setEarnAmount] = useState(0)
+    const [earnRemark, setEarnRemark] = useState('')
+    const [earnArray, setEarnArray] = useState([])
+    const [earnName, setEarnName] = useState('')
+    const [npsamount, setNpsamount] = useState(0)
+    const [lwfamount, setLwfAmount] = useState(0)
+    const [lopamount, setlopamount] = useState(0)
+    const [holidayamount, setHolidayAmount] = useState(0)
+    const [extraEarn, setExtraEarn] = useState(0)
+    const [extraDeduct, setExtraDeduct] = useState(0)
+    const [deductionAmount, setDeductionAmount] = useState(0)
+    const [netSalary, setnetSalary] = useState(0)
+    const [selectedFile, setSelectedFile] = useState([])
+
 
     const [empdata, setEmpdata] = useState({
         dept_name: '',
@@ -54,88 +64,11 @@ const EndofProcess = ({ details }) => {
         em_id: 0,
         resignation_type: ''
     })
-    const { dept_name, em_no, em_name, request_date, em_doj, relieving_date, desg_name, gross_salary, resignation_type } = empdata;
+    const { dept_name, em_no, em_name, desg_name, gross_salary, em_id } = empdata;
 
-    const [salary, setSalary] = useState(0)
-    const [lop, setLop] = useState(0)
-    const [calcLop, setCalcLop] = useState(0)
-    const [holiday, setHoliday] = useState(0)
-    const [totldays, setTotaldays] = useState(0)
-    const [dutyoff, setDutyoff] = useState(0)
-    const [arear, setArear] = useState(0)
-    const [earnleave, setEarned] = useState(0)
-    const [compoff, setCompOff] = useState(0)
-    const [cautiondepo, setCautionDepo] = useState(0)
-    const [kswf, setKswf] = useState(0)
-    const [pf, setPf] = useState(0)
-    const [esi, setEsi] = useState(0)
-    const [protax, setProTax] = useState(0)
-
-    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { pf_employee, pf_employee_amount, esi_employee } = state;
+    // const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
 
     useEffect(() => {
-        const getEmpEsi = async () => {
-            const result = await axioslogin.get(`/empesipf/${em_no}`)
-            const { success, data } = result.data
-            if (success === 1) {
-                const { em_pf_status, em_esi_status } = data[0]
-                if (em_pf_status === 1) {
-                    const value2 = Number(gross_salary) * pf_employee / 100
-                    setPf(value2 < pf_employee_amount ? Math.round(value2 / 10) * 10 : pf_employee_amount)
-                } else {
-                    setEsi(0)
-                    setPf(0)
-                }
-                if (em_esi_status === 1) {
-                    const value = Number(gross_salary) * esi_employee / 100
-                    setEsi(Math.round(value / 10) * 10)
-                } else {
-                    setEsi(0)
-                    setPf(0)
-                }
-            } else {
-                setEsi(0)
-                setPf(0)
-            }
-        }
-        getEmpEsi(em_no)
-    }, [em_no, gross_salary, pf_employee, pf_employee_amount, esi_employee])
-
-
-    useEffect(() => {
-        //to get punchdata
-        const getPunchData = async (postdata) => {
-            const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-            const { success, data } = result.data
-            if (success === 1) {
-                const lossofpay = (data.filter(val => val.leave_status === 0 && val.duty_status === 0)).length
-                const calculatedlop = (data.filter(val => val.duty_desc === 'A' && val.leave_status === 0)).length
-                const holiday = (data.filter(val => val.holiday_status === 1)).length
-                setHoliday(holiday)
-                setLop(lossofpay)
-                setCalcLop(calculatedlop)
-                setDutyoff(0)
-                setArear(0)
-                setEarned(0)
-                setCompOff(0)
-                setCautionDepo(0)
-                setKswf(0)
-                setProTax(0)
-            } else {
-                setLop(0)
-                setCalcLop(0)
-                setHoliday(0)
-                setDutyoff(0)
-                setArear(0)
-                setEarned(0)
-                setCompOff(0)
-                setCautionDepo(0)
-                setKswf(0)
-                setProTax(0)
-            }
-        }
-
         if (Object.keys(details).length !== 0) {
             const { dept_name, em_no, em_name, request_date, em_doj, relieving_date,
                 desg_name, gross_salary, em_id, resignation_type } = details;
@@ -152,32 +85,46 @@ const EndofProcess = ({ details }) => {
                 resignation_type: resignation_type
             }
             setEmpdata(obj)
-            const wokeddays = differenceInDays(new Date(relieving_date), startOfMonth(new Date(relieving_date)))
-            const days = getDaysInMonth(new Date(relieving_date));
-            setTotaldays(days)
-            const workedSalary = (gross_salary / days) * wokeddays
-            const roundValue = Math.round(workedSalary / 10) * 10
-            setSalary(roundValue)
-            // const words = toWords?.convert(roundValue)
-            // setSalaryInwords(words)
-
-            const postdata = {
-                emp_id: em_id,
-                from: moment(startOfMonth(new Date(relieving_date))).format('YYYY-MM-DD'),
-                to: relieving_date
-            }
-            getPunchData(postdata)
+            //  getPunchData(postdata)
         } else {
             setEmpdata({})
-            setSalary(0)
         }
     }, [details])
 
-    const tot = (salary + dutyoff + holiday + arear + compoff + earnleave + cautiondepo) - (gross_salary + kswf + pf + esi + protax)
-    var numstring = toWords?.convert(Math.abs(tot))
+    useEffect(() => {
+        const getEmpEsi = async () => {
+            const result = await axioslogin.get(`/empesipf/${em_no}`)
+            const { success, data } = result.data
+            if (success === 1) {
+                const { lwf_status, lwfamount, npsamount, nps } = data[0]
+                setNpsamount(nps === 1 ? npsamount : 0)
+                setLwfAmount(lwf_status === 1 ? lwfamount : 0)
+            } else {
+                setNpsamount(0)
+                setLwfAmount(0)
+            }
+        }
+        getEmpEsi(em_no)
 
+        const getDeduction = async () => {
 
+            const postData = {
+                em_id: em_id
+            }
 
+            const result = await axioslogin.post('/empearndeduction/deduction', postData)
+            const { success, data } = result.data;
+            if (success === 1) {
+                const deductValue = data?.map((val) => val.em_amount).reduce((prev, next) => Number(prev) + Number(next));
+                setDeductionAmount(deductValue)
+            } else {
+                setDeductionAmount(0)
+            }
+
+        }
+
+        getDeduction(em_id)
+    }, [em_no, gross_salary, em_id])
 
     /*******************************************************************************************/
 
@@ -188,16 +135,8 @@ const EndofProcess = ({ details }) => {
     const commonstate = useSelector((state) => state?.getCommonSettings, _.isEqual)
     const commonSetting = useMemo(() => commonstate, [commonstate])
 
-    // console.log(commonSetting)
-    const { group_slno, week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
+    const { week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
     const holidayList = [];
-
-
-    // STATE MANAGMENT START HERE
-    const [files, setFiles] = useState('')
-    const [exclusions, setExclusions] = useState(false)
-    const [exclusionReason, setExclusionReason] = useState('')
-    const [empSalary, setEmpSalary] = useState(0)
 
     //DATA FETCHING START HERE
 
@@ -223,6 +162,7 @@ const EndofProcess = ({ details }) => {
             setExclusions(false)
         }
         setFiles(files[0])
+        setSelectedFile(files)
     }
 
     /**
@@ -246,7 +186,6 @@ const EndofProcess = ({ details }) => {
         }
     }
 
-
     const dateOfJoinDate = format(new Date(details?.em_doj), "dd-MM-yyyy")
     const resignationDate = format(new Date(details?.request_date), "dd-MM-yyyy")
     const notePeriodEndDate = format(new Date(details?.relieving_date), "dd-MM-yyyy")
@@ -254,137 +193,221 @@ const EndofProcess = ({ details }) => {
     // FUNCTIONS for PROCESS THE ATTENDFANCE
 
     const calculateProceeAttendence = useCallback(async () => {
-
+        setAttendnaceProcess(1)
         const today = format(new Date(), 'yyyy-MM-dd');
-        const lastWorkingDay = format(new Date(notePeriodEndDate), 'yyyy-MM-dd');
-        const startOfMonths = format(startOfMonth(new Date()), 'yyyy-MM-dd')
+        const lastWorkingDay = format(new Date(details?.relieving_date), 'yyyy-MM-dd');
+        const startOfMonths = format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd')
 
         if (today <= lastWorkingDay) {
-            warningNofity('Notice Period not yet over')
+            warningNofity('Notice Period Not Completed!')
             return
-        }
-
-        const postData_getPunchData = {
-            preFromDate: format(subDays(new Date(startOfMonths), 2), 'yyyy-MM-dd 00:00:00'),
-            preToDate: format(addDays(new Date(lastWorkingDay), 1), 'yyyy-MM-dd 23:59:59'),
-            fromDate: format(new Date(startOfMonths), 'yyyy-MM-dd'),
-            toDate: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-            fromDate_dutyPlan: format(new Date(startOfMonths), 'yyyy-MM-dd'),
-            toDate_dutyPlan: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-            fromDate_punchMaster: format(subDays(new Date(startOfMonths), 0), 'yyyy-MM-dd'),
-            toDate_punchMaster: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-            section: details.sect_id,
-            empList: [em_no],
-            loggedEmp: em_no,
-            frDate: format(startOfMonth(new Date(notePeriodEndDate)), 'yyyy-MM-dd'),
-            trDate: format(lastDayOfMonth(new Date(notePeriodEndDate)), 'yyyy-MM-dd'),
-        }
-
-        // GET PUNCH DATA FROM TABLE START
-        const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
-        const { su, result_data } = punch_data.data;
-        // console.log(su, result_data)
-        if (su === 1) {
-            const punchaData = result_data;
-            const empList = [em_no]
-            // PUNCH MARKING HR PROCESS START
-            const result = await processShiftPunchMarkingHrFunc(
-                postData_getPunchData,
-                punchaData,
-                empList,
-                shiftInformation,
-                commonSetting,
-                holidayList,
-                empSalary
-            )
-            const { status, message, errorMessage, punchMastData } = result;
-            if (status === 1) {
-
-                // console.log(punchMastData);
-
-                const tb = punchMastData?.map((e) => {
-                    // console.log(e)
-                    const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
-                    const crossDayStat = crossDay?.shft_cross_day ?? 0;
-
-                    let shiftIn = `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_in), 'HH:mm')}`;
-                    let shiftOut = crossDayStat === 0 ? `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}` :
-                        `${format(addDays(new Date(e.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}`;
-
-                    // GET THE HOURS WORKED IN MINITS
-                    let interVal = intervalToDuration({
-                        start: isValid(new Date(e.punch_in)) ? new Date(e.punch_in) : 0,
-                        end: isValid(new Date(e.punch_out)) ? new Date(e.punch_out) : 0
-                    })
-                    return {
-                        punch_slno: e.punch_slno,
-                        duty_day: e.duty_day,
-                        shift_id: e.shift_id,
-                        emp_id: e.emp_id,
-                        em_no: e.em_no,
-                        punch_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_in,
-                        punch_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_out,
-                        shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-                        shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
-                        hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                            formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
-                        hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                            differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
-                        late_in: e.late_in,
-                        early_out: e.early_out,
-                        shiftIn: e.shift_in,
-                        shiftOut: e.shift_out,
-                        hideStatus: 0,
-                        isWeekOff: (e.shift_id === week_off_day),
-                        isNOff: e.shift_id === noff,
-                        holiday_status: e.holiday_status,
-                        lvereq_desc: e.lvereq_desc,
-                        duty_desc: e.duty_desc,
-                        leave_status: e.leave_status
-                    }
-                })
-                const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
-                // setTableArray(array)
-                // setOpenBkDrop(false)
-                succesNofity('Punch Master Updated Successfully')
-            } else {
-                // setOpenBkDrop(false)
-                warningNofity(message, errorMessage)
-            }
-            // console.log(result)
         } else {
-            warningNofity("Error getting punch Data From DB")
-            // setOpenBkDrop(false)
+            const postData_getPunchData = {
+                preFromDate: format(subDays(new Date(startOfMonths), 2), 'yyyy-MM-dd 00:00:00'),
+                preToDate: format(addDays(new Date(lastWorkingDay), 1), 'yyyy-MM-dd 23:59:59'),
+                fromDate: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+                toDate: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                fromDate_dutyPlan: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+                toDate_dutyPlan: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                fromDate_punchMaster: format(subDays(new Date(startOfMonths), 0), 'yyyy-MM-dd'),
+                toDate_punchMaster: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                section: details.sect_id,
+                empList: [em_no],
+                loggedEmp: em_no,
+                frDate: format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
+                trDate: format(lastDayOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
+            }
+
+            // // GET PUNCH DATA FROM TABLE START
+            const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
+            const { su, result_data } = punch_data.data;
+            if (su === 1) {
+                const punchaData = result_data;
+                const empList = [em_no]
+                // PUNCH MARKING HR PROCESS START
+                const result = await processShiftPunchMarkingHrFunc(
+                    postData_getPunchData,
+                    punchaData,
+                    empList,
+                    shiftInformation,
+                    commonSetting,
+                    holidayList,
+                    empSalary
+                )
+                const { status, message, errorMessage, punchMastData } = result;
+                if (status === 1) {
+                    const tb = punchMastData?.map((e) => {
+                        const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
+                        const crossDayStat = crossDay?.shft_cross_day ?? 0;
+
+                        let shiftIn = `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_in), 'HH:mm')}`;
+                        let shiftOut = crossDayStat === 0 ? `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}` :
+                            `${format(addDays(new Date(e.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}`;
+
+                        // GET THE HOURS WORKED IN MINITS
+                        let interVal = intervalToDuration({
+                            start: isValid(new Date(e.punch_in)) ? new Date(e.punch_in) : 0,
+                            end: isValid(new Date(e.punch_out)) ? new Date(e.punch_out) : 0
+                        })
+                        return {
+                            punch_slno: e.punch_slno,
+                            duty_day: e.duty_day,
+                            shift_id: e.shift_id,
+                            emp_id: e.emp_id,
+                            em_no: e.em_no,
+                            punch_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_in,
+                            punch_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_out,
+                            shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+                            shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+                            hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                                formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                            hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                                differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
+                            late_in: e.late_in,
+                            early_out: e.early_out,
+                            shiftIn: e.shift_in,
+                            shiftOut: e.shift_out,
+                            hideStatus: 0,
+                            isWeekOff: (e.shift_id === week_off_day),
+                            isNOff: e.shift_id === noff,
+                            holiday_status: e.holiday_status,
+                            lvereq_desc: e.lvereq_desc,
+                            duty_desc: e.duty_desc,
+                            leave_status: e.leave_status
+                        }
+                    })
+                    const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+                    setdisplayArray(array);
+
+                    const totalDays = getDaysInMonth(new Date(details?.relieving_date))
+                    setTotaldays(totalDays)
+                    const totalLC = array?.filter(el => el.lvereq_desc === "LC").length ?? 0
+                    setLcCount(totalLC)
+                    const totalHD = (array?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length ?? 0
+                    setHdLop(totalHD)
+                    const totalLV = (array?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length ?? 0
+                    setLeaveCount(totalLV)
+                    const totalHP = (array?.filter(val => val.lvereq_desc === 'HP')).length
+                    setHolidayWorked(totalHP)
+                    const totalH = (array?.filter(val => val.holiday_status === 1)).length
+                    setHolidayCount(totalH)
+
+                    const workday =
+                        (array?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
+                            val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
+                            val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
+                            val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
+                            val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
+                            val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length ?? 0
+                    const totalPayday = workday + (totalHD * 0.5)
+                    setPayDays(totalPayday)
+                    const totallopCount = totalDays - totalPayday;
+                    setLopCount(totallopCount)
+                    const lopAmount = ((gross_salary / totalDays) * totallopCount).toFixed(2)
+                    setlopamount(lopAmount);
+                    setHolidayAmount(((gross_salary / totalDays) * totalHP).toFixed(2))
+                    succesNofity('Punch Master Updated Successfully')
+                } else {
+                    warningNofity(message, errorMessage)
+                }
+            } else {
+                warningNofity("Error getting punch Data From DB")
+                // setOpenBkDrop(false)
+            }
         }
-
-
-
-
-
-    }, [notePeriodEndDate, details])
+    }, [details, em_no, empSalary, commonSetting, holidayList, shiftInformation, gross_salary,
+        default_shift, noff, notapplicable_shift, week_off_day])
 
     //HANDLE SUBMIT THE RESIGNATION PROCESS 
     const handleSave = useCallback(async () => {
+        const postData = {
+            em_id: em_id,
+            exclusion: exclusions === true ? 1 : 0,
+            exclusion_reason: exclusionReason,
+            resignation_date: format(new Date(details?.request_date), 'yyyy-MM-dd'),
+            relieving_date: format(new Date(details?.relieving_date), 'yyyy-MM-dd'),
+            total_days: totalDays,
+            leave_count: leaveCount,
+            holiday_count: holidayCount,
+            halfday_count: hdLop,
+            late_count: lcCount,
+            lop_count: lopCount,
+            holiday_worked: holidayWorked,
+            total_paydays: payDays,
+            lop_amount: lopamount,
+            nps_amount: npsamount,
+            lwf_amount: lwfamount,
+            deduction_amount: deductionAmount,
+            holiday_amount: holidayamount,
+            extra_earnings: extraEarn,
+            extra_deduction: extraDeduct,
+            gross_salary: gross_salary,
+            net_salary: netSalary,
+        }
 
         if ((files === '' || files === undefined) && exclusions === false) {
-            warningNofity("Please upload the file")
+            warningNofity("Upload the file")
             return
-        }
-
-        if (exclusions === true && exclusionReason === '') {
-            warningNofity("Please enter the reason")
+        } else if (exclusions === true && exclusionReason === '') {
+            warningNofity("Enter the reason")
             return
+        } else if (isAfter(new Date(details?.relieving_date), new Date())) {
+            warningNofity("Notice Period Not Yet Completed")
+        } else if (attendanceProcess === 0) {
+            warningNofity("Process Attendnace First!")
+        } else {
+            const formData = new FormData()
+            formData.append('file', selectedFile[0]);
+            formData.append('postData', JSON.stringify(postData));
+
+            const result = await axioslogin.post('/Resignation/insertFinal', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+            })
+            const { success, message } = result.data;
+            if (success === 1) {
+                // setProgress(100)
+                succesNofity(message)
+            } else if (success === 2) {
+                warningNofity(message)
+            } else if (success === 0) {
+                infoNofity(message)
+            } else {
+                errorNofity("Error Occured!!!!! Please Contact IT")
+            }
         }
+    }, [files, exclusions, exclusionReason, details, em_id, totalDays, leaveCount, holidayCount, hdLop, lcCount,
+        lopCount, holidayWorked, payDays, gross_salary, lopamount, lwfamount, npsamount, holidayamount, netSalary,
+        deductionAmount, extraEarn, extraDeduct, attendanceProcess, selectedFile])
+
+    const addEarn = useCallback(() => {
+        if (earnValue !== 0 && earnAmount !== 0 && earnRemark !== 0) {
+            const obj = {
+                earnValue: earnValue,
+                earnAmount: earnAmount,
+                earnRemark: earnRemark,
+                earnName: earnName
+            }
+            setEarnArray([...earnArray, obj])
+            setExtraEarn(extraEarn => earnValue === 2 ? parseInt(extraEarn) + parseInt(earnAmount) : parseInt(extraEarn))
+            setExtraDeduct(extraDeduct => earnValue === 3 ? parseInt(extraDeduct) + parseInt(earnAmount) : parseInt(extraDeduct))
+            setEarnvalue(0)
+            setEarnAmount(0)
+            setEarnRemark('')
+
+            const netSalary = (gross_salary / totalDays) * payDays + extraEarn - extraDeduct - deductionAmount
+            setnetSalary(netSalary.toFixed(2))
+        } else {
+            warningNofity("Select Complete Data")
+        }
+    }, [earnValue, earnAmount, earnRemark, extraEarn, gross_salary, deductionAmount,
+        earnArray, earnName, extraDeduct, payDays, totalDays])
 
 
-    }, [
-        files,
-        exclusions,
-        exclusionReason
-    ])
 
     return (
-        <Box sx={{ width: "100%", p: 1 }} >
+        <Box sx={{ width: "100%", p: 1, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
             <Paper variant='outlined' sx={{ p: 1, display: "flex", flexDirection: "column", }} >
                 {/* Employee Information */}
                 <Box sx={{ display: "flex", flexDirection: "column", border: "1px solid", borderColor: "grey.300", p: 1, borderRadius: 2, }} >
@@ -444,9 +467,11 @@ const EndofProcess = ({ details }) => {
                         {
                             files !== '' &&
                             <Box
+                                // onClick={() => setOpen1(true)}
                                 sx={{
                                     display: 'flex', justifyContent: 'center', alignItems: 'end', borderBottom: '3px solid grey', mb: 0.3, ml: 5, width: '30%',
                                     cursor: 'pointer',
+
                                 }}
                             >
                                 <PermMediaOutlinedIcon sx={{ color: 'grey' }} />
@@ -498,7 +523,7 @@ const EndofProcess = ({ details }) => {
                             variant='outlined'
                             sx={{ borderRadius: 5, pr: 2, py: 0.5 }}
                         >Start of Month</Typography>
-                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'}  >12-08-2024</Typography>
+                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'}  > {format(startOfMonth(new Date(details?.relieving_date)), 'dd-MM-yyyy')}</Typography>
                         <Typography
                             level='title-sm'
                             color='neutral'
@@ -506,7 +531,7 @@ const EndofProcess = ({ details }) => {
                             variant='outlined'
                             sx={{ borderRadius: 5, pr: 2, py: 0.5 }}
                         >Resignation Date</Typography>
-                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'} >12-08-2024</Typography>
+                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'} >{format(new Date(details?.relieving_date), 'dd-MM-yyyy')}</Typography>
                         <Button
                             color="primary"
                             onClick={calculateProceeAttendence}
@@ -519,32 +544,43 @@ const EndofProcess = ({ details }) => {
                     {/* Processed data show here */}
                     <Box sx={{ display: 'flex', p: 0.5, }} >
                         {
-                            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30].map((item, index) => (
+                            displayArray && displayArray.map((item, index) => (
                                 <Box key={index} sx={{ display: 'flex', flex: 1, borderRadius: 0.5, border: 1, borderColor: 'grey.300', flexDirection: 'column', overflow: 'hidden' }} >
-                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1 }} variant='outlined' level='title-sm' textAlign='center' color='neutral' fontFamily="monospace">{item}</Typography>
-                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1 }} variant='outlined' level='title-sm' textAlign='center' color='neutral' fontFamily="monospace">Mon</Typography>
-                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1, fontWeight: 500 }} textColor='#2a4858' variant='outlined' level='body-xs' textAlign='center' color='neutral' >P</Typography>
-                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1, fontWeight: 500 }} textColor='#2a4858' variant='outlined' level='body-xs' textAlign='center' color='neutral' >WOFF</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1 }} variant='outlined' level='title-sm' textAlign='center' color='neutral' fontFamily="monospace">{format(new Date(item?.duty_day), 'd')}</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1 }} variant='outlined' level='title-sm' textAlign='center' color='neutral' fontFamily="monospace">{format(new Date(item?.duty_day), 'eee')}</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1, fontWeight: 500 }} textColor='#2a4858' variant='outlined' level='body-xs' textAlign='center' color='neutral' >{item?.duty_desc}</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1, fontWeight: 500 }} textColor='#2a4858' variant='outlined' level='body-xs' textAlign='center' color='neutral' >{item?.lvereq_desc}</Typography>
                                 </Box>
                             ))
                         }
                     </Box>
                     <Box sx={{ display: "flex", flex: 1, px: 0.5, border: "1px solid", borderColor: "grey.300", borderRadius: 2, mt: 0.5, flexDirection: 'column', py: 0.5 }} >
                         <Box sx={{ display: "flex", flex: 1, flexDirection: "row", justifyContent: "center", alignItems: 'center', pt: 0.5 }} >
-                            <Select
-                                placeholder="Extra Earnings & Deductions"
-                                size="sm"
-                                sx={{ display: 'flex', flex: 0.5, px: 2, mr: 1 }}
-                                value={1}
-                            >
-                                <Option>Earnings</Option>
-                                <Option>Deduction</Option>
-                            </Select>
-                            <Input placeholder="Amount" type='number' size="sm" sx={{ display: 'flex', flex: 0.5, px: 2, mr: 1 }} />
-                            <Input placeholder="Remarks" size="sm" sx={{ display: 'flex', flex: 1, px: 2 }} />
+                            <Box sx={{ flex: 1 }}>
+                                <Select
+                                    value={earnValue}
+                                    onChange={(event, newValue) => {
+                                        setEarnvalue(newValue);
+                                        setEarnName(event.target.innerText)
+                                    }}
+                                    size='md'
+                                    sx={{ width: '100%' }}
+                                    variant='outlined'
+                                >
+                                    <Option disabled value={0}>Select Earn Type </Option>
+                                    <Option value={2}>Earnings </Option>
+                                    <Option value={3}>Desduction </Option>
+                                </Select>
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.5 }}>
+                                <Input fullWidth placeholder="Amount" type='number' size="sm" value={earnAmount} onChange={(e) => setEarnAmount(e.target.value)} sx={{ display: 'flex', flex: 0.5, px: 2, mr: 1 }} />
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <Input fullWidth placeholder="Remarks" size="sm" value={earnRemark} onChange={(e) => setEarnRemark(e.target.value)} sx={{ display: 'flex', flex: 1, px: 2 }} />
+                            </Box>
                             <Button
                                 color="success"
-                                onClick={function () { }}
+                                onClick={addEarn}
                                 size="sm"
                                 sx={{ mx: 2, px: 1 }}
                             >
@@ -565,21 +601,15 @@ const EndofProcess = ({ details }) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Frozen yoghurt</td>
-                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>159</td>
-                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>6</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Ice cream sandwich</td>
-                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>237</td>
-                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>9</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Eclair</td>
-                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>262</td>
-                                        <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>16</td>
-                                    </tr>
+                                    {
+                                        earnArray?.map((val, index) => {
+                                            return <tr key={index}>
+                                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>{val.earnName}</td>
+                                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>{val.earnAmount}</td>
+                                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>{val.earnRemark}</td>
+                                            </tr>
+                                        })
+                                    }
                                 </tbody>
                             </Table>
                         </Box>
@@ -597,56 +627,56 @@ const EndofProcess = ({ details }) => {
                         <tbody>
                             <tr>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }} >Total Days</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#D5FBDD' }} >31</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#D5FBDD' }} >{totalDays}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', }} >LOP Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#FFE1E1' }} >200.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lopamount}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '40%', backgroundColor: '#E4E5E6' }} ></td>
                             </tr>
                             <tr>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Leave count</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{leaveCount}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >NPS Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >250.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{npsamount}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Gross Salary</td>
                             </tr>
                             <tr >
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday count</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayCount}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >LWF Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >250.00</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >350000.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lwfamount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{gross_salary}</td>
                             </tr>
                             <tr>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >No of HD LOP</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{hdLop}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Deduction Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >250.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{deductionAmount}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Net Salary</td>
                             </tr>
                             <tr  >
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >No of LC count</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lcCount}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >250.00</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >28000.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayamount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{netSalary}</td>
                             </tr>
                             <tr>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Total LOP</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lopCount}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Extra Earnings</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >250.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{extraEarn}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Total Payable Amount</td>
                             </tr>
                             <tr >
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Total Pay Days</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{payDays}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Extra Deduction</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >250.00</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >280000.00</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{extraDeduct}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{netSalary}</td>
                             </tr>
                             <tr>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday worked</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >0</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayWorked}</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} ></td>
@@ -669,6 +699,23 @@ const EndofProcess = ({ details }) => {
                         </Button>
                     </Box>
                 </Box>
+                {/* <Modal
+                    open={open1}
+                    onClose={() => setOpen1(false)}
+                    sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}
+                >
+                    <ModalDialog>
+                        <ModalClose />
+                        <Box
+                            sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}
+                        >
+                            <ImageViewer
+                                fileURL={`${PUBLIC_NAS_FOLDER}/ResignationReq/${attachment}`}
+                                fileType={attachment_type}
+                            />,
+                        </Box>
+                    </ModalDialog>
+                </Modal> */}
             </Paper>
         </Box>
     )

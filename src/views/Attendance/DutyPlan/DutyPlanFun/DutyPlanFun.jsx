@@ -58,6 +58,7 @@ const getDutyPlanDetl = async (getDateOnly, emplyeeDetl) => {
                     emp_id: values.em_id,
                     em_no: values.em_no,
                     emp_name: values.em_name,
+                    unauthorized_absent_status: values.unauthorized_absent_status,
                     plan: [...planObj.plan, data.filter((val) => val.emp_id === values.em_id ? val : null)]
                 }
             })
@@ -99,7 +100,8 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             em_id: val.em_id,
             em_name: val.em_name,
             em_no: val.em_no,
-            em_doj: val.contract_status === 1 ? val.em_cont_start : val.em_doj
+            em_doj: val.contract_status === 1 ? val.em_cont_start : val.em_doj,
+            unauthorized_absent_status: val.unauthorized_absent_status,
         }
     })
 

@@ -9,11 +9,11 @@ import { Box, IconButton, Paper, Tooltip } from '@mui/material'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import { Button, } from '@mui/joy'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import RemarkModal from './RemarkModal';
 import ToggleOffOutlinedIcon from '@mui/icons-material/ToggleOffOutlined';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 
 const EmployeeInactiveHR = () => {
 
@@ -25,6 +25,7 @@ const EmployeeInactiveHR = () => {
     const [empData, setempData] = useState([])
     const [flag, setFlag] = useState(false)
     const [details, setDetails] = useState(0)
+    const [dueDepartment, setDueDepartment] = useState([])
 
     useEffect(() => {
         const getempdetl = async () => {
@@ -55,6 +56,19 @@ const EmployeeInactiveHR = () => {
             warningNofity("Please Select All Option")
         } else {
             setState(1)
+            const postDeptData = {
+                dept_id: dept,
+                sect_id: deptSect,
+            }
+            const results = await axioslogin.post('/Duedepartment/duedept', postDeptData)
+            const { success1, data1 } = results.data
+            if (success1 === 1) {
+                const { due_dept_code } = data1[0]
+                const duedepartment = JSON.parse(due_dept_code)
+                setDueDepartment(duedepartment)
+            } else {
+                setDueDepartment([])
+            }
         }
     }, [dept, deptSect])
 
@@ -118,8 +132,9 @@ const EmployeeInactiveHR = () => {
                             onClick={() => {
                                 getemployeedetails()
                             }}
+                            endDecorator={<Box>Search</Box>}
                         >
-                            <AddCircleOutlineIcon />
+                            <PersonSearchIcon />
                         </Button>
                     </Box>
                 </Paper>
@@ -135,7 +150,7 @@ const EmployeeInactiveHR = () => {
                         headerHeight={30}
                     />
                 </Paper>
-                <RemarkModal open={flag} setOpen={setFlag} data={details} setCount={setCount} />
+                <RemarkModal open={flag} setOpen={setFlag} data={details} setCount={setCount} dueDepartment={dueDepartment} />
             </Box>
         </CustomLayout>
     )

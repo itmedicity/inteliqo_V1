@@ -1,4 +1,4 @@
-import { Box, Button, CssVarsProvider, } from '@mui/joy'
+import { Box, Button, } from '@mui/joy'
 import { IconButton, Paper, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
@@ -7,12 +7,12 @@ import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ActiveModal from './ActiveModal'
 import { screenInnerHeight } from 'src/views/Constant/Constant'
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 
 const EmployeeActiveHR = () => {
 
@@ -98,20 +98,19 @@ const EmployeeActiveHR = () => {
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                         <DeptSecSelectByRedux dept={dept} value={deptSect} setValue={setDeptSect} />
                     </Box>
-                    <Box sx={{}} >
-                        <CssVarsProvider>
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="primary"
-                                sx={{ height: '100%' }}
-                                onClick={() => {
-                                    getemployeedetails()
-                                }}
-                            >
-                                <AddCircleOutlineIcon />
-                            </Button>
-                        </CssVarsProvider>
+                    <Box sx={{ mt: 0.5, px: 0.3 }} >
+                        <Button
+                            aria-label="Like"
+                            variant="outlined"
+                            color="primary"
+                            sx={{ height: '100%' }}
+                            onClick={() => {
+                                getemployeedetails()
+                            }}
+                            endDecorator={<Box>Search</Box>}
+                        >
+                            <PersonSearchIcon />
+                        </Button>
                     </Box>
                 </Paper>
                 <Paper square sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column", flex: 1 }} >

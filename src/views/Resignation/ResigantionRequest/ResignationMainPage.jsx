@@ -8,7 +8,7 @@ import { Button, CssVarsProvider, Input, LinearProgress, Option, Select, Textare
 import { useCallback } from 'react'
 import ResignationComponent from './ResignationComponent'
 import moment from 'moment'
-import { addDays } from 'date-fns'
+import { addDays, format } from 'date-fns'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useSelector } from 'react-redux'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
@@ -28,10 +28,10 @@ import noPreview from '../../../assets/upload/images.png'
 const ResignationMainPage = () => {
 
     const [resignation_type, setresignation_type] = useState(0)
-    const [request_date, setrequest_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
+    const [request_date, setrequest_date] = useState(new Date())
     const [resignation_reason, setresignation_reason] = useState('')
     const [noticeperiod, setNoticePeriod] = useState(0)
-    const [relvngDate, setRelivingdate] = useState(moment(new Date()))
+    const [relvngDate, setRelivingdate] = useState(new Date())
     const [files, setFiles] = useState('')
     const [progress, setProgress] = useState(0);
 
@@ -119,8 +119,8 @@ const ResignationMainPage = () => {
             em_no: em_no,
             designation: em_designation,
             resignation_type: resignation_type,
-            request_date: moment(request_date).format('YYYY-MM-DD'),
-            relieving_date: moment(relvngDate).format('YYYY-MM-DD'),
+            request_date: format(new Date(request_date), 'yyyy-MM-dd'),
+            relieving_date: format(new Date(relvngDate), 'yyyy-MM-dd'),
             resign_reason: resignation_reason,
             notice_period: noticeperiod,
             incharge_required: (authorization_incharge === 1 && incharge === 1) ? 1 :
@@ -132,9 +132,9 @@ const ResignationMainPage = () => {
             inch_coment: (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
                 (hod === 1) ? "DIRECT" :
                     (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : 'NIL',
-            inch_app_date: (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+            inch_app_date: (authorization_incharge === 1 && incharge === 1) ? format(new Date(), 'yyyy-MM-dd HH:mm:ss') :
+                (hod === 1) ? format(new Date(), 'yyyy-MM-dd HH:mm:ss') :
+                    (authorization_incharge === 0 && incharge === 1) ? format(new Date(), 'yyyy-MM-dd HH:mm:ss') : format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             inch_id: (authorization_incharge === 1 && incharge === 1) ? em_id :
                 (hod === 1) ? em_id :
                     (authorization_incharge === 0 && incharge === 1) ? em_id : 0,
@@ -145,8 +145,8 @@ const ResignationMainPage = () => {
                 (authorization_hod === 0 && hod === 1) ? 1 : 0,
             hod_coment: (authorization_hod === 1 && hod === 1) ? "DIRECT" :
                 (authorization_hod === 0 && hod === 1) ? 'DIRECT' : 'NIL',
-            hod_app_date: (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+            hod_app_date: (authorization_hod === 1 && hod === 1) ? format(new Date(), 'yyyy-MM-dd HH:mm:ss') :
+                (authorization_hod === 0 && hod === 1) ? format(new Date(), 'yyyy-MM-dd HH:mm:ss') : format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             hod_id: (authorization_hod === 1 && hod === 1) ? em_id :
                 (authorization_hod === 0 && hod === 1) ? em_id : 0,
             hr_required: 1,
@@ -339,7 +339,7 @@ const ResignationMainPage = () => {
                                     type="text"
                                     size="sm"
                                     name="noticeperiod"
-                                    value={resignation_type === 1 ? `30 Days` : `24 Hour`}
+                                    value={resignation_type === 1 ? `30 Days` : resignation_type === 2 ? `24 Hour` : `NIL`}
                                     disabled
                                 />
                             </Box>

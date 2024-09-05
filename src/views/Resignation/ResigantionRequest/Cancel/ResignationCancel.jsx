@@ -22,6 +22,7 @@ const ResignationCancel = () => {
 
     //login hod id
     const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0, _.isEqual)
+
     useEffect(() => {
         const getResignCancel = async () => {
             const result = await axioslogin.get('/Resignation/resign/resigncancel')

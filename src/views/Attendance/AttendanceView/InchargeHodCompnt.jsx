@@ -83,6 +83,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                         let emNo = empArray?.find(e => e.em_no === el).em_no;
                         let emId = empArray?.find(e => e.em_no === el).emp_id;
                         let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
+                        let unauthorized = empArray?.find(e => e.em_no === el).unauthorized_absent_status;
 
                         // console.log(dateRange)
                         // console.log(grossSalary)
@@ -122,6 +123,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                             totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                             totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
                             totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "HP").length ?? 0),
+                            unauthorized: unauthorized
                         }
                     })
                     settableArray(resultss)
@@ -395,10 +397,10 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                             {tableArray && tableArray.map((row, index) => (
                                                 <Fragment key={index}>
                                                     <tr >
-                                                        <td rowSpan={3} style={{ zIndex: 4, backgroundColor: '#f4f6f8' }} >
+                                                        <td rowSpan={3} style={{ zIndex: 4, backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8' }} >
                                                             <Box sx={{ width: 200 }}> {row.emName}</Box>
                                                         </td>
-                                                        <td rowSpan={3} style={{ textAlign: 'center', zIndex: 0, backgroundColor: '#f4f6f8' }} >
+                                                        <td rowSpan={3} style={{ textAlign: 'center', zIndex: 0, backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8' }} >
                                                             <Box sx={{ width: 60 }}> {row.em_no}</Box>
                                                         </td>
                                                     </tr>
@@ -411,7 +413,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                                                     width: 60,
                                                                     borderLeft: '0.1px solid #dddfe2',
                                                                     height: 10,
-                                                                    backgroundColor: '#f4f6f8'
+                                                                    backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8',
                                                                 }}
                                                             >
                                                                 <Box sx={{
@@ -442,7 +444,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                                                     width: 60,
                                                                     borderLeft: '0.1px solid #dddfe2',
                                                                     height: 10,
-                                                                    backgroundColor: '#CDF8DF'
+                                                                    backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#CDF8DF'
                                                                 }}
                                                             >
                                                                 <Box sx={{
@@ -618,10 +620,10 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                             {tableArray && tableArray.map((row, index) => (
                                                 <Fragment key={index}>
                                                     <tr >
-                                                        <td rowSpan={3} style={{ zIndex: 4, backgroundColor: '#f4f6f8' }} >
+                                                        <td rowSpan={3} style={{ zIndex: 4, backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8' }} >
                                                             <Box sx={{ width: 200 }}> {row.emName}</Box>
                                                         </td>
-                                                        <td rowSpan={3} style={{ textAlign: 'center', zIndex: 0, backgroundColor: '#f4f6f8' }} >
+                                                        <td rowSpan={3} style={{ textAlign: 'center', zIndex: 0, backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8' }} >
                                                             <Box sx={{ width: 60 }}> {row.em_no}</Box>
                                                         </td>
                                                     </tr>
@@ -634,7 +636,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                                                     width: 60,
                                                                     borderLeft: '0.1px solid #dddfe2',
                                                                     height: 10,
-                                                                    backgroundColor: '#f4f6f8'
+                                                                    backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8'
                                                                 }}
                                                             >
                                                                 <Box sx={{
@@ -665,7 +667,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                                                     width: 60,
                                                                     borderLeft: '0.1px solid #dddfe2',
                                                                     height: 10,
-                                                                    backgroundColor: '#CDF8DF'
+                                                                    backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#CDF8DF'
                                                                 }}
                                                             >
                                                                 <Box sx={{
