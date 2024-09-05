@@ -134,13 +134,14 @@ const OneHourRequest = () => {
             else {
                 setSelectedShift(shift_id)
                 setShiftDesc(shft_desc)
-                const inTime = format(new Date(shft_chkin_time), 'hh:mm');
-                setCheckin(format(new Date(shft_chkin_time), 'hh:mm'))
-                setCheckout(format(new Date(shft_chkout_time), 'hh:mm'))
+                const inTime = format(new Date(shft_chkin_time), 'HH:mm');
+                setCheckin(format(new Date(shft_chkin_time), 'HH:mm'))
+                setCheckout(format(new Date(shft_chkout_time), 'HH:mm'))
 
                 const chekIn = `${format(new Date(date), 'yyyy-MM-dd')} ${inTime}`;
                 const chekOut = shft_cross_day === 0 ? `${format(new Date(date), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}` :
                     `${format(addDays(new Date(date), 1), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}`;
+
 
                 setPunchInTime(chekIn)
                 setPunchOutTime(chekOut)
@@ -238,10 +239,12 @@ const OneHourRequest = () => {
                 } else {
                     //check in time correct
                     if (checkinBox === true) {
-                        const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd H:mm')
-                        const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd H:mm')
+                        const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd HH:mm')
+
+                        const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd HH:mm')
                         const result = punchData.find((val) => val)
                         const dd = isBefore(new Date(result.punch_time), new Date(relaxTime)) && isAfter(new Date(result.punch_time), new Date(punchInTime)) || isEqual(new Date(result.punch_time), new Date(punchInTime)) ? 1 : 0
+
                         if (dd === 0) {
                             setOpenBkDrop(false)
                             warningNofity("Can't Apply For One Hour Request!!");
@@ -279,7 +282,7 @@ const OneHourRequest = () => {
                             }
                         }
                     } else {
-                        const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd H:mm')
+                        const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd HH:mm')
                         const result = punchData.findLast((val) => val)
                         const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) || isEqual(new Date(result.punch_time), new Date(outtime)) ? 1
                             : 0

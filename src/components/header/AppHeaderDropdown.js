@@ -40,7 +40,7 @@ const AppHeaderDropdown = () => {
       const { success, data } = result.data
       if (success === 1) {
         const { emp_id } = data[0]
-        const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + emp_id}/profilePic.jpg`);
+        const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER}/${emp_id}/profilePic.jpeg`);
         urlExist(profilePic, (status) => {
           if (status === true) {
             const picUrl = JSON.parse(profilePic)
