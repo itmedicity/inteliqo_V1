@@ -65,7 +65,8 @@ const EmployeeDocumentChecklist = React.lazy(() => import('./views/EmployeeRecor
 //const VaccinationInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/VaccinationInformation'))
 const FineorDeduction = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/FineorDeduction'))
 // const EmployeeEndofService = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeEndofService'))
-const DesignationMastTableEdit = React.lazy(() => import('./views/Master/Designation/DesignationMastTableEdit'))
+//const QualificationMastTableEdit = React.lazy(() => import('./views/Master/Qualification/QualificationMastTableEdit'))
+// const DesignationMastTableEdit = React.lazy(() => import('./views/Master/Designation/DesignationMastTableEdit'))
 const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
 const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmpAllowanceTableEdit'))
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
@@ -231,7 +232,37 @@ const Hicverificationlist = React.lazy(() => import('./views/EmployeeRecord/Vacc
 const ArearUpdation = React.lazy(() => import('./views/Payroll/ArearUpdation/ArearUpdation'))
 const ExperienceSummary = React.lazy(() => import('./views/HrReports/ExperienceReports/ExperienceSummaryReport'))
 const DeptPunchReport = React.lazy(() => import('./views/HrReports/PunchReport/DeptPunchReport'))
+const PersonalRecord = React.lazy(() => import('./views/EmployeeRecord/PersonalRecords/PersonalRecords'))
 const EmployeeActiveHR = React.lazy(() => import('./views/Resignation/EmployeeActiveHR/EmployeeActiveHR'))
+const ManpowerPlanning = React.lazy(() => import('./views/Master/ManPower/Manpowermain'))
+const Manpowerrequestapproval = React.lazy(() => import('./views/recruitment/manpowerRequest/RequestApproval/RequestApproval'))
+const HodRequestapproval = React.lazy(() => import('./views/recruitment/manpowerRequest/RequestApproval/HodRequestapproval'))
+const HrRequestApproval = React.lazy(() => import('./views/recruitment/manpowerRequest/RequestApproval/HrRequestApproval'))
+const VacancyAnnoncment = React.lazy(() => import('./views/recruitment/manpowerRequest/Vacancy'))
+const VacancyList = React.lazy(() => import('./views/recruitment/VacancyList/Vacancylist'))
+const Applicationform = React.lazy(() => import('./views/recruitment/ApplicationForm/Applicationform'))
+const SubmittedForm = React.lazy(() => import('./views/recruitment/ApplicationForm/SubmittedForm'))
+const Shortlist = React.lazy(() => import('./views/recruitment/ApplicationForm/Shortlist/Shortlist'))
+const Callletter = React.lazy(() => import('./views/recruitment/CallLetter/Callletter'))
+const Interview = React.lazy(() => import('./views/recruitment/Interview/Interview'))
+const InterviewInitial = React.lazy(() => import('./views/recruitment/Interview Initial Assesment/InterviewAssesment'))
+const InterviewIncharge = React.lazy(() => import('./views/recruitment/Approvals/Incharge'))
+const InterviewHod = React.lazy(() => import('./views/recruitment/Approvals/Hod'))
+const InterviewMs = React.lazy(() => import('./views/recruitment/Approvals/Ms'))
+const InterviewDms = React.lazy(() => import('./views/recruitment/Approvals/Dms'))
+const InterviewOperation = React.lazy(() => import('./views/recruitment/Approvals/Operation'))
+const InterviewCeo = React.lazy(() => import('./views/recruitment/Approvals/Ceo'))
+const InterviewHr = React.lazy(() => import('./views/recruitment/Approvals/Hr'))
+const InterviewMaster = React.lazy(() => import('./views/Master/InterviewQuestionMaster/Interviewmaster'))
+const Question = React.lazy(() => import('./views/recruitment/Interview Initial Assesment/Question'))
+const CandidateRanking = React.lazy(() => import('./views/recruitment/Candidate Ranking/Ranking'))
+const CandidateSelection = React.lazy(() => import('./views/recruitment/Candidate Selection/Selection'))
+const OfferLetter = React.lazy(() => import('./views/recruitment/Offer Letter/Offerletter'))
+const EmpConversion = React.lazy(() => import('./views/recruitment/Employe Convertion/EmpConversion'))
+const Appoinment = React.lazy(() => import('./views/recruitment/AppoinmentLetter/AppoinmentLetter'))
+const Joiningletter = React.lazy(() => import('./views/recruitment/JoiningLetter/JoiningLetter'))
+const Announcementclosing = React.lazy(() => import('./views/recruitment/AnnouncementClosing/Announcementclosing'))
+const HealthCheckUp = React.lazy(() => import('./views/EmployeeRecord/AnnualHealthCheckUp/AnnualHealthUpForm'))
 const DepartmentalCalenders = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalCalenders'))
 //QR CODE
 //const PreTest = React.lazy(() => import('./views/TrainingDevelopment/PreTest/PretestEmpList'))
@@ -284,6 +315,11 @@ const SalaryProcessReports = React.lazy(() => import('./views/Attendance/SalaryP
 const CompensatoryRequest = React.lazy(() => import('./views/LeaveManagement/CompOffRequest/CompensatoryRequest'))
 const AttendenceReports = React.lazy(() => import('./views/HrReports/AttendenceReport/AttendenceReport'))
 const DayWiseAttendenceReports = React.lazy(() => import('./views/HrReports/DayWiseAttendence/DayWiseAttendence'))
+const HodApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/HodApproval/HodCredential'))
+const MSApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/MsCredential/MsCredential'))
+const CPApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/CpCredential/CpCredential'))
+const MDApprovalCredential = React.lazy(() => import('./views/EmployeeRecord/ApprovalsCredential/MdCredential/MdCredential'))
+const JobAndSkillDescription = React.lazy(() => import('./views/Master/JobAndSkiillDescription/DescriptionMain'))
 // const TDVerification = React.lazy(() => import('./views/TrainingDevelopment/TDVerification/TDVerificationMainPage'))
 const TDVerification = React.lazy(() => import('./views/TrainingDevelopment/TDVerification/TnDVerification'))
 const TopicQuestionMaster = React.lazy(() => import('./views/TrainingDevelopment/TrainingTopicQuestion/QuestionTopicMainPage'))
@@ -364,7 +400,8 @@ const routes = [
   //{ path: '/Home/VaccinationInformation/:id', exact: true, name: 'Vaccination Information', component: VaccinationInformation },
   { path: '/Home/FineorDeduction/:id/:no', exact: true, name: 'Fine or Other Deduction', component: FineorDeduction },
   // { path: '/Home/EmployeeEndofService/:id', exact: true, name: 'End of service', component: EmployeeEndofService },
-  { path: '/Home/DesignationMastTableEdit/:id', exact: true, name: 'Designation master Table Edit', component: DesignationMastTableEdit },
+  //{ path: '/Home/QualificationMastTableEdit/:id', exact: true, name: 'Qualification  Table Edit', component: QualificationMastTableEdit },
+  // { path: '/Home/DesignationMastTableEdit/:id', exact: true, name: 'Designation master Table Edit', component: DesignationMastTableEdit },
   { path: '/Home/DesignationTypeedit/:id', exact: true, name: 'Branch Master Table Edit', component: DesignationTypeedit },
   { path: '/Home/EmpAllowanceTableEdit/:slno/:id/:no', exact: true, name: 'Employee Allowance Table Edit ', component: EmpAllowanceTableEdit },
   { path: '/Home/ShiftMaster', exact: true, name: 'ShiftMaster', component: ShiftMaster },
@@ -517,7 +554,40 @@ const routes = [
   { path: '/Home/ArearUpdation', exact: true, name: 'Arear Updation', component: ArearUpdation },
   { path: '/Home/ExperienceSummary', exact: true, name: 'Employee Experience Summary Report', component: ExperienceSummary },
   { path: '/Home/DeptPunchReport', exact: true, name: 'Department Punch Report', component: DeptPunchReport },
+  { path: '/Home/PersonalRecord', exact: true, name: 'Personal Records', component: PersonalRecord },
+  { path: '/Home/ManpowerPlanning', exact: true, name: 'ManPower', component: ManpowerPlanning },
+  { path: '/Home/RequestApproval', exact: true, name: 'RequestApproval', component: Manpowerrequestapproval },
+  { path: '/Home/HodRequestapproval', exact: true, name: 'HOD Request Approval', component: HodRequestapproval },
+  { path: '/Home/HrRequestApproval', exact: true, name: 'HR Request Approval', component: HrRequestApproval },
+  { path: '/Home/VacancyAnnouncement', exact: true, name: 'Vacancy Announcement', component: VacancyAnnoncment },
+  { path: '/Home/VacancyList', exact: true, name: 'Vacancy List', component: VacancyList },
+  { path: '/Home/Applicationform', exact: true, name: 'Application Form', component: Applicationform },
+  { path: '/Home/SubmittedForm', exact: true, name: 'Submitted Applications', component: SubmittedForm },
+  { path: '/Home/Shortlist', exact: true, name: 'Short List', component: Shortlist },
+  { path: '/Home/Callletter', exact: true, name: 'Call letter Preperation', component: Callletter },
   { path: '/Home/EmployeeActiveHR', exact: true, name: 'Employee Active HR', component: EmployeeActiveHR },
+  { path: '/Home/Interview', exact: true, name: 'Interview List', component: Interview },
+  { path: '/Home/InterviewInitial', exact: true, name: 'Interview Initial Assesment', component: InterviewInitial },
+  { path: '/Home/InterviewIncharge', exact: true, name: 'Incharge Approval', component: InterviewIncharge },
+  { path: '/Home/InterviewHod', exact: true, name: 'Hod Approval', component: InterviewHod },
+  { path: '/Home/InterviewMs', exact: true, name: 'Ms Approval', component: InterviewMs },
+  { path: '/Home/InterviewDms', exact: true, name: 'Dms Approval', component: InterviewDms },
+  { path: '/Home/InterviewOperation', exact: true, name: 'Operation Approval', component: InterviewOperation },
+  { path: '/Home/InterviewCeo', exact: true, name: 'Ceo Approval', component: InterviewCeo },
+  { path: '/Home/InterviewHr', exact: true, name: 'Hr Approval', component: InterviewHr },
+  { path: '/Home/InterviewQuestion', exact: true, name: 'Interview Question Master', component: InterviewMaster },
+  { path: '/Question', exact: true, name: 'Question', component: Question },
+  { path: '/Home/Candidate Ranking', exact: true, name: 'Candidate Ranking', component: CandidateRanking },
+  { path: '/Home/Candidate Selection', exact: true, name: 'Candidate Selection', component: CandidateSelection },
+  { path: '/Home/OfferLetter', exact: true, name: 'OfferLetter', component: OfferLetter },
+  { path: '/Home/EmpConversion', exact: true, name: 'Employee Conversion', component: EmpConversion },
+  { path: '/Home/Appoinment', exact: true, name: 'Appointment Letter', component: Appoinment },
+  { path: '/Home/Joiningletter', exact: true, name: 'Joining Letter', component: Joiningletter },
+  { path: '/Home/Announcementclosing', exact: true, name: 'Announcement Closing', component: Announcementclosing },
+  { path: '/Home/HealthCheckUp', exact: true, name: 'Annual Health Checkup Form', component: HealthCheckUp },
+
+  //QR CODE
+  // { path: '/Home/PreTest', exact: true, name: 'Pre Test', component: PreTest },
   { path: '/OnlinePreTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Pre Test', component: OnlinePreTest },
   { path: '/OnlineTraining/:id/:emId', exact: true, name: 'Online Training', component: QROnlineTraining },
   { path: '/OnlinePostTest/:id/:emId/:tslno/:qcount', exact: true, name: 'Online Post Test', component: OnlinePostTest },
@@ -565,6 +635,11 @@ const routes = [
   { path: '/Home/CompensatoryRequest', exact: true, name: 'Compensatory Off Request', component: CompensatoryRequest },
   { path: '/Home/AttendenceReports', exact: true, name: 'Attendence Reports', component: AttendenceReports },
   { path: '/Home/DayWiseAttendence', exact: true, name: 'Day Wise Attendence Reports', component: DayWiseAttendenceReports },
+  { path: '/Home/HODcredential', exact: true, name: 'HOD Credential Approval', component: HodApprovalCredential },
+  { path: '/Home/MScredential', exact: true, name: 'MS Credential Approval', component: MSApprovalCredential },
+  { path: '/Home/CPcredential', exact: true, name: 'CP Credential Approval', component: CPApprovalCredential },
+  { path: '/Home/MDcredential', exact: true, name: 'MD Credential Approval', component: MDApprovalCredential },
+  { path: '/Home/JobAndSkillDescription', exact: true, name: 'JobAndSkillDescription', component: JobAndSkillDescription },
   { path: '/Home/TDVerification', exact: true, name: 'T and D Verification', component: TDVerification },
   { path: '/Home/TopicQuestionMaster', exact: true, name: 'Topic Question Master', component: TopicQuestionMaster },
   { path: '/Home/TrainingInductionCalender', exact: true, name: 'Training Induction Calender', component: TrainingInductionCalender },
@@ -579,7 +654,6 @@ const routes = [
   { path: '/Home/CreditedLeaveCount', exact: true, name: 'Credited Leave Count Report', component: CreditedLeaveCount },
   { path: '/Home/ApprovedLeaveCancel', exact: true, name: 'Approved Leave Cancel By HR', component: ApprovedLeaveCancel },
   { path: '/Home/DoffRequest', exact: true, name: 'DOFF Request', component: OffRequest }
-
 ]
 
 export default routes

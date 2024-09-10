@@ -96,6 +96,8 @@ import { setCommonreqstAll } from './CommonReqst.Reducer'
 import { setStatutoryInfo } from './LeaveProcess.Reducer'
 import { gettrainingData } from './Training.Reducer'
 import { setVaccinationemp } from './VaccinationReducers'
+import { getemp } from './EmployeeReducers'
+import { getInterviewquestion } from './Interview.Reducer'
 import { getLeaveReport } from './LeaveReportReducers'
 import { getLeaveRequests } from './Leavereqdata'
 import { getMisspunchRequests } from './Leavereqdata'
@@ -103,6 +105,7 @@ import {
     getHalfdayRequests, getSectLeaveRequests, getSectHalfdayRequests,
     getSectMisspunchRequests, getEmpCoffRequests, getSectCoffRequests
 } from './Leavereqdata'
+import { getSkillData } from '../reducers/SkillsReducers';
 
 const reducer = combineReducers({
     changeState,
@@ -208,6 +211,8 @@ const reducer = combineReducers({
     selectedEarnData,
     setVaccinationemp,
     setEmployeeType,
+    getemp,
+    getInterviewquestion,
     getEmpCoffData,
     getLeaveReport,
     getLeaveRequests,
@@ -217,7 +222,8 @@ const reducer = combineReducers({
     getSectHalfdayRequests,
     getSectMisspunchRequests,
     getEmpCoffRequests,
-    getSectCoffRequests
+    getSectCoffRequests,
+    getSkillData,
 })
 
 export default reducer;

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setBloodgrp } from 'src/redux/actions/Bloodgrp.Action';
 import _ from 'underscore';
 
-const JoyBloodGroup = ({ value, setValue }) => {
+const JoyBloodGroup = ({ value, setValue, disabled }) => {
     const dispatch = useDispatch();
     const [flag, setFlag] = useState(0)
     useEffect(() => {
@@ -17,7 +17,7 @@ const JoyBloodGroup = ({ value, setValue }) => {
     useEffect(() => {
         if ((value !== 0) && (flag === 0)) {
             const array = empBloodgrp?.find((e) => e.group_slno === parseInt(value))
-            setValue(array.group_slno)
+            setValue(array?.group_slno)
         }
     }, [value, setValue, flag, empBloodgrp])
 
@@ -35,6 +35,7 @@ const JoyBloodGroup = ({ value, setValue }) => {
     return (
         <Select
             value={value}
+            disabled={disabled}
             onChange={(event, newValue) => {
                 onClick(newValue);
             }}

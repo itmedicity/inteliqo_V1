@@ -5,7 +5,6 @@ import { setReligion } from 'src/redux/actions/Religion.Action';
 import _ from 'underscore';
 
 const JoyReligion = ({ value, setValue }) => {
-
     const dispatch = useDispatch();
     const [flag, setFlag] = useState(0)
     useEffect(() => {

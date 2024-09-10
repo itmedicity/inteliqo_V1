@@ -1,55 +1,23 @@
-import React, { Fragment } from 'react';
-import { useState } from 'react';
-import { Button } from 'react-bootstrap';
-import { axioslogin } from 'src/views/Axios/Axios';
+import { Box, } from '@mui/joy';
+import React, { memo, lazy } from 'react'
+import { useHistory } from 'react-router-dom';
+import DasboardCustomLayout from 'src/views/MuiComponents/DasboardCustomLayout';
+const ManpowerForm = lazy(() => import('./ManpowerForm'))
 
-function ManpowerRequest() {
-
-    const [name, setName] = useState()
-    const [file, setFile] = useState()
-
-    const uploadFile = async () => {
-        const data = new FormData();
-        data.append("em_id", name)
-        data.append("file", file)
-        console.log(data)
-
-        const result = await axioslogin.post('/upload/upload', data)
-
-        console.log(result);
+const ManpowerRequest = () => {
+    const history = useHistory();
+    const toRedirectToHome = () => {
+        history.push('/Home');
     }
-
     return (
-        <Fragment>
-            <div className="container">
-                <div className="card">
-                    <div className="card-body">
-                        <form>
-                            <div className='d-flex justify-content-evenly'>
-                                <div>
-                                    <label htmlFor="name">Name</label>
-                                    <input type="text" id="name" onChange={(e) => setName(e.target.value)} autoComplete='off' />
-                                </div>
-                                <div>
-                                    <label htmlFor="file">File</label>
-                                    <input type="file" id="file" accept='.jpg' onChange={
-                                        (e) => {
-                                            const file = e.target.files[0]
-                                            setFile(file)
-                                        }
-                                    }
-                                    />
-                                </div>
-                                <div>
-                                    <Button onClick={uploadFile} >Upload</Button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </Fragment >
+        <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', overflow: "auto", }} >
+            <DasboardCustomLayout title={" Manpower Requisition Form"} displayClose={true} setClose={toRedirectToHome} >
+                <Box sx={{ display: 'flex', flex: 1, py: 0.5, height: window.innerHeight - 120, overflow: "auto" }} >
+                    <ManpowerForm />
+                </Box>
+            </DasboardCustomLayout>
+        </Box>
     )
 }
 
-export default ManpowerRequest
+export default memo(ManpowerRequest)

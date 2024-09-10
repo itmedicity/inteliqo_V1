@@ -3,7 +3,6 @@ import React, { memo, useCallback, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios';
 
 const JoySalutation = ({ value, setValue }) => {
-
     const [saltation, setSalutation] = useState([]);
     const [flag, setFlag] = useState(0)
     useEffect(() => {

@@ -2,6 +2,12 @@ import { CNavItem } from "@coreui/react";
 
 const Employeerecord = [
     {
+        men_slno: 259,
+        component: CNavItem,
+        name: 'Personal Records',
+        to: '/Home/PersonalRecord',
+    },
+    {
         men_slno: 19,
         component: CNavItem,
         name: 'Employee Register',
@@ -83,12 +89,41 @@ const Employeerecord = [
         to: '/Home/CompanyInfo',
     },
     {
+        men_slno: 289,
+        component: CNavItem,
+        name: 'Annual Health Checkup Form',
+        to: '/Home/HealthCheckUp',
+    },
+    {
         men_slno: 152,
         component: CNavItem,
         name: 'Department Section Change',
         to: '/Home/DeptSecChange',
     },
-
+    {
+        men_slno: 291,
+        component: CNavItem,
+        name: 'HOD Credential Approval',
+        to: '/Home/HODcredential',
+    },
+    {
+        men_slno: 292,
+        component: CNavItem,
+        name: 'MS Credential Approval',
+        to: '/Home/MScredential',
+    },
+    {
+        men_slno: 293,
+        component: CNavItem,
+        name: 'CP Credential Approval',
+        to: '/Home/CPcredential',
+    },
+    {
+        men_slno: 293,
+        component: CNavItem,
+        name: 'MD Credential Approval',
+        to: '/Home/MDcredential',
+    },
 ]
 
 export default Employeerecord;

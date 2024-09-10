@@ -86,7 +86,6 @@ const ModalComponent = ({
 
         const formData = new FormData()
         formData.append('em_id', selectedRowData?.em_id)
-
         for (const file of selectedFiles) {
           if (file.type.startsWith('image')) {
             const compressedFile = await handleImageUpload(file)

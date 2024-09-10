@@ -13,7 +13,6 @@ const CourseSelectRedux = ({ value, setValue, education, coursedisable }) => {
     const course = useMemo(() => empCourse, [empCourse]);
 
     const filterarr = course?.filter(val => val.edu_slno === education)
-
     return (
         <FormControl fullWidth
             size='small'   >

@@ -23,7 +23,7 @@ const FeedbackPageWithoutTest = React.lazy(() => import('./views/TrainingDevelop
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 // Pages
 const Login = React.lazy(() => import('./views/pages/login/Login'))
-
+const Question = React.lazy(() => import('./views/recruitment/Interview Initial Assesment/Question'))
 function App() {
   return (
     <BrowserRouter basename="/test" >
@@ -32,6 +32,8 @@ function App() {
           <Route exact path="/" name="Login Page" render={(props) => <Login {...props} />} />
           <Route path="/Home">
             <Protected cmp={DefaultLayout} />
+          </Route>
+          <Route path="/Question" render={(props) => <Question />}  >
           </Route>
           <Route path="/OnlinePreTest/:id/:emId/:tslno/:qcount" render={(props) => <QuestionPreTest />}  >
           </Route>

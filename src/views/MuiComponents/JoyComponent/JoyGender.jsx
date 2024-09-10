@@ -1,10 +1,11 @@
 import { Option, Select } from '@mui/joy';
 import React, { memo } from 'react'
 
-const JoyGender = ({ value, setValue }) => {
+const JoyGender = ({ value, setValue, disabled }) => {
     return (
         <Select
             value={value}
+            disabled={disabled}
             onChange={(event, newValue) => {
                 setValue(newValue);
             }}

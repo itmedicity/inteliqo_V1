@@ -42,7 +42,7 @@ const JoyDesignationSelect = ({ desgValue, getDesg }) => {
     return (
         <Autocomplete
             placeholder="Select Designation"
-            value={value}
+            value={desgValue === 0 ? designation : value}
             clearOnBlur
             onChange={(event, newValue) => {
                 Onclick(newValue);
