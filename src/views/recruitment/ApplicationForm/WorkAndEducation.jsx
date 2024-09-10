@@ -1,6 +1,8 @@
 import { Box, Typography, Button, Tooltip } from '@mui/joy'
 import React, { lazy, useState, useCallback, memo } from 'react'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import WorkIcon from '@mui/icons-material/Work';
+import moment from 'moment';
 
 
 const ExperienceModal = lazy(() => import('./ExperienceModal'))
@@ -50,27 +52,31 @@ const WorkAndEducation = ({ formdata, setformdata, seteducation, Regionexp, setR
                     {
                         expdata?.map((val, index) => {
                             return (
+                                <Box key={index} sx={{ mt: 1, display: "flex", width: '100%' }}>
+                                    <Box sx={{
+                                        width: "100%", borderTop: "1px solid #DFDFDF",
 
-                                <Box sx={{ display: 'flex', mt: 1 }} key={val.id} >
-                                    <Box>
-                                        <Typography>Employer Name:</Typography>
-                                        <Typography>Job Title:</Typography>
-                                        <Typography>Start Date:</Typography>
-                                        <Typography>End Date:</Typography>
-                                        <Typography>Currently Working Status:</Typography>
-                                    </Box>
-                                    <Box sx={{ ml: 1 }}>
-                                        <Typography sx={{ color: '#87C4FF' }}>{val?.Employer === '' ? 'Not Updated' : val?.Employer}</Typography>
-                                        <Typography sx={{ color: '#87C4FF' }}>{val?.jobexp === '' ? 'Not Updated' : val?.jobexp}</Typography>
-                                        <Typography sx={{ color: '#87C4FF' }}>{val?.expstartdate === 0 ? 'Not Updated' : val?.expstartdate}</Typography>
-                                        <Typography sx={{ color: '#87C4FF' }}>{val?.expenddate === 0 ? 'Not Updated' : val?.expenddate}</Typography>
-                                        <Typography sx={{ color: '#87C4FF' }}>{val?.Workingstatus === false ? 'Not Working' : val?.Workingstatus === true ? 'Currently Working' : 'Not Updated'}</Typography>
+                                    }}>
 
+                                        <Box sx={{ display: 'flex', gap: 2, mt: 1, }}>
+                                            <Box><WorkIcon /></Box>
+                                            <Box sx={{ mt: .5, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1 }}>
+                                                <Box><Typography level="title-md" sx={{ wordBreak: 'break-word', }}> {val?.jobexp}</Typography></Box>
+                                                <Box>   <Typography level="body-sm" sx={{ wordBreak: 'break-word', }}>(  {moment(new Date(val?.expstartdate)).format('DD-MM-YYYY')} -  {moment(new Date(val?.expenddate)).format('DD-MM-YYYY')})</Typography></Box>
+                                            </Box>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', gap: 5 }}>
+                                            <Box></Box>
+                                            <Box ><Typography level="body-sm" sx={{ wordBreak: 'break-word', }}> {val?.Employer}</Typography> </Box>
+                                        </Box>
                                     </Box>
+
                                 </Box>
+
                             )
                         })
                     }
+
                 </Box>
                 <Box sx={{ width: "50%", display: 'flex', flexDirection: 'column' }}>
                     {
@@ -78,24 +84,27 @@ const WorkAndEducation = ({ formdata, setformdata, seteducation, Regionexp, setR
                             const correspondingEduName = eduname[index];
 
                             return (
-                                <Box sx={{ ml: 2, mt: 1, display: 'flex' }} key={val.id}>
-                                    <Box>
-                                        <Typography>Education:</Typography>
-                                        <Typography>School Name:</Typography>
-                                        <Typography>Start Date:</Typography>
-                                        <Typography>End Date:</Typography>
-                                        <Typography>Graduated or Not:</Typography>
-                                    </Box>
-                                    <Box sx={{ ml: 1 }}>
 
+                                <Box key={index} sx={{ mt: 1, display: "flex", width: '100%' }}>
+                                    <Box sx={{
+                                        width: "100%", borderTop: "1px solid #DFDFDF",
 
-                                        <Typography sx={{ color: '#87C4FF' }}>{correspondingEduName?.edu_desc === '' ? 'Not Updated' : correspondingEduName?.edu_desc}</Typography>
-                                        <Typography sx={{ color: '#87C4FF' }}>{val?.schoolname === '' ? 'Not Updated' : val?.schoolname}</Typography>
-                                        <Typography sx={{ color: '#87C4FF' }}>{val?.edustartdate === 0 ? 'Not Updated' : val?.edustartdate}</Typography>
-                                        <Typography sx={{ color: '#87C4FF' }}>{val?.eduenddate === 0 ? 'Not Updated' : val?.eduenddate}</Typography>
-                                        <Typography sx={{ color: '#87C4FF' }}>{val?.Graduated === false ? 'Not Graduated' : val?.Graduated === true ? 'Graduated' : 'Not Updated'}</Typography>
+                                    }}>
+                                        <Box sx={{ display: 'flex', gap: 2, mt: 1, }}>
+                                            <Box><WorkIcon /></Box>
+                                            <Box sx={{ mt: .5, display: 'flex', gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
+                                                <Box><Typography level="title-md" sx={{ wordBreak: 'break-word', }}> {correspondingEduName?.edu_desc}</Typography></Box>
+                                                <Box>   <Typography level="body-sm" sx={{ wordBreak: 'break-word', }}>(  {moment(new Date(val?.edustartdate)).format('DD-MM-YYYY')} -  {moment(new Date(val?.eduenddate)).format('DD-MM-YYYY')})</Typography></Box>
+
+                                            </Box>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', gap: 5 }}>
+                                            <Box></Box>
+                                            <Box ><Typography level="body-sm" sx={{ wordBreak: 'break-word', }}> {val?.schoolname}</Typography> </Box>
+                                        </Box>
                                     </Box>
                                 </Box>
+
                             )
                         })
                     }

@@ -32,6 +32,8 @@ const Applicationform = () => {
     const [gender, setGender] = useState(0)
     const [applicationSlno, setApplicationno] = useState(0)
     const [bloodgrp, setBloodgrp] = useState(0)
+    const [openBkDrop, setOpenBkDrop] = useState(false)
+
     const [experience, setexprience] = useState({
         Employer: "", expstartdate: moment(new Date()).format('YYYY-MM-DD'), expenddate: moment(new Date()).format('YYYY-MM-DD'),
         Workingstatus: false, Responsibilities: "", jobexp: "", SupervisorName: '', Additionalinf: '', Other: ''
@@ -229,6 +231,7 @@ const Applicationform = () => {
             setIsModalOpen(false)
         }
         else {
+            setOpenBkDrop(true)
             const result = await axioslogin.post('/Applicationform/insertdata', postdata)
             const { success, message } = result.data
             if (success === 1) {
@@ -247,6 +250,8 @@ const Applicationform = () => {
                 setformdata(resetForm)
                 setGender(0)
                 setBloodgrp(0)
+                setOpenBkDrop(false)
+
             } else {
                 warningNofity(message)
                 setIsModalOpen(false)
@@ -287,6 +292,7 @@ const Applicationform = () => {
                 setSelectedVacancies={setSelectedVacancies}
                 eduname={education1}
                 data={data}
+                openBkDrop={openBkDrop}
             />
 
         </Box>

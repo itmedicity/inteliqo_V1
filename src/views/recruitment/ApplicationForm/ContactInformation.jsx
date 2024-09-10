@@ -154,7 +154,24 @@ const ContactInformation = ({ formdata, setformdata, Religion, Region, value, se
                             <IconButton sx={{ paddingY: 0.5, ml: 2 }}
                                 onClick={(e) => getRegion(e)}
                             >
-                                <ArrowCircleRightIcon />
+                                <ArrowCircleRightIcon
+                                    color="primary"
+                                    sx={{
+                                        animation: 'move 1s ease infinite',
+                                        '@keyframes move': {
+                                            '0%': {
+                                                transform: 'translateX(-10px)',
+                                            },
+                                            '50%': {
+                                                transform: 'translateX(10px)',
+                                            },
+                                            '100%': {
+                                                transform: 'translateX(-10px)',
+                                            },
+                                        },
+                                    }}
+                                />
+
                             </IconButton>
                         </Tooltip>
                     </Box>

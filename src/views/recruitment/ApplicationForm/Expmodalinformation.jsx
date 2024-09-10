@@ -1,8 +1,9 @@
 import React, { memo } from 'react'
-import { Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { TableContainer, } from '@mui/material';
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog';
-import { Typography } from '@mui/joy';
+import { Box, Typography } from '@mui/joy';
 import moment from 'moment';
+import WorkIcon from '@mui/icons-material/Work';
 
 const Expmodalinformation = ({ formdata, expdata }) => {
     // const { Workingstatus, Employer, expstartdate, expenddate, jobexp } = expdata
@@ -12,60 +13,27 @@ const Expmodalinformation = ({ formdata, expdata }) => {
             <TableContainer sx={{ mt: 2 }}>
                 {expdata?.map((val, index) => {
                     return (
-                        <Table sx={{ mt: 1, p: 0, border: '1px solid #e0e0e0', width: '100%' }} key={val.id}>
+                        <Box key={index} sx={{ mt: 1, display: "flex", width: '100%' }}>
+                            <Box sx={{
+                                width: "100%",
 
-                            <TableBody >
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Employer Name </Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
-                                        <Typography sx={{ ml: 1 }}>{val?.Employer === "" ? "not updated" : val?.Employer} </Typography>
+                            }}>
+                                <Box sx={{ display: 'flex', gap: 2, mt: 1, }}>
+                                    <Box><WorkIcon /></Box>
+                                    <Box sx={{ mt: .5, display: 'flex', gap: 1 }}>
+                                        <Box><Typography level="title-md" sx={{ wordBreak: 'break-word', }}> {val?.jobexp}</Typography></Box>
+                                        <Box>   <Typography level="body-sm" sx={{ wordBreak: 'break-word', }}>(  {moment(new Date(val?.expstartdate)).format('DD-MM-YYYY')} -  {moment(new Date(val?.expenddate)).format('DD-MM-YYYY')})</Typography></Box>
 
-                                    </TableCell>
-                                </TableRow>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 5 }}>
+                                    <Box></Box>
+                                    <Box ><Typography level="body-sm" sx={{ wordBreak: 'break-word', }}> {val?.Employer}</Typography> </Box>
+                                </Box>
+                            </Box>
 
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>  Job Title</Typography>
+                        </Box>
 
-
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>{val?.jobexp === "" ? "not updated" : val?.jobexp} </Typography>
-
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}> Start Date</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>{val?.expstartdate === 0 ? "not updated" : moment(val?.expstartdate).format('DD-MM-YYYY')} </Typography>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>End Date</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', }}>
-                                        <Typography sx={{ ml: 1 }}>{val?.expenddate === 0 ? "not updated" : moment(val?.expstartdate).format('DD-MM-YYYY')} </Typography>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Currently Working</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>{val?.Workingstatus === false ? "No" : val?.Workingstatus === true ? "Yes" : "not updated"}</Typography>
-
-                                    </TableCell>
-                                </TableRow>
-
-
-                            </TableBody>
-
-                        </Table>
                     )
                 })}
 

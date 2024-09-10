@@ -122,7 +122,7 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, Regionexp, setRegionexp,
                     <Box sx={{ height: window.innerHeight - 200, overflowX: "auto", '::-webkit-scrollbar': { display: "none" } }}>
 
                         <Box sx={{}}>
-                            <Typography sx={{ mt: 3, }}>Employer Name
+                            <Typography sx={{ mt: 3, }}>Company Name
                                 <Typography sx={{ mt: 3, color: 'red' }}>* </Typography>
                             </Typography>
                         </Box>
@@ -206,7 +206,24 @@ const ExperienceModal = ({ setIsModalOpen, isModalOpen, Regionexp, setRegionexp,
                                 <IconButton sx={{ paddingY: 0.5, ml: 2 }}
                                     onClick={(e) => getRegion(e)}
                                 >
-                                    <ArrowCircleRightIcon />
+                                    <ArrowCircleRightIcon
+                                        color="primary"
+                                        sx={{
+                                            animation: 'move 1s ease infinite',
+                                            '@keyframes move': {
+                                                '0%': {
+                                                    transform: 'translateX(-10px)',
+                                                },
+                                                '50%': {
+                                                    transform: 'translateX(10px)',
+                                                },
+                                                '100%': {
+                                                    transform: 'translateX(-10px)',
+                                                },
+                                            },
+                                        }}
+                                    />
+
                                 </IconButton>
                             </Tooltip>
                         </Box>

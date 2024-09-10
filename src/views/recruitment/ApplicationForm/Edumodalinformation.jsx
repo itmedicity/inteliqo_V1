@@ -1,8 +1,10 @@
 import React, { memo } from 'react'
-import { Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
+import { TableContainer } from '@mui/material';
 import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog';
-import { Typography } from '@mui/joy';
+import { Box, Typography } from '@mui/joy';
 import moment from 'moment';
+import WorkIcon from '@mui/icons-material/Work';
+
 const Edumodalinformation = ({ formdata, education, edudata, eduname }) => {
 
     return (
@@ -10,71 +12,29 @@ const Edumodalinformation = ({ formdata, education, edudata, eduname }) => {
             <CustmTypog title={'Your Education Information'} />
             <TableContainer sx={{ mt: 2 }}>
                 {edudata.map((val, index) => {
-                    const correspondingEduName = eduname[index]; // Assuming there's a corresponding value in eduname
+                    const correspondingEduName = eduname[index];
 
                     return (
-                        <Table sx={{ p: 0, mt: 1, border: '1px solid #e0e0e0', width: '100%' }} key={val.id}>
+                        <Box key={index} sx={{ mt: 1, display: "flex", width: '100%' }}>
+                            <Box sx={{
+                                width: "100%",
 
-                            <TableBody>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Education </Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', width: "50%" }}>
+                            }}>
+                                <Box sx={{ display: 'flex', gap: 2, mt: 1, }}>
+                                    <Box><WorkIcon /></Box>
+                                    <Box sx={{ mt: .5, display: 'flex', gap: 1 }}>
+                                        <Box><Typography level="title-md" sx={{ wordBreak: 'break-word', }}> {correspondingEduName?.edu_desc}</Typography></Box>
+                                        <Box>   <Typography level="body-sm" sx={{ wordBreak: 'break-word', }}>(  {moment(new Date(val?.edustartdate)).format('DD-MM-YYYY')} -  {moment(new Date(val?.eduenddate)).format('DD-MM-YYYY')})</Typography></Box>
 
-                                        <Typography sx={{ ml: 1 }}>{correspondingEduName?.edu_desc === "" ? "not updated" : correspondingEduName?.edu_desc} </Typography>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ display: 'flex', gap: 5 }}>
+                                    <Box></Box>
+                                    <Box ><Typography level="body-sm" sx={{ wordBreak: 'break-word', }}> {val?.schoolname}</Typography> </Box>
+                                </Box>
+                            </Box>
+                        </Box>
 
-                                    </TableCell>
-                                </TableRow>
-
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}> School Name</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-
-                                        <Typography sx={{ ml: 1 }}>{val?.schoolname === "" ? "not updated" : val?.schoolname} </Typography>
-
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}> Start Date</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>{val?.edustartdate === 0 ? "not updated" : moment(val?.edustartdate).format('DD-MM-YYYY')} </Typography>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>End Date</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0', }}>
-
-                                        <Typography sx={{ ml: 1 }}>{val?.eduenddate === 0 ? "not updated" : moment(val?.eduenddate).format('DD-MM-YYYY')} </Typography>
-
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>
-                                            Graduated</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>{val?.Graduated === false ? "No" : val?.Graduated === true ? "Yes" : "not updated"}</Typography>
-                                    </TableCell>
-                                </TableRow>
-                                {/* <TableRow sx={{ p: 0 }}>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                        <Typography sx={{ ml: 1 }}>Region</Typography>
-                                    </TableCell>
-                                    <TableCell padding='none' sx={{ border: '1px solid #e0e0e0' }}>
-                                    </TableCell>
-                                </TableRow> */}
-
-                            </TableBody>
-
-                        </Table>
                     )
                 })}
             </TableContainer>
