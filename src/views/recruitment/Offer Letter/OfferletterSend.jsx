@@ -18,7 +18,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 // const PdfContent = lazy(() => import('./PdfContent'))
 
 const OfferletterSend = ({ details, data, setIsModalOpen, count, setcount, setOpenBkDrop, item }) => {
-    console.log(details);
+
     const [phonecall_status, setPhonecallstatus] = useState(false)
     const [Reject_status, setReject_statusstatus] = useState(false)
     const [OnHold_status, setOnHold_statusstatus] = useState(false)

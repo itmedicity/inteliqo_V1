@@ -45,7 +45,7 @@ const recruitMenuArray = [
         to: '/Home/Applicationform',
     },
     {
-        men_slno: 21,
+        men_slno: 300,
         component: CNavItem,
         name: 'Submitted Applications',
         to: '/Home/SubmittedForm',

@@ -68,7 +68,10 @@ const SubmittedModal = ({ isModalOpen, setIsModalOpen, personaldata, setpersonal
         }
     }, [application_no, desgid])
 
+
     const handleCloseModal = useCallback(async (event) => {
+
+
         event.preventDefault()
         const result = await axioslogin.post('/Applicationform/shortlistapprove', postdata)
         const { success, message } = result.data

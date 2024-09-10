@@ -161,7 +161,6 @@ const SubmittedForm = () => {
                                                     <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Email</Typography></TableCell>
                                                     <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>Application No</Typography></TableCell>
                                                     <TableCell size='small' padding='normal'><Typography sx={{ color: "#808B97", }}>View Application </Typography></TableCell>
-
                                                 </TableRow>
                                             )}
                                             {isRowOpen && matchingMainData && matchingMainData.apslno.map((item, idx) => (
@@ -169,7 +168,7 @@ const SubmittedForm = () => {
                                                 < TableRow key={idx} sx={{ backgroundColor: "#F8F6F4" }}>
                                                     <TableCell size='small' ></TableCell>
                                                     <TableCell size='small' >{idx + 1}</TableCell>
-                                                    <TableCell size='small' >{item.first_name}</TableCell>
+                                                    <TableCell size='small' >{item.first_name} {item.last_name}</TableCell>
                                                     <TableCell size='small' >{item.email}</TableCell>
                                                     <TableCell size='small' >{item.application_no}</TableCell>
                                                     <TableCell size='small'   ><SlideshowIcon onClick={(e) => handleonclick(e, item)} /></TableCell>

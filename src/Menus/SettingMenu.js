@@ -16,6 +16,7 @@ export const py_setting_one = [
     { to: '/Home/DepartmentShift', name: 'Department Shift Master', slno: 84 },
     { to: '/Home/DueClearenceMaster', name: 'Due Clearence Master', slno: 122 },
     { to: '/Home/DueClearenceDepartment', name: 'Due Clearence Department', slno: 121 },
+    { to: '/Home/InterviewQuestion', name: 'Interview Question Master', slno: 262 },
 
 ]
 
@@ -54,6 +55,8 @@ export const py_setting_three = [
     { to: '/Home/TrainerName', name: 'Trainer Name Master', slno: 227 },
     { to: '/Home/SchedulingTime', name: 'Scheduling Time Master', slno: 248 },
     { to: '/Home/JobAndSkillDescription', name: 'JobAndSkillDescription', slno: 299 },
+    { to: '/Home/ManpowerPlanning', name: 'ManpowerPlanning', slno: 260 },
+
 
 ]
 
