@@ -33,7 +33,7 @@ export const empRecord_three = [
 
 export const attednane_one = [
     { to: '/Home/DayWiseAttendence', name: 'All Employee Attendence Report', slno: 284 },
-    { to: '/Home/DutyplanReport', name: 'Dutyplan Report Report', slno: 297 },
+    { to: '/Home/DutyplanReport', name: 'Dutyplan Report ', slno: 297 },
 ]
 
 export const attednane_two = [
