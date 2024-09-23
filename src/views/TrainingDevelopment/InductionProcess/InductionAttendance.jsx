@@ -99,14 +99,14 @@ const InductionAttendance = ({ count, Setcount, open, Setopen, attendance }) => 
                 if (params.data.attandance_status === 1 || params.data.training_status === 1) {
                     return <OpenIcon
                         sx={{ paddingY: 0.5, cursor: 'none' }}  >
-                        <Tooltip title="Attendance Marked">
+                        <Tooltip title="Attendance Marked" placement="right">
                             <DoneIcon />
                         </Tooltip>
                     </OpenIcon>
                 } else {
                     return <OpenIcon onClick={() => markAttendance(params)}
                         sx={{ paddingY: 0.5 }} >
-                        <Tooltip title="Mark Attendance">
+                        <Tooltip title="Mark Attendance" placement="right">
                             <HowToRegIcon color='primary' />
                         </Tooltip>
                     </OpenIcon>

@@ -48,8 +48,7 @@ const DeptScheduleModal = ({ Scheduledata, topic, setTopic, SetView, View, datef
     }, []);
 
     const GetTrainers = useCallback(() => {
-
-        if (topic !== 0) {
+        if (topic !== null) {
             setshowTrainers(1)
             const GetTrainerNames = async (topic) => {
                 const result = await axioslogin.get(`TrainingAfterJoining/getTrainerByTopic/${topic}`)
@@ -67,11 +66,12 @@ const DeptScheduleModal = ({ Scheduledata, topic, setTopic, SetView, View, datef
             GetTrainerNames(topic)
         }
         else {
+            SetView(false)
             setTrainer([])
             setTrainerName([])
             infoNofity("Select any Training Topic")
         }
-    }, [topic])
+    }, [topic, SetView])
 
     //postData
     const postData = useMemo(() => {
@@ -89,7 +89,7 @@ const DeptScheduleModal = ({ Scheduledata, topic, setTopic, SetView, View, datef
     }, [dept, deptSec, year, datefrmt, topic, trainer, remark, em_id])
 
     const HandleSubmit = useCallback(() => {
-        if (dept !== 0 && deptSec !== 0 && year !== '' && trainer.length !== 0 && topic !== 0 && datefrmt !== '' && remark !== '') {
+        if (dept !== 0 && deptSec !== 0 && year !== '' && trainer.length !== 0 && topic !== null && datefrmt !== '' && remark !== '') {
             const InsertData = async (postData) => {
                 const result = await axioslogin.post("TrainingAfterJoining/InsertDepartmentalSchedule", postData)
                 const { message, success, InsertId } = result.data;

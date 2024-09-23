@@ -132,12 +132,13 @@ const DeptCalendarLayout = ({ count, SetCount, setTable, dept, deptSec, year, Em
     const handleModal = useCallback((val) => {
         SetmodalData(val)
         SetOpen(true)
-        const { topic_slno, training_date, dept_id
+        const { topic_slno, training_date, dept_id, schedule_slno
         } = val
         const obj = {
             dept: dept_id,
             topic: topic_slno,
-            date: training_date
+            date: training_date,
+            scheduled_slno: schedule_slno
         }
         const getScheduleDetails = async (obj) => {
             const result = await axioslogin.post('/TrainingAfterJoining/scheduledatas', obj)

@@ -15,9 +15,6 @@ const InductionQRModal = ({ QRdata, QRmodal, setQRmodal, em_id }) => {
     }, [setQRmodal]);
 
     const loginpage = `${QR_URL}/InductLogInpage/${topic_slno}/${schedule_slno}`
-
-    console.log(loginpage);
-
     const feedback = `${QR_URL}/FeedbackPageWithoutTest/${topic_slno}/${schedule_slno}/${EmId}`
     return (
         <Fragment>

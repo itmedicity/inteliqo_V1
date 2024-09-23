@@ -147,8 +147,9 @@ const TrainingQuestions = () => {
             const result = await axioslogin.get('/TriningQuestions/select')
             const { success, data } = result.data;
             if (success === 2) {
-                const viewData = data?.map((val) => {
+                const viewData = data?.map((val, ndx) => {
                     const obj = {
+                        slno: ndx + 1,
                         q_slno: val.q_slno,
                         topic_slno: val.topic_slno,
                         training_topic_name: val.training_topic_name,
@@ -470,32 +471,38 @@ const TrainingQuestions = () => {
             EditData(patchdata);
             reset();
         } else {
-            InsertData(postdata)
-                .then((val) => {
-                    const { insetId, message, success } = val;
-                    if (success === 1) {
-                        if (selectedFiles.length !== 0) {
-                            handleUpload(insetId);
-                        } else {
-                            succesNofity("Question inserted successfully");
-                            reset();
-                            setCount(count + 1);
+            if (questions !== '' && training_topic !== '' && answerA !== '' && answerB !== '' && answerC !== '' && answerD !== '' && marks !== '') {
+                InsertData(postdata)
+                    .then((val) => {
+                        const { insetId, message, success } = val;
+                        if (success === 1) {
+                            if (selectedFiles.length !== 0) {
+                                handleUpload(insetId);
+                            } else {
+                                succesNofity("Question inserted successfully");
+                                reset();
+                                setCount(count + 1);
+                            }
                         }
-                    }
-                    else {
-                        warningNofity(message)
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error in InsertData:", error);
-                    warningNofity('An error occurred while inserting data.');
-                });
+                        else {
+                            warningNofity(message)
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error in InsertData:", error);
+                        warningNofity('An error occurred while inserting data.');
+                    });
+            }
+            else {
+                warningNofity("Enter All The Feilds Before Submit")
+            }
+
         }
-    }, [postdata, patchdata, reset, flag, selectedFiles, training_topic, setCount, count]);
+    }, [postdata, patchdata, reset, flag, selectedFiles, training_topic, setCount, count, questions, training_topic, answerA, answerB, answerC, answerD, marks]);
 
     //column def
     const [columnDef] = useState([
-        { headerName: 'Sl.No ', field: 'q_slno', filter: true, minWidth: 100 },
+        { headerName: 'Sl.No ', field: 'slno', filter: true, minWidth: 100 },
         { headerName: 'Topics ', field: 'training_topic_name', filter: true, minWidth: 250 },
         { headerName: 'Questions', field: 'questions', filter: true, minWidth: 250 },
         { headerName: 'Ans_A ', field: 'a', filter: true, minWidth: 150 },
