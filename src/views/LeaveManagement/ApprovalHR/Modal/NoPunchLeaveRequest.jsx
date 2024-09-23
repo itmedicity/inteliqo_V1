@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, memo, useMemo } from 'react'
+import React, { Fragment, useCallback, memo, useMemo } from 'react'
 import Button from '@mui/joy/Button';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
@@ -7,42 +7,28 @@ import { useState } from 'react';
 import { Chip, Divider, ModalDialog, Textarea } from '@mui/joy';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import { Box, Paper } from '@mui/material';
-import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import { employeeNumber } from 'src/views/Constant/Constant';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import { addDays, addHours, format, lastDayOfMonth, startOfMonth, subHours } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { getAttendanceCalculation, getLateInTimeIntervel, punchInOutChecking } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc'
 
-const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
+const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
 
+    const misspunchdata = useMemo(() => data, [data])
 
-    //STATES
-    const [reqDetl, setReqDetl] = useState([]);
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
     // const [punchslno, setPuncslno] = useState(0)
-    const [nopunch, setNopunch] = useState({
-        nopunchdate: '',
-        shft_desc: '',
-        creteddate: '',
-        np_reason: '',
-        checkintime: '',
-        checkouttime: '',
-        checkinflag: 0,
-        checkoutflag: 0,
-        shift_id: 0
-    })
-    const { nopunchdate, shft_desc, np_reason, creteddate, checkinflag, checkoutflag, shift_id } = nopunch
-    const [miss, setMis] = useState('');
+
     //DISPLAY THE DATA 
-    const { slno, emno, name, section, status, dept_section } = data;
+    const { slno, emno, name, section, dept_section, shift_id, nopunchdate,
+        checkinflag, checkoutflag } = misspunchdata;
 
     const shiftData = useSelector((state) => state?.getShiftList?.shiftDetails)
     const commonSettings = useSelector((state) => state?.getCommonSettings)
+    const loginem_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
 
     const {
         cmmn_early_out, // Early going time interval
@@ -59,37 +45,6 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
     const crossDay = shiftData?.find(shft => shft.shft_slno === shift_id);
     //const { shft_chkin_time, shft_chkout_time } = crossDay;
     const crossDayStat = crossDay?.shft_cross_day ?? 0;
-
-    //GET THE DETAILED TABLE DATA USING API
-    const getLeaveReqDetl = async (slno) => {
-        const resultdel = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${slno}`);
-        const { success, data } = resultdel?.data;
-        if (success === 1) {
-            const { nopunchdate, shft_desc, np_reason, creteddate, checkinflag, checkintime, checkoutflag,
-                checkouttime, shift_id } = data[0]
-            setReqDetl(data)
-            const formData = {
-                nopunchdate: nopunchdate,
-                shft_desc: shft_desc,
-                creteddate: creteddate,
-                np_reason: np_reason,
-                checkintime: checkintime,
-                checkouttime: checkouttime,
-                checkinflag: checkinflag,
-                checkoutflag: checkoutflag,
-                shift_id: shift_id
-            }
-            setNopunch(formData)
-            setMis(checkinflag === 1 ? checkintime : checkoutflag === 1 ? checkouttime : null)
-            // setPuncslno(punslno)
-        }
-    }
-
-    useEffect(() => {
-        if (slno !== null && slno !== undefined) {
-            getLeaveReqDetl(slno)
-        }
-    }, [slno])
 
     const handleApproverequest = useCallback(async () => {
         // setOpenBkDrop(true)
@@ -213,7 +168,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
                                         em_no: emno,
                                         duty_day: format(new Date(nopunchdate), 'yyyy-MM-dd'),
                                         apprvdate: format(new Date(), 'yyyy-MM-dd '),
-                                        us_code: employeeNumber(),
+                                        us_code: loginem_id,
                                         slno: slno
                                     }
                                 })
@@ -223,7 +178,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
                                 const { success, message } = await resultdel.data;
                                 if (success === 1) {
                                     setOpenBkDrop(false)
-                                    setCount(count + 1)
+                                    setCount(Math.random())
                                     succesNofity('Miss punch Request Approved')
                                     setOpen(false)
                                 }
@@ -238,19 +193,19 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
                 errorNofity("Error getting PunchMarkingHR ")
             }
         }
-    }, [reason, count, setCount, setOpen, slno, dept_section, nopunchdate, crossDay, cmmn_early_out,
+    }, [reason, setCount, setOpen, slno, dept_section, nopunchdate, crossDay, cmmn_early_out,
         cmmn_grace_period, cmmn_late_in, crossDayStat, default_shift, emno, noff, notapplicable_shift,
-        salary_above, week_off_day, checkinflag, checkoutflag])
+        salary_above, week_off_day, checkinflag, checkoutflag, loginem_id])
 
     const NoPunchRejectdata = useMemo(() => {
         return {
             np_hr_apprv_status: 2,
             np_hr_apprv_cmnt: reason,
             np_hr_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm'),
-            np_hr_uscode: employeeNumber(),
+            np_hr_uscode: loginem_id,
             nopunch_slno: slno
         }
-    }, [reason, slno])
+    }, [reason, slno, loginem_id])
 
     // HALF DAY LEAVE HR REJECT
     const handleRegectRequest = useCallback(async () => {
@@ -259,16 +214,16 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
         if (success === 1) {
             setOpenBkDrop(false)
             setOpen(false)
-            setCount(count + 1)
+            setCount(Math.random())
             succesNofity('Leave Request Reject')
         }
         else {
             setOpenBkDrop(false)
             setOpen(false)
-            setCount(count + 1)
+            setCount(Math.random)
             errorNofity('Error Updating Leave Request')
         }
-    }, [count, NoPunchRejectdata, setCount, setOpen])
+    }, [NoPunchRejectdata, setCount, setOpen])
 
 
     return (
@@ -326,77 +281,98 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount, count }) => {
                         </Typography>
                         <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{section}</Typography>
                     </Box>
-                    <Box sx={{ mt: 0.5, pt: 1 }} >
-                        <Typography variant="outlined" color="success">
-                            {status}
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                        <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
-                            <Typography
-                                level="body1"
-                                justifyContent="center"
-                            >
-                                Request Date
-                            </Typography>
-                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                                {creteddate}
-                            </Typography>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                        <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
-                            <Typography
-                                level="body1"
-                                justifyContent="center"
-                            >
-                                No Punch Date
-                            </Typography>
-                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                                {nopunchdate}
-                            </Typography>
-                        </Box>
-                    </Box>
-                    <Box sx={{ flex: 1, py: 1 }}>
-                        <Typography
-                            level="body2"
-                            startDecorator={<InfoOutlined />}
-                            sx={{ alignItems: 'center', wordBreak: 'break-all', }}
-                        >
-                            Requested Leave Information.
-                        </Typography>
-                    </Box>
                     <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
-                        {
-                            reqDetl?.map((val, idx) => {
-                                return <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }} key={idx} >
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                        <Typography fontSize="sm" fontWeight="lg"  >
-                                            Shift:
-                                        </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                            {shft_desc}
-                                        </Typography>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                        <Typography fontSize="sm" fontWeight="lg"  >
-                                            Time:
-                                        </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                            {miss}
-                                        </Typography>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                        <Typography fontSize="sm" fontWeight="lg"  >
-                                            Reason:
-                                        </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                            {np_reason}
-                                        </Typography>
-                                    </Box>
+                        <Box
+                            sx={{
+                                display: 'flex', justifyContent: 'center',
+                                alignItems: 'center', px: 1, flexDirection: 'column',
+                            }} >
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Request Date
+                                    </Typography>
                                 </Box>
-                            })
-                        }
+                                <Box sx={{ flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{misspunchdata?.requestDate}
+                                    </Typography>
+                                </Box>
+                            </Box>
+
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Shift
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{misspunchdata?.shft_desc}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Miss Punch Day
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{misspunchdata?.nopunch_date}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Miss Punch Time
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{checkinflag === 1 ? 'In Time' : checkoutflag === 1 ? 'Out Time' : 'NIL'}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Reason
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{misspunchdata?.np_reason}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Incharge Comment
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{misspunchdata?.np_inc_apprv_cmnt === null ? 'NIL' : misspunchdata?.np_inc_apprv_cmnt === '' ? 'NIL' : misspunchdata?.np_inc_apprv_cmnt}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Hod Comment
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{misspunchdata?.np_hod_apprv_cmnt === null ? 'NIL' : misspunchdata?.np_hod_apprv_cmnt === '' ? 'NIL' : misspunchdata?.np_hod_apprv_cmnt}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
                     </Paper>
                     <Divider>
                         <Chip variant="outlined" color="info" size="sm">

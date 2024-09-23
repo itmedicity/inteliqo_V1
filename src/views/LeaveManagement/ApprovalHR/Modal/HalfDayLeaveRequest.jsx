@@ -6,12 +6,9 @@ import Typography from '@mui/joy/Typography';
 import { useState } from 'react';
 import { Chip, Divider, ModalDialog, Textarea } from '@mui/joy';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
-import { Box, Paper } from '@mui/material';
-import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
+import { Box, } from '@mui/material';
 import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import { employeeNumber } from 'src/views/Constant/Constant';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import { addDays, addHours, format, lastDayOfMonth, startOfMonth, subHours } from 'date-fns';
@@ -20,14 +17,18 @@ import { getAttendanceCalculation, getLateInTimeIntervel, punchInOutChecking } f
 
 const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
 
+    const halfdayDta = useMemo(() => data, [data])
+
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
     //DISPLAY THE DATA 
-    const { slno, emno, name, section, status, reqDate, dept_section, leaveDate, shift_id,
-        planslno, checkIn, checkOut, month, halfday_status } = data;
+    const { slno, emno, name, section, dept_section, leavedate, shift_id, shft_desc,
+        planslno, month, halfday_status, halfday_date, requestDate, hf_reason,
+        hf_inc_apprv_cmnt, hf_hod_apprv_cmnt } = halfdayDta;
 
     const shiftData = useSelector((state) => state?.getShiftList?.shiftDetails)
     const commonSettings = useSelector((state) => state?.getCommonSettings)
+    const loginem_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
 
     const {
         cmmn_early_out, // Early going time interval
@@ -62,8 +63,8 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
             const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postDataForAttendaceMark);
             const { success, data } = checkPunchMarkingHr.data
             if (success === 0 || success === 1) {
-                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(leaveDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
-                const lastDay_month = format(lastDayOfMonth(new Date(leaveDate)), 'yyyy-MM-dd')
+                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(leavedate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                const lastDay_month = format(lastDayOfMonth(new Date(leavedate)), 'yyyy-MM-dd')
                 if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
                     warningNofity("Punch Marking Monthly Process Done !! Can't Approve Halfday Leave Request!!  ")
                     setOpenBkDrop(false)
@@ -71,13 +72,13 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                 } else {
 
                     const postData = {
-                        preFromDate: format(subHours(new Date(leaveDate), 8), 'yyyy-MM-dd 00:00:00'),
-                        preToDate: crossDayStat === 0 ? format(addHours(new Date(leaveDate), 8), 'yyyy-MM-dd 23:59:59') : format(addHours(new Date(addDays(new Date(leaveDate), 1)), 8), 'yyyy-MM-dd 23:59:59'),
+                        preFromDate: format(subHours(new Date(leavedate), 8), 'yyyy-MM-dd 00:00:00'),
+                        preToDate: crossDayStat === 0 ? format(addHours(new Date(leavedate), 8), 'yyyy-MM-dd 23:59:59') : format(addHours(new Date(addDays(new Date(leavedate), 1)), 8), 'yyyy-MM-dd 23:59:59'),
                         empList: emno,
                     }
                     const punchmastData = {
                         empno: emno,
-                        dutyday: format(new Date(leaveDate), 'yyyy-MM-dd')
+                        dutyday: format(new Date(leavedate), 'yyyy-MM-dd')
                     }
 
                     const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData);
@@ -87,9 +88,9 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                         const punch_master_data = await axioslogin.post("/attendCal/attendanceshiftdetl/", punchmastData); //GET PUNCH MASTER DATA
                         const { success, data } = punch_master_data.data;
                         if (success === 1) {
-                            let shiftIn = `${format(new Date(leaveDate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkInTime), 'HH:mm:ss')}`;
-                            let shiftOut = crossDayStat === 0 ? `${format(new Date(leaveDate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}` :
-                                `${format(addDays(new Date(leaveDate), 1), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}`;
+                            let shiftIn = `${format(new Date(leavedate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkInTime), 'HH:mm:ss')}`;
+                            let shiftOut = crossDayStat === 0 ? `${format(new Date(leavedate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}` :
+                                `${format(addDays(new Date(leavedate), 1), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}`;
 
                             return Promise.allSettled(
                                 data?.map(async (row, index) => {
@@ -117,13 +118,12 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                 })
                             ).then((data) => {
                                 const punchMasterMappedData = data?.map((e) => e.value)
-                                //console.log(punchMasterMappedData);
                                 return Promise.allSettled(
                                     punchMasterMappedData?.map(async (val) => {
 
                                         const holidayStatus = val.holiday_status;
-                                        const punch_In = halfday_status === 1 ? new Date(shiftIn) : new Date(val.punch_in);
-                                        const punch_out = halfday_status === 2 ? new Date(shiftOut) : new Date(val.punch_out);
+                                        const punch_In = halfday_status === 1 ? new Date(shiftIn) : val.punch_in === null ? null : new Date(val.punch_in);
+                                        const punch_out = halfday_status === 2 ? new Date(shiftOut) : val.punch_out === null ? null : new Date(val.punch_out);
 
                                         const shift_in = new Date(shiftIn);
                                         const shift_out = new Date(shiftOut);
@@ -149,6 +149,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                             salaryLimit,
                                             val.maximumLateInTime
                                         )
+
                                         return {
                                             punch_slno: val.punch_slno,
                                             punch_in: halfday_status === 1 ? format(new Date(punch_In), 'yyyy-MM-dd HH:mm:ss') : val.punch_in,
@@ -162,13 +163,13 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                             lvereq_desc: getAttendanceStatus?.lvereq_desc,
                                             duty_desc: 'HCL',
                                             lve_tble_updation_flag: 1,
-                                            duty_day: format(new Date(leaveDate), 'yyyy-MM-dd'),
+                                            duty_day: format(new Date(leavedate), 'yyyy-MM-dd'),
                                             hf_hr_apprv_status: 1,
                                             em_no: emno,
                                             hf_hr_apprv_cmnt: reason,
                                             planSlno: planslno,
                                             hf_hr_apprv_date: format(new Date(), 'yyyy-MM-dd '),
-                                            hf_hr_uscode: employeeNumber(),
+                                            hf_hr_uscode: loginem_id,
                                             half_slno: slno
                                         }
                                     })
@@ -179,7 +180,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                     if (success === 1) {
                                         setOpenBkDrop(false)
                                         setCount(Math.random())
-                                        succesNofity('Leave Request Approved')
+                                        succesNofity('Halfday Request Approved')
                                         setOpen(false)
                                     }
                                     else {
@@ -187,29 +188,27 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                     }
                                 })
                             })
-
                         }
                     }
-
                 }
             } else {
                 errorNofity("Error getting PunchMarkingHR ")
             }
         }
-    }, [setCount, setOpen, reason, slno, leaveDate, emno, dept_section, crossDay, cmmn_early_out, cmmn_grace_period,
+    }, [setCount, setOpen, reason, slno, leavedate, emno, dept_section, crossDay, cmmn_early_out, cmmn_grace_period,
         cmmn_late_in, crossDayStat, default_shift, noff, notapplicable_shift, salary_above,
-        week_off_day, halfday_status, planslno])
+        week_off_day, halfday_status, planslno, loginem_id])
 
     const LeaveRejectdata = useMemo(() => {
         return {
             hf_hr_apprv_status: 2,
             hf_hr_apprv_cmnt: reason,
             hf_hr_apprv_date: moment().format('YYYY-MM-DD HH:mm'),
-            hf_hr_uscode: employeeNumber(),
+            hf_hr_uscode: loginem_id,
             half_slno: slno,
             hrm_cl_slno: planslno
         }
-    }, [reason, planslno, slno])
+    }, [reason, planslno, slno, loginem_id])
     // HALF DAY LEAVE HR REJECT
     const handleRegectRequest = useCallback(async () => {
         const result = await axioslogin.patch(`/LeaveRequestApproval/HalfDayReqRejectHr`, LeaveRejectdata);
@@ -283,73 +282,110 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                         </Typography>
                         <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{section}</Typography>
                     </Box>
-                    <Box sx={{ mt: 0.5, pt: 1 }} >
-                        <Typography variant="outlined" color="success">
-                            {status}
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                        <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
-                            <Typography
-                                level="body1"
-                                justifyContent="center"
-                            >
-                                Request Date
-                            </Typography>
-                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                                {moment(reqDate).format('DD-MM-YYYY')}
-                            </Typography>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                        <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
-                            <Typography
-                                level="body1"
-                                justifyContent="center"
-                            >
-                                Leave Date
-                            </Typography>
-                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                                {moment(leaveDate).format('DD-MM-YYYY')}
-                            </Typography>
-                        </Box>
-                    </Box>
-                    <Box sx={{ flex: 1, py: 1 }}>
-                        <Typography
-                            level="body2"
-                            startDecorator={<InfoOutlined />}
-                            sx={{ alignItems: 'center', wordBreak: 'break-all', }}
-                        >
-                            Requested HalfDay Leave Information.
-                        </Typography>
-                    </Box>
-                    <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
-                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}  >
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
+                    <Box
+                        sx={{
+                            display: 'flex', justifyContent: 'center',
+                            alignItems: 'center', px: 1, borderBlockStyle: 'outset',
+                            flexDirection: 'column',
+                        }} >
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ flex: 1 }}>
                                 <Typography fontSize="sm" fontWeight="lg"  >
-                                    Check In:
-                                </Typography>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    {moment(checkIn).format('hh:mm:ss')}
-                                </Typography>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ pl: 2 }} >
-                                    Check Out:
-                                </Typography>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    {moment(checkOut).format('hh:mm:ss')}
+                                    Request Date
                                 </Typography>
                             </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Month of Leave:
-                                </Typography>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }} >
-                                    {month}
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{requestDate}
                                 </Typography>
                             </Box>
                         </Box>
 
-                    </Paper>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Shift
+                                </Typography>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{shft_desc}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Halfday Taken Date
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{halfday_date}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Halfday Taken Time
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{halfday_status === 1 ? 'First Half' : 'Second Half'}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Month of Leave
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{month}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Reason
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{hf_reason}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Incharge Comment
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{hf_inc_apprv_cmnt === null ? 'NIL' : hf_inc_apprv_cmnt === '' ? 'NIL' : hf_inc_apprv_cmnt}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Hod Comment
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{hf_hod_apprv_cmnt === null ? 'NIL' : hf_hod_apprv_cmnt === '' ? 'NIL' : hf_hod_apprv_cmnt}
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
                     <Divider>
                         <Chip variant="outlined" color="info" size="sm">
                             HR Use Only
