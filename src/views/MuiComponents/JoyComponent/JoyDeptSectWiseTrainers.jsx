@@ -2,13 +2,11 @@ import React, { memo, useMemo } from 'react'
 import { useSelector } from 'react-redux';
 import { Option, Select } from '@mui/joy';
 
-const JoyTrainerMultipleSelect = ({ value, setValue }) => {
-
-    const data = useSelector((state) => state?.gettrainingData?.trainerNames?.trainerNamesList)
+const JoyDeptSectWiseTrainers = ({ value, setValue }) => {
+    const data = useSelector((state) => state?.gettrainingData?.DeptSectnWiseTrainers?.DeptSectnWiseTrainersList)
     const Trainers = useMemo(() => data, [data])
 
     return (
-
         <Select
             defaultValue={[]}
             value={value}
@@ -29,5 +27,4 @@ const JoyTrainerMultipleSelect = ({ value, setValue }) => {
     )
 }
 
-export default memo(JoyTrainerMultipleSelect)
-
+export default memo(JoyDeptSectWiseTrainers) 
