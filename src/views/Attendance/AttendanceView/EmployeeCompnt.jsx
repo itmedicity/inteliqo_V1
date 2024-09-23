@@ -84,7 +84,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     totalDays: dateRange?.length,
                     totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC").length ?? 0,
                     totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
-                    totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF").length ?? 0,
+                    totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF" || el.lvereq_desc === "DOFF").length ?? 0,
                     totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
                     totalHD: empArray?.filter(el => el.lvereq_desc === "CHD" || el.lvereq_desc === "HD" || el.lvereq_desc === "EGHD"
                         || el.lvereq_desc === 'HDSL' || el.lvereq_desc === 'HDCL').length ?? 0,
@@ -138,6 +138,7 @@ const EmployeeCompnt = ({ em_no }) => {
         { lvename: 'OBS', color: 'neutral', desc: "On Observation" },
         { lvename: 'HDCL', color: 'warning', desc: "Halfday CL Without Punch" },
         { lvename: 'HDSL', color: 'warning', desc: "Halfday SL Without Punch" },
+        { lvename: 'DOFF', color: 'primary', desc: "Duty Off" },
     ]
 
     return (

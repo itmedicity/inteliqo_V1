@@ -6,6 +6,7 @@ import { memo } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/joy/IconButton';
 import { useHistory } from 'react-router-dom';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
 const CustomLayout = ({ children, title, displayClose }) => {
 
     const history = useHistory();
@@ -16,7 +17,7 @@ const CustomLayout = ({ children, title, displayClose }) => {
 
     return (
         <Box sx={{ flex: 1 }} >
-            <Paper sx={{ flex: 1, }} >
+            <Paper sx={{ flex: 1, height: screenInnerHeight - 90 }} >
                 <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", flex: 1, height: 30, }} >
                         <Paper square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', justifyContent: "space-between" }} >

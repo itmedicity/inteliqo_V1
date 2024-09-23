@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, Grid, Input, Sheet, Textarea, Tooltip } from '@m
 import { Paper } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { format, lastDayOfMonth, startOfMonth, subDays } from 'date-fns';
 import moment from 'moment';
 import React, { useCallback, memo, useState, useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux';
@@ -230,7 +230,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                         <DatePicker
                             views={['day']}
                             inputFormat="dd-MM-yyyy"
-                            maxDate={new Date()}
+                            maxDate={subDays(new Date(), 1)}
                             value={fromDate}
                             size="small"
                             onChange={handleChangeDate}

@@ -31,7 +31,7 @@ const CommonSettingNew = () => {
     const [noff, setNoff] = useState(0)
     const [group_slno, setGroup_Slno] = useState([])
     const [training_group_slno, setTraining_Group_Slno] = useState([])
-    const [eoff, setEoff] = useState(0)
+    const [doff, setDoff] = useState(0)
     const [FormData, setFormData] = useState({
         slno: '',
         commn_grace: '',
@@ -67,13 +67,15 @@ const CommonSettingNew = () => {
         weekoff_policy_min_count: 0,
         coff_min_working_hour: 0,
         onobservation_days: 0,
-        hod_leave_day_count: 0
+        hod_leave_day_count: 0,
+        halfday_time_count: 0,
+        punch_taken_hour_count: 0
     })
 
     const {
         slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
-        min_salary, coff_min_working_hour,
+        min_salary, coff_min_working_hour, halfday_time_count, punch_taken_hour_count,
         pf_employee, pf_age, max_salary, verification_level, salary_above, leave_count,
         pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count,
         noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count, weekoff_policy_max_count,
@@ -114,10 +116,10 @@ const CommonSettingNew = () => {
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
                     pf_employer, min_salary, pf_age, pf_employee, max_salary, verification_level, default_shift, notapplicable_shift,
                     week_off_day, leavetype_multiple, salary_above, pf_employee_amount, pf_employer_amount, noff_count, onehour_rqst_count,
-                    areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno, eoff, comp_day_count,
+                    areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno, doff, comp_day_count,
                     comp_hour_count, training_mastergroup, holiday_policy_count, weekoff_policy_max_count,
                     weekoff_policy_min_count, coff_min_working_hour, onobservation_days, hod_leave_day_count,
-                    holiday_leave_request } = data[0]
+                    holiday_leave_request, halfday_time_count, punch_taken_hour_count } = data[0]
 
                 const frmData = {
                     slno: setting_slno,
@@ -156,7 +158,9 @@ const CommonSettingNew = () => {
                     coff_min_working_hour: coff_min_working_hour === null ? 0 : coff_min_working_hour,
                     onobservation_days: onobservation_days,
                     hod_leave_day_count: hod_leave_day_count,
-                    holidayLeave: holiday_leave_request === 0 ? false : true
+                    holidayLeave: holiday_leave_request === 0 ? false : true,
+                    halfday_time_count: halfday_time_count,
+                    punch_taken_hour_count: punch_taken_hour_count
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj === null ? [] : obj)
@@ -172,7 +176,7 @@ const CommonSettingNew = () => {
                 const training = JSON.parse(training_mastergroup)
                 setTraining_Group_Slno(training === null ? [] : training)
                 setNoff(noff)
-                setEoff(eoff)
+                setDoff(doff)
             }
             else if (success === 0) {
                 setValue(0)
@@ -221,7 +225,7 @@ const CommonSettingNew = () => {
             noff_selct_day_count: noff_selct_day_count,
             noff: noff,
             group_slno: group_slno,
-            eoff: eoff,
+            doff: doff,
             comp_day_count: comp_day_count,
             comp_hour_count: comp_hour_count,
             holiday_policy_count: holiday_policy_count,
@@ -232,15 +236,17 @@ const CommonSettingNew = () => {
             onobservation_days: onobservation_days,
             hod_leave_day_count: hod_leave_day_count,
             holiday_leave_request: holidayLeave === true ? 1 : 0,
+            halfday_time_count: halfday_time_count,
+            punch_taken_hour_count: punch_taken_hour_count
         }
     }, [commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
         min_salary, coff_min_working_hour, pf_employee, pf_age, max_salary, verification_level,
         salary_above, leave_count, pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no,
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
-        weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, eoff, group_slno,
+        weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
-        holidayLeave])
+        holidayLeave, halfday_time_count, punch_taken_hour_count])
 
     //data to edit
     const postDataEdit = useMemo(() => {
@@ -280,7 +286,7 @@ const CommonSettingNew = () => {
             noff_selct_day_count: noff_selct_day_count,
             noff: noff,
             group_slno: group_slno,
-            eoff: eoff,
+            doff: doff,
             comp_day_count: comp_day_count,
             comp_hour_count: comp_hour_count,
             holiday_policy_count: holiday_policy_count,
@@ -291,15 +297,17 @@ const CommonSettingNew = () => {
             onobservation_days: onobservation_days,
             hod_leave_day_count: hod_leave_day_count,
             holiday_leave_request: holidayLeave === true ? 1 : 0,
+            halfday_time_count: halfday_time_count,
+            punch_taken_hour_count: punch_taken_hour_count
         }
     }, [slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
         min_salary, coff_min_working_hour, pf_employee, pf_age, max_salary, verification_level,
         salary_above, leave_count, pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no,
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
-        weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, eoff, group_slno,
+        weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
-        holidayLeave])
+        holidayLeave, halfday_time_count, punch_taken_hour_count])
 
     //save
     const submitFormData = useCallback(async (e) => {
@@ -821,10 +829,10 @@ const CommonSettingNew = () => {
                                 </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Extra OFF</Typography>
+                                        <Typography level="body1">Duty OFF</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <ShiftSelectByRedux value={eoff} setValue={setEoff} />
+                                        <ShiftSelectByRedux value={doff} setValue={setDoff} />
                                     </Box>
                                 </Box>
                             </Paper>
@@ -1066,6 +1074,36 @@ const CommonSettingNew = () => {
                                             size="sm"
                                             name="onobservation_days"
                                             value={onobservation_days}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Halfday Time Count</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="halfday_time_count"
+                                            value={halfday_time_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Punch Updation Count(Hours)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="punch_taken_hour_count"
+                                            value={punch_taken_hour_count}
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>

@@ -1,42 +1,27 @@
-import { Button, Checkbox, CssVarsProvider, Sheet, Tooltip } from '@mui/joy'
-import { Box, FormControl, MenuItem, Select, TextField } from '@mui/material'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import moment from 'moment'
-import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+
+import { Button, Checkbox, IconButton, Input, Sheet, Textarea, Tooltip, Typography } from '@mui/joy'
+import { Box, Paper } from '@mui/material'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { addDays, addHours, addMinutes, format, isAfter, isBefore, isEqual, lastDayOfMonth, startOfMonth, subDays, subHours } from 'date-fns'
+import React, { lazy, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import _ from 'underscore'
-import { ToastContainer } from 'react-toastify'
-import { addHours, addMinutes, format, isAfter, isBefore, subHours, isEqual, addDays, startOfMonth, lastDayOfMonth } from 'date-fns'
-import { setCommonSetting } from 'src/redux/actions/Common.Action'
-// import { CalculationFun } from './CommonRqstFun'
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import BeenhereIcon from '@mui/icons-material/Beenhere';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 
-const OneHourRequest = ({ count, setCount }) => {
+const OneHour = lazy(() => import('./OneHourCancelModal'))
 
-    const reduxDispatch = useDispatch()
+const OneHourRequest = () => {
 
-    useEffect(() => {
-        reduxDispatch(setCommonSetting())
-    }, [reduxDispatch])
-
-
-    const getEmployeeInformation = useSelector((state) => state.getEmployeeInformationState.empData, _.isEqual);
-    const selectedEmployeeDetl = useMemo(() => getEmployeeInformation, [getEmployeeInformation])
-
-    const { em_no, em_id, em_department, em_dept_section, hod: empHodStat } = selectedEmployeeDetl?.[0];
-
-    // const state = useSelector((state) => state.getCommonSettings, _.isEqual)
-
-    const [fromDate, setFromDate] = useState(moment())
-    const [deptShift, setDeptShift] = useState([])
+    const [openBkDrop, setOpenBkDrop] = useState(false)
+    const [fromDate, setFromDate] = useState(new Date())
+    const [shiftDesc, setShiftDesc] = useState('Data Not Found');
     const [selectedShift, setSelectedShift] = useState(0)
-
-    const [shiftTiming, setShiftTiming] = useState([])
-    // const [punchDetl, setPunchDetl] = useState([])
 
     const [checkinBox, setCheckInCheck] = useState(false)
     const [checkoutBox, setCheckOutCheck] = useState(false)
@@ -47,47 +32,141 @@ const OneHourRequest = ({ count, setCount }) => {
     const [punchInTime, setPunchInTime] = useState(0);
     const [punchOutTime, setPunchOutTime] = useState(0);
     const [reason, setReason] = useState('')
-    const [punchCheck, setPunchcheck] = useState(0)
     const [punchData, setPunchData] = useState([])
+    const [tableData, setTableData] = useState([])
+    const [count, setCount] = useState(0)
+    const [disbaleCheck, setDisbaleCheck] = useState(true)
+    const [deleteOpen, setDeleteOpen] = useState(false)
+    const [empdata, setEmpdata] = useState({})
 
-    const employeeApprovalLevels = useSelector((state) => state.getEmployeeApprovalLevel.payload, _.isEqual);
-    const empApprovalLevel = useMemo(() => employeeApprovalLevels, [employeeApprovalLevels])
-    const { hod, incharge, authorization_incharge, authorization_hod } = empApprovalLevel
-    const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const { cmmn_grace_period, comp_hour_count, holiday_leave_request } = state;
+    const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
+    const { em_no, em_id, em_department, em_dept_section, } = selectedEmpInform;
+
+    const empInformation = useSelector((state) => getEmployeeInformationLimited(state))
+    const empInformationFromRedux = useMemo(() => empInformation, [empInformation])
+    const { hod: loginHod, incharge: loginIncharge, em_id: loginEmid, groupmenu } = empInformationFromRedux;
+
+    const apprLevel = useSelector((state) => getLeaveReqApprovalLevel(state))
+    const deptApprovalLevel = useMemo(() => apprLevel, [apprLevel])
+
+    //CHEK THE AURHORISED USER GROUP
+    const [masterGroupStatus, setMasterGroupStatus] = useState(false);
+    const getcommonSettings = useSelector((state) => getCommonSettings(state, groupmenu))
+    const groupStatus = useMemo(() => getcommonSettings, [getcommonSettings])
+
+    const state = useSelector((state) => state?.getCommonSettings,)
+    const { cmmn_grace_period, comp_hour_count, default_shift, notapplicable_shift, week_off_day } = state;
 
     useEffect(() => {
-        const getdepartmentShift = async () => {
-            if (em_department !== 0 && em_dept_section !== 0) {
-                const postData = {
-                    dept_id: em_department,
-                    sect_id: em_dept_section
-                }
-                const result = await axioslogin.post('/departmentshift/shift', postData)
-                const { success, data, message } = await result.data;
-                if (success === 1) {
-                    const { shft_code } = data[0];
-                    const obj = JSON.parse(shft_code)
-                    setDeptShift(obj);
-                    //get shift timing
-                    const shiftSlno = await obj?.map(val => val.shiftcode)
+        setMasterGroupStatus(groupStatus)
+    }, [groupStatus])
 
-                    const shiftArray = await axioslogin.post('/departmentshift/getShiftTiming', shiftSlno);
-                    const { succ, result } = await shiftArray.data;
-                    if (succ === 1) {
-                        setShiftTiming(result)
-                    } else {
-                        setShiftTiming([])
+    useEffect(() => {
+        const getOneHour = async (em_id) => {
+            const getID = {
+                em_id: em_id
+            }
+            const result = await axioslogin.post('/CommonReqst/onhour/empwise', getID)
+            const { data, success } = result.data;
+            if (success === 1) {
+                setCount(0)
+                const array2 = data && data.filter((val) => {
+                    return (val.em_id === em_id)
+                })
+                const newOne = array2.map((val) => {
+                    return {
+                        ...val,
+                        typeslno: 3,
+                        type: 'One Hour Request',
+                        em_no: val.em_no,
+                        slno: val.request_slno,
+                        serialno: val.serialno,
+                        empname: val.em_name,
+                        sectname: val.sect_name,
+                        reqDate: format(new Date(val.request_date), 'dd-MM-yyyy'),
+                        dutyDate: format(new Date(val.one_hour_duty_day), 'dd-MM-yyyy'),
+                        reason: val.reason,
+                        inchStatus: val.incharge_approval_status,
+                        hodStatus: val.hod_approval_status,
+                        hrstatus: val.hr_approval_status,
+                        cancelStatus: val.cancel_status,
+                        status: val.cancel_status === 1 ? 'Request Cancelled' :
+                            (val.incharge_req_status === 1 && val.incharge_approval_status === 0) ? 'Incharge Approval Pending' :
+                                (val.incharge_req_status === 1 && val.incharge_approval_status === 2) ? 'Incharge Approved' :
+                                    (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                        (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 0) ? 'HOD Approval Pending' :
+                                            (val.incharge_req_status === 0 && val.incharge_approval_status === 0 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                (val.incharge_req_status === 1 && val.incharge_approval_status === 1 && val.hod_req_status === 1 && val.hod_approval_status === 2) ? 'HOD Rejected' :
+                                                    (val.hod_req_status === 1 && val.hod_approval_status === 0 && val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                                        (val.hod_req_status === 0 && val.hod_approval_status === 0 && val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                                            (val.hod_req_status === 1 && val.hod_approval_status === 1 && val.hr_req_status === 1 && val.hr_approval_status === 1) ? 'HR Approved' :
+                                                                (val.hr_req_status === 1 && val.hr_approval_status === 2) ? 'HR Reject' : 'HR Approval Pending',
                     }
-                } else if (success === 0) {
-                    warningNofity(message);
-                } else {
-                    errorNofity(message)
-                }
+                })
+                setTableData(newOne)
+                setCount(0)
+            } else {
+                setTableData([])
             }
         }
-        getdepartmentShift();
-    }, [em_department, em_dept_section])
+        if (em_id !== 0) {
+            getOneHour(em_id)
+        }
+
+    }, [em_id, count])
+
+
+    const handleChangeDate = useCallback(async (date) => {
+        setFromDate(date)
+        const postData = {
+            startDate: format(new Date(date), 'yyyy-MM-dd'),
+            em_id: em_id
+        }
+        const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
+        const { success, data: shiftData } = result.data;
+        if (success === 1) {
+            const { shft_desc, shft_chkin_time, shft_chkout_time, shft_cross_day, holiday, shift_id } = shiftData[0];
+            if (holiday === 1) {
+                warningNofity("Cannot Apply One request on Holiday")
+            } else if (shift_id === default_shift || shift_id === notapplicable_shift || shift_id === week_off_day) {
+                warningNofity("Selected Date Must Have A Duty Plan")
+            }
+            else {
+                setSelectedShift(shift_id)
+                setShiftDesc(shft_desc)
+                const inTime = format(new Date(shft_chkin_time), 'HH:mm');
+                setCheckin(format(new Date(shft_chkin_time), 'HH:mm'))
+                setCheckout(format(new Date(shft_chkout_time), 'HH:mm'))
+
+                const chekIn = `${format(new Date(date), 'yyyy-MM-dd')} ${inTime}`;
+                const chekOut = shft_cross_day === 0 ? `${format(new Date(date), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}` :
+                    `${format(addDays(new Date(date), 1), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}`;
+
+
+                setPunchInTime(chekIn)
+                setPunchOutTime(chekOut)
+                const postDataForpunchMaster = {
+                    date1: format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd HH:mm:ss'),
+                    date2: format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd HH:mm:ss'),
+                    em_no: em_no
+                }
+
+                //FETCH THE PUNCH TIME FROM PUNCH DATA
+                const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
+                const { success, data } = result.data;
+                if (success === 1) {
+                    setPunchData(data)
+                    setDisbaleCheck(false)
+                    succesNofity('Done , Select The Punching Info')
+                } else {
+                    warningNofity('Punching Data Not Found')
+                    setDisbaleCheck(true)
+                }
+            }
+        } else {
+            warningNofity("Duty Not Planned For the Selected Date")
+        }
+    }, [em_id, comp_hour_count, em_no, default_shift, notapplicable_shift, week_off_day])
 
     const handleChangeCheckInCheck = useCallback((e) => {
         if (e.target.checked === true) {
@@ -103,125 +182,46 @@ const OneHourRequest = ({ count, setCount }) => {
         }
     }, [])
 
-    const getShiftdetail = async () => {
-        if (selectedShift === 0) {
-            warningNofity("Please Select Any Shift!!")
-        } else {
-            const postData = {
-                emp_id: em_id,
-                duty_day: moment(fromDate).format('YYYY-MM-DD')
-            }
-            const result = await axioslogin.post('/overtimerequest/shiftdata/', postData);
-            const { success } = result.data;
-            if (success === 1) {
-
-                // GET SHIFT DATA
-                const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
-                const { shft_chkin_time, shft_chkout_time, shft_cross_day } = selectedShiftTiming[0]
-
-                const inTime = moment(shft_chkin_time).format('HH:mm');
-                // const outTime = moment(shft_chkout_time).format('HH:mm');
-
-                setCheckin(moment(shft_chkin_time).format('hh:mm'))
-                setCheckout(moment(shft_chkout_time).format('hh:mm'))
-
-                const chekIn = `${moment(fromDate).format('YYYY-MM-DD')} ${inTime}`;
-                // const chekOut = `${moment(fromDate).format('YYYY-MM-DD')} ${outTime}`;
-
-                const chekOut = shft_cross_day === 0 ? `${format(new Date(fromDate), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}` :
-                    `${format(addDays(new Date(fromDate), 1), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}`;
-
-                setPunchInTime(chekIn)
-                setPunchOutTime(chekOut)
-
-                // const postDataForpunchMaster = {
-                //     date2:  shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
-                //     date1: shft_cross_day === 0 ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
-                //     em_no: em_no
-                // }
-                const postDataForpunchMaster = {
-                    date2: format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
-                    date1: format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
-                    em_no: em_no
-                }
-
-                //FETCH THE PUNCH TIME FROM PUNCH DATA
-                const result = await axioslogin.post('/overtimerequest/punchdatabydate/', postDataForpunchMaster)
-                const { success, data } = result.data;
-                if (success === 1) {
-                    setPunchData(data)
-                    succesNofity('Done , Select The Punching Info')
-                    setPunchcheck(1)
-                } else {
-                    //no record
-                    warningNofity('Punching Data Not Found')
-                }
-            } else {
-                warningNofity("'Duty Plan Not Done!")
-            }
-        }
-    }
-
-    const postData = useMemo(() => {
-        return {
-            em_id: em_id,
-            em_no: em_no,
-            dept_id: em_department,
-            dept_sect_id: em_dept_section,
-            request_date: moment(new Date()).format("YYYY-MM-DD HH:mm:ss"),
-            one_hour_duty_day: moment(fromDate).format('YYYY-MM-DD'),
-            checkin_flag: checkinBox === true ? 1 : 0,
-            checkout_flag: checkoutBox === true ? 1 : 0,
-            check_in: punchInTime,
-            check_out: punchOutTime,
-            shift_id: selectedShift,
-            reason: reason,
-            attendance_marking_month: moment(startOfMonth(new Date(fromDate))).format('YYYY-MM-DD'),
-            incharge_req_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
-                (authorization_incharge === 1 && incharge === 0) ? 1 :
-                    (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-            incharge_approval_status: (authorization_incharge === 1 && incharge === 1) ? 1 :
-                (hod === 1) ? 1 :
-                    (authorization_incharge === 0 && incharge === 1) ? 1 : 0,
-            incharge_approval_comment: (authorization_incharge === 1 && incharge === 1) ? "DIRECT" :
-                (hod === 1) ? "DIRECT" :
-                    (authorization_incharge === 0 && incharge === 1) ? 'DIRECT' : '',
-            incharge_approval_date: (authorization_incharge === 1 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                (hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                    (authorization_incharge === 0 && incharge === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
-            hod_req_status: (authorization_hod === 1 && hod === 1) ? 1 :
-                (authorization_hod === 1 && hod === 0) ? 1 :
-                    (authorization_hod === 0 && hod === 1) ? 1 : 0,
-            hod_approval_status: (authorization_hod === 1 && hod === 1) ? 1 :
-                (authorization_hod === 0 && hod === 1) ? 1 : 0,
-            hod_approval_comment: (authorization_hod === 1 && hod === 1) ? "DIRECT" :
-                (authorization_hod === 0 && hod === 1) ? 'DIRECT' : '',
-            hod_approval_date: (authorization_hod === 1 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') :
-                (authorization_hod === 0 && hod === 1) ? moment().format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
-            ceo_req_status: empHodStat === 1 ? 1 : 0,
-            hr_req_status: 1
-        }
-    }, [em_no, em_id, em_department, em_dept_section, reason, punchInTime, punchOutTime, fromDate,
-        selectedShift, authorization_incharge, authorization_hod, hod, incharge,
-        checkinBox, checkoutBox, empHodStat])
-
-    const holidayData = useMemo(() => {
-        return {
-            em_id: em_id,
-            date: moment(fromDate).format('YYYY-MM-DD')
-        }
-    }, [fromDate, em_id])
-
     const submitRequest = useCallback(async () => {
+        setOpenBkDrop(true)
+
+        const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmid)
+
         if (checkinBox === false && checkoutBox === false) {
+            setOpenBkDrop(false)
             warningNofity("Check In || Check Out Needs To Check")
-        }
-        else if (reason === '') {
+        } else if (reason === '') {
+            setOpenBkDrop(false)
             warningNofity("Reason Is Mandatory")
-        } else if (punchCheck === 0) {
-            warningNofity("Please Select Punch Data Button!!")
         }
         else {
+            const postData = {
+                em_id: em_id,
+                em_no: em_no,
+                dept_id: em_department,
+                dept_sect_id: em_dept_section,
+                request_date: format(new Date(), 'yyyy-MM-dd H:m:s'),
+                one_hour_duty_day: format(new Date(fromDate), 'yyyy-MM-dd H:m:s'),
+                checkin_flag: checkinBox === true ? 1 : 0,
+                checkout_flag: checkoutBox === true ? 1 : 0,
+                check_in: punchInTime,
+                check_out: punchOutTime,
+                shift_id: selectedShift,
+                reason: reason,
+                attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
+                incharge_req_status: approveStatus.inc_apr,
+                incharge_approval_status: approveStatus.inc_stat,
+                incharge_approval_comment: approveStatus.inc_cmnt,
+                incharge_approval_date: approveStatus.inc_apr_time,
+                hod_req_status: approveStatus.hod_apr,
+                hod_approval_status: approveStatus.hod_stat,
+                hod_approval_comment: approveStatus.hod_cmnt,
+                hod_approval_date: approveStatus.hod_apr_time,
+                ceo_req_status: 0,
+                hr_req_status: 1,
+                incharge_empid: approveStatus.usCode_inch,
+                hod_empid: approveStatus.usCode_hod,
+            }
             const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
             const dateCheck = {
                 month: monthStartDate,
@@ -234,62 +234,55 @@ const OneHourRequest = ({ count, setCount }) => {
                 const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
 
                 if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                    setOpenBkDrop(false)
                     warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                 } else {
                     //check in time correct
                     if (checkinBox === true) {
-                        const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd H:mm')
-                        const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd H:mm')
+                        const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd HH:mm')
+
+                        const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd HH:mm')
                         const result = punchData.find((val) => val)
                         const dd = isBefore(new Date(result.punch_time), new Date(relaxTime)) && isAfter(new Date(result.punch_time), new Date(punchInTime)) || isEqual(new Date(result.punch_time), new Date(punchInTime)) ? 1 : 0
+
                         if (dd === 0) {
+                            setOpenBkDrop(false)
                             warningNofity("Can't Apply For One Hour Request!!");
                             setSelectedShift(0)
-                            setFromDate(moment(new Date()))
+                            setFromDate(new Date())
                             setReason('')
                             setPunchInTime(0)
                             setPunchOutTime(0)
                             setCheckInCheck(false)
                             setCheckOutCheck(false)
                         } else {
-                            // CalculationFun(punchDetl, checkinBox, checkoutBox, punchInTime, punchOutTime)
-                            const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
-                            const { success, data } = result.data;
+                            const result = await axioslogin.post('/CommonReqst', postData)
+                            const { message, success } = result.data;
                             if (success === 1) {
-                                const { holiday_status } = data[0]
-                                if (holiday_status === 1 && holiday_leave_request === 1) {
-                                    warningNofity("Cannot Apply for One request on Holiday")
-                                } else {
-                                    const result = await axioslogin.post('/CommonReqst', postData)
-                                    const { message, success } = result.data;
-                                    if (success === 1) {
-                                        succesNofity(message)
-                                        setCount(count + 1)
-                                        setSelectedShift(0)
-                                        setFromDate(moment(new Date()))
-                                        setReason('')
-                                        setPunchInTime(0)
-                                        setPunchOutTime(0)
-                                        setCheckInCheck(false)
-                                        setCheckOutCheck(false)
-                                    } else {
-                                        warningNofity(message)
-                                        setSelectedShift(0)
-                                        setFromDate(moment(new Date()))
-                                        setReason('')
-                                        setPunchInTime(0)
-                                        setPunchOutTime(0)
-                                        setCheckInCheck(false)
-                                        setCheckOutCheck(false)
-                                    }
-                                }
+                                succesNofity(message)
+                                setCount(Math.random())
+                                setSelectedShift(0)
+                                setFromDate(new Date())
+                                setReason('')
+                                setPunchInTime(0)
+                                setPunchOutTime(0)
+                                setCheckInCheck(false)
+                                setCheckOutCheck(false)
+                                setOpenBkDrop(false)
                             } else {
-                                warningNofity("Duty plan data not found, Contact HRD")
+                                setOpenBkDrop(false)
+                                warningNofity(message)
+                                setSelectedShift(0)
+                                setFromDate(new Date())
+                                setReason('')
+                                setPunchInTime(0)
+                                setPunchOutTime(0)
+                                setCheckInCheck(false)
+                                setCheckOutCheck(false)
                             }
                         }
                     } else {
-
-                        const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd H:mm')
+                        const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd HH:mm')
                         const result = punchData.findLast((val) => val)
                         const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) || isEqual(new Date(result.punch_time), new Date(outtime)) ? 1
                             : 0
@@ -297,200 +290,224 @@ const OneHourRequest = ({ count, setCount }) => {
                         if (dd === 0) {
                             warningNofity("Can't Apply For One Hour Request!!");
                             setSelectedShift(0)
-                            setFromDate(moment(new Date()))
+                            setFromDate(new Date())
                             setReason('')
                             setPunchInTime(0)
                             setPunchOutTime(0)
                             setCheckInCheck(false)
                             setCheckOutCheck(false)
+                            setOpenBkDrop(false)
                         } else {
-                            const result = await axioslogin.post('/LeaveRequest/getHoliday', holidayData)
-                            const { success, data } = result.data;
+
+                            const result = await axioslogin.post('/CommonReqst', postData)
+                            const { message, success } = result.data;
                             if (success === 1) {
-                                const { holiday_status } = data[0]
-                                if (holiday_status === 1 && holiday_leave_request === 1) {
-                                    warningNofity("Cannot Apply for One request on Holiday")
-                                } else {
-                                    const result = await axioslogin.post('/CommonReqst', postData)
-                                    const { message, success } = result.data;
-                                    if (success === 1) {
-                                        succesNofity(message)
-                                        setCount(count + 1)
-                                        setSelectedShift(0)
-                                        setFromDate(moment(new Date()))
-                                        setReason('')
-                                        setPunchInTime(0)
-                                        setPunchOutTime(0)
-                                        setCheckInCheck(false)
-                                        setCheckOutCheck(false)
-                                    } else {
-                                        warningNofity(message)
-                                        setSelectedShift(0)
-                                        setFromDate(moment(new Date()))
-                                        setReason('')
-                                        setPunchInTime(0)
-                                        setPunchOutTime(0)
-                                        setCheckInCheck(false)
-                                        setCheckOutCheck(false)
-                                    }
-                                }
+                                succesNofity(message)
+                                setCount(Math.random())
+                                setSelectedShift(0)
+                                setFromDate(new Date())
+                                setReason('')
+                                setPunchInTime(0)
+                                setPunchOutTime(0)
+                                setCheckInCheck(false)
+                                setCheckOutCheck(false)
+                                setOpenBkDrop(false)
                             } else {
-                                warningNofity("Duty plan data not found, Contact HRD")
+                                warningNofity(message)
+                                setSelectedShift(0)
+                                setFromDate(new Date())
+                                setReason('')
+                                setPunchInTime(0)
+                                setPunchOutTime(0)
+                                setCheckInCheck(false)
+                                setCheckOutCheck(false)
+                                setOpenBkDrop(false)
                             }
+
                         }
                     }
                 }
             } else {
+                setOpenBkDrop(false)
                 errorNofity("Error getting PunchMarkingHR ")
             }
         }
-    }, [postData, checkinBox, checkoutBox, cmmn_grace_period, count, em_dept_section, fromDate, holidayData,
-        punchCheck, punchData, punchInTime, punchOutTime, reason, setCount, holiday_leave_request])
+    }, [checkinBox, checkoutBox, cmmn_grace_period, em_dept_section, fromDate, deptApprovalLevel,
+        punchData, punchInTime, punchOutTime, reason, em_department, em_id, em_no, loginEmid, loginHod,
+        loginIncharge, masterGroupStatus, selectedShift])
+
+
+    const [columndef] = useState([
+        { headerName: 'Emp ID', field: 'em_no', minWidth: 100, filter: true },
+        { headerName: 'Emp Name', field: 'empname', minWidth: 200, filter: true },
+        { headerName: 'Department Section ', field: 'sectname', minWidth: 250, filter: true },
+        { headerName: 'Request Type ', field: 'type', minWidth: 200, filter: true },
+        { headerName: 'Duty Date ', field: 'dutyDate', filter: true, minWidth: 200 },
+        { headerName: 'Request Date', field: 'reqDate', filter: true, minWidth: 200 },
+        { headerName: 'Reason ', field: 'reason', minWidth: 200 },
+        { headerName: 'Status', field: 'status', filter: true, minWidth: 250 },
+        {
+            headerName: 'Action', minWidth: 100,
+            cellRenderer: params => {
+                if (params.data.hrstatus === 1 || params.data.inchStatus === 1 || params.data.hodStatus === 1 || params.data.cancelStatus === 1) {
+                    return <IconButton
+                        sx={{ paddingY: 0.5 }} >
+                        <BeenhereIcon />
+                    </IconButton>
+                } else {
+                    return <IconButton sx={{ paddingY: 0.5 }}
+                        onClick={() => deleteRequest(params)}
+                    >
+                        <DeleteIcon color='primary' />
+                    </IconButton>
+                }
+            }
+        },
+    ])
+
+    const deleteRequest = useCallback(async (params) => {
+        const data = params.data
+        const { hrstatus } = data;
+        if (hrstatus === 1) {
+            warningNofity("HR Approval is Already done! You can't delete request")
+        }
+        else if (hrstatus === 2) {
+            warningNofity("HR Rejected, You can't delete request")
+        } else {
+            setDeleteOpen(true)
+            setEmpdata(data)
+        }
+    }, [])
 
     return (
-        <Fragment>
-            <ToastContainer />
+
+        <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', py: 0.5 }}>
+            <CustomBackDrop open={openBkDrop} text="Your Request Is Processing. Please Wait..." />
+            <OneHour open={deleteOpen} setOpen={setDeleteOpen} empData={empdata} setCount={setCount} />
             <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%' }}>
-                <Box sx={{ width: '15%', p: 0.5, mt: 0.2 }} >
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                <Box sx={{ alignItems: 'center', display: 'flex' }} >
+                    <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >Duty Date</Typography>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DatePicker
                             views={['day']}
-                            // maxDate={moment(calanderMaxDate)}
-                            inputFormat="DD-MM-YYYY"
+                            inputFormat="dd-MM-yyyy"
                             value={fromDate}
-                            onChange={(date) => setFromDate(date)}
-                            renderInput={(params) => (
-                                <TextField {...params} helperText={null} size="small" sx={{ display: 'flex' }} />
+                            maxDate={subDays(new Date(), 1)}
+                            size="small"
+                            onChange={handleChangeDate}
+                            renderInput={({ inputRef, inputProps, InputProps }) => (
+                                <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                    <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                    {InputProps?.endAdornment}
+                                </Box>
                             )}
                         />
                     </LocalizationProvider>
                 </Box>
-                <Box sx={{ pl: 0., width: '20%', mt: 0.2 }} >
-                    <FormControl
-                        fullWidth={true}
-                        margin="dense"
-                        size='small'
-                    >
-                        <Select
-                            fullWidth
-                            variant="outlined"
-                            margin='dense'
-                            size='small'
-                            defaultValue={0}
-                            value={selectedShift}
-                            onChange={(e, { props }) => {
-                                setSelectedShift(e.target.value)
-                                //setShiftname(props.children)
-                            }}
-                        >
-                            <MenuItem value={0} disabled>Select Shift</MenuItem>
-                            {
-                                deptShift?.map((val) => {
-                                    return <MenuItem value={val.shiftcode}
-                                        name={val.shiftDescription} key={val.shiftcode} >{val.shiftDescription}</MenuItem>
-                                })
-                            }
-                        </Select>
-                    </FormControl>
-                </Box>
-                <Box sx={{ width: '5%', p: 0.5, mt: 0.5 }} >
-                    <CssVarsProvider>
-                        <Tooltip title="Select Punch Data" followCursor placement='top' arrow >
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="primary"
-                                onClick={() => {
-                                    getShiftdetail()
-                                }}
-                            >
-                                <AddCircleOutlineIcon />
-                            </Button>
-                        </Tooltip>
-                    </CssVarsProvider>
+                <Box sx={{ flex: 1, px: 0.5, mt: 0.5 }} >
+                    <Input
+                        size="md"
+                        fullWidth
+                        variant="outlined"
+                        value={shiftDesc}
+                        disabled
+                    />
                 </Box>
                 <Box sx={{ width: '60%', }}>
                     <Box sx={{ width: '100%', px: 0.5, alignItems: 'center', display: "flex", flexDirection: 'row', }} >
                         <Box sx={{ display: "flex", p: 0.5, flex: 1, alignItems: 'center' }} >
-                            <CssVarsProvider>
-                                <Sheet variant="outlined" sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 2,
-                                    flex: 1,
-                                    paddingX: 2,
-                                    paddingY: 1.15,
-                                    borderRadius: 5,
-                                    // height: 10,
-                                    '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
-                                }}>
-                                    <Checkbox
-                                        overlay
-                                        label={`After : ${checkIn}`}
-                                        variant="outlined"
-                                        size="lg"
-                                        onChange={(e) => handleChangeCheckInCheck(e)}
-                                        checked={checkinBox}
-                                    />
-                                </Sheet>
-                            </CssVarsProvider>
+                            <Sheet variant="outlined" sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 2,
+                                flex: 1,
+                                paddingX: 2,
+                                paddingY: 1.15,
+                                borderRadius: 5,
+                                // height: 10,
+                                '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
+                            }}>
+                                <Checkbox
+                                    overlay
+                                    label={`After : ${checkIn}`}
+                                    variant="outlined"
+                                    size="sm"
+                                    disabled={disbaleCheck}
+                                    onChange={(e) => handleChangeCheckInCheck(e)}
+                                    checked={checkinBox}
+                                />
+                            </Sheet>
                         </Box>
                         <Box sx={{ display: "flex", p: 0.5, flex: 1, alignItems: 'center' }} >
-                            <CssVarsProvider>
-                                <Sheet variant="outlined" sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 2,
-                                    flex: 1,
-                                    paddingX: 2,
-                                    paddingY: 1.15,
-                                    borderRadius: 5,
-                                    // height: 10,
-                                    '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
-                                    // backgroundColor: 'green'
-                                }}>
-                                    <Checkbox
-                                        overlay
-                                        label={`Before : ${checkOut}`}
-                                        variant="outlined"
-                                        size="lg"
-                                        onChange={(e) => handleChangeCheckOutCheck(e)}
-                                        checked={checkoutBox}
-                                    />
-                                </Sheet>
-                            </CssVarsProvider>
+                            <Sheet variant="outlined" sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 2,
+                                flex: 1,
+                                paddingX: 2,
+                                paddingY: 1.15,
+                                borderRadius: 5,
+                                // height: 10,
+                                '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
+                                // backgroundColor: 'green'
+                            }}>
+                                <Checkbox
+                                    overlay
+                                    label={`Before : ${checkOut}`}
+                                    variant="outlined"
+                                    size="sm"
+                                    disabled={disbaleCheck}
+                                    onChange={(e) => handleChangeCheckOutCheck(e)}
+                                    checked={checkoutBox}
+                                />
+                            </Sheet>
                         </Box>
                     </Box >
                 </Box>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'row', width: '100%', mt: 0.5 }}>
                 <Box sx={{ flex: 1, px: 0.5, mt: 0.2 }}>
-                    <TextField
+                    <Textarea
+                        label="Outlined"
                         placeholder="Reason"
-                        fullWidth
-                        id="fullWidth"
-                        size="small"
+                        variant="outlined"
+                        color="warning"
+                        size="md"
+                        minRows={1}
+                        maxRows={2}
+                        name='reason'
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
+                        sx={{ flex: 1 }}
                     />
                 </Box>
                 <Box sx={{ px: 0.5, mt: 0.2 }}>
-                    <CssVarsProvider>
-                        <Tooltip title="Save Request" variant="outlined" placement="top">
-                            <Button
-                                variant="outlined"
-                                component="label"
-                                size="md"
-                                color="primary"
-                                onClick={submitRequest}
-                            >
-                                Save Request
-                            </Button>
-                        </Tooltip>
-                    </CssVarsProvider>
+                    <Tooltip title="Save Request" variant="outlined" placement="top">
+                        <Button
+                            variant="outlined"
+                            component="label"
+                            size="md"
+                            color="primary"
+                            onClick={submitRequest}
+                        >
+                            Save Request
+                        </Button>
+                    </Tooltip>
                 </Box>
             </Box>
-        </Fragment>
+            <Paper square sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                <CommonAgGrid
+                    columnDefs={columndef}
+                    tableData={tableData}
+                    sx={{
+                        height: 400,
+                        width: "100%"
+                    }}
+                    rowHeight={30}
+                    headerHeight={30}
+                />
+            </Paper>
+        </Paper>
     )
 }
 

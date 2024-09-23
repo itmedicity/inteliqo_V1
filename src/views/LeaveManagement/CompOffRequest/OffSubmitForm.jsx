@@ -101,7 +101,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                         setDisableCheck(true)
                     }
                     else if (holiday_slno !== 0 && gross_salary < salary_above) {
-                        warningNofity('Cannot Apply for Compensatory Off Request!')
+                        warningNofity('Cannot Apply for Compensatory Off, Salary must be greater than 25k!')
                         setDisableCheck(true)
                     }
                     else if (shift_id !== week_off_day && holiday_slno === 0) {
@@ -229,7 +229,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
     }, [])
 
     return (
-        <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', mt: 0.5 }}>
+        <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', mt: 0.5, py: 0.5 }}>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Submitting COFF Request" />
             <Box sx={{ display: "flex", flex: 1, px: 0.5, alignItems: 'center' }} >
                 <Box sx={{ flex: 1, px: 0.5, mt: 0.5 }} >
