@@ -10,7 +10,6 @@ import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
 import { Chip, Divider, ModalDialog, Textarea } from '@mui/joy';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { Box, Paper } from '@mui/material';
 import { useMemo } from 'react';
 
@@ -18,8 +17,8 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
 
     const employeeLeaveData = useMemo(() => empData, [empData])
 
-    const { SlNo, Employee_name, Emp_no, requestDate, no_of_leave, leave_reason,
-        leave_date, leavetodate, sect_name, lve_uniq_no } = employeeLeaveData
+    const { slno, em_name, em_no, requestDate, no_of_leave, leave_reason, fromDate,
+        toDate, sect_name, lve_uniq_no } = employeeLeaveData
 
 
     const [reason, setreason] = useState('')
@@ -31,8 +30,6 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
 
 
     useEffect(() => {
-
-
         const getLeaveDetails = async (lve_uniq_no) => {
             //to get leave request details
             const resultdel = await axioslogin.get(`/LeaveRequestApproval/getlevereqdetl/${lve_uniq_no}`)
@@ -50,23 +47,23 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
         return {
             status: 1,
             comment: reason,
-            slno: SlNo,
+            slno: slno,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
             us_code: em_id,
             lve_uniq_no: lve_uniq_no
         }
-    }, [reason, SlNo, em_id, lve_uniq_no])
+    }, [reason, slno, em_id, lve_uniq_no])
 
     const LeaveRejectdata = useMemo(() => {
         return {
             status: 2,
             comment: reason,
-            slno: SlNo,
+            slno: slno,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
             us_code: em_id,
             lve_uniq_no: lve_uniq_no
         }
-    }, [reason, SlNo, em_id, lve_uniq_no])
+    }, [reason, slno, em_id, lve_uniq_no])
 
 
     const handleApproverequest = useCallback(async () => {
@@ -92,7 +89,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
             }
         }
         else if (authority === 2) {
-            const result = await axioslogin.get(`/LeaveRequestApproval/${SlNo}`)
+            const result = await axioslogin.get(`/LeaveRequestApproval/${slno}`)
             const { success, data } = result.data;
             if (success === 1) {
                 const { inc_apprv_req, incapprv_status } = data[0]
@@ -135,20 +132,20 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                 }
             }
         }
-    }, [authority, inchpostData, setcount, reason, setOpen, SlNo])
+    }, [authority, inchpostData, setcount, reason, setOpen, slno])
 
     const handleRegectRequest = useCallback(async () => {
         //CASUAL LEAVE 
         const casualLev = details?.filter(val => val.leave_typeid === 1)?.map(val => {
-            return { ...val, emno: Emp_no }
+            return { ...val, emno: em_no }
         });
         //EARN LEAVE
         const earnLeave = details?.filter(val => val.leave_typeid === 8)?.map(val => {
-            return { ...val, emno: Emp_no }
+            return { ...val, emno: em_no }
         });
         //COMPENSATORY OFF
         const compansatoryOff = details?.filter(val => val.leave_typeid === 11)?.map(val => {
-            return { ...val, emno: Emp_no }
+            return { ...val, emno: em_no }
         });
 
         //COMMON LEAVES 
@@ -158,7 +155,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
             val.leave_typeid !== 8 &&
             val.leave_typeid !== 11
         ).map(val => {
-            return { ...val, emno: Emp_no }
+            return { ...val, emno: em_no }
         });
 
         //UPDATE CASUAL LEAVE TABLE
@@ -226,46 +223,48 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
             if (reason === '') {
                 infoNofity("Please Add Remarks!")
             } else {
-                const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprv', LeaveRejectdata)
-                const { success } = result.data;
-                if (success === 1) {
-                    Promise.all([
-                        casualLeavePromise,
-                        //holidayLeavePromise,
-                        earnLeavePromise,
-                        coffLeavePromise,
-                        commonLeavePromise
 
-                    ]).then(result => {
-                        if (result) {
+                Promise.all([
+                    casualLeavePromise,
+                    //holidayLeavePromise,
+                    earnLeavePromise,
+                    coffLeavePromise,
+                    commonLeavePromise
+
+                ]).then(async (result) => {
+                    if (result) {
+                        const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprv', LeaveRejectdata)
+                        const { success } = result.data;
+                        if (success === 1) {
                             setOpenBkDrop(false)
                             setcount(Math.random())
                             succesNofity('Leave Request Approved')
                             setOpen(false)
+                        } else {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setcount(Math.random())
+                            errorNofity('Error Updating Leave Request')
                         }
-                    }).catch(error => {
-                        setcount(Math.random())
-                        errorNofity('Error Updating Leave Request')
-                        const errorLog = {
-                            error_log_table: 'punch_master,leave_request,leave_reqdetl',
-                            error_log: error,
-                            em_no: Emp_no,
-                            formName: 'Leave Approval Modal Approval HR Page'
-                        }
-                        axioslogin.post(`/common/errorLog`, errorLog);
-                        setOpenBkDrop(false)
-                        setOpen(false)
-                    })
-                } else {
-                    setOpenBkDrop(false)
-                    setOpen(false)
+                    }
+                }).catch(error => {
                     setcount(Math.random())
                     errorNofity('Error Updating Leave Request')
-                }
+                    const errorLog = {
+                        error_log_table: 'punch_master,leave_request,leave_reqdetl',
+                        error_log: error,
+                        em_no: em_no,
+                        formName: 'Leave Approval Modal Approval HR Page'
+                    }
+                    axioslogin.post(`/common/errorLog`, errorLog);
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                })
+
             }
         }
         else if (authority === 2) {
-            const result = await axioslogin.get(`/LeaveRequestApproval/${SlNo}`)
+            const result = await axioslogin.get(`/LeaveRequestApproval/${slno}`)
             const { success, data } = result.data;
             if (success === 1) {
                 const { inc_apprv_req, incapprv_status } = data[0]
@@ -296,7 +295,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                                 const errorLog = {
                                     error_log_table: 'punch_master,leave_request,leave_reqdetl',
                                     error_log: error,
-                                    em_no: Emp_no,
+                                    em_no: em_no,
                                     formName: 'Leave Approval Modal Approval HR Page'
                                 }
                                 axioslogin.post(`/common/errorLog`, errorLog);
@@ -334,7 +333,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                             const errorLog = {
                                 error_log_table: 'punch_master,leave_request,leave_reqdetl',
                                 error_log: error,
-                                em_no: Emp_no,
+                                em_no: em_no,
                                 formName: 'Leave Approval Modal Approval HR Page'
                             }
                             axioslogin.post(`/common/errorLog`, errorLog);
@@ -351,7 +350,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
             }
         }
 
-    }, [authority, LeaveRejectdata, details, Emp_no, setOpen, setcount, reason, SlNo])
+    }, [authority, LeaveRejectdata, details, em_no, setOpen, setcount, reason, slno])
 
     return (
         <>
@@ -384,7 +383,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                             }
                             sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                         >
-                            {Employee_name}
+                            {em_name}
                         </Typography>
                         <Typography
                             lineHeight={1}
@@ -401,84 +400,102 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                                 alignContent='center'
                                 lineHeight={1}
                             >
-                                {Emp_no}
+                                {em_no}
                             </Typography>}
                             sx={{ color: 'neutral.400', display: 'flex', }}
                         >
-                            {`employee #`}
+                            {`employee ID#`}
                         </Typography>
                         <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
                     </Box>
-                    <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }}>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <Typography level="body1"> Request Date</Typography>
+                    <Box
+                        sx={{
+                            display: 'flex', justifyContent: 'center',
+                            alignItems: 'center', px: 1, borderBlockStyle: 'outset',
+                            flexDirection: 'column',
+                        }} >
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Request Date
+                                </Typography>
                             </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1"> : {requestDate}</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <Typography level="body1"> No of Days</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1"> : {no_of_leave}</Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left" }}  >
-                                <Typography level="body1"> Leave Reason</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1"> : {leave_reason}</Typography>
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{requestDate}
+                                </Typography>
                             </Box>
                         </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}  >
-                                <Typography level="body1"> Leave From Date</Typography>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    No of Days
+                                </Typography>
                             </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1">: {leave_date}</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}  >
-                                <Typography level="body1">Leave To date</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1"> : {leavetodate}</Typography>
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{no_of_leave}
+                                </Typography>
                             </Box>
                         </Box>
-                    </Paper>
-                    <Box sx={{ flex: 1, py: 1 }}>
-                        <Typography
-                            level="body2"
-                            startDecorator={<InfoOutlined />}
-                            sx={{ alignItems: 'center', wordBreak: 'break-all', }}
-                        >
-                            Requested Leave Information.
-                        </Typography>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Leave From
+                                </Typography>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{fromDate}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Leave To
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{toDate}
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Reason
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{leave_reason}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8, width: '100%' }} >
+                            {
+                                details?.map((val, idx) => {
+                                    return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >
+                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }} >
+                                            {moment(val.leave_dates).format('DD-MM-YYYY')}
+                                        </Typography>
+                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
+                                            {val.leavetype_name}
+                                        </Typography>
+                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
+                                            {val.leave_name}
+                                        </Typography>
+                                    </Box>
+                                })
+                            }
+                        </Paper>
                     </Box>
-                    <Paper variant="outlined" square sx={{
-                        p: 0.5, mb: 0.8,
-                        overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
-                    }} >
-                        {
-                            details?.map((val, idx) => {
-                                return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >
-                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }} >
-                                        {moment(val.leave_dates).format('DD-MM-YYYY')}
-                                    </Typography>
-                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
-                                        {val.leavetype_name}
-                                    </Typography>
-                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }}>
-                                        {val.leave_name}
-                                    </Typography>
-                                </Box>
-                            })
-                        }
-                    </Paper>
                     <Divider>
                         <Chip variant="outlined" color="info" size="sm">
-                            Incharge Use Only
+                            Incharge/Hod Use Only
                         </Chip>
                     </Divider>
                     <Box sx={{ pt: 0.5 }} >

@@ -50,7 +50,7 @@ const LeaveCancelByHR = () => {
     const handleChangeRadioBtn = useCallback(async (event) => {
         let radioBtnVal = event.target.value;
         setValue(radioBtnVal);
-    }, [count])
+    }, [])
 
 
     useEffect(() => {
@@ -186,7 +186,7 @@ const LeaveCancelByHR = () => {
             }
         }
 
-        if (value === 1) {
+        if (value === 1 || value === '1') {
             getAllLeave()
         } else if (value === '2') {
             getAllHalfDay()
@@ -286,7 +286,7 @@ const LeaveCancelByHR = () => {
                         </CssVarsProvider>
                     }
                 </Box>
-                <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
+                <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={tableData}
