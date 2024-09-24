@@ -177,7 +177,7 @@ const MisspunchModal = ({ open, setOpen, missData, setCount }) => {
                     <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
                         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
                             <Typography fontSize="sm" fontWeight="lg"  >
-                                On Duty Day
+                                Miss Punch Day
                             </Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>

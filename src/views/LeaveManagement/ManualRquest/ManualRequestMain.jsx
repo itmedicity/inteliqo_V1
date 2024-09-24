@@ -74,50 +74,55 @@ const ManualRequestMain = () => {
             new Date(toDate),
             new Date(fromDate)
         ) + 1
-        //CHECKING FOR PUNCH MARKING HR -> YES/NO
-        const checkDutyPlan = await axioslogin.post('/plan/checkDutyPlanExcistNew', postData);
-        const { success, dta } = checkDutyPlan.data;
 
-        if (success === 1 && dta?.plan === differenceCountFromToDate) {
-            //DUTY PLAN IS PLANNED FOR THE SELECTED DATE
+        if (dept !== 0 && deptsection !== 0 && emply?.em_id !== 0) {
+            //CHECKING FOR PUNCH MARKING HR -> YES/NO
+            const checkDutyPlan = await axioslogin.post('/plan/checkDutyPlanExcistNew', postData);
+            const { success, dta } = checkDutyPlan.data;
 
-            //FOR LISTING THE SELECTED DATE IN THE SCREEN
-            const modifiedTable = dateDiffrence?.map((e) => {
-                return {
-                    date: e,
-                }
-            })
-            // setTable(modifiedTable)
-            const postdata = {
-                empno: emply?.em_no,
-                fromdate: format(new Date(fromDate), 'yyyy-MM-dd'),
-                todate: format(new Date(toDate), 'yyyy-MM-dd')
-            }
-            const result = await axioslogin.post(`/ReligionReport/punchReportmaster`, postdata)
-            const { success, data: punchMasteData } = result.data
-            if (success === 1) {
-                const arr = punchMasteData?.map((val) => {
-                    const a = modifiedTable?.find((e) => format(new Date(e.date), 'yyyy-MM-dd') === val.duty_day)
-                    let shiftIn = `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_in), 'HH:mm')}`;
-                    let shiftOut = val.shft_cross_day === 0 ? `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}` :
-                        `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}`;
+            if (success === 1 && dta?.plan === differenceCountFromToDate) {
+                //DUTY PLAN IS PLANNED FOR THE SELECTED DATE
+
+                //FOR LISTING THE SELECTED DATE IN THE SCREEN
+                const modifiedTable = dateDiffrence?.map((e) => {
                     return {
-                        ...val,
-                        datenew: a?.date ?? null,
-                        selected: 0,
-                        punch_in: shiftIn,
-                        punch_out: shiftOut
+                        date: e,
                     }
                 })
-                setTable(arr)
-            }
-            else {
-                warningNofity('Error while getting Punch Master data, Contact IT')
+                // setTable(modifiedTable)
+                const postdata = {
+                    empno: emply?.em_no,
+                    fromdate: format(new Date(fromDate), 'yyyy-MM-dd'),
+                    todate: format(new Date(toDate), 'yyyy-MM-dd')
+                }
+                const result = await axioslogin.post(`/ReligionReport/punchReportmaster`, postdata)
+                const { success, data: punchMasteData } = result.data
+                if (success === 1) {
+                    const arr = punchMasteData?.map((val) => {
+                        const a = modifiedTable?.find((e) => format(new Date(e.date), 'yyyy-MM-dd') === val.duty_day)
+                        let shiftIn = `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_in), 'HH:mm')}`;
+                        let shiftOut = val.shft_cross_day === 0 ? `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}` :
+                            `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}`;
+                        return {
+                            ...val,
+                            datenew: a?.date ?? null,
+                            selected: 0,
+                            punch_in: shiftIn,
+                            punch_out: shiftOut
+                        }
+                    })
+                    setTable(arr)
+                }
+                else {
+                    warningNofity('Error while getting Punch Master data, Contact IT')
+                    return
+                }
+            } else {
+                warningNofity('Duty Plan Not planned ')
                 return
             }
         } else {
-            warningNofity('Duty Plan Not planned ')
-            return
+            warningNofity("Select All Option!")
         }
     }, [toDate, fromDate, emply])
 
@@ -194,11 +199,11 @@ const ManualRequestMain = () => {
                         const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
                         const { success, message } = result.data;
                         if (success === 1) {
+                            setCount(Math.random())
                             setTable([])
                             setRemark('')
                             setSelectFile([])
                             succesNofity("Data saved successfully")
-                            setCount(Math.random())
 
                         } else if (success === 2) {
                             warningNofity(message)
@@ -221,8 +226,13 @@ const ManualRequestMain = () => {
 
 
     const getArray = useCallback(async (e, val) => {
-        let ar = table?.map((e) => e.duty_day === val.duty_day ? { ...e, selected: 1 } : { ...e })
-        setTable([...ar])
+        if (e.target.checked === true) {
+            let ar = table?.map((e) => e.duty_day === val.duty_day ? { ...e, selected: 1 } : { ...e })
+            setTable([...ar])
+        } else {
+            let ar = table?.map((e) => e.duty_day === val.duty_day ? { ...e, selected: 0 } : { ...e })
+            setTable([...ar])
+        }
     }, [table])
 
     const handleFileChange = useCallback((e) => {
@@ -231,8 +241,6 @@ const ManualRequestMain = () => {
         setSelectFile(newFiles)
 
     }, [selectFile, setSelectFile])
-
-
 
     useEffect(() => {
         const getManuladata = async () => {
@@ -247,7 +255,7 @@ const ManualRequestMain = () => {
                     }
                 })
                 setTableData(arr)
-
+                setCount(0)
             } else {
                 setTableData([])
             }
@@ -411,11 +419,13 @@ const ManualRequestMain = () => {
                     <Box sx={{}}>
                         <Paper variant="outlined"
                             sx={{
-                                maxHeight: screenInnerHeight * 40 / 100, p: 1, m: 0.3, overflow: 'auto',
+                                maxHeight: screenInnerHeight * 40 / 100, m: 0.3,
+                                overflow: 'auto',
 
                             }} >
                             <Table
-                                aria-label="basic table"
+                                aria-label="table with sticky header"
+                                stickyHeader
                                 // borderAxis="xBetween"
                                 color="neutral"
                                 size="sm"
@@ -442,7 +452,7 @@ const ManualRequestMain = () => {
                                                         <Box>
                                                             <Typography
                                                                 level="title-md"
-                                                                textColor="var(--joy-palette-success-plainColor)"
+                                                                // textColor="var(--joy-palette-success-plainColor)"
                                                                 fontFamily="monospace"
                                                                 sx={{ opacity: '80%' }}
                                                             >
@@ -452,7 +462,7 @@ const ManualRequestMain = () => {
                                                         <Box>
                                                             <Typography
                                                                 level="title-md"
-                                                                textColor="var(--joy-palette-success-plainColor)"
+                                                                // textColor="var(--joy-palette-success-plainColor)"
                                                                 fontFamily="monospace"
                                                                 sx={{ opacity: '50%' }}
                                                             >
@@ -506,8 +516,10 @@ const ManualRequestMain = () => {
                                                 <td style={{ textAlign: 'center', }}>
                                                     <Box>
                                                         <Checkbox
+                                                            //color={val?.lvereq_desc === 'P' ? 'red' : val?.leave_status === 1 ? 'red' : val?.shift_id === default_shift ? 'red' : val?.lvereq_desc === 'HP' ? 'red' : val?.lvereq_desc === 'WOFF' ? 'red' : 'success.100'}
+                                                            color={val?.lvereq_desc === 'P' ? 'danger' : val?.leave_status === 1 ? 'danger' : val?.lvereq_desc === 'H' ? 'danger' : val?.lvereq_desc === 'HP' ? 'danger' : val?.lvereq_desc === 'WOFF' ? 'danger' : 'primary'}
                                                             checked={val?.selected === 1 ? true : false}
-                                                            disabled={val?.duty_desc !== 'A' ? true : val?.shift_id === default_shift ? true : false}
+                                                            disabled={val?.leave_status === 1 ? true : val?.lvereq_desc === 'H' ? true : val?.lvereq_desc === 'P' ? true : val?.lvereq_desc === 'HP' ? true : val?.lvereq_desc === 'WOFF' ? true : false}
                                                             onChange={(e) => {
                                                                 getArray(e, val)
                                                             }}
@@ -521,11 +533,11 @@ const ManualRequestMain = () => {
                                                 >
                                                     <Typography
                                                         level="title-md"
-                                                        textColor={val?.duty_desc !== 'A' ? 'red' : val?.shift_id === default_shift ? 'red' : 'success.100'}
+                                                        textColor={val?.lvereq_desc === 'P' ? 'red' : val?.leave_status === 1 ? 'red' : val?.lvereq_desc === 'H' ? 'red' : val?.lvereq_desc === 'HP' ? 'red' : val?.lvereq_desc === 'WOFF' ? 'red' : 'success.100'}
                                                         fontFamily="monospace"
                                                         sx={{ opacity: '50%' }}
                                                     >
-                                                        {val?.duty_desc !== 'A' ? 'Description is not Absent' : val?.shift_id === default_shift ? 'Duty Not Scheduled' : null}
+                                                        {val?.lvereq_desc === 'P' ? 'Present' : val?.leave_status === 1 ? 'Leave Request Exist' : val?.lvereq_desc === 'H' ? 'Holiday' : val?.lvereq_desc === 'HP' ? 'Holiday Present' : val?.lvereq_desc === 'WOFF' ? 'Week Off' : null}
                                                     </Typography>
                                                 </td>
                                             </tr>

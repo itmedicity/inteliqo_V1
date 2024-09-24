@@ -79,6 +79,7 @@ const EmployeeCompnt = ({ em_no }) => {
                             leave_status: empArray?.find(em => em.duty_day === e)?.leave_status ?? 0,
                             duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
                             lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+                            manual_request_flag: empArray?.find(em => em.duty_day === e)?.manual_request_flag ?? 0,
                         }
                     }),
                     totalDays: dateRange?.length,
@@ -306,7 +307,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                                             width: 60,
                                                             borderLeft: '0.1px solid #dddfe2',
                                                             height: 10,
-                                                            backgroundColor: '#f4f6f8'
+                                                            backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : '#f4f6f8'
                                                         }}
                                                     >
                                                         <Box sx={{
@@ -330,6 +331,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                             </tr>
                                             <tr>
                                                 {row.punchMaster.map((val, ind) => (
+
                                                     <td key={ind}
                                                         style={{
                                                             zIndex: 0,
@@ -337,13 +339,14 @@ const EmployeeCompnt = ({ em_no }) => {
                                                             width: 60,
                                                             borderLeft: '0.1px solid #dddfe2',
                                                             height: 10,
-                                                            backgroundColor: '#CDF8DF'
+                                                            backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : '#CDF8DF'
                                                         }}
                                                     >
                                                         <Box sx={{
                                                             color: getColor(val.duty_desc),
-                                                            fontWeight: getFontWeight(val.duty_desc)
+                                                            fontWeight: getFontWeight(val.duty_desc),
                                                         }}>
+
                                                             {val.lvereq_desc}
                                                         </Box>
                                                     </td>

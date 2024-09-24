@@ -1,19 +1,20 @@
-import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 import Modal from '@mui/joy/Modal';
 import { Button, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy';
-import { Box, } from '@mui/material';
+import { Box } from '@mui/material';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { errorNofity, infoNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
 
-const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
+
+const OneHourModal = ({ setOpen, open, authority, empData, setCount }) => {
 
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [remark, setRemark] = useState('');
+
     const [details, setDetails] = useState(
         {
             slno: '',
@@ -29,7 +30,6 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
             checkOut: '',
             inchargeComment: '',
             hodComment: '',
-            ceoComment: '',
             emid: '',
             checkInFlag: 0,
             checkOutFlag: 0,
@@ -37,23 +37,23 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
             incaprv: 0
         }
     )
-    const { slno, emno, name, section, reqDate, dutyDate, reason, shft_desc, checkIn, checkOut,
-        inchargeComment, hodComment, checkInFlag, checkOutFlag, dept_sect_id,
-        one_hour_day
+    const { slno, emno, name, section, reqDate, dutyDate, reason, shft_desc,
+        inchargeComment, checkInFlag, checkOutFlag, increq, incaprv,
     } = details;
+
 
     const loginem_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
 
     useEffect(() => {
-        if (Object.keys(data).length !== 0) {
-            const { slno, emno, name, section, status, requestDate, one_hour_duty_day, shft_desc,
-                check_in, check_out, incharge_approval_comment, hod_approval_comment, reason,
-                emid, checkin_flag, checkout_flag, increq, incaprv, one_hour_day } = data;
+        if (Object.keys(empData).length !== 0) {
+            const { slno, em_no, em_name, sect_name, status, requestDate, shft_desc,
+                check_in, check_out, incharge_approval_comment, hod_approval_comment, reason, one_hour_duty_day,
+                em_id, checkin_flag, checkout_flag, incharge_req_status, incharge_approval_status } = empData;
             const details = {
                 slno: slno,
-                emno: emno,
-                name: name,
-                section: section,
+                emno: em_no,
+                name: em_name,
+                section: sect_name,
                 status: status,
                 reqDate: requestDate,
                 dutyDate: one_hour_duty_day,
@@ -63,109 +63,169 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                 checkOut: check_out,
                 inchargeComment: incharge_approval_comment,
                 hodComment: hod_approval_comment,
-                emid: emid,
+                emid: em_id,
                 checkInFlag: checkin_flag,
                 checkOutFlag: checkout_flag,
-                increq: increq,
-                incaprv: incaprv,
-                one_hour_day: one_hour_day
+                increq: incharge_req_status,
+                incaprv: incharge_approval_status
             }
             setDetails(details)
         } else {
             setDetails({})
         }
-    }, [data])
+    }, [empData])
 
-    const hrReject = useMemo(() => {
+    const rejectData = useMemo(() => {
         return {
-            hr_approval_status: 2,
-            hr_approval_comment: remark,
-            hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            hr_empId: loginem_id,
+            incharge_approval_status: 2,
+            incharge_approval_comment: remark,
+            incharge_approval_date: moment().format('YYYY-MM-DD HH:mm'),
+            incharge_empid: loginem_id,
             request_slno: slno
         }
     }, [remark, slno, loginem_id])
 
-    const hrApprove = useMemo(() => {
+    const approveData = useMemo(() => {
         return {
-            checkintime: checkIn,
-            checkouttime: checkOut,
-            checkinflag: checkInFlag,
-            checkoutflag: checkOutFlag,
-            emno: emno,
-            dutyDay: moment(dutyDate).format('YYYY-MM-DD HH:mm'),
-            hr_approval_status: 1,
-            hr_approval_comment: remark,
-            hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            hr_empId: loginem_id,
+            incharge_approval_status: 1,
+            incharge_approval_comment: remark,
+            incharge_approval_date: moment().format('YYYY-MM-DD HH:mm'),
+            incharge_empid: loginem_id,
             request_slno: slno
         }
-    }, [remark, slno, checkIn, checkOut, checkInFlag, checkOutFlag,
-        dutyDate, emno, loginem_id])
+    }, [remark, slno, loginem_id])
 
+
+    const hodApprove = useMemo(() => {
+        return {
+            hod_approval_status: 1,
+            hod_approval_comment: remark,
+            hod_approval_date: moment().format('YYYY-MM-DD HH:mm'),
+            hod_empid: loginem_id,
+            request_slno: slno
+        }
+    }, [remark, slno, loginem_id])
+
+    const hodReject = useMemo(() => {
+        return {
+            hod_approval_status: 2,
+            hod_approval_comment: remark,
+            hod_approval_date: moment().format('YYYY-MM-DD HH:mm'),
+            hod_empid: loginem_id,
+            request_slno: slno
+        }
+    }, [remark, slno, loginem_id])
 
     const handleRejectRequest = useCallback(async () => {
-        if (remark === "") {
-            infoNofity("Please Add Remarks!")
-        } else {
-            const result = await axioslogin.patch('/CommonReqst/hr/oneHour', hrReject)
-            const { message, success } = result.data;
-            if (success === 1) {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(Math.random())
-                succesNofity(message)
+        if (authority === 1) {
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
             } else {
-                setOpenBkDrop(false)
-                setOpen(false)
-                setCount(Math.random())
-                errorNofity(message)
-            }
-        }
-    }, [remark, hrReject, setCount, setOpen])
-
-    const handleApproverequest = useCallback(async () => {
-        if (remark === "") {
-            infoNofity("Please Add Remarks!")
-        } else {
-            setOpenBkDrop(true)
-            const postDataForAttendaceMark = {
-                month: format(startOfMonth(new Date(dutyDate)), 'yyyy-MM-dd'),
-                section: dept_sect_id
-            }
-            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postDataForAttendaceMark);
-            const { success, data } = checkPunchMarkingHr.data
-            if (success === 0 || success === 1) {
-                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(dutyDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
-                const lastDay_month = format(lastDayOfMonth(new Date(dutyDate)), 'yyyy-MM-dd')
-                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
-                    warningNofity("Punch Marking Monthly Process Done !! Can't Approve Halfday Leave Request!!  ")
+                const result = await axioslogin.patch('/CommonReqst/incharge/onehour', rejectData)
+                const { message, success } = result.data;
+                if (success === 1) {
                     setOpenBkDrop(false)
                     setOpen(false)
+                    setCount(Math.random())
+                    succesNofity(message)
                 } else {
-                    const result = await axioslogin.patch('/CommonReqst/hr/comment', hrApprove)
-                    const { success } = result.data;
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(Math.random())
+                    errorNofity(message)
+                }
+            }
+        } else if (authority === 2) {
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
+            } else {
+                const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodReject)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(Math.random())
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(Math.random())
+                    errorNofity(message)
+                }
+            }
+        }
+    }, [rejectData, hodReject, remark, authority, setCount, setOpen])
+
+    const handleApproverequest = useCallback(async () => {
+        if (authority === 1) {
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
+            } else {
+                setOpenBkDrop(true)
+                const result = await axioslogin.patch('/CommonReqst/incharge/onehour', approveData)
+                const { message, success } = result.data;
+                if (success === 1) {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(Math.random())
+                    succesNofity(message)
+                } else {
+                    setOpenBkDrop(false)
+                    setOpen(false)
+                    setCount(Math.random())
+                    errorNofity(message)
+                }
+            }
+        } else if (authority === 2) {
+            if (remark === "") {
+                infoNofity("Please Add Remarks!")
+            } else {
+                if (increq === 1 && incaprv === 0) {
+                    setOpenBkDrop(true)
+                    const result = await axioslogin.patch('/CommonReqst/incharge/onehour', approveData)
+                    const { message, success } = result.data;
                     if (success === 1) {
-                        setOpenBkDrop(false)
-                        setOpen(false)
-                        setCount(Math.random())
-                        succesNofity("HR Approved Successfully!")
+                        const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodApprove)
+                        const { message, success } = result.data;
+                        if (success === 1) {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(Math.random())
+                            succesNofity(message)
+                        } else {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(Math.random())
+                            errorNofity(message)
+                        }
                     } else {
                         setOpenBkDrop(false)
                         setOpen(false)
                         setCount(Math.random())
-                        errorNofity("Error Occured! Contact IT")
+                        errorNofity(message)
+                    }
+                } else {
+                    setOpenBkDrop(true)
+                    const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodApprove)
+                    const { message, success } = result.data;
+                    if (success === 1) {
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                        setCount(Math.random())
+                        succesNofity(message)
+                    } else {
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                        setCount(Math.random())
+                        errorNofity(message)
                     }
                 }
-            } else {
-                errorNofity("Error getting PunchMarkingHR ")
             }
         }
-    }, [remark, dutyDate, dept_sect_id, hrApprove, setCount, setOpen])
-
+    }, [remark, hodApprove, approveData, authority, increq, incaprv, setCount, setOpen])
 
     return (
-        <Fragment>
+        <>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
             <Modal
                 aria-labelledby="modal-title"
@@ -259,7 +319,7 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                             </Box>
                             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
                                 <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{one_hour_day}
+                                    : {moment(dutyDate).format('DD-MM-YYYY')}
                                 </Typography>
                             </Box>
                         </Box>
@@ -287,32 +347,21 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                                 </Typography>
                             </Box>
                         </Box>
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Incharge Comment
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{inchargeComment === null ? 'NIL' : inchargeComment === '' ? 'NIL' : inchargeComment}
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Hod Comment
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{hodComment === null ? 'NIL' : hodComment === '' ? 'NIL' : hodComment}
-                                </Typography>
-                            </Box>
-                        </Box>
+                        {
+                            authority === 2 ? <Box sx={{ flex: 1, display: 'flex', width: '100%' }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Incharge Comment
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{inchargeComment === "" ? 'NIL' : inchargeComment === null ? 'NIL' : inchargeComment}
+                                    </Typography>
+                                </Box>
+                            </Box> : null
+                        }
                     </Box>
-
                     <Box sx={{ pt: 0.5 }} >
                         <Textarea name="Outlined" placeholder="Remark For Approve/Reject The Request here…"
                             variant="outlined" onChange={(e) => setRemark(e.target.value)} />
@@ -327,8 +376,8 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                     </Box>
                 </ModalDialog>
             </Modal>
-        </Fragment>
+        </>
     )
 }
 
-export default memo(OneHourReqstModal) 
+export default memo(OneHourModal) 
