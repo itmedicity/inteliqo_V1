@@ -73,7 +73,7 @@ const InductionCompletedList = ({ setShow, trainingcompleted }) => {
     ])
 
     const handleDateChange = useCallback(() => {
-        setPickdate(moment(filterdate).format("YYYY-MM-DD"));
+        setPickdate(format(new Date(filterdate), "dd-MM-yyyy"))
         setFlag(1);
     }, [filterdate])
 

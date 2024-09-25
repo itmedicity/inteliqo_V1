@@ -54,7 +54,10 @@ export const leave_three = [
     { to: '/Home/CreditedLeaveCount', name: 'Credited Leave Count Report', slno: 190 },
 ]
 export const training_one = [
-    { to: '/Home/DepartmentalCalender', name: 'Department Wise Training Topic Scheduled  Report ', slno: 265 },
+
+    { to: '/Home/CompletedAndPendingStaffList', name: 'Induction Completed & Pending Reports', slno: 265 },
+
+    // { to: '/Home/DepartmentalCalender', name: 'Department Wise Training Topic Scheduled  Report ', slno: 265 },
     { to: '/Home/DepartmentalTrainingReportDetails', name: 'Departmental Training Report', slno: 264 },
     { to: '/Home/InductionCalenderReport', name: 'Induction Calender Report', slno: 277 },
 ]
