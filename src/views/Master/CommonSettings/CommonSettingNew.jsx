@@ -158,9 +158,8 @@ const CommonSettingNew = () => {
                     coff_min_working_hour: coff_min_working_hour === null ? 0 : coff_min_working_hour,
                     onobservation_days: onobservation_days,
                     hod_leave_day_count: hod_leave_day_count,
-                    holidayLeave: holiday_leave_request === 0 ? false : true,
                     halfday_time_count: halfday_time_count,
-                    punch_taken_hour_count: punch_taken_hour_count
+                    punch_taken_hour_count: punch_taken_hour_count,
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj === null ? [] : obj)
@@ -177,6 +176,7 @@ const CommonSettingNew = () => {
                 setTraining_Group_Slno(training === null ? [] : training)
                 setNoff(noff)
                 setDoff(doff)
+                setHolidayLeave(holiday_leave_request === 0 ? false : true)
             }
             else if (success === 0) {
                 setValue(0)
@@ -342,6 +342,7 @@ const CommonSettingNew = () => {
     const RedirectToprofilePage = () => {
         history.push(`/Home/Settings`)
     }
+
     return (
         <Fragment>
             <ToastContainer />
