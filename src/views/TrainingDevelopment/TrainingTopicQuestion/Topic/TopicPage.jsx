@@ -15,11 +15,11 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
 import CloseIcon from '@mui/icons-material/Close'
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
-import JoyTrainerMultipleSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainerMultipleSelect';
-import { TrainerNames } from 'src/redux/actions/Training.Action';
+import { DeptSectnWiseTrainerNames } from 'src/redux/actions/Training.Action';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import TopicFiles from './TopicFiles';
 import JoyDeptWiseTrainingNames from 'src/views/MuiComponents/JoyDeptWiseTrainingNames';
+import JoyDeptSectWiseTrainers from 'src/views/MuiComponents/JoyComponent/JoyDeptSectWiseTrainers';
 
 const TopicPage = () => {
 
@@ -54,11 +54,16 @@ const TopicPage = () => {
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_id, em_department } = employeeProfileDetl;
+    const { em_id, em_department, em_dept_section } = employeeProfileDetl;
 
+    const obj = {
+        em_department: em_department,
+        em_dept_section: em_dept_section
+    }
     useEffect(() => {
-        dispatch(TrainerNames())
-    }, [dispatch])
+        // dispatch(TrainerNames())
+        dispatch(DeptSectnWiseTrainerNames(obj))
+    }, [dispatch, obj])
 
     //reset
     const reset = useCallback(() => {
@@ -397,28 +402,33 @@ const TopicPage = () => {
             EditData(patchdata);
             reset();
         } else {
-            InsertData(postdata)
-                .then((val) => {
-                    const { insetId, message, success } = val;
-                    if (success === 1) {
-                        if (selectFile.length !== 0) {
-                            handleUpload(insetId);
-                        } else {
-                            succesNofity("inserted successfully");
-                            reset();
-                            setCount(count + 1);
+            if (training_topic_name !== '' && trainingname !== 0 && trainers?.length !== 0 && hours !== '') {
+                InsertData(postdata)
+                    .then((val) => {
+                        const { insetId, message, success } = val;
+                        if (success === 1) {
+                            if (selectFile.length !== 0) {
+                                handleUpload(insetId);
+                            } else {
+                                succesNofity("inserted successfully");
+                                reset();
+                                setCount(count + 1);
+                            }
                         }
-                    }
-                    else {
-                        warningNofity(message)
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error in InsertData:", error);
-                    warningNofity('An error occurred while inserting data.');
-                });
+                        else {
+                            warningNofity(message)
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error in InsertData:", error);
+                        warningNofity('An error occurred while inserting data.');
+                    });
+            } else {
+                warningNofity("Enter All the Feilds Before Submit")
+            }
+
         }
-    }, [postdata, patchdata, reset, flag, selectFile, setCount, count]);
+    }, [postdata, patchdata, reset, flag, selectFile, setCount, count, training_topic_name, trainingname, trainers, hours]);
 
 
     const ShowFlies = useCallback(() => {
@@ -449,7 +459,7 @@ const TopicPage = () => {
                         {edit_trainers === 1 ?
                             <Tooltip title="Add Trainers">
                                 <Box sx={{ px: 0.3, flex: 1 }} >
-                                    <JoyTrainerMultipleSelect value={trainers} setValue={setTrainers} />
+                                    <JoyDeptSectWiseTrainers value={trainers} setValue={setTrainers} />
                                 </Box>
                             </Tooltip>
                             : null}
@@ -472,7 +482,8 @@ const TopicPage = () => {
                         {flag === 0 && edit_trainers === 0 ?
                             <Tooltip title="Add Trainers">
                                 <Box sx={{ px: 0.3, flex: 1 }} >
-                                    <JoyTrainerMultipleSelect value={trainers} setValue={setTrainers} />
+                                    <JoyDeptSectWiseTrainers value={trainers} setValue={setTrainers} />
+                                    {/* <JoyTrainerMultipleSelect value={trainers} setValue={setTrainers} /> */}
                                 </Box>
                             </Tooltip>
                             : null}

@@ -71,7 +71,9 @@ const AllowanceDeducation = React.lazy(() => import('./views/EmployeeRecord/Allo
 // const Dutyplanning = React.lazy(() => import('./views/Attendance/DutyPlanning/DutyPlanning'))
 const Dutyplan = React.lazy(() => import('./views/Attendance/DutyPlan/DutyPlanMainCard'))
 const ApprovalIncharge = React.lazy(() => import('./views/LeaveManagement/ApprovalIncharge/ApprovalIncharge'))
-const ApprovalHR = React.lazy(() => import('./views/LeaveManagement/ApprovalHR/ApprovalHR'))
+// const ApprovalHR = React.lazy(() => import('./views/LeaveManagement/ApprovalHR/ApprovalHR'))
+//const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD/ApprovalHod'))
+const ApprovalHR = React.lazy(() => import('./views/LeaveManagement/ApprovalHR/LeaveApprovalHR'))
 const CancelEmployee = React.lazy(() => import('./views/LeaveManagement/LeaveCancelEmployee/LeaveCancelEmploye'))
 const CancelHR = React.lazy(() => import('./views/LeaveManagement/LeaveCancelHR/HrLeaveCancel'))
 //const OTRequest = React.lazy(() => import('./views/LeaveManagement/OverTimeRequest/OTRequest'))
@@ -289,6 +291,7 @@ const CreditedLeaveCount = React.lazy(() => import('./views/HrReports/LeaveCount
 const ApprovedLeaveCancel = React.lazy(() => import('./views/LeaveManagement/ApprovedleaveCancel/LeaveCancelByHR'))
 const OffRequest = React.lazy(() => import('./views/LeaveManagement/OffRequest/OffrequestCombinePage'))
 const FullandFinal = React.lazy(() => import('./views/Resignation/EndOfService/EndofProcess'))
+const CompletedAndPendingStaffList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/CompletedAndPendingStaffList'))
 
 
 const routes = [
@@ -564,6 +567,7 @@ const routes = [
   { path: '/Home/ApprovedLeaveCancel', exact: true, name: 'Approved Leave Cancel By HR', component: ApprovedLeaveCancel },
   { path: '/Home/DoffRequest', exact: true, name: 'DOFF Request', component: OffRequest },
   { path: '/Home/FullandFinal/:id', exact: true, name: 'Full and Final Settlement', component: FullandFinal },
+  { path: '/Home/CompletedAndPendingStaffList', exact: true, name: 'Completed And Pending Staff List', component: CompletedAndPendingStaffList },
 
 ]
 

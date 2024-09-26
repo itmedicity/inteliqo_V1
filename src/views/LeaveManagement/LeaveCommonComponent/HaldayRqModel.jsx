@@ -2,7 +2,7 @@ import React, { Fragment, memo, useCallback, useState } from 'react'
 import { format } from 'date-fns';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { CssVarsProvider, Typography } from '@mui/joy';
+import { Typography } from '@mui/joy';
 import { useSelector } from 'react-redux';
 // import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import Button from '@mui/joy/Button';
@@ -12,10 +12,10 @@ import { ModalDialog, Textarea } from '@mui/joy';
 import { Box } from '@mui/material';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 
-const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcount }) => {
+const HaldayRqModel = ({ setOpen, open, authority, empData, setcount }) => {
 
-    const { Employee_name, requestdate, leavedate, month, hf_reason, Emp_no, sect_name, SlNo,
-        planslno } = empData;
+    const { em_name, requestDate, halfday_date, month, hf_reason, em_no, sect_name, slno,
+        planslno, halfday_status, shft_desc } = empData;
 
     //login incharge id
     const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
@@ -29,7 +29,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
         const submhalfday = {
             status: 1,
             comment: reason,
-            slno: SlNo,
+            slno: slno,
             apprvdate: format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
             us_code: em_id
         }
@@ -44,14 +44,15 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                     succesNofity(message)
                     setreason('')
                     setcount(Math.random())
-                    handleClose()
+                    setOpen(false)
                 } else {
                     errorNofity(message)
+                    setOpen(false)
                 }
             }
         }//hod approval
         else if (authority === 2) {
-            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${SlNo}`)
+            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${slno}`)
             const { success, data } = result.data;
             if (success === 1) {
                 const { hf_inc_apprv_req, hf_incapprv_status } = data[0]
@@ -65,13 +66,15 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                             setreason('')
                             setcount(Math.random())
                             succesNofity(message)
-                            handleClose()
+                            setOpen(false)
                         }
                         else if (success === 2) {
                             warningNofity(message)
+                            setOpen(false)
                         }
                         else {
                             errorNofity(message)
+                            setOpen(false)
                         }
                     }
                 } else {
@@ -81,25 +84,27 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                         setreason('')
                         setcount(Math.random())
                         succesNofity(message)
-                        handleClose()
+                        setOpen(false)
                     }
                     else if (success === 2) {
                         warningNofity(message)
+                        setOpen(false)
                     }
                     else {
                         errorNofity(message)
+                        setOpen(false)
                     }
                 }
             }
         }
-    }, [reason, SlNo, em_id, handleClose, setcount, authority])
+    }, [reason, slno, em_id, setcount, authority, setOpen])
 
 
     const handleRegectRequest = useCallback(async () => {
         const submhalfday = {
             status: 2,
             comment: reason,
-            slno: SlNo,
+            slno: slno,
             apprvdate: format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
             us_code: em_id,
             hrm_cl_slno: planslno
@@ -115,15 +120,16 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                     succesNofity(message)
                     setreason('')
                     setcount(Math.random())
-                    handleClose()
+                    setOpen(false)
                 } else {
                     errorNofity(message)
+                    setOpen(false)
                 }
             }
         }
         //hod approval
         else if (authority === 2) {
-            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${SlNo}`)
+            const result = await axioslogin.get(`/LeaveRequestApproval/half/gethalfdaydetl/${slno}`)
             const { success, data } = result.data;
             if (success === 1) {
                 const { hf_inc_apprv_req, hf_incapprv_status } = data[0]
@@ -137,13 +143,15 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                             setreason('')
                             setcount(Math.random())
                             succesNofity(message)
-                            handleClose()
+                            setOpen(false)
                         }
                         else if (success === 2) {
                             warningNofity(message)
+                            setOpen(false)
                         }
                         else {
                             errorNofity(message)
+                            setOpen(false)
                         }
                     }
                 } else {
@@ -153,18 +161,20 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                         setreason('')
                         setcount(Math.random())
                         succesNofity(message)
-                        handleClose()
+                        setOpen(false)
                     }
                     else if (success === 2) {
                         warningNofity(message)
+                        setOpen(false)
                     }
                     else {
                         errorNofity(message)
+                        setOpen(false)
                     }
                 }
             }
         }
-    }, [reason, SlNo, authority, handleClose, setcount, em_id, planslno])
+    }, [reason, slno, authority, setcount, em_id, setOpen, planslno])
 
 
     return (
@@ -197,7 +207,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                             }
                             sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                         >
-                            {Employee_name}
+                            {em_name}
                         </Typography>
                         <Typography
                             lineHeight={1}
@@ -214,7 +224,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                                 alignContent='center'
                                 lineHeight={1}
                             >
-                                {Emp_no}
+                                {em_no}
                             </Typography>}
                             sx={{ color: 'neutral.400', display: 'flex', }}
                         >
@@ -222,7 +232,87 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                         </Typography>
                         <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
                     </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
+                    <Box
+                        sx={{
+                            display: 'flex', justifyContent: 'center',
+                            alignItems: 'center', px: 1, borderBlockStyle: 'outset',
+                            flexDirection: 'column',
+                        }} >
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Request Date
+                                </Typography>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{requestDate}
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Shift
+                                </Typography>
+                            </Box>
+                            <Box sx={{ flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{shft_desc}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Halfday Taken Date
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{halfday_date}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Halfday Taken Time
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{halfday_status === 1 ? 'First Half' : 'Second Half'}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Month of Leave
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{month}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg"  >
+                                    Reason
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                    :{hf_reason}
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+                    {/* <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
                             <CssVarsProvider>
                                 <Typography level="body1" fontSize="md"> Request Date</Typography>
@@ -230,7 +320,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                         </Box>
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
                             <CssVarsProvider>
-                                <Typography level="body1" fontSize="md"> : {requestdate}</Typography>
+                                <Typography level="body1" fontSize="md"> : {requestDate}</Typography>
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
@@ -252,7 +342,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                         </Box>
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
                             <CssVarsProvider>
-                                <Typography level="body1" fontSize="md">: {leavedate}</Typography>
+                                <Typography level="body1" fontSize="md">: {halfday_date}</Typography>
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
@@ -269,6 +359,18 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                     <Box sx={{ display: "flex", width: "100%" }} >
                         <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
                             <CssVarsProvider>
+                                <Typography level="body1" fontSize="md"> Halfday Time</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
+                            <CssVarsProvider>
+                                <Typography level="body1" fontSize="md">: {halfday_status === 1 ? 'First Half' : 'Second Half'}</Typography>
+                            </CssVarsProvider>
+                        </Box>
+                    </Box>
+                    <Box sx={{ display: "flex", width: "100%" }} >
+                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
+                            <CssVarsProvider>
                                 <Typography level="body1" fontSize="md"> Leave Reason</Typography>
                             </CssVarsProvider>
                         </Box>
@@ -277,7 +379,7 @@ const HaldayRqModel = ({ setOpen, open, handleClose, authority, empData, setcoun
                                 <Typography level="body1" fontSize="md">: {hf_reason}</Typography>
                             </CssVarsProvider>
                         </Box>
-                    </Box>
+                    </Box> */}
                     <Box sx={{ pt: 0.5 }} >
                         <Textarea name="Outlined" placeholder="Reason For Approve/Reject The Request here…"
                             variant="outlined" onChange={(e) => setreason(e.target.value)} />

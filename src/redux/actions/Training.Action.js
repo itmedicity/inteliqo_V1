@@ -59,7 +59,8 @@ const {
     FETCH_TRAINER_APPRVL_INDUCT_DATA,
     FETCH_DEPT_PREPOST_QR_DASHBOARD_DATA,
     FETCH_CALENDER_DETAILS,
-    FETCH_MONTHWISE_DEPT_SCHEDULE
+    FETCH_MONTHWISE_DEPT_SCHEDULE,
+    FETCH_TRAINER_DEPT_SEC_NAMES,
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -140,6 +141,16 @@ export const TrainerNames = () => async (dispatch) => {
     }
     else {
         dispatch({ type: FETCH_TRAINER_NAMES_ALL, payload: [], status: false })
+    }
+}
+export const DeptSectnWiseTrainerNames = (obj) => async (dispatch) => {
+    const result = await axioslogin.post(`/TrainerName/selectDeptSectnWise`, obj)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_TRAINER_DEPT_SEC_NAMES, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_TRAINER_DEPT_SEC_NAMES, payload: [], status: false })
     }
 }
 export const EmpBasedonDept = (dept) => async (dispatch) => {

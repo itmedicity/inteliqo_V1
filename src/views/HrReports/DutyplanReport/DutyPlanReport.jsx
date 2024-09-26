@@ -16,6 +16,8 @@ import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import { ToastContainer } from 'react-toastify';
 import Table from '@mui/joy/Table';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import { ExporttoExcel } from '../DayWiseAttendence/ExportToExcel';
 
 const DutyPlanReport = () => {
 
@@ -31,10 +33,12 @@ const DutyPlanReport = () => {
     const [section, setDepartSection] = useState(0)
     const [daysNum, setdaysNum] = useState([])
     const [daysStr, setdaysStr] = useState([])
+    const [clickFlag, setClickFlag] = useState(0)
 
     const [tableArray, settableArray] = useState([])
 
     const getDutyplanData = useCallback(async () => {
+        setClickFlag(1)
 
         const dateRange = eachDayOfInterval({ start: new Date(value), end: new Date(toDate) })
             ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
@@ -79,6 +83,37 @@ const DutyPlanReport = () => {
         }
 
     }, [deptartment, section, value, toDate])
+
+    const toDownload = useCallback(() => {
+
+        if (clickFlag === 0) warningNofity("Click Search Button")
+        else {
+
+            const fileName = "Dutyplan_Report";
+            const headers = ["Name", "Emp Id", "Department", "Department Section", ...daysNum.map(val => val)];
+            const days = ["Days", "", "", "", ...daysStr.map(val => val)];
+            // Rows for Excel file
+            const rows = tableArray.map(row => {
+                const rowData = [
+                    row.em_name,
+                    row.em_no,
+                    row.dept_name,
+                    row.sect_name,
+                    ...row.arr.map(val => val.shft_desc)
+                ];
+                return rowData;
+            });
+
+            // Prepare data for Excel export
+            const excelData = [headers, days, ...rows];
+
+            // Call ExporttoExcel function
+            ExporttoExcel(excelData, fileName);
+
+
+        }
+
+    }, [clickFlag, tableArray, daysNum, daysStr])
 
     return (
         <CustomLayout title="Dutyplan Report" displayClose={true} >
@@ -139,7 +174,12 @@ const DutyPlanReport = () => {
                             <PublishedWithChangesIcon />
                         </Button>
                     </Box>
-                    <Box sx={{ flex: 1, px: 0.5 }} >
+                    <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, pl: 0.5 }} >
+                        <Button aria-label="Like" variant="outlined" color="primary" onClick={toDownload} sx={{
+                            color: '#90caf9'
+                        }} >
+                            <SaveAltIcon />
+                        </Button>
                     </Box>
                 </Paper>
                 <Box sx={{

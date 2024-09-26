@@ -407,28 +407,33 @@ const TrainingTopic = () => {
             EditData(patchdata);
             reset();
         } else {
-            InsertData(postdata)
-                .then((val) => {
-                    const { insetId, message, success } = val;
-                    if (success === 1) {
-                        if (selectFile.length !== 0) {
-                            handleUpload(insetId);
-                        } else {
-                            succesNofity("inserted successfully");
-                            reset();
-                            setCount(count + 1);
+            if (training_topic_name !== '' && trainingname !== 0 && trainers?.length !== 0 && hours !== '') {
+                InsertData(postdata)
+                    .then((val) => {
+                        const { insetId, message, success } = val;
+                        if (success === 1) {
+                            if (selectFile.length !== 0) {
+                                handleUpload(insetId);
+                            } else {
+                                succesNofity("inserted successfully");
+                                reset();
+                                setCount(count + 1);
+                            }
                         }
-                    }
-                    else {
-                        warningNofity(message)
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error in InsertData:", error);
-                    warningNofity('An error occurred while inserting data.');
-                });
+                        else {
+                            warningNofity(message)
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error in InsertData:", error);
+                        warningNofity('An error occurred while inserting data.');
+                    });
+            }
+            else {
+                warningNofity("Enter All the Feilds Before Submit")
+            }
         }
-    }, [postdata, patchdata, reset, flag, selectFile, setCount, count]);
+    }, [postdata, patchdata, reset, flag, selectFile, setCount, count, training_topic_name, trainingname, trainers, hours]);
 
 
     const ShowFlies = useCallback(() => {
@@ -743,6 +748,7 @@ const TrainingTopic = () => {
                                             <Chip sx={{ backgroundColor: row?.medical_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>
                                                 {row?.medical_status === 0 ? "No" : "Yes"}
                                             </Chip>
+
                                         </td>
                                         <td style={{ textAlign: "center" }}>
                                             <Chip sx={{ backgroundColor: row?.non_medical_status === 0 ? "#8E3E63" : "#006769", color: "white" }}>

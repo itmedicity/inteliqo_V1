@@ -17,15 +17,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import moment from 'moment';
-import { TrainerNames } from 'src/redux/actions/Training.Action';
-import JoyTrainerMultipleSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainerMultipleSelect';
+import { DeptSectnWiseTrainerNames } from 'src/redux/actions/Training.Action';
+import JoyDeptSectWiseTrainers from 'src/views/MuiComponents/JoyComponent/JoyDeptSectWiseTrainers';
 
 const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpDetails, modalData }) => {
     const dispatch = useDispatch();
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_id } = employeeProfileDetl;
+    const { em_id, em_dept_section, em_department } = employeeProfileDetl;
 
     const [scheduleDate, setScheduleDate] = useState(moment(new Date(modalData.training_date)).format('YYYY-MM-DD'));
     const [slno, setSlno] = useState(0);
@@ -47,9 +47,14 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
     })
 
     const { schedule_date, traineer_name, training_topic_name } = data;
+
+    const obj = {
+        em_department: em_department,
+        em_dept_section: em_dept_section
+    }
     useEffect(() => {
-        dispatch(TrainerNames())
-    }, [dispatch, count])
+        dispatch(DeptSectnWiseTrainerNames(obj))
+    }, [dispatch, count, obj])
 
     useEffect(() => {
         if (Object.keys(modalData).length !== 0) {
@@ -95,7 +100,7 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
             })
             setdatas(filterArr);
         }
-    }, [EmpDetails, Scheduledata]);
+    }, [EmpDetails, Scheduledata, count]);
 
     const HandleCheckbox = useCallback((e, row) => {
         let arr = datas?.map((item) => item.em_id === row.em_id ? { ...item, "em_no": item.em_no, "em_name": item.em_name, "desg_name": item.desg_name, inValue: e } : item)
@@ -153,7 +158,7 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
 
     const SubmitSchedule = useCallback(() => {
         //Insert
-        if (updateFlag === 0) {
+        if (updateFlag === 0 && editTrainer === 0) {
             const InsertData = async (postdata) => {
                 const results = await axioslogin.post('/TrainingAfterJoining/insertEmployees', postdata)
                 const { success, message } = results.data
@@ -168,8 +173,7 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
             }
             InsertData(postdata)
         }
-        else if (updateFlag === 1) {
-
+        else if (updateFlag === 1 && editTrainer !== 1) {
             //Edit Date
             const editDate = async (patchdata) => {
                 const result = await axioslogin.patch('/TrainingAfterJoining/ScheduledateUpdate', patchdata)
@@ -185,26 +189,28 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
             }
             editDate(patchdata)
         }
-        else {
+        else if (editTrainer === 1) {
             //Edit Trainers
             const editTrainers = async (updateTrainers) => {
-
-                if (editTrainer === 1) {
-                    const result = await axioslogin.patch('/TrainingAfterJoining/UpdateTrainers', updateTrainers)
-                    const { success, message } = result.data
-                    if (success === 1) {
-                        succesNofity(message)
-                        SetCount(count + 1);
-                        setTrainer([])
-                        seteditTrainer(0)
-                        SetOpen(false)
-                    }
-                    else {
-                        warningNofity("Not Changed")
-                    }
+                // if (editTrainer === 1) {
+                const result = await axioslogin.patch('/TrainingAfterJoining/UpdateTrainers', updateTrainers)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                    SetCount(count + 1);
+                    setTrainer([])
+                    seteditTrainer(0)
+                    SetOpen(false)
                 }
+                else {
+                    warningNofity("Not Changed")
+                }
+                // }
             }
             editTrainers(updateTrainers)
+        }
+        {
+            warningNofity()
         }
     }, [patchdata, updateFlag, postdata, SetOpen, editTrainer, seteditTrainer, setTrainer, SetCount, count, updateTrainers])
 
@@ -254,7 +260,7 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
                                     editTrainer === 1 ?
                                         <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
                                             <Box sx={{ width: "100%" }}>
-                                                <JoyTrainerMultipleSelect value={trainer} setValue={setTrainer} />
+                                                <JoyDeptSectWiseTrainers value={trainer} setValue={setTrainer} />
                                             </Box>
                                         </Box>
                                         :

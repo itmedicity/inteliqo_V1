@@ -17,8 +17,7 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [reason, setreason] = useState('')
 
-    const { Employee_name, Emp_no, sect_name, requestDate, nopunchdate, np_reason, checkintime,
-        checkouttime, shft_desc, SlNo } = empData;
+    const { em_name, em_no, sect_name, requestDate, nopunch_date, np_reason, shft_desc, slno, checkinflag, checkoutflag } = empData;
 
     //login incharge id
     const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
@@ -27,21 +26,21 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
         return {
             status: 1,
             comment: reason,
-            slno: SlNo,
+            slno: slno,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
             us_code: em_id
         }
-    }, [reason, SlNo, em_id])
+    }, [reason, slno, em_id])
 
     const rejectd = useMemo(() => {
         return {
             status: 2,
             comment: reason,
-            slno: SlNo,
+            slno: slno,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
             us_code: em_id
         }
-    }, [reason, SlNo, em_id])
+    }, [reason, slno, em_id])
 
 
 
@@ -70,7 +69,7 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
             if (reason === '') {
                 infoNofity("Please Add Remark")
             } else {
-                const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${SlNo}`)
+                const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${slno}`)
                 const { success, data } = result.data;
                 if (success === 1) {
                     const { np_inc_apprv_req, np_incapprv_status } = data[0]
@@ -112,7 +111,7 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                 }
             }
         }
-    }, [authority, approve, setOpen, setcount, SlNo, reason])
+    }, [authority, approve, setOpen, setcount, slno, reason])
 
     const handleRegectRequest = useCallback(async () => {
         setOpenBkDrop(true)
@@ -141,7 +140,7 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
             if (reason === '') {
                 infoNofity("Please Add Remark")
             } else {
-                const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${SlNo}`)
+                const result = await axioslogin.get(`/LeaveRequestApproval/leave/nopunch/getnopunchreq/${slno}`)
                 const { success, data } = result.data;
                 if (success === 1) {
                     const { np_inc_apprv_req, np_incapprv_status } = data[0]
@@ -183,7 +182,7 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                 }
             }
         }
-    }, [rejectd, authority, setcount, SlNo, setOpen, reason])
+    }, [rejectd, authority, setcount, slno, setOpen, reason])
 
     return (
         <>
@@ -216,7 +215,7 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                             }
                             sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                         >
-                            {Employee_name}
+                            {em_name}
                         </Typography>
                         <Typography
                             lineHeight={1}
@@ -233,7 +232,7 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                                 alignContent='center'
                                 lineHeight={1}
                             >
-                                {Emp_no}
+                                {em_no}
                             </Typography>}
                             sx={{ color: 'neutral.400', display: 'flex', }}
                         >
@@ -241,49 +240,72 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                         </Typography>
                         <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
                     </Box>
-                    <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }}>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <Typography level="body1" fontSize="md"> Request Date</Typography>
+                    <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
+                        <Box
+                            sx={{
+                                display: 'flex', justifyContent: 'center',
+                                alignItems: 'center', px: 1, flexDirection: 'column',
+                            }} >
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Request Date
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{requestDate}
+                                    </Typography>
+                                </Box>
                             </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1" fontSize="md"> : {requestDate}</Typography>
+
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Shift
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{shft_desc}
+                                    </Typography>
+                                </Box>
                             </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}>
-                                <Typography level="body1" fontSize="md"> Miss Punch Date</Typography>
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Miss Punch Day
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{nopunch_date}
+                                    </Typography>
+                                </Box>
                             </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1" fontSize="md">: {nopunchdate}</Typography>
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Miss Punch Time
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{checkinflag === 1 ? 'Check In' : checkoutflag === 1 ? 'Check Out' : 'NIL'}
+                                    </Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left" }}  >
-                                <Typography level="body1" fontSize="md"> Reason</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1" fontSize="md"> : {np_reason}</Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", width: "25%", px: 0.5, justifyContent: "left" }}  >
-                                <Typography level="body1" fontSize="md"> Shift time</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", width: "75%", px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1" fontSize="md"> : {shft_desc}</Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: "flex", width: "100%" }} >
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}  >
-                                <Typography level="body1" fontSize="md"> Check In</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1" fontSize="md">: {checkintime}</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }}  >
-                                <Typography level="body1" fontSize="md"> Check Out</Typography>
-                            </Box>
-                            <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }} >
-                                <Typography level="body1" fontSize="md"> : {checkouttime}</Typography>
+                            <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Reason
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        :{np_reason}
+                                    </Typography>
+                                </Box>
                             </Box>
                         </Box>
                     </Paper>

@@ -107,6 +107,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                     leave_status: empArray?.find(em => em.duty_day === e)?.leave_status ?? 0,
                                     duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
                                     lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+                                    manual_request_flag: empArray?.find(em => em.duty_day === e)?.manual_request_flag ?? 0,
                                 }
                             }),
                             totalDays: dateRange?.length,
@@ -185,6 +186,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                             leave_status: empArray?.find(em => em.duty_day === e)?.leave_status ?? 0,
                             duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
                             lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+                            manual_request_flag: empArray?.find(em => em.duty_day === e)?.manual_request_flag ?? 0,
                         }
                     }),
                     totalDays: dateRange?.length,
@@ -413,7 +415,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                                                     width: 60,
                                                                     borderLeft: '0.1px solid #dddfe2',
                                                                     height: 10,
-                                                                    backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8',
+                                                                    backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8'
                                                                 }}
                                                             >
                                                                 <Box sx={{
@@ -444,7 +446,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                                                     width: 60,
                                                                     borderLeft: '0.1px solid #dddfe2',
                                                                     height: 10,
-                                                                    backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#CDF8DF'
+                                                                    backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : row.unauthorized === 1 ? '#FF8B8B' : '#CDF8DF'
                                                                 }}
                                                             >
                                                                 <Box sx={{
@@ -636,7 +638,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                                                     width: 60,
                                                                     borderLeft: '0.1px solid #dddfe2',
                                                                     height: 10,
-                                                                    backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8'
+                                                                    backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8'
                                                                 }}
                                                             >
                                                                 <Box sx={{
@@ -667,7 +669,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                                                     width: 60,
                                                                     borderLeft: '0.1px solid #dddfe2',
                                                                     height: 10,
-                                                                    backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#CDF8DF'
+                                                                    backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : row.unauthorized === 1 ? '#FF8B8B' : '#CDF8DF'
                                                                 }}
                                                             >
                                                                 <Box sx={{

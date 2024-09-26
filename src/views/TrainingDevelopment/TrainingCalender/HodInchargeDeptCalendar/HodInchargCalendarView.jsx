@@ -15,7 +15,6 @@ import ScheduleEmployees from './ScheduleEmployees';
 
 const HodInchargCalendarView = () => {
 
-
     const employeeState = useSelector((state) => state.getProfileData.ProfileData);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_department, em_dept_section } = employeeProfileDetl;
@@ -148,12 +147,13 @@ const HodInchargCalendarView = () => {
     const handleModal = useCallback((val) => {
         SetmodalData(val)
         SetOpen(true)
-        const { topic_slno, training_date, dept_id
+        const { topic_slno, training_date, dept_id, schedule_slno
         } = val
         const obj = {
             dept: dept_id,
             topic: topic_slno,
-            date: training_date
+            date: training_date,
+            scheduled_slno: schedule_slno
         }
         const getScheduleDetails = async (obj) => {
             const result = await axioslogin.post('/TrainingAfterJoining/scheduledatas', obj)
