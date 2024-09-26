@@ -8,9 +8,9 @@ import { CssVarsProvider, IconButton, Input, Tooltip, Typography } from '@mui/jo
 import { format, isValid } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { ToastContainer } from 'react-toastify'
-import CommonAgGrid from 'src/views/Component/CommonAgGrid';
+import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 
-const InductionCompletedList = ({ setCompleteList, CompleteList }) => {
+const InductionCompletedList = ({ setCompleteList, CompleteList, SetFlag }) => {
 
     const [Fromdate, setFromdate] = useState('');
     const [Todate, setTodate] = useState('');
@@ -44,6 +44,7 @@ const InductionCompletedList = ({ setCompleteList, CompleteList }) => {
             const result = await axioslogin.post(`/TrainingInductionReport/inductionCompletedList`, obj)
             const { success, data } = result.data;
             if (success === 2) {
+                SetFlag(1)
                 const obj = data?.map((val, ndx) => {
                     return {
                         serialno: ndx + 1,
@@ -55,6 +56,7 @@ const InductionCompletedList = ({ setCompleteList, CompleteList }) => {
                         training_topic_name: val.training_topic_name,
                         pretest_status: val.pretest_status === 1 ? "Attented" : "Not Attented",
                         posttest_status: val.posttest_status === 1 ? "Attented" : "Not Attented",
+                        em_no: val.em_no
                     }
                 })
                 setCompleteList(obj);
@@ -69,13 +71,15 @@ const InductionCompletedList = ({ setCompleteList, CompleteList }) => {
             setTodate('')
             warningNofity("Enter both 'From' and 'To' dates to initiate the search")
         }
-    }, [Fromdate, Todate, setCompleteList])
+    }, [Fromdate, Todate, setCompleteList, SetFlag])
 
     //table
     const [columnDef] = useState([
         { headerName: 'Sl.No', field: 'serialno', filter: true, width: 150 },
         { headerName: 'Date', field: 'date', filter: true, width: 250 },
+        { headerName: 'Em ID', field: 'em_no', filter: true, width: 250 },
         { headerName: 'Emp Name', field: 'em_name', filter: true, width: 350 },
+        { headerName: 'Department', field: 'dept_name', filter: true, width: 350 },
         { headerName: 'Training Topics', field: 'training_topic_name', filter: true, width: 350 },
         { headerName: 'Pre_Test', field: 'pretest_status', filter: true, width: 200 },
         { headerName: 'Post-Test', field: 'posttest_status', filter: true, width: 200 },
@@ -142,9 +146,20 @@ const InductionCompletedList = ({ setCompleteList, CompleteList }) => {
             </Box>
             <Box sx={{ width: "100%", overflow: 'auto' }}>
                 <Paper sx={{ height: 800, display: 'flex', flexDirection: "column" }}>
-                    <CommonAgGrid
+                    {/* <CommonAgGrid
                         columnDefs={columnDef}
                         tableData={CompleteList}
+                        sx={{
+                            height: 700,
+                            width: "100%",
+                            mt: 1
+                        }}
+                        rowHeight={30}
+                        headerHeight={30}
+                    /> */}
+                    <CustomAgGridRptFormatOne
+                        tableDataMain={CompleteList}
+                        columnDefMain={columnDef}
                         sx={{
                             height: 700,
                             width: "100%",

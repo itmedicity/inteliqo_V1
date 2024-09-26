@@ -209,7 +209,7 @@ const InductionScheduleMain = () => {
                                             {day.trainingInfo && day.trainingInfo.length > 0 && (
 
                                                 <Box sx={{ cursor: "pointer", }} >
-                                                    {day.trainingInfo?.filter((e, i) => i <= 6)?.map((training, index) => (
+                                                    {day.trainingInfo?.filter((e, i) => i <= 10)?.map((training, index) => (
                                                         <Tooltip key={index} title="View & Edit Trainings">
                                                             <Box
                                                                 sx={{

@@ -61,6 +61,7 @@ const {
     FETCH_CALENDER_DETAILS,
     FETCH_MONTHWISE_DEPT_SCHEDULE,
     FETCH_TRAINER_DEPT_SEC_NAMES,
+    FETCH_INDUCTION_TRAINING_TOPICS_ALL,
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -133,6 +134,18 @@ export const TrainingTopics = () => async (dispatch) => {
         dispatch({ type: FETCH_TRAINING_TOPICS_ALL, payload: [], status: false })
     }
 }
+//induction topics
+export const InductionTrainingTopics = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingTopic/InductTopicselect`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_INDUCTION_TRAINING_TOPICS_ALL, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_INDUCTION_TRAINING_TOPICS_ALL, payload: [], status: false })
+    }
+}
+
 export const TrainerNames = () => async (dispatch) => {
     const result = await axioslogin.get(`/TrainerName/select`)
     const { data, success } = result.data

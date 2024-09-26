@@ -60,6 +60,7 @@ const {
     FETCH_CALENDER_DETAILS,
     FETCH_MONTHWISE_DEPT_SCHEDULE,
     FETCH_TRAINER_DEPT_SEC_NAMES,
+    FETCH_INDUCTION_TRAINING_TOPICS_ALL
 } = Actiontypes;
 
 const TrainingData = {
@@ -299,6 +300,10 @@ const TrainingData = {
     DeptSectnWiseTrainers: {
         DeptSectnWiseTrainersList: [],
         DeptSectnWiseTrainersStatus: false
+    },
+    InductionTopics: {
+        InductionTopicsList: [],
+        InductionTopicsStatus: false
     },
 }
 
@@ -834,6 +839,15 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     ...state.DeptSectnWiseTrainers,
                     DeptSectnWiseTrainersList: payload,
                     DeptSectnWiseTrainersStatus: true
+                }
+            }
+        case FETCH_INDUCTION_TRAINING_TOPICS_ALL:
+            return {
+                ...state,
+                InductionTopics: {
+                    ...state.InductionTopics,
+                    InductionTopicsList: payload,
+                    InductionTopicsStatus: true
                 }
             }
         default:
