@@ -1,5 +1,5 @@
 import { Box, Checkbox, FormControlLabel, IconButton, Paper, Tooltip } from '@mui/material'
-import React, { Fragment, lazy, memo, Suspense, useEffect, useState } from 'react'
+import React, { Fragment, lazy, memo, Suspense, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
@@ -81,7 +81,7 @@ const HrApproval = () => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.hod_app_status === "1" || params.data.hod_app_status === "2") {
+                if (params.data.hr_app_status === "1" || params.data.hr_app_status === "2") {
                     return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton
                         sx={{ padding: 0, cursor: 'none' }}
                         disabled
@@ -139,14 +139,15 @@ const HrApproval = () => {
         },
     ])
 
-    const handleClickIcon = async (params) => {
+    const handleClickIcon = useCallback(async (params) => {
         setOpen(true)
         setDetails(params.data);
-    }
-    const ContactClick = async (params) => {
+    }, [])
+
+    const ContactClick = useCallback(async (params) => {
         setContractOpen(true)
         setContEachData(params.data);
-    }
+    }, [])
 
     return (
         <Fragment>

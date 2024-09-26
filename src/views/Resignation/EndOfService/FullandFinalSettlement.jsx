@@ -3,12 +3,11 @@ import { Tab, tabClasses, TabList, TabPanel, Tabs, Tooltip } from '@mui/joy'
 import React, { lazy, memo, useCallback, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { CssVarsProvider, Typography, IconButton, } from '@mui/joy'
 import CloseIcon from '@mui/icons-material/Close';
 import { screenInnerHeight, } from 'src/views/Constant/Constant'
-import _ from 'underscore'
 import { format, } from 'date-fns';
 import { IconButton as OpenIcon } from '@mui/material';
 import LoopIcon from '@mui/icons-material/Loop';
@@ -31,6 +30,7 @@ const FullandFinalSettlement = () => {
     const [tableData, setTableData] = useState([])
     const [flag, setFlag] = useState(0)
     const [details, setDetails] = useState([])
+    const [count, setCount] = useState(0)
 
     // const loginId = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id, _.isEqual)
 
@@ -43,9 +43,10 @@ const FullandFinalSettlement = () => {
     useEffect(() => {
         const getEmployee = async () => {
             const result = await axioslogin.get("/Resignation/fullsetteleEmplo/all")
-            const { success } = result?.data
+            const { success, data } = result?.data
             if (success === 1) {
-                setTableData(result?.data?.data)
+                setCount(0)
+                setTableData(data)
                 // const { relieving_date, em_id, } = result?.data?.data[0];
                 // const postdata = {
                 //     emp_id: em_id,
@@ -73,7 +74,6 @@ const FullandFinalSettlement = () => {
             const result = await axioslogin.get('/Resignation/getUnauthorized/absentee')
             const { success, data } = result.data
             if (success === 1) {
-                console.log(data);
                 const arr = data?.map(val => {
                     return {
                         ...val,
@@ -93,50 +93,76 @@ const FullandFinalSettlement = () => {
             getEmployee()
         }
 
-    }, [value])
+    }, [value, count])
 
     const [column] = useState([
+        {
+            headerName: 'Action', minWidth: 100,
+            cellRenderer: params => {
+
+                if (params.data.resign_complete_status === 1) {
+                    return <Box sx={{ display: 'flex', alignItems: 'center' }} >
+                        <Tooltip title="End of Service Process Completed" followCursor placement='top' arrow variant='soft' color='primary' >
+                            <OpenIcon
+                                // onClick={() => handleClickIcon(params)}
+                                sx={{
+                                    cursor: 'pointer',
+                                    p: 0,
+                                }}
+                            >
+                                <LoopIcon
+                                    color='disabled'
+
+                                />
+                            </OpenIcon>
+                        </Tooltip>
+                    </Box>
+
+
+                } else {
+                    return <Box sx={{ display: 'flex', alignItems: 'center' }} >
+                        <Tooltip title="Click here to End of Service Process" followCursor placement='top' arrow variant='soft' color='danger' >
+                            <OpenIcon
+                                onClick={() => handleClickIcon(params)}
+                                sx={{
+                                    cursor: 'pointer',
+                                    p: 0,
+                                }}
+                            >
+                                <LoopIcon
+                                    color='primary'
+                                    sx={{
+                                        '@keyframes rotate': {
+                                            '0%': {
+                                                transform: 'rotate(360deg)',
+                                            },
+                                            '100%': {
+                                                transform: 'rotate(0deg)',
+                                            },
+                                        },
+                                        '&:hover': {
+                                            animation: 'rotate 2.0s linear infinite',
+                                            color: 'success.main',
+                                        }
+                                    }}
+
+                                />
+                            </OpenIcon>
+                        </Tooltip>
+                    </Box>
+                }
+            }
+
+
+        },
         { headerName: 'Emp ID', field: 'em_no', filter: true, minWidth: 100 },
         { headerName: 'Emp Name ', field: 'em_name', minWidth: 250, },
         { headerName: 'Department', field: 'dept_name', filter: true, minWidth: 250 },
         { headerName: 'Department Section', field: 'sect_name', filter: true, minWidth: 300 },
         { headerName: 'Request Date', field: 'request_date', wrapText: true, minWidth: 200, },
         { headerName: 'Type', field: 'Resign', wrapText: true, minWidth: 250, },
-        { headerName: 'Status', field: 'appstatus', filter: true, minWidth: 200, },
-        {
-            headerName: 'Action', minWidth: 200,
-            cellRenderer: params =>
-                <Box sx={{ display: 'flex', alignItems: 'center' }} >
-                    <Tooltip title="Click here to End of Service Process" followCursor placement='top' arrow variant='soft' color='danger' >
-                        <OpenIcon
-                            onClick={() => handleClickIcon(params)}
-                            sx={{
-                                cursor: 'pointer',
-                                p: 0,
-                            }}
-                        >
-                            <LoopIcon
-                                color='primary'
-                                sx={{
-                                    '@keyframes rotate': {
-                                        '0%': {
-                                            transform: 'rotate(360deg)',
-                                        },
-                                        '100%': {
-                                            transform: 'rotate(0deg)',
-                                        },
-                                    },
-                                    '&:hover': {
-                                        animation: 'rotate 2.0s linear infinite',
-                                        color: 'success.main',
-                                    }
-                                }}
+        { headerName: 'Status', field: 'resignstatus', filter: true, minWidth: 200, },
 
-                            />
-                        </OpenIcon>
-                    </Tooltip>
-                </Box>
-        }
     ])
 
     const [columnDef] = useState([
@@ -218,7 +244,7 @@ const FullandFinalSettlement = () => {
                 <Box sx={{ display: 'flex', flex: 1, py: 0.5, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
 
                     {
-                        flag === 1 ? <EndofProcess details={details} /> : <Box sx={{
+                        flag === 1 ? <EndofProcess details={details} setFlag={setFlag} setCount={setCount} /> : <Box sx={{
                             width: '100%',
                             backgroundColor: '#FFFFFF',
                             padding: 0.3,
@@ -271,7 +297,7 @@ const FullandFinalSettlement = () => {
                                     value={0}
                                     sx={{ mt: 0.5 }}
                                 >
-                                    <Paper variant='outlined' elevation={0} sx={{ width: '100%', height: screenInnerHeight - 120, p: 1 }}>
+                                    <Paper variant='outlined' elevation={0} sx={{ width: '100%', height: screenInnerHeight - 120, }}>
                                         <CommonAgGrid
                                             columnDefs={column}
                                             tableData={tableData}
@@ -286,7 +312,7 @@ const FullandFinalSettlement = () => {
                                 </TabPanel>
                                 <TabPanel
                                     value={1}
-                                    sx={{ p: 0 }}
+                                    sx={{ mt: 0.5 }}
                                 >
                                     <CommonAgGrid
                                         columnDefs={columnDef}

@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useMemo } from 'react'
-import { Button, Checkbox, Input, LinearProgress, Option, Select, Textarea, Typography } from '@mui/joy'
+import { Button, Checkbox, Input, Option, Select, Textarea, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
 import { format, getDaysInMonth, startOfMonth, subDays, addDays, lastDayOfMonth, intervalToDuration, isValid, formatDuration, differenceInMinutes, isAfter } from 'date-fns'
 import moment from 'moment'
@@ -17,7 +17,7 @@ import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import { useCallback } from 'react'
 import { processShiftPunchMarkingHrFunc } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc'
 
-const EndofProcess = ({ details }) => {
+const EndofProcess = ({ details, setFlag, setCount }) => {
 
 
     // STATE MANAGMENT START HERE
@@ -306,6 +306,10 @@ const EndofProcess = ({ details }) => {
                     const lopAmount = ((gross_salary / totalDays) * totallopCount).toFixed(2)
                     setlopamount(lopAmount);
                     setHolidayAmount(((gross_salary / totalDays) * totalHP).toFixed(2))
+
+                    const netSalary = (gross_salary / totalDays) * totalPayday
+                    setnetSalary(netSalary.toFixed(2))
+
                     succesNofity('Punch Master Updated Successfully')
                 } else {
                     warningNofity(message, errorMessage)
@@ -322,6 +326,7 @@ const EndofProcess = ({ details }) => {
     const handleSave = useCallback(async () => {
         const postData = {
             em_id: em_id,
+            em_no: em_no,
             exclusion: exclusions === true ? 1 : 0,
             exclusion_reason: exclusionReason,
             resignation_date: format(new Date(details?.request_date), 'yyyy-MM-dd'),
@@ -343,6 +348,7 @@ const EndofProcess = ({ details }) => {
             extra_deduction: extraDeduct,
             gross_salary: gross_salary,
             net_salary: netSalary,
+            total_payableamount: netSalary
         }
 
         if ((files === '' || files === undefined) && exclusions === false) {
@@ -369,6 +375,8 @@ const EndofProcess = ({ details }) => {
             if (success === 1) {
                 // setProgress(100)
                 succesNofity(message)
+                setCount(Math.random())
+                setFlag(0)
             } else if (success === 2) {
                 warningNofity(message)
             } else if (success === 0) {
@@ -379,10 +387,10 @@ const EndofProcess = ({ details }) => {
         }
     }, [files, exclusions, exclusionReason, details, em_id, totalDays, leaveCount, holidayCount, hdLop, lcCount,
         lopCount, holidayWorked, payDays, gross_salary, lopamount, lwfamount, npsamount, holidayamount, netSalary,
-        deductionAmount, extraEarn, extraDeduct, attendanceProcess, selectedFile])
+        deductionAmount, extraEarn, extraDeduct, attendanceProcess, selectedFile, setFlag, em_no, setCount])
 
     const addEarn = useCallback(() => {
-        if (earnValue !== 0 && earnAmount !== 0 && earnRemark !== 0) {
+        if (earnValue !== 0 && earnAmount !== 0 && earnRemark !== '') {
             const obj = {
                 earnValue: earnValue,
                 earnAmount: earnAmount,
@@ -395,16 +403,13 @@ const EndofProcess = ({ details }) => {
             setEarnvalue(0)
             setEarnAmount(0)
             setEarnRemark('')
+            setnetSalary(earnValue === 2 ? parseInt(netSalary) + parseInt(earnAmount) : parseInt(netSalary) - parseInt(earnAmount))
 
-            const netSalary = (gross_salary / totalDays) * payDays + extraEarn - extraDeduct - deductionAmount
-            setnetSalary(netSalary.toFixed(2))
         } else {
             warningNofity("Select Complete Data")
         }
     }, [earnValue, earnAmount, earnRemark, extraEarn, gross_salary, deductionAmount,
-        earnArray, earnName, extraDeduct, payDays, totalDays])
-
-
+        earnArray, earnName, extraDeduct, payDays, totalDays, netSalary,])
 
     return (
         <Box sx={{ width: "100%", p: 1, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
