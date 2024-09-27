@@ -123,8 +123,8 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
                             return Promise.allSettled(
                                 punchMasterMappedData?.map(async (val) => {
                                     const holidayStatus = val.holiday_status;
-                                    const punch_In = checkinflag === 1 ? new Date(shiftIn) : new Date(val.punch_in);
-                                    const punch_out = checkoutflag === 1 ? new Date(shiftOut) : new Date(val.punch_out);
+                                    const punch_In = checkinflag === 1 ? new Date(shiftIn) : val.punch_in === null ? null : new Date(val.punch_in);
+                                    const punch_out = checkoutflag === 1 ? new Date(shiftOut) : val.punch_out === null ? null : new Date(val.punch_out);
 
                                     const shift_in = new Date(val.shift_in);
                                     const shift_out = new Date(val.shift_out);
