@@ -1,3 +1,4 @@
+
 import React, { memo, useCallback, useState } from 'react'
 import { Box, Paper } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
@@ -9,11 +10,14 @@ import { format, isValid } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { ToastContainer } from 'react-toastify'
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
+import InductionTopics from 'src/views/MuiComponents/JoyComponent/InductionTopics';
 
-const InductionPendingList = ({ PendingList, setPendingList, SetFlag }) => {
+const EmployeePassedList = ({ SetFlag, Success_emps, setSuccess_emps }) => {
+
 
     const [Fromdate, setFromdate] = useState('');
     const [Todate, setTodate] = useState('');
+    const [topic, setTopic] = useState(0)
 
     const HandleFromDate = useCallback(async (newValue) => {
         const date = new Date(newValue);
@@ -40,30 +44,59 @@ const InductionPendingList = ({ PendingList, setPendingList, SetFlag }) => {
             Fromdate: Fromdate,
             Todate: Todate
         }
-        if (Fromdate !== '' && Todate !== '') {
-            const result = await axioslogin.post(`/TrainingInductionReport/inductionPendingList`, obj)
+        if (Fromdate !== '' && Todate !== '' && topic === 0) {
+            const result = await axioslogin.post(`/TrainingInductionReport/inductionPassedEmpList`, obj)
             const { success, data } = result.data;
             if (success === 2) {
-                SetFlag(2)
+                SetFlag(3)
                 const obj = data?.map((val, ndx) => {
                     return {
                         serialno: ndx + 1,
                         indct_emp_no: val.indct_emp_no,
+                        em_no: val.em_no,
                         induct_detail_date: val.induct_detail_date,
                         date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
                         em_name: val.em_name,
                         dept_name: val.dept_name,
                         training_topic_name: val.training_topic_name,
-                        pretest_status: val.pretest_status === 1 ? "Attented" : "Not Attented",
-                        posttest_status: val.posttest_status === 1 ? "Attented" : "Not Attented",
-                        em_no: val.em_no
+                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
+                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
+                        schedule_topic: val.schedule_topic
                     }
                 })
-                setPendingList(obj);
+                setSuccess_emps(obj);
             }
             else {
                 warningNofity("No Employee Records Found For The Selected Period")
-                setPendingList([])
+                setSuccess_emps([])
+            }
+        }
+        else if (Fromdate !== '' && Todate !== '' && topic !== 0) {
+            const result = await axioslogin.post(`/TrainingInductionReport/inductionPassedEmpList`, obj)
+            const { success, data } = result.data;
+            if (success === 2) {
+                SetFlag(3)
+                const obj = data?.map((val, ndx) => {
+                    return {
+                        serialno: ndx + 1,
+                        indct_emp_no: val.indct_emp_no,
+                        em_no: val.em_no,
+                        induct_detail_date: val.induct_detail_date,
+                        date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
+                        em_name: val.em_name,
+                        dept_name: val.dept_name,
+                        training_topic_name: val.training_topic_name,
+                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
+                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
+                        schedule_topic: val.schedule_topic
+                    }
+                })
+                const topicwise = obj?.filter((val) => val.schedule_topic === topic)
+                setSuccess_emps(topicwise);
+            }
+            else {
+                warningNofity("No Employee Records Found For The Selected Period")
+                setSuccess_emps([])
             }
         }
         else {
@@ -71,7 +104,7 @@ const InductionPendingList = ({ PendingList, setPendingList, SetFlag }) => {
             setTodate('')
             warningNofity("Enter both 'From' and 'To' dates to initiate the search")
         }
-    }, [Fromdate, Todate, setPendingList, SetFlag])
+    }, [Fromdate, Todate, setSuccess_emps, SetFlag, topic])
 
     //table
     const [columnDef] = useState([
@@ -81,8 +114,8 @@ const InductionPendingList = ({ PendingList, setPendingList, SetFlag }) => {
         { headerName: 'Emp Name', field: 'em_name', filter: true, width: 350 },
         { headerName: 'Department', field: 'dept_name', filter: true, width: 350 },
         { headerName: 'Training Topics', field: 'training_topic_name', filter: true, width: 350 },
-        { headerName: 'Pre_Test', field: 'pretest_status', filter: true, width: 200 },
-        { headerName: 'Post-Test', field: 'posttest_status', filter: true, width: 200 },
+        { headerName: 'Pre-Test Mark', field: 'pretest_mark', filter: true, width: 200 },
+        { headerName: 'Post-Test Mark', field: 'posttest_mark', filter: true, width: 200 },
     ])
     return (
         <Paper>
@@ -131,6 +164,10 @@ const InductionPendingList = ({ PendingList, setPendingList, SetFlag }) => {
                     </LocalizationProvider>
                 </Box>
 
+                <Box sx={{ flex: 1, mt: 3, px: 0.3, }} >
+                    <InductionTopics topic={topic} setTopic={setTopic} />
+                </Box>
+
                 <Box sx={{ flex: 1, mt: 3 }}>
                     <CssVarsProvider>
                         <Tooltip title="Search Employees">
@@ -142,12 +179,13 @@ const InductionPendingList = ({ PendingList, setPendingList, SetFlag }) => {
                         </Tooltip>
                     </CssVarsProvider>
                 </Box>
+
             </Box>
             <Box sx={{ width: "100%", overflow: 'auto' }}>
                 <Paper sx={{ height: 800, display: 'flex', flexDirection: "column" }}>
                     {/* <CommonAgGrid
                         columnDefs={columnDef}
-                        tableData={PendingList}
+                        tableData={CompleteList}
                         sx={{
                             height: 700,
                             width: "100%",
@@ -157,7 +195,7 @@ const InductionPendingList = ({ PendingList, setPendingList, SetFlag }) => {
                         headerHeight={30}
                     /> */}
                     <CustomAgGridRptFormatOne
-                        tableDataMain={PendingList}
+                        tableDataMain={Success_emps}
                         columnDefMain={columnDef}
                         sx={{
                             height: 700,
@@ -173,4 +211,5 @@ const InductionPendingList = ({ PendingList, setPendingList, SetFlag }) => {
     )
 }
 
-export default memo(InductionPendingList) 
+
+export default memo(EmployeePassedList) 

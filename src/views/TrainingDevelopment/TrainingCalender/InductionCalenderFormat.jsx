@@ -166,7 +166,7 @@ const InductionCalenderFormat = () => {
                                         {day.trainingInfo && day.trainingInfo.length > 0 && (
 
                                             <Box>
-                                                {day.trainingInfo?.filter((e, i) => i <= 6)?.map((training, index) => (
+                                                {day.trainingInfo?.filter((e, i) => i <= 10)?.map((training, index) => (
                                                     <Box
                                                         key={index}
                                                         sx={{
