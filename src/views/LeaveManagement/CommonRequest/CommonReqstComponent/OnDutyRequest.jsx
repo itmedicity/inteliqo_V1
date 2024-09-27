@@ -210,11 +210,24 @@ const OnDutyRequest = () => {
                 if (lastUpdateDate === lastDay_month) {
                     warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                 } else {
-                    const result = await axioslogin.post('/CommonReqst/onduty/create', postArray)
+                    const postdata = {
+                        fromDate: format(new Date(fromDate), 'yyyy-MM-dd'),
+                        toDate: format(new Date(toDate), 'yyyy-MM-dd'),
+                        em_no: em_no,
+                        postArray: postArray
+                    }
+                    const result = await axioslogin.post('/CommonReqst/onduty/create', postdata)
                     const { message, success } = result.data;
-                    if (success === 1) {
-                        setCount(Math.random())
+                    if (success === 3) {
                         succesNofity(message)
+                        setFromDate(new Date())
+                        setToDate(new Date())
+                        setRemark('')
+                        setSelectedShift(0)
+                        setDates([])
+                        setCount(Math.random())
+                    } else if (success === 2) {
+                        warningNofity(message)
                         setFromDate(new Date())
                         setToDate(new Date())
                         setRemark('')
@@ -235,7 +248,7 @@ const OnDutyRequest = () => {
         }
 
     }, [em_dept_section, fromDate, remark, em_id, em_no, em_department, selectedShift, dates,
-        deptApprovalLevel, masterGroupStatus, loginEmid, loginIncharge, loginHod])
+        deptApprovalLevel, masterGroupStatus, loginEmid, loginIncharge, loginHod, toDate])
 
 
     const [columndef] = useState([
