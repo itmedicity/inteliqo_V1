@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import { Box, IconButton, Paper } from '@mui/material'
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
@@ -53,10 +53,10 @@ const ManualRequestMain = () => {
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0])
     const { em_id } = empData;
 
-    const state = useSelector((state) => state?.getCommonSettings)
-    const commonSetting = useMemo(() => state, [state])
-    // console.log(commonSetting)
-    const { default_shift } = commonSetting;
+    // const state = useSelector((state) => state?.getCommonSettings)
+    // const commonSetting = useMemo(() => state, [state])
+    // // console.log(commonSetting)
+    // const { default_shift } = commonSetting;
 
     const getEmpdata = useCallback(async () => {
         //dataes difference count for checking the the duyt plan is done or not
@@ -124,7 +124,7 @@ const ManualRequestMain = () => {
         } else {
             warningNofity("Select All Option!")
         }
-    }, [toDate, fromDate, emply])
+    }, [toDate, fromDate, emply, dept, deptsection])
 
 
     useEffect(() => {

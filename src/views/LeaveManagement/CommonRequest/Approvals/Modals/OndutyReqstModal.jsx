@@ -32,17 +32,22 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount }) => {
             checkIn: '',
             checkOut: '',
             emid: 0,
-            on_duty_date: ''
+            on_duty_date: '',
+            gross_salary: 0,
+            em_id: 0
         }
     )
     const { slno, emno, name, section, reqDate, dutyDate, reason, shft_desc,
-        inchargeComment, hodComment, dept_sect_id, on_duty_date } = details;
+        inchargeComment, hodComment, dept_sect_id, on_duty_date, gross_salary, em_id } = details;
 
     const loginem_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
 
     const [shiftData, setShiftData] = useState({})
 
     const shiftInformation = useSelector((state) => state.getDutyPlannedShift.shiftInformation, _.isEqual);
+    const state = useSelector((state) => state?.getCommonSettings)
+    const commonSetting = useMemo(() => state, [state])
+    const { salary_above } = commonSetting;
 
     useEffect(() => {
         setShiftData(shiftInformation?.[0])
@@ -51,6 +56,7 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount }) => {
     const {
         shft_chkin_time,
         shft_chkout_time,
+        holiday
     } = shiftData || {};
 
     const inTime = moment(shft_chkin_time).format('HH:mm:ss');
@@ -60,7 +66,7 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount }) => {
         if (Object.keys(data).length !== 0) {
             const { slno, emno, name, section, status, requestDate, on_dutydate, shft_desc,
                 onduty_reason, incharge_approval_comment, hod_approval_comment, emid, on_duty_date,
-                shiftId } = data;
+                shiftId, gross_salary, em_id } = data;
             const details = {
                 slno: slno,
                 emno: emno,
@@ -75,7 +81,9 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount }) => {
                 hodComment: hod_approval_comment,
                 emid: emid,
                 shiftId: shiftId,
-                on_duty_date: on_duty_date
+                on_duty_date: on_duty_date,
+                gross_salary: gross_salary,
+                em_id: em_id
             }
             setDetails(details)
         } else {
@@ -93,20 +101,6 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount }) => {
             onduty_slno: slno
         }
     }, [remark, slno, loginem_id])
-
-    const hrApprove = useMemo(() => {
-        return {
-            punch_in: `${moment(on_duty_date).format('YYYY-MM-DD')} ${inTime}`,
-            punch_out: `${moment(on_duty_date).format('YYYY-MM-DD')} ${outTime}`,
-            emno: emno,
-            hr_approval_status: 1,
-            duty_day: `${moment(on_duty_date).format('YYYY-MM-DD')}`,
-            hr_approval_comment: remark,
-            hr_approval_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
-            hr_empId: loginem_id,
-            onduty_slno: slno
-        }
-    }, [remark, slno, inTime, on_duty_date, outTime, emno, loginem_id])
 
     const handleRejectRequest = useCallback(async () => {
         if (remark === "") {
@@ -134,7 +128,18 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount }) => {
         if (remark === "") {
             infoNofity("Please Add Remarks!")
         } else {
-            setOpenBkDrop(true)
+            const hrApprove = {
+                punch_in: `${moment(on_duty_date).format('YYYY-MM-DD')} ${inTime}`,
+                punch_out: `${moment(on_duty_date).format('YYYY-MM-DD')} ${outTime}`,
+                lvereq_desc: holiday === 1 && gross_salary <= salary_above ? 'HP' : 'ODP',
+                emno: emno,
+                hr_approval_status: 1,
+                duty_day: `${moment(on_duty_date).format('YYYY-MM-DD')}`,
+                hr_approval_comment: remark,
+                hr_approval_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                hr_empId: loginem_id,
+                onduty_slno: slno
+            }
             const postDataForAttendaceMark = {
                 month: format(startOfMonth(new Date(on_duty_date)), 'yyyy-MM-dd'),
                 section: dept_sect_id
@@ -150,25 +155,73 @@ const OndutyReqstModal = ({ open, setOpen, data, setCount }) => {
                     setOpenBkDrop(false)
                     setOpen(false)
                 } else {
-                    const result = await axioslogin.patch('/CommonReqst/hr/onduty/comment', hrApprove)
-                    const { message, success } = result.data;
-                    if (success === 1) {
-                        setOpenBkDrop(false)
-                        setOpen(false)
-                        setCount(Math.random())
-                        succesNofity(message)
-                    } else {
-                        setOpenBkDrop(false)
-                        setOpen(false)
-                        setCount(Math.random())
-                        errorNofity(message)
+
+                    if (holiday === 1 && gross_salary <= salary_above) {
+                        const result = await axioslogin.patch('/CommonReqst/hr/onduty/comment', hrApprove)
+                        const { message, success } = result.data;
+                        if (success === 1) {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(Math.random())
+                            succesNofity(message)
+                        } else {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(Math.random())
+                            errorNofity(message)
+                        }
+                    } else if (holiday === 1 && gross_salary > salary_above) {
+                        const credit = {
+                            emp_id: em_id,
+                            calculated_date: format(new Date(on_duty_date), 'yyyy-MM-dd'),
+                            credited_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                            lvetype_slno: 11,
+                        }
+                        const result = await axioslogin.post('/CommonReqst/creditoff/insert', credit)
+                        const { message, success } = result.data;
+                        if (success === 1) {
+                            const result = await axioslogin.patch('/CommonReqst/hr/onduty/comment', hrApprove)
+                            const { message, success } = result.data;
+                            if (success === 1) {
+                                setOpenBkDrop(false)
+                                setOpen(false)
+                                setCount(Math.random())
+                                succesNofity(message)
+                            } else {
+                                setOpenBkDrop(false)
+                                setOpen(false)
+                                setCount(Math.random())
+                                errorNofity(message)
+                            }
+                        } else {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(Math.random())
+                            errorNofity(message)
+                        }
+                    }
+                    else {
+                        const result = await axioslogin.patch('/CommonReqst/hr/onduty/comment', hrApprove)
+                        const { message, success } = result.data;
+                        if (success === 1) {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(Math.random())
+                            succesNofity(message)
+                        } else {
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(Math.random())
+                            errorNofity(message)
+                        }
                     }
                 }
             } else {
                 errorNofity("Error getting PunchMarkingHR ")
             }
         }
-    }, [on_duty_date, hrApprove, dept_sect_id, remark, setCount, setOpen])
+    }, [on_duty_date, dept_sect_id, remark, setCount, setOpen, holiday, salary_above, em_id,
+        emno, gross_salary, inTime, loginem_id, outTime, slno])
 
     return (
         <Fragment>
