@@ -173,7 +173,7 @@ const DutyPlanMainCard = () => {
                                                 component="th"
                                                 scope="row"
                                                 sx={{
-                                                    py: 0, px: 0.5, backgroundColor: '#f1faee', width: 100,
+                                                    py: 0, px: 0.5, backgroundColor: row.unauthorized_absent_status === 1 ? '#FF8B8B' : '#f1faee', width: 100,
                                                     border: 0.1, borderColor: '#E1E6E1'
                                                 }}
                                             >
@@ -198,7 +198,7 @@ const DutyPlanMainCard = () => {
                                                 component="th"
                                                 scope="row"
                                                 sx={{
-                                                    py: 0, px: 0.5, backgroundColor: '#f1faee', width: 50,
+                                                    py: 0, px: 0.5, backgroundColor: row.unauthorized_absent_status === 1 ? '#FF8B8B' : '#f1faee', width: 50,
                                                     border: 0.1, borderColor: '#E1E6E1', textAlign: 'center'
                                                 }}
                                             >
@@ -319,6 +319,7 @@ const DutyPlanMainCard = () => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                             selected={true}
                                             hover={true}
+
                                         >
                                             {row.plan[0].map((val, index) => (
                                                 <TableCell key={index} sx={{ p: 0 }}>
@@ -327,9 +328,10 @@ const DutyPlanMainCard = () => {
                                                         item
                                                         sx={{
                                                             display: 'flex', minHeight: 25, maxHeight: 25,
+                                                            bgcolor: 'red'
                                                         }}
                                                     >
-                                                        <ShiftSelect data={val} />
+                                                        <ShiftSelect data={val} authStatus={row.unauthorized_absent_status} />
                                                     </Box>
                                                 </TableCell>
                                             ))}

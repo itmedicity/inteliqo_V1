@@ -8,11 +8,12 @@ import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
 import { Box, IconButton, Paper, Tooltip } from '@mui/material'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
-import { Button, CssVarsProvider } from '@mui/joy'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { Button, } from '@mui/joy'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import RemarkModal from './RemarkModal';
+import ToggleOffOutlinedIcon from '@mui/icons-material/ToggleOffOutlined';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 
 const EmployeeInactiveHR = () => {
 
@@ -24,6 +25,7 @@ const EmployeeInactiveHR = () => {
     const [empData, setempData] = useState([])
     const [flag, setFlag] = useState(false)
     const [details, setDetails] = useState(0)
+    const [dueDepartment, setDueDepartment] = useState([])
 
     useEffect(() => {
         const getempdetl = async () => {
@@ -54,6 +56,19 @@ const EmployeeInactiveHR = () => {
             warningNofity("Please Select All Option")
         } else {
             setState(1)
+            const postDeptData = {
+                dept_id: dept,
+                sect_id: deptSect,
+            }
+            const results = await axioslogin.post('/Duedepartment/duedept', postDeptData)
+            const { success1, data1 } = results.data
+            if (success1 === 1) {
+                const { due_dept_code } = data1[0]
+                const duedepartment = JSON.parse(due_dept_code)
+                setDueDepartment(duedepartment)
+            } else {
+                setDueDepartment([])
+            }
         }
     }, [dept, deptSect])
 
@@ -66,11 +81,25 @@ const EmployeeInactiveHR = () => {
             headerName: 'Action',
             cellRenderer: params =>
                 <Fragment>
-                    <Tooltip title="In Active " followCursor placement='top' arrow >
-                        <IconButton sx={{ mb: 0.5 }} onClick={() => InactiveEmp(params)} >
-                            <CheckCircleOutlineIcon color='primary' />
-                        </IconButton>
-                    </Tooltip>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'left',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Tooltip
+                            title="Click Here to Inactive the Selected Employee"
+                            followCursor
+                            placement='top'
+                            arrow
+                            sx={{}}
+                        >
+                            <IconButton onClick={() => InactiveEmp(params)} sx={{ p: 0, fontSize: 30 }} >
+                                <ToggleOffOutlinedIcon color='error' fontSize='inherit' />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Fragment>
         },
     ])
@@ -84,7 +113,7 @@ const EmployeeInactiveHR = () => {
     return (
         <CustomLayout title="Employee Inactive" displayClose={true} >
             <ToastContainer />
-            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', m: 1 }}>
                 <Paper variant="outlined" sx={{ width: '100%', p: 0.5, display: 'flex', flexDirection: 'row' }}  >
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                         <BranchSelectRedux value={branch} setValue={setBranch} />
@@ -95,19 +124,18 @@ const EmployeeInactiveHR = () => {
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                         <DeptSecSelectByRedux dept={dept} value={deptSect} setValue={setDeptSect} />
                     </Box>
-                    <Box sx={{ mt: 0.2, pr: 0.2 }} >
-                        <CssVarsProvider>
-                            <Button
-                                aria-label="Like"
-                                variant="outlined"
-                                color="primary"
-                                onClick={() => {
-                                    getemployeedetails()
-                                }}
-                            >
-                                <AddCircleOutlineIcon />
-                            </Button>
-                        </CssVarsProvider>
+                    <Box sx={{ mt: 0.5, px: 0.3 }} >
+                        <Button
+                            aria-label="Like"
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => {
+                                getemployeedetails()
+                            }}
+                            endDecorator={<Box>Search</Box>}
+                        >
+                            <PersonSearchIcon />
+                        </Button>
                     </Box>
                 </Paper>
                 <Paper square sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
@@ -115,15 +143,14 @@ const EmployeeInactiveHR = () => {
                         columnDefs={column}
                         tableData={empData}
                         sx={{
-                            height: 400,
-                            width: "100%"
+                            height: screenInnerHeight - 200,
+                            width: "100%",
                         }}
                         rowHeight={30}
                         headerHeight={30}
                     />
                 </Paper>
-                <RemarkModal open={flag} setOpen={setFlag} data={details} setCount={setCount} />
-
+                <RemarkModal open={flag} setOpen={setFlag} data={details} setCount={setCount} dueDepartment={dueDepartment} />
             </Box>
         </CustomLayout>
     )

@@ -29,7 +29,7 @@ const CommonAgGrid = ({ columnDefs, tableData, sx, rowHeight, headerHeight, getR
 
     return (
         <Fragment>
-            <Paper elevation={1}>
+            <Paper elevation={1}  >
                 <Box
                     className="ag-theme-alpine ListItemScrol"
                     sx={sx}

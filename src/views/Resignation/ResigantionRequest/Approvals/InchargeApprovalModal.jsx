@@ -1,13 +1,15 @@
 import { Button, Checkbox, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
 import { Box, FormControlLabel, Paper } from '@mui/material'
 import React, { memo, useEffect, useMemo, useState } from 'react'
-import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import moment from 'moment';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { useCallback } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
+import ImageViewer from 'src/views/Component/ImageViewer';
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 
 const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
 
@@ -31,7 +33,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
     })
     const { em_name, em_no, request_date, resig_slno,
         sect_name, status, resign_reason, relieving_date, inch_coment,
-        dept_id, sect_id, em_id, resignation_type } = details;
+        dept_id, sect_id, em_id, resignation_type, attachment, attachment_type, } = details;
     const [remark, setRemark] = useState('')
     const [replacement, setreplacement] = useState(false)
     const [dueDept, SetDueDept] = useState({})
@@ -40,7 +42,9 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
             const { dept_id, dept_name, em_name, em_no, request_date, resig_slno, sect_id,
-                sect_name, resign_reason, relieving_date, status, inch_coment, em_id, resignation_type } = data
+                sect_name, resign_reason, relieving_date, status, inch_coment, em_id, resignation_type,
+                attachment, attachment_type, replacement_required_incharge, replacement_required_hod } = data
+
             const details = {
                 dept_id: dept_id,
                 dept_name: dept_name,
@@ -55,8 +59,13 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 relieving_date: relieving_date,
                 inch_coment: inch_coment,
                 em_id: em_id,
-                resignation_type: resignation_type
+                resignation_type: resignation_type,
+                attachment: attachment,
+                attachment_type: attachment_type,
+                replacement_required_incharge: replacement_required_incharge,
+                replacement_required_hod: replacement_required_hod
             }
+
             setDetails(details)
         } else {
             setDetails({})
@@ -94,7 +103,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 inch_app_status: 2,
                 inch_coment: remark,
                 resig_slno: resig_slno,
-                replacement_required_incharge: replacement === true ? 1 : 0
+                replacement_required_incharge: 0
             }
             const result = await axioslogin.patch('/Resignation', approveData)
             const { success, message } = result.data
@@ -120,7 +129,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 hod_app_status: 2,
                 hod_coment: remark,
                 resig_slno: resig_slno,
-                replacement_required_hod: replacement === true ? 1 : 0
+                replacement_required_hod: 0
             }
             const result = await axioslogin.patch('/Resignation/resignhod', approveData)
             const { success, message } = result.data
@@ -165,6 +174,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 setOpen(false)
             }
         } else {
+            // console.log("error")
             const approveData = {
                 hr_id: loginId,
                 hr_app_date: moment(new Date()).format('YYYY-MM-DD'),
@@ -176,7 +186,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
             const result = await axioslogin.patch('/Resignation/resignapproval', approveData)
             const { success, message } = result.data
             if (success === 1) {
-                succesNofity("Resignation Request Approved")
+                succesNofity("Resignation Request Rejected")
                 setCount(Math.random())
                 setreplacement(false)
                 setOpen(false)
@@ -280,8 +290,6 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 hr_app_status: 1,
                 hr_coment: remark,
                 resign_status: 'A',
-                replacement_required_hr: replacement === true ? 1 : 0,
-                salaryPenalty: salaryPenalty === true ? 1 : 0,
                 resig_slno: resig_slno,
             }
 
@@ -313,7 +321,9 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
             }
         }
     }, [remark, replacement, resig_slno, loginId, slno, dueDept,
-        salaryPenalty, setOpen, setCount])
+        setOpen, setCount])
+
+    const [open1, setOpen1] = useState(false);
 
     return (
         <Modal
@@ -322,9 +332,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
             open={open}
             onClose={() => setOpen(false)}
             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-
         >
-            <ModalDialog size="lg"  >
+            <ModalDialog size="lg" sx={{ width: '50%', }} >
                 <ModalClose
                     variant="outlined"
                     sx={{
@@ -335,13 +344,10 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                         bgcolor: 'background.body',
                     }}
                 />
-                <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
+                <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'left' }} >
                     <Typography
                         fontSize="xl2"
                         lineHeight={1}
-                        startDecorator={
-                            <EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />
-                        }
                         sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
                     >
                         {em_name}
@@ -363,94 +369,129 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                         >
                             {em_no}
                         </Typography>}
-                        sx={{ color: 'neutral.400', display: 'flex', }}
+                        sx={{ color: 'neutral.400', display: 'flex', textTransform: "capitalize", pt: 0.5 }}
                     >
                         {`employee #`}
                     </Typography>
-                    <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
+                    <Typography level="body1" sx={{ textTransform: "capitalize", color: 'neutral.400' }} >{sect_name?.toLowerCase()}</Typography>
                 </Box>
-
                 {
-                    slno === 4 ? null : <Box sx={{ mt: 0.5, pt: 1 }} >
-                        <Typography variant="outlined" color="success">
+                    slno === 4 ? null
+                        : <Typography
+                            level="title-md"
+                            variant="outlined"
+                            color="success"
+                            sx={{ display: 'flex', justifyContent: 'left', p: 0.5, borderRadius: 8 }}
+                        >
                             {status}
                         </Typography>
-                    </Box>
                 }
-
-                <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                    <Box sx={{ display: 'flex', flex: 1, pr: 1 }} >
+                <Box>
+                    <Box sx={{ display: 'flex', flex: 1 }}>
                         <Typography
-                            level="body1"
-                            justifyContent="center"
+                            level="body2"
+                            startDecorator={<InfoOutlined color="primary" />}
+                            sx={{ alignItems: 'center', wordBreak: 'break-all', }}
                         >
-                            Request Date
-                        </Typography>
-                        <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
-                            {moment(request_date).format('DD-MM-YYYY')}
-                        </Typography>
-                    </Box>
-                </Box>
-                <Box sx={{ flex: 1, py: 1 }}>
-                    <Typography
-                        level="body2"
-                        startDecorator={<InfoOutlined />}
-                        sx={{ alignItems: 'center', wordBreak: 'break-all', }}
-                    >
-                        Resignation Information.
-                    </Typography>
-                </Box>
-                <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
-                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                        <Typography fontSize="sm" fontWeight="lg"  >
-                            Relieving Date:
-                        </Typography>
-                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                            {moment(relieving_date).format('DD-MM-YYYY')}
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                        <Typography fontSize="sm" fontWeight="lg"  >
-                            Reason:
-                        </Typography>
-                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                            {resign_reason}
+                            Resignation Information
                         </Typography>
                     </Box>
 
-                    {
-                        resignation_type === '2' ? <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', flex: 1, backgroundColor: 'lightpink' }}>
-                            <Typography fontSize="sm" fontWeight="lg"  >
-                                Employee Under 24 hour Resignation
+                    <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1 }} >
+                        <Box sx={{ display: 'flex', flex: 1, alignItems: 'center' }} >
+                            <Typography
+                                level="title-md"
+                                justifyContent="center"
+                            >
+                                Resignation Requested Date
                             </Typography>
-                        </Box> : null
-                    }
-                    {
-                        slno === 2 ? <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                            <Typography fontSize="sm" fontWeight="lg"  >
-                                Incharge Comment:
+                            <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
+                                {moment(request_date).format('DD-MM-YYYY')}
                             </Typography>
-                            <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                {inch_coment}
-                            </Typography>
-                        </Box> : null
-                    }
-                </Paper>
-                <Box sx={{ pt: 0.5 }} >
-                    <Textarea name="Outlined" placeholder="Remark For Approve/Reject The Request here…"
-                        variant="outlined" onChange={(e) => setRemark(e.target.value)} />
-                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                        <Box sx={{ pl: 1.5, mt: 0.5 }}>
+                        </Box>
+                    </Box>
+
+                    <Paper variant="outlined" square sx={{ display: 'flex', p: 0.5, mt: 1, borderRadius: 1, flexDirection: 'row' }} >
+                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'left', width: '90%' }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
+                                <Typography fontSize="sm" level="title-md"  >
+                                    Relieving Date:
+                                </Typography>
+                                <Typography fontSize="sm" sx={{ flex: 1, pl: 2 }}  >
+                                    {moment(relieving_date).format('DD-MM-YYYY')}
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
+                                <Typography fontSize="sm" level="title-md"   >
+                                    Reason:
+                                </Typography>
+                                <Typography fontSize="sm" sx={{ flex: 1, pl: 2 }} >
+                                    {resign_reason}
+                                </Typography>
+                            </Box>
+
+                            {
+                                resignation_type === '2' ? <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', flex: 1, backgroundColor: 'lightpink' }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Employee Under 24 hour Resignation
+                                    </Typography>
+                                </Box> : null
+                            }
+                            {
+                                slno === 2 ? <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
+                                    <Typography fontSize="sm" fontWeight="lg"  >
+                                        Incharge Comment:
+                                    </Typography>
+                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                        {inch_coment}
+                                    </Typography>
+                                </Box> : null
+                            }
+                        </Box>
+                        <Box
+                            sx={{
+                                display: attachment === null ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '10%', py: 1,
+                                boxShadow: '1',
+                                borderRadius: '10%',
+                                '&:hover': {
+                                    boxShadow: 10,
+                                },
+                                transition: 'all 0.3s ease-in-out',
+                            }}
+                            onClick={() => setOpen1(true)}
+                        >
+                            <FilePresentOutlinedIcon
+                                sx={{
+                                    color: '#240000',
+                                    fontSize: 50,
+                                    cursor: 'pointer'
+                                }}
+                            />
+                        </Box>
+                    </Paper>
+                </Box>
+
+                <Box sx={{}} >
+                    <Textarea
+                        name="Outlined"
+                        placeholder="Remark For Approve/Reject The Request here…"
+                        variant="outlined"
+                        minRows={3}
+                        onChange={(e) => setRemark(e.target.value)}
+                    />
+                    <Box sx={{ display: 'none', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', flex: 1, px: 2, py: 0.5 }}>
+                        <Box sx={{ display: 'flex' }}>
                             <FormControlLabel
-                                control={<Checkbox />}
+                                control={<Checkbox sx={{ paddingX: 1, display: 'none' }} />}
                                 label="  Replacement Required"
                                 checked={replacement}
                                 name="replacement"
+                                sx={{ display: 'flex', alignItems: 'center' }}
                                 onChange={(e) => setreplacement(e.target.checked)}
                             />
                         </Box>
                         {
-                            slno === 4 ? <Box sx={{ pl: 1.5, mt: 0.5 }}>
+                            slno === 4 ? <Box sx={{ display: 'none', px: 2 }}>
                                 <FormControlLabel
                                     control={<Checkbox />}
                                     label=" Salary Penalty"
@@ -460,17 +501,35 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                                 />
                             </Box> : null
                         }
-
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
+                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', alignItems: 'center', pt: 2 }}>
                         <Button variant="solid" color="success" onClick={submitFormdata}>
-                            Request Approve
+                            Resignation Request Approve
                         </Button>
                         <Button variant="solid" color="danger" onClick={handleRejectRequest}>
-                            Request Reject
+                            Resignation Request Reject
                         </Button>
                     </Box>
                 </Box>
+
+                <Modal
+                    open={open1}
+                    onClose={() => setOpen1(false)}
+                    sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}
+                >
+                    <ModalDialog>
+                        <ModalClose />
+                        <Box
+                            sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}
+                        >
+                            <ImageViewer
+                                fileURL={`${PUBLIC_NAS_FOLDER}/ResignationReq/${attachment}`}
+                                fileType={attachment_type}
+                            />,
+                        </Box>
+                    </ModalDialog>
+                </Modal>
+
             </ModalDialog >
         </Modal >
     )

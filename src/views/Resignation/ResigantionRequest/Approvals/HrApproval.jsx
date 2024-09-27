@@ -1,14 +1,14 @@
 import { Box, Checkbox, FormControlLabel, IconButton, Paper, Tooltip } from '@mui/material'
-import React, { Fragment, lazy, memo, Suspense, useEffect, useState } from 'react'
+import React, { Fragment, lazy, memo, Suspense, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
-import BeenhereIcon from '@mui/icons-material/Beenhere';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const ApprovalModel = lazy(() => import('./InchargeApprovalModal'))
 const ContractModal = lazy(() => import('./ContractClosedModal'))
@@ -81,20 +81,24 @@ const HrApproval = () => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.hod_app_status === "1" || params.data.hod_app_status === "2") {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
+                if (params.data.hr_app_status === "1" || params.data.hr_app_status === "2") {
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton
+                        sx={{ padding: 0, cursor: 'none' }}
+                        disabled
+                    >
                         <Tooltip title="Approved Request">
-                            <BeenhereIcon />
+                            <ThumbUpAltIcon color='disabled' sx={{ padding: 0, }} />
                         </Tooltip>
                     </IconButton>
+                    </Box>
                 } else {
-                    return <IconButton onClick={() => handleClickIcon(params)}
-                        sx={{ paddingY: 0.5 }} >
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton onClick={() => handleClickIcon(params)}
+                        sx={{ padding: 0 }} >
                         <Tooltip title="Click Here to Approve / Reject">
-                            <CheckCircleOutlineIcon color='primary' />
+                            <ThumbUpAltIcon color='success' sx={{ padding: 0 }} />
                         </Tooltip>
                     </IconButton>
+                    </Box>
                 }
             }
         },
@@ -104,39 +108,46 @@ const HrApproval = () => {
         { headerName: 'Slno ', field: 'slno', filter: true },
         { headerName: 'Emp ID', field: 'em_no', filter: true },
         { headerName: 'Emp Name ', field: 'em_name', },
-        { headerName: 'Department', field: 'dept_name', filter: true },
-        { headerName: 'Department Section', field: 'sect_name', filter: true },
+        { headerName: 'Department', field: 'dept_name', filter: true, minWidth: 200 },
+        { headerName: 'Department Section', field: 'sect_name', filter: true, minWidth: 200 },
         { headerName: 'Contract Close Date', field: 'em_cont_close_date', wrapText: true, minWidth: 250 },
         {
             headerName: 'Action',
             cellRenderer: params => {
                 if (params.data.hod_app_status === "1" || params.data.hod_app_status === "2") {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
-                        <Tooltip title="Approved Request">
-                            <BeenhereIcon />
-                        </Tooltip>
-                    </IconButton>
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                        <IconButton
+                            sx={{ padding: 0, cursor: 'none' }}
+                            disabled
+                        >
+                            <Tooltip title="Approved Request">
+                                <ThumbUpAltIcon color='disabled' sx={{ padding: 0, }} />
+                            </Tooltip>
+                        </IconButton>
+                    </Box>
                 } else {
-                    return <IconButton onClick={() => ContactClick(params)}
-                        sx={{ paddingY: 0.5 }} >
-                        <Tooltip title="Click Here to Approve / Reject">
-                            <CheckCircleOutlineIcon color='primary' />
-                        </Tooltip>
-                    </IconButton>
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                        <IconButton onClick={() => ContactClick(params)}
+                            sx={{ padding: 0 }} >
+                            <Tooltip title="Click Here to Approve / Reject">
+                                <ThumbUpAltIcon color='success' sx={{ padding: 0 }} />
+                            </Tooltip>
+                        </IconButton>
+                    </Box>
                 }
             }
         },
     ])
 
-    const handleClickIcon = async (params) => {
+    const handleClickIcon = useCallback(async (params) => {
         setOpen(true)
         setDetails(params.data);
-    }
-    const ContactClick = async (params) => {
+    }, [])
+
+    const ContactClick = useCallback(async (params) => {
         setContractOpen(true)
         setContEachData(params.data);
-    }
+    }, [])
 
     return (
         <Fragment>
@@ -147,7 +158,7 @@ const HrApproval = () => {
             <CustomLayout title="Resignation Approval HR" displayClose={true} >
                 <ToastContainer />
                 <Paper sx={{ width: '100%' }}>
-                    <Paper square sx={{ display: 'flex', flex: 1, mb: 0.4, p: 0.8, alignItems: 'center', }} >
+                    <Paper variant='outlined' sx={{ display: 'flex', flex: 1, m: 1, p: 1, alignItems: 'center', }} >
                         <Box sx={{ display: 'flex', flex: 1, pt: 0.4, pr: 0.8, }} >
                             <DeptSelectByRedux setValue={setDeptSect} value={deptSect} />
                         </Box>
@@ -166,7 +177,7 @@ const HrApproval = () => {
                             columnDefs={conttrcatclose === true ? columnDef : column}
                             tableData={conttrcatclose === true ? contractdata : tableData}
                             sx={{
-                                height: 600,
+                                height: screenInnerHeight - 210,
                                 width: "100%"
                             }}
                             rowHeight={30}

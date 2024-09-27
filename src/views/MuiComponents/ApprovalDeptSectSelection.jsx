@@ -30,6 +30,7 @@ const ApprovalDeptSectSelection = ({ em_id, value, setValue, updateDeptSect }) =
             }}
             size='md'
             variant='outlined'
+            sx={{ width: '100%' }}
         >
             <Option disabled value={0}> Select Department Section </Option>
             {

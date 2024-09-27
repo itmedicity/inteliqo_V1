@@ -8,9 +8,9 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import ApprovalDeptSectSelection from 'src/views/MuiComponents/ApprovalDeptSectSelection'
 import _ from 'underscore'
-import BeenhereIcon from '@mui/icons-material/Beenhere';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import InchargeApprovalModal from './InchargeApprovalModal'
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const Inchargeapproval = () => {
 
@@ -31,8 +31,7 @@ const Inchargeapproval = () => {
             const { success, data } = result.data
             if (success === 1) {
                 setTableData(data)
-            }
-            else if (success === 0) {
+            } else if (success === 0) {
                 setTableData([])
             }
         }
@@ -67,19 +66,21 @@ const Inchargeapproval = () => {
             headerName: 'Action',
             cellRenderer: params => {
                 if (params.data.inch_app_status === "1" || params.data.inch_app_status === "2") {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton
+                        sx={{ padding: 0, cursor: 'none' }}
+                        disabled
+                    >
                         <Tooltip title="Approved Request">
-                            <BeenhereIcon />
+                            <ThumbUpAltIcon color='disabled' sx={{ padding: 0, }} />
                         </Tooltip>
-                    </IconButton>
+                    </IconButton></Box>
                 } else {
-                    return <IconButton onClick={() => handleClickIcon(params)}
-                        sx={{ paddingY: 0.5 }} >
+                    return <Box sx={{ display: 'flex', alignItems: 'center', }}><IconButton onClick={() => handleClickIcon(params)}
+                        sx={{ padding: 0 }} >
                         <Tooltip title="Click Here to Approve / Reject">
-                            <CheckCircleOutlineIcon color='primary' />
+                            <ThumbUpAltIcon color='success' sx={{ padding: 0 }} />
                         </Tooltip>
-                    </IconButton>
+                    </IconButton></Box>
                 }
             }
         },
@@ -98,19 +99,18 @@ const Inchargeapproval = () => {
             <CustomLayout title="Resignation Approval Incharge" displayClose={true} >
                 <ToastContainer />
                 <Paper sx={{ width: '100%' }}>
-                    <Paper square sx={{ display: 'flex', flex: 1, mb: 0.4, p: 0.8, alignItems: 'center', }} >
+                    <Paper variant="outlined" sx={{ display: 'flex', flex: 1, m: 1, p: 0.8, alignItems: 'center', }} >
                         <Box sx={{ display: 'flex', flex: 1, pt: 0.4, pr: 0.8, }} >
                             <ApprovalDeptSectSelection em_id={em_id} value={deptSect} setValue={setDeptSect} updateDeptSect={updateDeptSect} />
                         </Box>
-                        <Box sx={{ display: 'flex', flex: 3, pt: 0.4, pr: 0.8, }} >
-                        </Box>
+                        <Box sx={{ display: 'flex', flex: 3, pt: 0.4, pr: 0.8, }} ></Box>
                     </Paper>
-                    <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", }} >
+                    <Paper square elevation={0} sx={{ p: 1, display: 'flex', flexDirection: "column", flex: 1 }} >
                         <CommonAgGrid
                             columnDefs={column}
                             tableData={tableData}
                             sx={{
-                                height: 600,
+                                height: screenInnerHeight - 210,
                                 width: "100%"
                             }}
                             rowHeight={30}

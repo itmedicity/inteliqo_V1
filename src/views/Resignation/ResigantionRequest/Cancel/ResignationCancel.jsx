@@ -4,10 +4,11 @@ import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import BeenhereIcon from '@mui/icons-material/Beenhere';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { useSelector } from 'react-redux'
 import _ from 'underscore'
+import { Box } from '@mui/joy'
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import { screenInnerHeight } from 'src/views/Constant/Constant'
 
 const ResigModal = lazy(() => import('./ResignModal'))
 
@@ -21,6 +22,7 @@ const ResignationCancel = () => {
 
     //login hod id
     const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0, _.isEqual)
+
     useEffect(() => {
         const getResignCancel = async () => {
             const result = await axioslogin.get('/Resignation/resign/resigncancel')
@@ -46,21 +48,16 @@ const ResignationCancel = () => {
         {
             headerName: 'Action',
             cellRenderer: params => {
-                if (params.data.ceo_appr_status === "1" || params.data.ceo_appr_status === "2") {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
-                        <Tooltip title="Approved Request">
-                            <BeenhereIcon />
+                return <Box
+                    sx={{ display: 'flex', alignItems: 'center', }}
+                >
+                    <IconButton onClick={() => handleClickIcon(params)}
+                        sx={{ padding: 0 }} >
+                        <Tooltip title="Click Here to Cancel Approved Resignation Request"  >
+                            <CancelOutlinedIcon color='error' />
                         </Tooltip>
                     </IconButton>
-                } else {
-                    return <IconButton onClick={() => handleClickIcon(params)}
-                        sx={{ paddingY: 0.5 }} >
-                        <Tooltip title="Click Here to Approve / Reject">
-                            <CheckCircleOutlineIcon color='primary' />
-                        </Tooltip>
-                    </IconButton>
-                }
+                </Box>
             }
         },
     ])
@@ -78,22 +75,22 @@ const ResignationCancel = () => {
             </Suspense>
             <CustomLayout title="Resignation Cancel" displayClose={true} >
                 <ToastContainer />
-                <Paper sx={{ width: '100%' }}>
-                    <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", }} >
-                        <CommonAgGrid
-                            columnDefs={column}
-                            tableData={tableData}
-                            sx={{
-                                height: 600,
-                                width: "100%"
-                            }}
-                            rowHeight={30}
-                            headerHeight={30}
-                        // rowStyle={rowStyle}
-                        // getRowStyle={getRowStyle}
-                        />
-                    </Paper>
+                {/* <Paper sx={{ width: '100%', display: 'flex', flex: 1, backgroundColor: 'green' }}> */}
+                <Paper variant='outlined' sx={{ display: 'flex', m: 1, flex: 1, flexDirection: "column", }} >
+                    <CommonAgGrid
+                        columnDefs={column}
+                        tableData={tableData}
+                        sx={{
+                            height: screenInnerHeight - 130,
+                            width: "100%"
+                        }}
+                        rowHeight={30}
+                        headerHeight={30}
+                    // rowStyle={rowStyle}
+                    // getRowStyle={getRowStyle}
+                    />
                 </Paper>
+                {/* </Paper> */}
             </CustomLayout>
         </Fragment>
     )

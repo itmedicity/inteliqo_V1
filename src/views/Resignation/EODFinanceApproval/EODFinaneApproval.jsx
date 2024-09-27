@@ -1,11 +1,16 @@
-import { IconButton, Paper, Tooltip } from '@mui/material'
-import React, { Fragment, memo, Suspense, useEffect, useState } from 'react'
+import { Box, Paper, Tooltip } from '@mui/material'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ApprovalModal from './ApprovalModal'
 import BeenhereIcon from '@mui/icons-material/Beenhere';
+import { screenInnerHeight } from 'src/views/Constant/Constant'
+import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
+import { CssVarsProvider, Typography, IconButton, } from '@mui/joy'
+import { useHistory } from 'react-router-dom'
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton as OpenIcon } from '@mui/material';
 
 const EODFinaneApproval = () => {
 
@@ -13,13 +18,15 @@ const EODFinaneApproval = () => {
     const [open, setOpen] = useState(false)
     const [details, setDetails] = useState({})
     const [count, setCount] = useState(0)
+    const history = useHistory();
 
     useEffect(() => {
         const getEmployee = async () => {
-            const result = await axioslogin.get("/Resignation/fullsetteleEmplo/all")
+            const result = await axioslogin.get("/Resignation/finalList/all")
             const { success, data } = result.data
             if (success === 1) {
                 setTableData(data)
+                setCount(0)
             } else {
                 setTableData([])
             }
@@ -40,17 +47,17 @@ const EODFinaneApproval = () => {
             headerName: 'Action',
             cellRenderer: params => {
                 if (params.data.status === 1) {
-                    return <IconButton
-                        sx={{ paddingY: 0.5, cursor: 'none' }}  >
+                    return <OpenIcon
+                        sx={{ cursor: 'pointer' }}  >
                         <Tooltip title="Approved Request">
                             <BeenhereIcon />
                         </Tooltip>
-                    </IconButton>
+                    </OpenIcon>
                 } else {
                     return <Tooltip title="View" followCursor placement='top' arrow >
-                        <IconButton onClick={() => handleClickIcon(params)}>
+                        <OpenIcon onClick={() => handleClickIcon(params)}>
                             <CheckCircleOutlineIcon color='primary' />
-                        </IconButton>
+                        </OpenIcon>
                     </Tooltip>
                 }
             }
@@ -59,32 +66,69 @@ const EODFinaneApproval = () => {
 
     const handleClickIcon = async (params) => {
         setOpen(true)
-        const data = params.api.getSelectedRows()
+        const data = params.data
         setDetails(data);
     }
 
+    const toRedirectToHome = useCallback(() => {
+        if (open === 1) {
+            setOpen(false)
+        } else {
+            history.push(`/Home`)
+        }
+    }, [history])
+
     return (
-        <Fragment>
-            <Suspense>
-                <ApprovalModal open={open} setOpen={setOpen} data={details} setCount={setCount} />
-            </Suspense>
-            <CustomLayout title="EOD Finance Approval" displayClose={true} >
-                <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
-                    <CommonAgGrid
-                        columnDefs={column}
-                        tableData={tableData}
-                        sx={{
-                            height: 600,
-                            width: "100%"
-                        }}
-                        rowHeight={30}
-                        headerHeight={30}
-                    // rowStyle={rowStyle}
-                    // getRowStyle={getRowStyle}
-                    />
+        <Box sx={{ flex: 1 }} >
+            <Paper sx={{ flex: 1, height: screenInnerHeight - 90 }} >
+                <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
+                    <Box sx={{ display: "flex", flex: 1, height: 30, }} >
+                        <Paper square sx={{ display: "flex", flex: 1, height: 30, alignItems: 'center', justifyContent: "space-between" }} >
+                            <Box sx={{ display: "flex" }}>
+                                <DragIndicatorOutlinedIcon />
+                                <CssVarsProvider>
+                                    <Typography textColor="neutral.400" sx={{ display: 'flex', }} >
+                                        EOD Finance Approval
+                                    </Typography>
+                                </CssVarsProvider>
+                            </Box>
+                            <Box sx={{ display: "flex", pr: 1 }}>
+                                <CssVarsProvider>
+                                    <IconButton
+                                        variant="outlined"
+                                        size='xs'
+                                        color="danger"
+                                        onClick={toRedirectToHome}
+                                        sx={{ color: '#ef5350' }}
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                </CssVarsProvider>
+                            </Box>
+                        </Paper>
+                    </Box>
                 </Paper>
-            </CustomLayout>
-        </Fragment>
+                <Box sx={{ display: 'flex', flex: 1, py: 0.5, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
+                    {
+                        open === true ? <ApprovalModal empData={details} setCount={setCount} setOpen={setOpen} /> : <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
+                            <CommonAgGrid
+                                columnDefs={column}
+                                tableData={tableData}
+                                sx={{
+                                    height: 600,
+                                    width: "100%"
+                                }}
+                                rowHeight={30}
+                                headerHeight={30}
+                            // rowStyle={rowStyle}
+                            // getRowStyle={getRowStyle}
+                            />
+                        </Paper>
+                    }
+
+                </Box>
+            </Paper>
+        </Box>
     )
 }
 
