@@ -328,7 +328,6 @@ const DutyPlanMainCard = () => {
                                                         item
                                                         sx={{
                                                             display: 'flex', minHeight: 25, maxHeight: 25,
-                                                            bgcolor: 'red'
                                                         }}
                                                     >
                                                         <ShiftSelect data={val} authStatus={row.unauthorized_absent_status} />
