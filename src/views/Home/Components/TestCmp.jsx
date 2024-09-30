@@ -99,8 +99,10 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
     const notificationListWindow = (slno) => {
 
         return slno === 133 && Leaverequest ||
-            slno === 134 && LeaveUser ||
             slno === 135 && LeaveIncharge ||
+
+            slno === 134 && LeaveUser ||
+
             slno === 136 && LeaveHOD ||
             slno === 137 && LeaveCEO ||
 
