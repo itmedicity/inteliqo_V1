@@ -109,30 +109,30 @@ const Leavemanagement = [
         name: 'OT Approval - HR',
         to: '/Home/OTApprovalHR',
     },
-    {
-        men_slno: 241,
-        component: CNavItem,
-        name: 'Common Request Incharge Approval',
-        to: '/Home/CommonReqstInchargeApprvl',
-    },
-    {
-        men_slno: 242,
-        component: CNavItem,
-        name: 'Common Request HOD Approval',
-        to: '/Home/CommonReqstHodApprvl',
-    },
+    // {
+    //     men_slno: 241,
+    //     component: CNavItem,
+    //     name: 'Common Request Incharge Approval',
+    //     to: '/Home/CommonReqstInchargeApprvl',
+    // },
+    // {
+    //     men_slno: 242,
+    //     component: CNavItem,
+    //     name: 'Common Request HOD Approval',
+    //     to: '/Home/CommonReqstHodApprvl',
+    // },
     // {
     //     men_slno: 243,
     //     component: CNavItem,
     //     name: 'Common Request CEO Approval',
     //     to: '/Home/CommonReqstCeoApprvl',
     // },
-    {
-        men_slno: 244,
-        component: CNavItem,
-        name: 'Common Request HR Approval',
-        to: '/Home/CommonReqstHrApprvl',
-    },
+    // {
+    //     men_slno: 244,
+    //     component: CNavItem,
+    //     name: 'Common Request HR Approval',
+    //     to: '/Home/CommonReqstHrApprvl',
+    // },
     {
         men_slno: 245,
         component: CNavItem,

@@ -42,7 +42,7 @@ export const attednane_two = [
 ]
 export const attednane_three = [
     { to: '/Home/AttendenceReports', name: 'Departement Wise Attendence Report', slno: 283 },
-
+    { to: '/Home/ManualRequestReport', name: 'Manual Attendance Report ', slno: 29 },
 ]
 export const leave_One = [
     { to: '/Home/LeaveReports', name: 'Employee Leave Report', slno: 270 },
