@@ -38,7 +38,8 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
         week_off_day, // week off SHIFT ID
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
-        noff // night off SHIFT ID
+        noff, // night off SHIFT ID,
+        halfday_time_count
     } = commonSettings; //COMMON SETTING
 
     //FIND THE CROSS DAY
@@ -148,7 +149,8 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                         val.noff,
                                         val.woff,
                                         salaryLimit,
-                                        val.maximumLateInTime
+                                        val.maximumLateInTime,
+                                        halfday_time_count
                                     )
                                     return {
                                         punch_slno: val.punch_slno,
@@ -195,7 +197,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
         }
     }, [reason, setCount, setOpen, slno, dept_section, nopunchdate, crossDay, cmmn_early_out,
         cmmn_grace_period, cmmn_late_in, crossDayStat, default_shift, emno, noff, notapplicable_shift,
-        salary_above, week_off_day, checkinflag, checkoutflag, loginem_id])
+        salary_above, week_off_day, checkinflag, checkoutflag, loginem_id, halfday_time_count])
 
     const NoPunchRejectdata = useMemo(() => {
         return {

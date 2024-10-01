@@ -42,6 +42,8 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [disableDate, setDisableDate] = useState(false)
 
+    const [planSlno, setPlanSlno] = useState(0)
+
     const state = useSelector((state) => state?.getCommonSettings)
     const commonStates = useMemo(() => state, [state])
     const { salary_above, week_off_day, comp_hour_count, coff_min_working_hour } = commonStates;
@@ -62,6 +64,22 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
         }
     }, [empData])
 
+    const handleChangeDate = useCallback(async (date) => {
+        setFromDate(date)
+        const postData = {
+            startDate: format(new Date(date), 'yyyy-MM-dd'),
+            em_id: empData?.emID
+        }
+        const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
+        const { success, data } = result.data;
+        if (success === 1) {
+            const { plan_slno } = data[0]
+            setPlanSlno(plan_slno)
+        } else {
+            setPlanSlno(0)
+        }
+    }, [empData])
+
     const handleChangefetchShift = useCallback(async () => {
         setDisableCheck(false)
         setDisableDate(true)
@@ -69,7 +87,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             //GET SHIFT DATA 
             const postData = {
                 emp_id: empData?.emID,
-                duty_day: moment(fromDate).format('YYYY-MM-DD')
+                duty_day: format(new Date(fromDate), 'yyyy-MM-dd')
             }
 
             const result = await axioslogin.post('common/getShiftdetails/', postData);
@@ -173,7 +191,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             setOpenBkDrop(true)
 
             const coffPostData = {
-                startdate: moment(fromDate).format('YYYY-MM-DD'),
+                startdate: format(new Date(fromDate), 'yyyy-MM-dd'),
                 punchindata: punchInTime,
                 punchoutdata: punchOutTime,
                 req_type: 1,
@@ -188,24 +206,25 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                 inc_apprv_req: 1,
                 incapprv_status: 1,
                 inc_apprv_cmnt: "DIRECT",
-                inc_apprv_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                inc_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 hod_apprv_req: 1,
                 hod_apprv_status: 1,
                 hod_apprv_cmnt: "DIRECT",
-                hod_apprv_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                hod_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 hr_aprrv_requ: 1,
                 hr_apprv_status: 1,
                 hr_apprv_cmnt: "DIRECT",
                 hr_user: empData?.emNo,
-                hr_apprv_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+                hr_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 ceo_req_status: 1,
                 resonforleave: reason,
                 shift_id: selectedShift,
                 punchSlno: punchSlno,
-                calculated_date: moment(fromDate).format('YYYY-MM-DD'),
-                credited_date: moment().format('YYYY-MM-DD HH:mm'),
+                calculated_date: format(new Date(fromDate), 'yyyy-MM-dd'),
+                credited_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 emp_id: empData?.emID,
-                lvetype_slno: 11
+                lvetype_slno: 11,
+                plan_slno: planSlno
             }
 
             const result = await axioslogin.post('/LeaveRequest/creditCoff', coffPostData)
@@ -222,7 +241,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             }
         }
     }, [reason, punchSlno, fromDate, punchInTime, punchOutTime, selectedShift, selectedShiftTiming,
-        setCount, empData, coff_min_working_hour, setShowForm])
+        setCount, empData, coff_min_working_hour, setShowForm, planSlno])
 
     const refresh = useCallback(() => {
         setDisableDate(false)
@@ -240,9 +259,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                             value={fromDate}
                             size="small"
                             disabled={disableDate}
-                            onChange={(newValue) => {
-                                setFromDate(newValue);
-                            }}
+                            onChange={handleChangeDate}
                             renderInput={({ inputRef, inputProps, InputProps }) => (
                                 <Box sx={{ display: 'flex', alignItems: 'center', }}>
                                     <CssVarsProvider>
