@@ -68,7 +68,7 @@ const AnnouncementList = () => {
                     aria-labelledby="ellipsis-list-demo"
                     sx={{ '--List-decorator-width': '56px', }}
                 >
-                    <Box sx={{ height: 410, overflowY: "auto" }} className="ListItemScrol" >
+                    <Box sx={{ height: 410, overflowY: "auto", '::-webkit-scrollbar': { display: "none" } }} className="ListItemScrol" >
                         {
                             list && list.map((val, ind) => {
 
@@ -78,18 +78,32 @@ const AnnouncementList = () => {
                                 return <Box key={ind}>
                                     <ListItem variant='soft' sx={{ borderRadius: 4, backgroundColor: colorList[ind], }}   >
                                         <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
-                                            {/* <Avatar src={image1} /> */}
-
                                             <Suspense fallback={<CircularProgress />} >
                                                 <CustomAvatar id={val.em_id} />
                                             </Suspense>
-
-                                            {/* <CustomAvatar id={val.em_id} src={image1} /> */}
                                         </ListItemDecorator>
                                         <ListItemContent>
                                             <Typography sx={{ textTransform: 'capitalize' }} >{Announcementheading || empName}</Typography>
-                                            <Typography level="body2" noWrap sx={{ color: "white" }} >
+                                            <Typography level="body2"
+
+                                                sx={{
+                                                    mt: 1,
+                                                    color: 'white',
+                                                    display: 'inline-block',
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'none',
+                                                    width: '100%', // Set this to the desired width
+                                                    animation: 'marquee 10s linear infinite',
+                                                }} >
                                                 {val.Announcement || msg}
+                                                <style>
+                                                    {`
+                                                        @keyframes marquee {
+                                                        0% { transform: translateX(100%); }
+                                                        100% { transform: translateX(-100%); }
+                                                        }
+                                                    `}
+                                                </style>
                                             </Typography>
                                         </ListItemContent>
                                     </ListItem>
