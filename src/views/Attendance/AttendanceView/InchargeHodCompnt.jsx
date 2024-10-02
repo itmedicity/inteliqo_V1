@@ -111,7 +111,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                                 }
                             }),
                             totalDays: dateRange?.length,
-                            totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC").length ?? 0,
+                            totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC" || el.lvereq_desc === "OBS").length ?? 0,
                             totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
                             totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF" || el.lvereq_desc === "DOFF").length ?? 0,
                             totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
@@ -190,7 +190,7 @@ const InchargeHodCompnt = ({ em_id, em_no }) => {
                         }
                     }),
                     totalDays: dateRange?.length,
-                    totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC").length ?? 0,
+                    totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC" || el.lvereq_desc === "OBS").length ?? 0,
                     totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
                     totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF" || el.lvereq_desc === "DOFF").length ?? 0,
                     totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
