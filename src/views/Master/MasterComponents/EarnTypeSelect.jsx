@@ -26,6 +26,7 @@ const EarnTypeSelect = ({ value, setValue }) => {
                 setValue(newValue);
             }}
             size='md'
+            sx={{ width: '100%' }}
             variant='outlined'
         >
             <Option disabled value={0}>Select Earn Type </Option>

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import { Actiontypes } from 'src/redux/constants/action.type';
 
-const ShiftSelect = ({ data }) => {
+const ShiftSelect = ({ data, authStatus }) => {
     const dispatch = useDispatch();
     const [bgColor, setBgColor] = useState(0)
     const { FETCH_UPDATED_SHIFT_ID } = Actiontypes;
@@ -56,7 +56,7 @@ const ShiftSelect = ({ data }) => {
 
     return (
         <select
-            style={{ width: '100%', backgroundColor: bgColor === 1 ? '#f3e5f5' : '' }}
+            style={{ width: '100%', backgroundColor: bgColor === 1 ? '#f3e5f5' : authStatus === 1 ? '#FF8B8B' : '' }}
             value={shift}
             onChange={(e) => shiftChangeFun(e)}
             disabled={attendance_update_flag === 1 || shift === notapplicable_shift ? true : false}

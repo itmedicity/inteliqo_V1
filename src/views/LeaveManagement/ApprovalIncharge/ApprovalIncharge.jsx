@@ -233,7 +233,7 @@ const ApprovalIncharge = () => {
                                                 (e.np_inc_apprv_req === 1 && e.np_incapprv_status === 1 && e.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 2) ? 'HOD Rejected' :
                                                     (e.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 0 && e.np_hr_aprrv_requ === 1 && e.np_hr_apprv_status === 2) ? 'HR Rejected' :
                                                         (e.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 1 && e.np_hr_aprrv_requ === 1 && e.np_hr_apprv_status === 1) ? 'HR Approved' :
-                                                            (eval.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 0 && e.np_hr_aprrv_requ === 1 && e.np_hr_apprv_status === 1) ? 'HR Approved' : 'HR Pending',
+                                                            (e.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 0 && e.np_hr_aprrv_requ === 1 && e.np_hr_apprv_status === 1) ? 'HR Approved' : 'HR Pending',
                         }
                         return {
                             ...e,
@@ -267,7 +267,7 @@ const ApprovalIncharge = () => {
                                                 (e.np_inc_apprv_req === 1 && e.np_incapprv_status === 1 && e.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 2) ? 'HOD Rejected' :
                                                     (e.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 0 && e.np_hr_aprrv_requ === 1 && e.np_hr_apprv_status === 2) ? 'HR Rejected' :
                                                         (e.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 1 && e.np_hr_aprrv_requ === 1 && e.np_hr_apprv_status === 1) ? 'HR Approved' :
-                                                            (eval.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 0 && e.np_hr_aprrv_requ === 1 && e.np_hr_apprv_status === 1) ? 'HR Approved' : 'HR Pending',
+                                                            (e.np_hod_apprv_req === 1 && e.np_hod_apprv_status === 0 && e.np_hr_aprrv_requ === 1 && e.np_hr_apprv_status === 1) ? 'HR Approved' : 'HR Pending',
                         }
                         return {
                             ...e,

@@ -52,7 +52,7 @@ const AllView = ({ em_id }) => {
             }
             const result = await axioslogin.post('/empmast/getEmpDet', getEmpData)
             const { success, data, } = result.data
-            //console.log(result.data)
+            // console.log(result.data)
             if (success === 1 && data?.length > 0) {
                 const arr = data && data?.map(val => val.em_no)
                 const postdata = {
@@ -78,6 +78,7 @@ const AllView = ({ em_id }) => {
                         let emNo = empArray?.find(e => e.em_no === el).em_no;
                         let emId = empArray?.find(e => e.em_no === el).emp_id;
                         let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
+                        let unauthorized = empArray?.find(e => e.em_no === el).unauthorized_absent_status;
 
                         // console.log(dateRange)
                         // console.log(grossSalary)
@@ -105,7 +106,7 @@ const AllView = ({ em_id }) => {
                                 }
                             }),
                             totalDays: dateRange?.length,
-                            totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC").length ?? 0,
+                            totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC" || el.lvereq_desc === "OBS").length ?? 0,
                             totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
                             totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF" || el.lvereq_desc === "DOFF").length ?? 0,
                             totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
@@ -118,6 +119,7 @@ const AllView = ({ em_id }) => {
                             totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                             totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
                             totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "HP").length ?? 0),
+                            unauthorized: unauthorized
                         }
                     })
                     settableArray(resultss)
@@ -167,6 +169,8 @@ const AllView = ({ em_id }) => {
         { lvename: 'HDSL', color: 'warning', desc: "Halfday SL Without Punch" },
         { lvename: 'DOFF', color: 'primary', desc: "Duty Off" },
     ]
+
+    console.log(tableArray);
 
     return (
         <CustomLayout title="Attendance View" displayClose={true} >
@@ -306,10 +310,10 @@ const AllView = ({ em_id }) => {
                                 {tableArray && tableArray.map((row, index) => (
                                     <Fragment key={index}>
                                         <tr >
-                                            <td rowSpan={3} style={{ zIndex: 4, backgroundColor: '#f4f6f8' }} >
+                                            <td rowSpan={3} style={{ zIndex: 4, backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8' }} >
                                                 <Box sx={{ width: 200 }}> {row.emName}</Box>
                                             </td>
-                                            <td rowSpan={3} style={{ textAlign: 'center', zIndex: 0, backgroundColor: '#f4f6f8' }} >
+                                            <td rowSpan={3} style={{ textAlign: 'center', zIndex: 0, backgroundColor: row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8' }} >
                                                 <Box sx={{ width: 60 }}> {row.em_no}</Box>
                                             </td>
                                         </tr>
@@ -322,7 +326,7 @@ const AllView = ({ em_id }) => {
                                                         width: 60,
                                                         borderLeft: '0.1px solid #dddfe2',
                                                         height: 10,
-                                                        backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : '#f4f6f8'
+                                                        backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8'
                                                     }}
                                                 >
                                                     <Box sx={{
@@ -353,7 +357,7 @@ const AllView = ({ em_id }) => {
                                                         width: 60,
                                                         borderLeft: '0.1px solid #dddfe2',
                                                         height: 10,
-                                                        backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : '#CDF8DF'
+                                                        backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : row.unauthorized === 1 ? '#FF8B8B' : '#CDF8DF'
                                                     }}
                                                 >
                                                     <Box sx={{

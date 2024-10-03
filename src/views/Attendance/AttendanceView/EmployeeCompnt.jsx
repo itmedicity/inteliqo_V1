@@ -56,6 +56,7 @@ const EmployeeCompnt = ({ em_no }) => {
                 let emNo = empArray?.find(e => e.em_no === el).em_no;
                 let emId = empArray?.find(e => e.em_no === el).emp_id;
                 let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
+                let unauthorized = empArray?.find(e => e.em_no === el).unauthorized_absent_status;
 
                 // console.log(dateRange)
                 // console.log(empArray)
@@ -83,7 +84,7 @@ const EmployeeCompnt = ({ em_no }) => {
                         }
                     }),
                     totalDays: dateRange?.length,
-                    totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC").length ?? 0,
+                    totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC" || el.lvereq_desc === "OBS").length ?? 0,
                     totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
                     totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF" || el.lvereq_desc === "DOFF").length ?? 0,
                     totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
@@ -96,6 +97,7 @@ const EmployeeCompnt = ({ em_no }) => {
                     totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
                     totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
                     totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "HP").length ?? 0),
+                    unauthorized: unauthorized
                     // totalCalcDay:
                 }
             })
@@ -307,7 +309,7 @@ const EmployeeCompnt = ({ em_no }) => {
                                                             width: 60,
                                                             borderLeft: '0.1px solid #dddfe2',
                                                             height: 10,
-                                                            backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : '#f4f6f8'
+                                                            backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : row.unauthorized === 1 ? '#FF8B8B' : '#f4f6f8'
                                                         }}
                                                     >
                                                         <Box sx={{
@@ -339,7 +341,8 @@ const EmployeeCompnt = ({ em_no }) => {
                                                             width: 60,
                                                             borderLeft: '0.1px solid #dddfe2',
                                                             height: 10,
-                                                            backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : '#CDF8DF'
+                                                            backgroundColor: val.manual_request_flag === 1 ? '#E5D9F2' : row.unauthorized === 1 ? '#FF8B8B' : '#CDF8DF'
+
                                                         }}
                                                     >
                                                         <Box sx={{

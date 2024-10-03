@@ -203,7 +203,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                      * ML -> 2
                      * SL -> 7
                      */
-                    const commonLeave = [6, 5, 2, 7]
+                    const commonLeave = [6, 5, 2]
                     // FILTER AND REMOVE THE COMMON LEAVES
                     const commonLeaveFilterArray = table?.filter((e) => !commonLeave?.includes(e.leavetype))?.map((el) => { return { type: el.leavetype, typeslno: el.selectedLveSlno } })
                     const allLeavetypes = [...new Set(commonLeaveFilterArray?.map((e) => e.type))]

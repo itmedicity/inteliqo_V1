@@ -50,6 +50,9 @@ const DashAlertCmp = () => {
     }, shallowEqual)
 
     useEffect(() => {
+        dispatch(getleavereqCountHR())
+        dispatch(getleavereqCountIncharge())
+
         dispatch(getResignCount())
         dispatch(getcontractCloseCount())
         dispatch(getovertimeCount())
@@ -57,10 +60,10 @@ const DashAlertCmp = () => {
         dispatch(getovertimeCountHOD())
         dispatch(getovertimeCountCEO())
         dispatch(getovertimeCountUser(em_id))
-        dispatch(getleavereqCountIncharge())
+
         dispatch(getleavereqCountHOD())
         dispatch(getleavereqCountCEO())
-        dispatch(getleavereqCountHR())
+
         dispatch(getLeaveRequestCountUser(em_id))
         dispatch(getresignreqCountIncharge())
         dispatch(getresignreqCountHOD())

@@ -1,41 +1,14 @@
-import { Box, Button, Checkbox, Modal, ModalClose, ModalDialog, Typography } from '@mui/joy'
-import React, { Fragment, memo, useEffect, useState } from 'react'
-import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import { Button, Option, Select, Table, Textarea, Typography } from '@mui/joy'
+import React, { memo, useEffect, useState } from 'react'
 import moment from 'moment';
-import { Paper, TextField } from '@mui/material';
-import { differenceInDays, getDaysInMonth, startOfMonth } from 'date-fns';
+import { Box, Paper, } from '@mui/material';
+import { endOfMonth, format, startOfMonth, } from 'date-fns';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useCallback } from 'react';
-import { ToWords } from 'to-words';
-import { useMemo } from 'react';
-import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { ToastContainer } from 'react-toastify';
-import { useSelector } from 'react-redux';
-import _ from 'underscore';
+import { errorNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
-const ApprovalModal = ({ open, setOpen, data, setCount }) => {
-
-    const toWords = new ToWords({
-        localeCode: 'en-IN',
-        converterOptions: {
-            currency: true,
-            ignoreDecimal: false,
-            ignoreZeroCurrency: false,
-            doNotAddOnly: false,
-            currencyOptions: { // can be used to override defaults for the selected locale
-                name: 'Rupee',
-                plural: 'Rupees',
-                symbol: '₹',
-                fractionalUnit: {
-                    name: 'Paisa',
-                    plural: 'Paise',
-                    symbol: '',
-                },
-            }
-        }
-    });
-
+const ApprovalModal = ({ empData, setCount, setOpen }) => {
 
     const [details, setDetails] = useState({
         dept_id: 0,
@@ -52,46 +25,26 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
         inch_coment: '',
         em_id: 0,
         resignation_type: 0,
-        gross_salary: 0
+        gross_salary: 0,
+        em_doj: ''
     })
-    const { em_name, em_no, em_id, request_date, sect_name, relieving_date, resignation_type, gross_salary } = details;
-    const [payable, setPayable] = useState(false)
-    const [recievable, setRecievable] = useState(false)
-    // const [lop, setLop] = useState(0)
-    const [calcLop, setCalcLop] = useState(0)
-    const [holiday, setHoliday] = useState(0)
-    // const [totldays, setTotaldays] = useState(0)
-    const [salary, setSalary] = useState(0)
-    const [salaryInwords, setSalaryInwords] = useState('')
-    const [calcSalary, setCalcSalary] = useState(0)
-    const [balance, setBalance] = useState(false)
-    const [amount, setAmount] = useState(0)
+    const { em_name, em_no, dept_name, desg_name, em_id } = details;
+    const [displayArray, setDisplayArray] = useState([])
+    const [salarytype, setsalaryType] = useState(0)
+    const [remark, setRemark] = useState('')
+    const [settlementArray, setSettlementArray] = useState({})
 
-    const loginEmployee = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0, _.isEqual)
+    const salaryType = [
+        { slno: 1, name: "Account" },
+        { slno: 2, name: "Cash" },
+        { slno: 3, name: "Cheque" }
+    ]
 
     useEffect(() => {
-        //to get punchdata
-        const getPunchData = async (postdata) => {
-            const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-            const { success, data } = result.data
-            if (success === 1) {
-                //const lossofpay = (data.filter(val => val.leave_status === 0 && val.duty_status === 0)).length
-                const calculatedlop = (data.filter(val => val.duty_desc === 'A' && val.leave_status === 0)).length
-                const holiday = (data.filter(val => val.holiday_status === 1)).length
-                setHoliday(holiday)
-                //setLop(lossofpay)
-                setCalcLop(calculatedlop)
-            } else {
-                //setLop(0)
-                setCalcLop(0)
-                setHoliday(0)
-            }
-        }
-
-        if (Object.keys(data).length !== 0) {
-            const { dept_id, dept_name, em_name, em_no, request_date, resig_slno, sect_id,
+        if (Object.keys(empData).length !== 0) {
+            const { dept_id, dept_name, em_name, em_no, request_date, resig_slno, sect_id, desg_name,
                 sect_name, resign_reason, relieving_date, status, inch_coment, em_id, resignation_type,
-                gross_salary } = data[0]
+                gross_salary, em_doj } = empData;
             const details = {
                 dept_id: dept_id,
                 dept_name: dept_name,
@@ -107,345 +60,233 @@ const ApprovalModal = ({ open, setOpen, data, setCount }) => {
                 inch_coment: inch_coment,
                 em_id: em_id,
                 resignation_type: resignation_type,
-                gross_salary: gross_salary
+                gross_salary: gross_salary,
+                desg_name: desg_name,
+                em_doj: em_doj
             }
             setDetails(details)
-            const postdata = {
-                emp_id: em_id,
-                from: moment(startOfMonth(new Date(relieving_date))).format('YYYY-MM-DD'),
-                to: relieving_date
-            }
-            getPunchData(postdata)
         } else {
             setDetails({})
         }
-    }, [data])
-
-    const toWordsConvert = useMemo(() => toWords, [toWords])
-
-    const handlechange = useCallback((e) => {
-        if (e.target.checked === true) {
-            setRecievable(true)
-            setPayable(false)
-            const wokeddays = differenceInDays(new Date(relieving_date), startOfMonth(new Date(relieving_date)))
-            const days = getDaysInMonth(new Date(relieving_date));
-            // setTotaldays(days)
-            const workeddayno = wokeddays - calcLop + holiday
-
-            const workedSalary = (gross_salary / days) * workeddayno
-            const roundValue = Math.round(workedSalary / 10) * 10
-            setSalary(roundValue)
-            const calSalary = gross_salary - roundValue
-            setCalcSalary(calSalary)
-            const words = toWordsConvert?.convert(calSalary)
-            setSalaryInwords(words)
-
-        } else {
-            setRecievable(false)
-            setPayable(false)
-        }
-    }, [gross_salary, relieving_date, calcLop, holiday, toWordsConvert])
-
-    const handlechange1 = useCallback((e) => {
-        if (e.target.checked === true) {
-            setRecievable(false)
-            setPayable(true)
-
-            const wokeddays = differenceInDays(new Date(relieving_date), startOfMonth(new Date(relieving_date)))
-            const days = getDaysInMonth(new Date(relieving_date));
-            // setTotaldays(days)
-            const workeddayno = wokeddays - calcLop + holiday
-
-            const workedSalary = (gross_salary / days) * workeddayno
-            const roundValue = Math.round(workedSalary / 10) * 10
-            setSalary(roundValue)
-            setCalcSalary(roundValue)
-            const words = toWordsConvert?.convert(roundValue)
-            setSalaryInwords(words)
-        } else {
-            setRecievable(false)
-            setPayable(false)
-        }
-    }, [gross_salary, relieving_date, toWordsConvert, calcLop, holiday])
-
-    const handleRejectRequest = useCallback(() => {
-        setOpen(false)
-        setRecievable(false)
-        setPayable(false)
-        setSalaryInwords('')
-        setSalary(0)
-        setCalcSalary(0)
-    }, [setOpen])
-
-    const postData = useMemo(() => {
-        return {
-            em_id: em_id,
+        const postdata = {
             em_no: em_no,
-            payable_amount: salary,
-            recievable: calcSalary,
-            balance_status: balance === true ? 1 : 0,
-            balance_amount: balance === true ? amount : 0,
-            create_user: loginEmployee
+            from: moment(startOfMonth(new Date(empData?.relieving_date))).format('YYYY-MM-DD'),
+            to: moment(endOfMonth(new Date(empData?.relieving_date))).format('YYYY-MM-DD')
         }
-    }, [salary, em_no, em_id, calcSalary, balance, amount, loginEmployee])
+        const getEmpPunchMastData = async () => {
+            const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
+            const { success, data: punchMasteData } = result.data
+            if (success === 1) {
+                setDisplayArray(punchMasteData)
+            } else {
+                setDisplayArray([])
+            }
+        }
+        getEmpPunchMastData()
 
-    const submitFormdata = useCallback(async () => {
-        const result = await axioslogin.post('/Resignation/insertResginDetails', postData)
-        const { success, message } = result.data
-        if (success === 1) {
-            succesNofity(message)
-            setCount(Math.random())
-            setOpen(false)
-            setRecievable(false)
-            setPayable(false)
-            setSalaryInwords('')
-            setSalary(0)
-            setCalcSalary(0)
-            setAmount(0)
-        } else {
-            warningNofity(message)
-            setOpen(false)
-            setRecievable(false)
-            setPayable(false)
-            setSalaryInwords('')
-            setSalary(0)
-            setCalcSalary(0)
-            setAmount(0)
+        const getData = {
+            em_no: em_no
         }
-    }, [postData, setCount, setOpen])
+
+        const getSettlementData = async () => {
+            const result = await axioslogin.post('/Resignation/getSettlement', getData)
+            const { success, data } = result.data
+            if (success === 2) {
+                setSettlementArray(data[0])
+            } else {
+                setSettlementArray()
+            }
+        }
+
+        getSettlementData()
+
+    }, [empData, em_no])
+
+    const dateOfJoinDate = format(new Date(empData?.em_doj), "dd-MM-yyyy")
+    const resignationDate = format(new Date(empData?.request_date), "dd-MM-yyyy")
+    const notePeriodEndDate = format(new Date(empData?.relieving_date), "dd-MM-yyyy")
+
+    const submitPayment = useCallback(async () => {
+        const updateData = {
+            salarytype: salarytype,
+            remark: remark,
+            final_slno: settlementArray?.final_slno,
+            em_id: em_id
+        }
+        const result = await axioslogin.post('/Resignation/update/payment', updateData)
+        const { success, message } = result.data
+        if (success === 2) {
+            succesNofity("Data updated successfully")
+            setOpen(0)
+            setCount(Math.random())
+        } else {
+            errorNofity(message)
+        }
+    }, [salarytype, remark, settlementArray, setOpen, em_id, setCount])
 
     return (
         <>
-            <ToastContainer />
-            <Modal
-                aria-labelledby="modal-title"
-                aria-describedby="modal-desc"
-                open={open}
-                onClose={() => setOpen(false)}
-                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-
-            >
-                <ModalDialog size="lg"  >
-                    <ModalClose
-                        variant="outlined"
-                        sx={{
-                            top: 'calc(-1/4 * var(--IconButton-size))',
-                            right: 'calc(-1/4 * var(--IconButton-size))',
-                            boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
-                            borderRadius: '50%',
-                            bgcolor: 'background.body',
-                        }}
-                    />
-                    <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
-                        <Typography
-                            fontSize="xl2"
-                            lineHeight={1}
-                            startDecorator={
-                                <EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />
-                            }
-                            sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
-                        >
-                            {em_name}
-                        </Typography>
-                        <Typography
-                            lineHeight={1}
-                            component="h3"
-                            id="modal-title"
-                            level="h5"
-                            textColor="inherit"
-                            fontWeight="md"
-                            // mb={1}
-                            endDecorator={<Typography
-                                level="h6"
-                                justifyContent="center"
-                                alignItems="center"
-                                alignContent='center'
-                                lineHeight={1}
-                            >
-                                {em_no}
-                            </Typography>}
-                            sx={{ color: 'neutral.400', display: 'flex', }}
-                        >
-                            {`employee #`}
-                        </Typography>
-                        <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{sect_name}</Typography>
-                    </Box>
-                    <Box sx={{ flex: 1, py: 1 }}>
-                        <Typography
-                            level="body2"
-                            startDecorator={<InfoOutlined />}
-                            sx={{ alignItems: 'center', wordBreak: 'break-all', }}
-                        >
-                            Resignation Information.
-                        </Typography>
-                    </Box>
-                    <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
-                        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                            <Typography fontSize="sm" fontWeight="lg"  >
-                                Request Date:
-                            </Typography>
-                            <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                {moment(request_date).format('DD-MM-YYYY')}
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                            <Typography fontSize="sm" fontWeight="lg"  >
-                                Relieving Date:
-                            </Typography>
-                            <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                {moment(relieving_date).format('DD-MM-YYYY')}
-                            </Typography>
-                        </Box>
-
-                        {
-                            resignation_type === '2' ? <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', flex: 1, backgroundColor: 'lightpink' }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Employee Under 24 hour Resignation
-                                </Typography>
-                            </Box> : <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', flex: 1, backgroundColor: '#ededb9' }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Employee Under 30 days Resignation
-                                </Typography>
+            <Box sx={{ width: "100%", p: 1, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
+                <Paper variant='outlined' sx={{ p: 1, display: "flex", flexDirection: "column", }} >
+                    {/* Employee Information */}
+                    <Box sx={{ display: "flex", flexDirection: "column", border: "1px solid", borderColor: "grey.300", p: 1, borderRadius: 2, }} >
+                        <Typography level='body-lg' fontWeight={500} fontSize='1.5rem' color='neutral' fontFamily="monospace" lineHeight={1.5} >{em_name}</Typography>
+                        <Box sx={{ display: "flex", flexDirection: "row", }} >
+                            <Box sx={{ display: 'flex', flexDirection: 'column', flexBasis: '40%' }} >
+                                <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Employee ID :'} >{em_no}</Typography>
+                                <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Department :'}>{dept_name}</Typography>
+                                <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Designation :'}>{desg_name}</Typography>
                             </Box>
-                        }
-
-
-
-                        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }} >
-                            {
-                                resignation_type === '2' ? <Box sx={{ pl: 1.5, mt: 0.5, flex: 1 }}>
-                                    <Checkbox
-                                        label="Cash Recievable"
-                                        checked={recievable}
-                                        name="recievable"
-                                        onChange={(e) => handlechange(e)}
-                                    />
-                                </Box> : <Box sx={{ pl: 1.5, mt: 0.5, flex: 1 }}>
-                                    <Checkbox
-                                        label="Cash Payable"
-                                        checked={payable}
-                                        name="payable"
-                                        onChange={(e) => handlechange1(e)}
-                                    />
-                                </Box>
-                            }
+                            <Box sx={{ display: 'flex', flexDirection: 'column', flexBasis: '30%' }} >
+                                <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Date Of Joining :'}>{dateOfJoinDate}</Typography>
+                                <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Resignation Date :'}>{resignationDate}</Typography>
+                                <Typography level='body-md' color='danger' fontFamily="monospace" lineHeight={1.2} startDecorator={'Notice Period End Date :'} >{notePeriodEndDate}</Typography>
+                            </Box>
                         </Box>
-                        {
-                            recievable === true ? <Fragment>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                    <Typography fontSize="sm" fontWeight="lg"  >
-                                        Worked Amount:
-                                    </Typography>
-                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                        {salary}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                    <Typography fontSize="sm" fontWeight="lg"  >
-                                        Net Amount:
-                                    </Typography>
-                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                        {calcSalary}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                    <Typography fontSize="sm" fontWeight="lg"  >
-                                        In Words:
-                                    </Typography>
-                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                        {salaryInwords}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ pl: 1.5, mt: 0.5, flex: 1, display: 'flex', flexDirection: 'row', gap: 3 }}>
-                                    <Box>
-                                        <Checkbox
-                                            label="Check If Any Balance Amount"
-                                            checked={balance}
-                                            name="balance"
-                                            onChange={(e) => setBalance(e.target.checked)}
-                                        />
-                                    </Box>
-                                    <Box>
-                                        <TextField
-                                            onChange={(e) => setAmount(e.target.value)}
-                                            //label="Last Amount"
-                                            disabled={balance === true ? false : true}
-                                            id="amount"
-                                            size="small"
-                                            name='amount'
-                                            value={amount}
-                                        />
-                                    </Box>
-                                </Box>
-
-                            </Fragment> : null
-                        }
-                        {
-                            payable === true ? <Fragment>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                    <Typography fontSize="sm" fontWeight="lg"  >
-                                        Worked Amount:
-                                    </Typography>
-                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                        {salary}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                    <Typography fontSize="sm" fontWeight="lg"  >
-                                        Net Amount:
-                                    </Typography>
-                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                        {calcSalary}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                    <Typography fontSize="sm" fontWeight="lg"  >
-                                        In Words:
-                                    </Typography>
-                                    <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                        {salaryInwords}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ pl: 1.5, mt: 0.5, flex: 1, display: 'flex', flexDirection: 'row', gap: 3 }}>
-                                    <Box>
-                                        <Checkbox
-                                            label="Check If Any Balance Amount"
-                                            checked={balance}
-                                            name="balance"
-                                            onChange={(e) => setBalance(e.target.checked)}
-                                        />
-                                    </Box>
-                                    <Box>
-                                        <TextField
-                                            onChange={(e) => setAmount(e.target.value)}
-                                            //label="Last Amount"
-                                            disabled={balance === true ? false : true}
-                                            id="amount"
-                                            size="small"
-                                            name='amount'
-                                            value={amount}
-                                        />
-                                    </Box>
-                                </Box>
-                            </Fragment> : null
-                        }
-
-
-                    </Paper>
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
-                        <Button variant="solid" color="success"
-                            onClick={submitFormdata}
-                        >
-                            Save
-                        </Button>
-                        <Button variant="solid" color="danger"
-                            onClick={handleRejectRequest}
-                        >
-                            Cancel
-                        </Button>
                     </Box>
-                </ModalDialog >
-            </Modal >
+                    <Box sx={{ display: 'flex', mt: 0.5 }} >
+                        {
+                            displayArray && displayArray.map((item, index) => (
+                                <Box key={index} sx={{ display: 'flex', flex: 1, borderRadius: 0.5, border: 1, borderColor: 'grey.300', flexDirection: 'column', overflow: 'hidden' }} >
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1 }} variant='outlined' level='title-sm' textAlign='center' color='neutral' fontFamily="monospace">{format(new Date(item?.duty_day), 'd')}</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1 }} variant='outlined' level='title-sm' textAlign='center' color='neutral' fontFamily="monospace">{format(new Date(item?.duty_day), 'eee')}</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1, fontWeight: 500 }} textColor='#2a4858' variant='outlined' level='body-xs' textAlign='center' color='neutral' >{item?.duty_desc}</Typography>
+                                    <Typography sx={{ backgroundColor: '#EEF9FF', lineHeight: 1.1, fontWeight: 500 }} textColor='#2a4858' variant='outlined' level='body-xs' textAlign='center' color='neutral' >{item?.lvereq_desc}</Typography>
+                                </Box>
+                            ))
+                        }
+                    </Box>
+                    <Box sx={{ display: "flex", flex: 1, px: 0.5, border: "1px solid", borderColor: "grey.300", borderRadius: 2, mt: 0.5, flexDirection: 'column', py: 0.5 }}>
+                        <Table
+                            aria-label="basic table"
+                            borderAxis="both"
+                            color="neutral"
+                            size="sm"
+                            variant="outlined"
+                            sx={{ width: '100%', borderRadius: 5, overflow: 'hidden' }}
+                        >
+                            <tbody>
+                                <tr>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }} >Total Days</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#D5FBDD' }} >{settlementArray?.total_days}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', }} >LOP Amount</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#FFE1E1' }} >{settlementArray?.lop_amount}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '40%', backgroundColor: '#E4E5E6' }} ></td>
+                                </tr>
+                                <tr>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Leave count</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{settlementArray?.leave_count}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >NPS Amount</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{settlementArray?.nps_amount}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Gross Salary</td>
+                                </tr>
+                                <tr >
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday count</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{settlementArray?.holiday_count}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >LWF Amount</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{settlementArray?.lwf_amount}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{settlementArray?.gross_salary}</td>
+                                </tr>
+                                <tr>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >No of HD LOP</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{settlementArray?.halfday_count}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Deduction Amount</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{settlementArray?.deduction_amount}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Net Salary</td>
+                                </tr>
+                                <tr  >
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >No of LC count</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{0}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday Amount</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{settlementArray?.holiday_amount}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{settlementArray?.net_salary}</td>
+                                </tr>
+                                <tr>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Total LOP</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{settlementArray?.lop_count}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Extra Earnings</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{settlementArray?.extra_earnings}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Total Payable Amount</td>
+                                </tr>
+                                <tr >
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Total Pay Days</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{settlementArray?.total_paydays}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Extra Deduction</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{settlementArray?.extra_deduction}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{settlementArray?.total_payableamount}</td>
+                                </tr>
+                                <tr>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday worked</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{settlementArray?.holiday_worked}</td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
+                                    <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} ></td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </Box>
+                    <Box sx={{ display: "flex", flex: 1, px: 0.5, border: "1px solid", borderColor: "grey.300", borderRadius: 2, mt: 0.5, flexDirection: 'column' }} >
+                        <Typography
+                            color="neutral"
+                            level="body-xs"
+                            noWrap
+                            sx={{ flex: 1, textAlign: 'left', color: '#8EADCD', mt: 0.5, ml: 0.5, textDecoration: 'underline' }}
+                        >
+                            Payment Method
+                        </Typography>
+                        <Box sx={{ display: "flex", flex: 1, p: 1, flexDirection: "row", justifyContent: "left", alignItems: 'center' }}>
+                            <Typography
+                                level='title-sm'
+                                color='neutral'
+                                fontFamily="inherit"
+                                endDecorator={<CurrencyRupeeIcon fontSize='small' />}
+                                // variant='outlined'
+                                sx={{ borderRadius: 5, pr: 2, py: 0.5 }}
+                            >Payable Amount </Typography>
+                            <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'}  > {settlementArray?.total_payableamount}</Typography>
+
+                        </Box>
+                        <Box sx={{ display: "flex", flex: 1, p: 1, flexDirection: "row" }}>
+                            <Box sx={{ flex: 1, px: 0.5 }}>
+                                <Select
+                                    value={salarytype}
+                                    onChange={(event, newValue) => {
+                                        setsalaryType(newValue);
+                                    }}
+                                    size='sm'
+                                    variant='outlined'
+                                >
+                                    <Option value={0} disabled>Select Salary Type</Option>
+                                    {
+                                        salaryType?.map((val, ind) => {
+                                            return <Option key={ind} value={val.slno}>{val.name}</Option>
+                                        })
+                                    }
+                                </Select>
+                            </Box>
+                            <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', mr: 0.5 }} >
+                                <Textarea
+                                    color="danger"
+                                    minRows={1}
+                                    placeholder="Remark..."
+                                    value={remark}
+                                    onChange={(e) => setRemark(e.target.value)}
+                                    size="sm"
+                                    sx={{ display: 'flex', flex: 1, px: 2 }}
+                                />
+                            </Box>
+                            <Button
+                                color="primary"
+                                onClick={submitPayment}
+                                size="sm"
+                                variant="outlined"
+                            >
+                                Submit
+                            </Button>
+                        </Box>
+                    </Box>
+                </Paper>
+            </Box>
         </>
     )
 }
