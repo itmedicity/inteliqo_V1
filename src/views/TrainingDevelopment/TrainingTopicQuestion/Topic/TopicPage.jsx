@@ -92,6 +92,7 @@ const TopicPage = () => {
         return {
             dept_status: 1,
             training_dept: em_department,
+            subtype_no: 0,
             training_topic_name: training_topic_name,
             training_name: trainingname,
             training_status: training_status === true ? 1 : 0,
@@ -116,6 +117,7 @@ const TopicPage = () => {
         return {
             dept_status: 1,
             training_dept: em_department,
+            subtype_no: 0,
             training_topic_name: training_topic_name,
             training_name: trainingname,
             training_status: training_status === true ? 1 : 0,

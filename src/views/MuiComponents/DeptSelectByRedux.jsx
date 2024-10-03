@@ -4,7 +4,6 @@ import Select from "@mui/material/Select";
 import { useDispatch, useSelector } from 'react-redux';
 import MenuItem from "@mui/material/MenuItem";
 import { setDept } from 'src/redux/actions/Dept.Action';
-import _ from 'underscore';
 import { useMemo } from 'react';
 
 const DeptSelectByRedux = ({ value, setValue }) => {
@@ -12,7 +11,7 @@ const DeptSelectByRedux = ({ value, setValue }) => {
     const dispatch = useDispatch()
     useEffect(() => dispatch(setDept()), [dispatch])
 
-    const dept = useSelector((state) => state.getdept.departmentlist, _.isEqual);
+    const dept = useSelector((state) => state?.getdept?.departmentlist);
     const deptValues = useMemo(() => dept, [dept])
 
     return (

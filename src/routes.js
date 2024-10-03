@@ -300,6 +300,7 @@ const CreditedLeaveCount = React.lazy(() => import('./views/HrReports/LeaveCount
 const ApprovedLeaveCancel = React.lazy(() => import('./views/LeaveManagement/ApprovedleaveCancel/LeaveCancelByHR'))
 const OffRequest = React.lazy(() => import('./views/LeaveManagement/OffRequest/OffrequestCombinePage'))
 const CompletedAndPendingStaffList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/CompletedAndPendingStaffList'))
+const TrainingSubTypeMaster = React.lazy(() => import('./views/Master/TrainingSubTypeMaster/TrainingSubTypeMaster'))
 
 const routes = [
 
@@ -580,6 +581,7 @@ const routes = [
   { path: '/Home/ApprovedLeaveCancel', exact: true, name: 'Approved Leave Cancel By HR', component: ApprovedLeaveCancel },
   { path: '/Home/DoffRequest', exact: true, name: 'DOFF Request', component: OffRequest },
   { path: '/Home/CompletedAndPendingStaffList', exact: true, name: 'Completed And Pending Staff List', component: CompletedAndPendingStaffList },
+  { path: '/Home/TrainingSubTypeMaster', exact: true, name: 'Training Sub Type Master', component: TrainingSubTypeMaster },
 
 ]
 
