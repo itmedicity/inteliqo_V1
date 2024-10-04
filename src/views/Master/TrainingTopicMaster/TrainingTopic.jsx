@@ -8,7 +8,6 @@ import { useCallback } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useDispatch, useSelector } from 'react-redux';
-import _ from 'underscore';
 import EditIcon from '@mui/icons-material/Edit';
 import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
@@ -22,6 +21,10 @@ import JoyDeptWiseTrainingNames from 'src/views/MuiComponents/JoyDeptWiseTrainin
 import ShowFile from './ShowFile';
 import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+// import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
+import { setDepartment } from 'src/redux/actions/Department.action';
+import JoyTrainingSubtype from 'src/views/MuiComponents/JoyTrainingSubtype';
+import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
 
 const TrainingTopic = () => {
 
@@ -44,6 +47,8 @@ const TrainingTopic = () => {
     const [trainingname, setTrainingname] = useState(0);
     const [hours, setHours] = useState('');
     const [videos, SetVideos] = useState('');
+    const [dept_status, setdept_status] = useState(false);
+    const [subtype_name, setsubtype_name] = useState('');
     //file
     const [selectFile, setSelectFile] = useState([]);
     const [uploads, setUploads] = useState([]);
@@ -54,13 +59,16 @@ const TrainingTopic = () => {
     const [edit_trainers, setEdit_trainers] = useState(0);
     const [trainer_names, SetTrainerNames] = useState([]);
     const [openBkDrop, setOpenBkDrop] = useState(false)
+    const [dept, setdept] = useState(0);
+    const [subtype, SetSubType] = useState(0);
 
-    const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
+    const employeeState = useSelector((state) => state.getProfileData.ProfileData);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id, em_department } = employeeProfileDetl;
 
     useEffect(() => {
         dispatch(TrainerNames())
+        dispatch(setDepartment());
     }, [dispatch])
 
     //reset
@@ -84,13 +92,17 @@ const TrainingTopic = () => {
         setTrainers([])
         SetTrainerNames([])
         setOpenBkDrop(false)
+        SetSubType(0)
+        setsubtype_name('')
+        setdept(0)
     }, [])
 
     //postdata
     const postdata = useMemo(() => {
         return {
-            dept_status: 1,
-            training_dept: em_department,
+            dept_status: dept_status === true ? 1 : 0,
+            training_dept: dept,
+            subtype_no: subtype,
             training_topic_name: training_topic_name,
             training_name: trainingname,
             training_status: training_status === true ? 1 : 0,
@@ -103,18 +115,19 @@ const TrainingTopic = () => {
             offline_status: offline_status === true ? 1 : 0,
             both_status: both_status === true ? 1 : 0,
             create_user: em_id,
-            hours: hours,
+            hours: parseInt(hours),
             video_link: videos,
             video_time: video_time,
-            trainers: trainers
+            trainers: trainers,
+            subtype_name: subtype_name
         }
-    }, [em_department, videos, trainers, video_time, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
-
+    }, [dept, dept_status, videos, subtype, trainers, video_time, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
     //patchdata
     const patchdata = useMemo(() => {
         return {
-            dept_status: 1,
-            training_dept: em_department,
+            dept_status: dept_status === true ? 1 : 0,
+            training_dept: dept,
+            subtype_no: subtype,
             training_topic_name: training_topic_name,
             training_name: trainingname,
             training_status: training_status === true ? 1 : 0,
@@ -128,12 +141,12 @@ const TrainingTopic = () => {
             both_status: both_status === true ? 1 : 0,
             edit_user: em_id,
             topic_slno: topic_slno,
-            hours: hours,
+            hours: parseInt(hours),
             video_link: videos,
             video_time: video_time,
             trainers: trainers
         }
-    }, [em_department, videos, trainers, video_time, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
+    }, [dept, dept_status, subtype, videos, trainers, video_time, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, em_id, topic_slno, online_status, offline_status, both_status])
 
     //view
     useEffect(() => {
@@ -146,10 +159,12 @@ const TrainingTopic = () => {
                     const obj = {
                         topic_slno: val.topic_slno,
                         dept_status: val.dept_status,
+                        subtype_slno: val.subtype_slno,
+                        subtypename: val.subtype_name,
                         deptstatus: val.dept_status === 0 ? "NO" : "YES",
                         dept_id: val.dept_id,
                         dept_name: val.dept_name,
-                        dept: val.dept_name,
+                        // dept: val.dept_name,
                         training_topic_name: val.training_topic_name,
                         name_slno: val.name_slno,
                         hours: val.hours,
@@ -168,21 +183,20 @@ const TrainingTopic = () => {
                         video_time: val.video_time,
                         upload_status: val.upload_status,
                         trainerss: val.trainers,
-                        trainers_name: val.trainers_name
+                        trainers_name: val.trainers_name,
+                        training_dept: val.training_dept
                     }
                     return obj;
                 })
                 setOpenBkDrop(false)
                 setTabledata(viewData);
                 setCount(0)
-
             } else {
                 setTabledata([]);
             }
         }
         getData()
     }, [count])
-
 
     useEffect(() => {
         if (uploads !== null) {
@@ -197,7 +211,7 @@ const TrainingTopic = () => {
     const getDataTable = useCallback(async (rowData) => {
         setFlag(1);
         const {
-            topic_slno, video_link, trainers_name, video_time, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, trainerss
+            topic_slno, video_link, trainers_name, video_time, hours, training_topic_name, name_slno, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, trainerss, subtype_slno, subtypename, dept_status, dept_id
         } = rowData;
         setTraining_topic_name(training_topic_name);
         setTraining_status(training_status === 1 ? true : false);
@@ -217,12 +231,15 @@ const TrainingTopic = () => {
         setUploads([])
         SetTrainerNames(trainers_name)
         setTrainers(trainerss)
+        SetSubType(subtype_slno)
+        setsubtype_name(subtypename)
+        setdept_status(dept_status === 1 ? true : false)
+        setdept(dept_id)
 
         // View uploads
         const postData = {
             topic_slno: topic_slno,
         };
-
         try {
             const response = await axioslogin.post('/Training_topic_uploads/selectuploads', postData);
             const { success, data } = response.data;
@@ -231,7 +248,6 @@ const TrainingTopic = () => {
                 const fileUrls = data.map((filename) => {
                     return `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
                 });
-
                 setUploads(fileUrls);
             } else {
                 infoNofity("No File uploads");
@@ -243,7 +259,14 @@ const TrainingTopic = () => {
     }, [setUploads]);
 
 
-
+    const HandleDeptStatus = useCallback((e) => {
+        if (e.target.checked === true) {
+            setdept_status(e.target.checked)
+        }
+        else {
+            setdept_status(false)
+        }
+    }, [setdept_status])
 
     const HandleTraining = useCallback((e) => {
         if (e.target.checked === true) {
@@ -452,9 +475,29 @@ const TrainingTopic = () => {
                 <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
                     <Paper sx={{ display: "flex", flexDirection: "column" }}>
                         <Box sx={{ display: "flex", flexDirection: "row", p: 1, gap: 1, flexWrap: "wrap" }}>
+                            <Box sx={{ mt: 1 }}>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={dept_status}
+                                    className="ml-1"
+                                    onChange={(e) => HandleDeptStatus(e)}
+                                    label="Department"
+                                />
+                            </Box>
+                            {dept_status === true ?
+                                <Box sx={{ flex: 1 }}>
+                                    {/* <DepartmentDropRedx getDept={setdept} /> */}
+                                    <DeptSelectByRedux value={dept} setValue={setdept} />
+
+                                </Box> : null
+                            }
                             <Box sx={{ flex: 1 }}>
-                                {/* <SelectTrainingName value={trainingname} setValue={setTrainingname} /> */}
                                 <JoyDeptWiseTrainingNames value={trainingname} setValue={setTrainingname} dept={em_department} />
+                            </Box>
+
+                            <Box sx={{ flex: 1 }}>
+                                <JoyTrainingSubtype value={subtype} setValue={SetSubType} />
                             </Box>
                             <Box sx={{ flex: 1 }}>
                                 <Input
@@ -706,6 +749,7 @@ const TrainingTopic = () => {
                                 <tr>
                                     <th style={{ backgroundColor: "#638889", color: "white", width: '5%', p: 1, textAlign: 'center' }}>Sl.No</th>
                                     <th style={{ backgroundColor: "#638889", color: "white", width: "10%", textAlign: 'center' }}>Topic Name</th>
+                                    <th style={{ backgroundColor: "#638889", color: "white", width: "10%", textAlign: 'center' }}>Training  Subtype</th>
                                     <th style={{ backgroundColor: "#638889", color: "white", width: "10%", textAlign: 'center' }}>TrainingName</th>
                                     <th style={{ backgroundColor: "#638889", color: "white", width: "10%", textAlign: 'center' }}>Trainers</th>
                                     <th style={{ backgroundColor: "#638889", color: "white", textAlign: "center", width: "5%" }}>Hours</th>
@@ -731,6 +775,7 @@ const TrainingTopic = () => {
                                         <td style={{ textAlign: "center" }}>{ndx + 1}</td>
                                         <td style={{ textTransform: "capitalize", flex: 1 }}>
                                             {row?.training_topic_name?.toLowerCase()}</td>
+                                        <td style={{ textAlign: "center", textTransform: "capitalize" }}>{row?.subtypename?.toLowerCase()}</td>
                                         <td>{row?.training_name?.toLowerCase()}</td>
                                         <td style={{ textTransform: "capitalize" }}>
                                             {row?.trainers_name}</td>
