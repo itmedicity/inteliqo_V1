@@ -60,11 +60,11 @@ const ProbationEnd = () => {
                             <NextPlanIcon color='primary' />
                         </OpenIcon>
                     </Tooltip>
-                    <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
+                    {/* <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
                         <OpenIcon onClick={() => toAppraisal(params)}>
                             <CheckCircleIcon color='primary' />
                         </OpenIcon>
-                    </Tooltip>
+                    </Tooltip> */}
                 </Fragment>
         },
         // { headerName: 'ID', field: 'em_id', wrapText: true, minWidth: 50, filter: true },

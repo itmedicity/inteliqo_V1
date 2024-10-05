@@ -324,17 +324,13 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
             warningNofity(
               `error ! ${error} , LeaveProcessMainCard line # 235, Contact Information Technology`,
             ),
+            setOpen(false)
           )
-        // })
-        // .catch((error) =>
-        //   warningNofity(
-        //     `error ! ${error} , LeaveProcessMainCard line # 237, Contact Information Technology`,
-        //   ),
-        // )
       }
       else if (processedLveDetl.dateExceed === true) {
         //Next updation date is exceed the current date
         warningNofity('Next Updated Date Exceeded !, Pleace contact Information Technology')
+        setOpen(false)
       }
     } else {
       setOpen(false)

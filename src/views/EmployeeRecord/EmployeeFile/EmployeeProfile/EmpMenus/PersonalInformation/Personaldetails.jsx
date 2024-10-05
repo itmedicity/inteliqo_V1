@@ -22,6 +22,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import BankSelection from 'src/views/Master/BankMaster/BankSelection';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import BankBranchselection from 'src/views/Master/BankMaster/BankBranchselection';
+import QueueIcon from '@mui/icons-material/Queue';
 
 const Personaldetails = () => {
 
@@ -80,6 +81,7 @@ const Personaldetails = () => {
     const [arabic_speak, setArabic_speak] = useState(false)
 
     const [bankBranch, setBannkBranch] = useState(0)
+    const [relativeName, setRelattivName] = useState('')
 
     const dispatch = useDispatch();
 
@@ -334,6 +336,8 @@ const Personaldetails = () => {
             hrm_region2: region2,
             salarytype: salarytype,
             em_bank_branch: bankBranch,
+            relation: relation,
+            relative_name: relativeName,
             create_user: employeeNumber()
         }
 
@@ -408,7 +412,6 @@ const Personaldetails = () => {
         { slno: 2, name: "Cash" },
         { slno: 3, name: "Cheque" }
     ]
-
 
     return (
         <Fragment>
@@ -780,7 +783,7 @@ const Personaldetails = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
-                            <Box sx={{ flex: 1 }}>
+                            <Box sx={{ flex: 1, ml: 0.5 }}>
                                 <Select
                                     value={relation}
                                     onChange={(event, newValue) => {
@@ -816,6 +819,32 @@ const Personaldetails = () => {
                                     <ControlPointIcon color='primary' />
                                 </IconButton>
                             </Tooltip>
+                        </Box>
+                        <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
+                            <Box sx={{ flex: 1, ml: 0.5 }}>
+                                <Typography sx={{}}  >
+                                    Enter name if father or spouse does not have an MRD number.
+                                </Typography>
+                            </Box>
+                            <Tooltip title="MRD NO" followCursor placement='top' arrow >
+                                <Box sx={{ flex: 1, mx: 0.5 }}>
+                                    <InputComponent
+                                        type="text"
+                                        size="sm"
+                                        placeholder="Enter Name"
+                                        name="Name"
+                                        value={relativeName}
+                                        onchange={(e) => setRelattivName(e.target.value)}
+                                    />
+                                </Box>
+                            </Tooltip>
+                            {/* <Tooltip title="Add" followCursor placement='top' arrow >
+                                <IconButton sx={{ paddingY: 0.5 }}
+                                    onClick={(e) => saveFamilDetails(e)}
+                                >
+                                    <QueueIcon color='primary' />
+                                </IconButton>
+                            </Tooltip> */}
                         </Box>
                         <Box component={Grid}
                             container
