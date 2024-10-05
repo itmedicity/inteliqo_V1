@@ -45,14 +45,17 @@ export const py_setting_three = [
     { to: '/Home/ReligionMaster', name: 'Religion Master', slno: 101 },
     { to: '/Home/CommonSettings', name: 'Common Settings', slno: 124 },
     { to: '/Home/ProTax', name: 'Proffessional Tax', slno: 150 },
-    { to: '/Home/TrainingName', name: 'Training Name Master', slno: 224 },
-    { to: '/Home/TrainingQuestions', name: 'Training Questions Master', slno: 247 },
-    { to: '/Home/TrainingCategory', name: 'Training Category Master', slno: 223 },
-    { to: '/Home/TrainingTopic', name: 'Training Topic Master', slno: 246 },
-    { to: '/Home/TrainingSchedule', name: 'Training Schedule Master', slno: 249 },
     { to: '/Home/TrainingType', name: 'Training Type Master', slno: 222 },
+    { to: '/Home/TrainingSubTypeMaster', name: 'Training SubType Master', slno: 241 },
+    { to: '/Home/TrainingCategory', name: 'Training Category Master', slno: 223 },
+    { to: '/Home/TrainingName', name: 'Training Name Master', slno: 224 },
+    { to: '/Home/TrainingTopic', name: 'Training Topic Master', slno: 246 },
+    { to: '/Home/TrainingQuestions', name: 'Training Questions Master', slno: 247 },
+    { to: '/Home/TrainingSchedule', name: 'Training Schedule Master', slno: 249 },
     { to: '/Home/TrainerName', name: 'Trainer Name Master', slno: 227 },
     { to: '/Home/SchedulingTime', name: 'Scheduling Time Master', slno: 248 },
+
+
 
 
 ]

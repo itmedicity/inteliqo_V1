@@ -279,7 +279,9 @@ const ApprovedLeaveCancel = React.lazy(() => import('./views/LeaveManagement/App
 const OffRequest = React.lazy(() => import('./views/LeaveManagement/OffRequest/OffrequestCombinePage'))
 const FullandFinal = React.lazy(() => import('./views/Resignation/EndOfService/EndofProcess'))
 const CompletedAndPendingStaffList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/CompletedAndPendingStaffList'))
+const TrainingSubTypeMaster = React.lazy(() => import('./views/Master/TrainingSubTypeMaster/TrainingSubTypeMaster'))
 const ManualRequestReport = React.lazy(() => import('./views/HrReports/ManualRequestReport/ManualReqstReport'))
+
 
 const routes = [
 
@@ -555,6 +557,7 @@ const routes = [
   { path: '/Home/DoffRequest', exact: true, name: 'DOFF Request', component: OffRequest },
   { path: '/Home/FullandFinal/:id', exact: true, name: 'Full and Final Settlement', component: FullandFinal },
   { path: '/Home/CompletedAndPendingStaffList', exact: true, name: 'Completed And Pending Staff List', component: CompletedAndPendingStaffList },
+  { path: '/Home/TrainingSubTypeMaster', exact: true, name: 'Training Sub Type Master', component: TrainingSubTypeMaster },
   { path: '/Home/ManualRequestReport', exact: true, name: 'Manual Request Report', component: ManualRequestReport },
 
 ]

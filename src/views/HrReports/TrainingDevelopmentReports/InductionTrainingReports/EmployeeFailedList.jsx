@@ -14,7 +14,6 @@ import InductionTopics from 'src/views/MuiComponents/JoyComponent/InductionTopic
 
 const EmployeeFailedList = ({ SetFlag, Failed_emps, setFailed_emps }) => {
 
-
     const [Fromdate, setFromdate] = useState('');
     const [Todate, setTodate] = useState('');
     const [topic, setTopic] = useState(0)
@@ -72,7 +71,7 @@ const EmployeeFailedList = ({ SetFlag, Failed_emps, setFailed_emps }) => {
             }
         }
         else if (Fromdate !== '' && Todate !== '' && topic !== 0) {
-            const result = await axioslogin.post(`/TrainingInductionReport/inductionPassedEmpList`, obj)
+            const result = await axioslogin.post(`/TrainingInductionReport/inductionFailedEmpList`, obj)
             const { success, data } = result.data;
             if (success === 2) {
                 SetFlag(4)

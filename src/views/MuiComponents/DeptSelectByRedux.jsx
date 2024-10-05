@@ -1,7 +1,6 @@
 import React, { useEffect, memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setDept } from 'src/redux/actions/Dept.Action';
-import _ from 'underscore';
 import { useMemo } from 'react';
 import { Option, Select } from '@mui/joy';
 
@@ -10,7 +9,7 @@ const DeptSelectByRedux = ({ value, setValue }) => {
     const dispatch = useDispatch()
     useEffect(() => dispatch(setDept()), [dispatch])
 
-    const dept = useSelector((state) => state.getdept.departmentlist, _.isEqual);
+    const dept = useSelector((state) => state?.getdept?.departmentlist);
     const deptValues = useMemo(() => dept, [dept])
 
     return (
