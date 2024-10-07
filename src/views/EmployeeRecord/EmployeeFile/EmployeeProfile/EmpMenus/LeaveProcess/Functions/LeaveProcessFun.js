@@ -1,4 +1,4 @@
-import { addDays, compareAsc, differenceInDays, differenceInMonths, differenceInYears, eachMonthOfInterval, endOfYear, getYear, lastDayOfYear, startOfYear, subYears } from 'date-fns'
+import { addDays, compareAsc, differenceInDays, differenceInMonths, differenceInYears, eachMonthOfInterval, endOfYear, getYear, isAfter, isBefore, lastDayOfYear, startOfYear, subYears } from 'date-fns'
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { employeeNumber } from 'src/views/Constant/Constant'
@@ -34,25 +34,17 @@ export const processedLeaveList = async (category, leaveProcess) => {
 
   const {
     em_category,
-    // ecat_cl,
-    // ecat_el,
-    // ecat_nh,
-    // ecat_fh,
-    // ecat_lop,
-    // ecat_sl,
-    // ecat_mate,
-    // ecat_confere,
+    em_no: new_em_no
   } = category
+
   const {
-    // lv_process_slno,
     category_slno,
     hrm_clv,
     hrm_ern_lv,
     hrm_hld,
     hrm_cmn,
-    // hrm_calcu,
-    // hrm_process_status,
     next_updatedate,
+    em_no: old_emno
   } = leaveProcess
 
   const nextUpdateDate = moment(next_updatedate).isValid() ? moment(next_updatedate) : '0000-00-00'
@@ -66,7 +58,17 @@ export const processedLeaveList = async (category, leaveProcess) => {
       newProcess: false,
       dateExceed: false,
     })
-  } else if (compareAsc(new Date(), new Date(nextUpdateDate)) === 1) {
+  } else if (em_category === category_slno && new_em_no !== old_emno) {
+    return (processedObj = {
+      ...processedObj,
+      categoryStatus: 0, // Category is not Equal
+      message: 'Date Changed ! Do Process',
+      processedStatus: false,
+      newProcess: false,
+      dateExceed: false,
+    })
+  }
+  else if (compareAsc(new Date(), new Date(nextUpdateDate)) === 1) {
     //Next updation date is exceed the current date
     return (processedObj = {
       ...processedObj,
@@ -101,18 +103,15 @@ export const processedLeaveList = async (category, leaveProcess) => {
 // 1 -> Checking for the employee is in contract
 
 export const checkContractStatus = async (
-  // em_cont_start,
   em_cont_end,
   contract_status,
-  // em_doj,
   em_prob_end_date,
-  // des_type,
-  // emp_type,
   ecat_prob,
   ecat_training,
   probation_status
 
 ) => {
+
   /***
    * designation type ->Probation ->1,training->2,Confirmation -> 3 (des_type)
    * employee type -> Regular -> 1, contract -> 2 (emp_type)

@@ -199,7 +199,7 @@ const ContractRenewalProcess = () => {
     return {
       em_no: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo,
       em_category: newCatgeory,
-      em_contract_end_date: contstatus === 1 && contractrenew === true ? format(new Date(contractEnddate), 'yyyy-MM-dd') : '2000-01-01',
+      em_contract_end_date: contstatus === 1 && contractrenew === true ? format(new Date(contractEnddate), 'yyyy-MM-dd') : '2000-01-31',
       em_prob_end_date: '2000-01-31',
       em_id: no,
       probation_status: 0,
@@ -255,13 +255,16 @@ const ContractRenewalProcess = () => {
       }
       else {
 
+        const newEmno = contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo;
+
+
         const result = await axioslogin.patch('/empcontract/update/contract', updateempMast)
         const { success, message } = result.data
         if (success === 1) {
           const updateContractLogTable = await axioslogin.post('/empcontract/createcontractlog', oldPersonalData.personalData)
           if (updateContractLogTable.data.success === 1) {
             succesNofity("Contract Renewal Completed Successfully!")
-            history.push(`/Home/Prfle/${id}/${no}/${0}`)
+            history.push(`/Home/Prfle/${newEmno}/${no}/${0}`)
           }
           else {
             warningNofity(message)
@@ -273,7 +276,7 @@ const ContractRenewalProcess = () => {
       }
     }
   }, [contractTpPermanent, newCatgeory, permanentEmpNo, updateempMast, attendancedetls,
-    contractrenew, history, id, newempId, olDataTocopy, oldPersonalData, no])
+    contractrenew, history, id, newempId, olDataTocopy, oldPersonalData, no, contstatus])
 
 
 

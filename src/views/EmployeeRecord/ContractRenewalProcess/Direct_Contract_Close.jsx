@@ -70,22 +70,6 @@ const Direct_Contract_Close = () => {
         getcontractInformation()
     }, [no])
 
-    //useEffect for getting fine Deatails
-    // useEffect(() => {
-    //     const getFinedetl = async () => {
-    //         const result = await axioslogin.get(`/empfinededuction/totalfine/byemid/${no}`)
-    //         const { success, data } = result.data
-    //         if (success === 1) {
-    //             setFine(data[0].fine_sum)
-    //         }
-    //         else {
-    //             setFine(0)
-    //         }
-    //     }
-    //     getFinedetl()
-
-    // }, [no])
-
     //update hrm_emp_contract_detl table
     const contractclose = useMemo(() => {
         return {
@@ -143,9 +127,6 @@ const Direct_Contract_Close = () => {
             <Card
                 variant="outlined"
                 sx={{
-                    // to make the card resizable
-                    // overflow: 'auto',
-                    // width: { lg: '90%', xl: '70%' },
                     resize: 'horizontal',
                     m: 2,
                     mx: { lg: 2, xl: 30 }
@@ -187,53 +168,17 @@ const Direct_Contract_Close = () => {
                         </Box>
                         <Box sx={{ display: 'flex', pl: 5 }}>
                             <Button
-                                //aria-label="Like"
                                 variant="outlined"
                                 sx={{ borderRadius: 30 }}
                                 color="danger"
                                 onClick={ContractClose}
-                            // fullWidth
-                            // startDecorator={<CloseIcon />}
-
                             >
                                 Contract Close
                             </Button>
                         </Box>
                     </Box>
                 </CardContent>
-                {/* <CardActions>
-                    <Box sx={{ px: 60, flex: 1 }}>
-                        <Button
-                            //aria-label="Like"
-                            // variant="outlined"
-                            color="primary"
-                            onClick={ContractClose}
-                            fullWidth
-                        // startDecorator={<CloseIcon />}
-
-                        >
-                            Contract Close
-                        </Button>
-                    </Box>
-                </CardActions> */}
             </Card>
-            {/* <Paper square elevation={0} sx={{ display: "flex", flexDirection: 'row-reverse' }}  >
-                <Box sx={{}}>
-                    <CssVarsProvider>
-                        <Button
-                            aria-label="Like"
-                            variant="outlined"
-                            color="primary"
-                            onClick={ContractClose}
-                            fullWidth
-                            startDecorator={<CloseIcon />}
-                            sx={{ mx: 0.5 }}
-                        >
-                            Contract Close
-                        </Button>
-                    </CssVarsProvider>
-                </Box>
-            </Paper> */}
         </Paper >
 
     )

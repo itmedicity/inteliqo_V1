@@ -12,7 +12,7 @@ import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Co
 import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { CheckIdExists, InsertAppraisal } from 'src/views/PerformanceAppraisal/AppraisalFunctions';
-import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
+// import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import SearchIcon from '@mui/icons-material/Search';
 import { ToastContainer } from 'react-toastify';
@@ -187,20 +187,8 @@ const ContractRenewList = () => {
         {
             headerName: 'Action', minWidth: 100,
             cellRenderer: params =>
-                // <Fragment>
-                //     <Tooltip title="Appraisal Process" followCursor placement='top' arrow >
-                //         <OpenIcon onClick={() => toAppraisalProcess(params)}>
-                //             <LibraryAddCheckIcon color='primary' />
-                //         </OpenIcon>
-                //     </Tooltip>
-                //     <Tooltip title="Contract Close" followCursor placement='top' arrow >
-                //         <OpenIcon sx={{ pb: 1, boxShadow: 0 }} size='sm' color='primary' onClick={() => DirectContractClose(params)}>
-                //             <CancelIcon />
-                //         </OpenIcon>
-                //     </Tooltip>
-                // </Fragment>
                 <Box sx={{ display: 'flex', flex: 1, justifyContent: 'space-evenly', alignItems: 'center', }} >
-                    <Box sx={{ display: 'flex', }} >
+                    {/* <Box sx={{ display: 'flex', }} >
                         <Tooltip title="Appraisal Process" followCursor placement='top' arrow variant='outlined' color='danger'   >
                             <IconButton size='sm' color='danger' onClick={() => toAppraisalProcess(params)}
                                 sx={{
@@ -210,7 +198,7 @@ const ContractRenewList = () => {
                                 <LibraryAddCheckIcon />
                             </IconButton>
                         </Tooltip>
-                    </Box>
+                    </Box> */}
                     <Box sx={{ display: 'flex', }}>
                         <Tooltip title="Contract Close" followCursor placement='top' arrow variant='outlined' color='primary' >
                             <IconButton size='sm' onClick={() => DirectContractClose(params)}

@@ -29,7 +29,7 @@ import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategoryS
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import JoyDoctorTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyDoctorTypeSelect'
-import { addDays, addYears,endOfMonth  } from 'date-fns'
+import { addDays, addYears, endOfMonth } from 'date-fns'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'underscore'
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
@@ -297,9 +297,9 @@ const EmployeeRecord = () => {
                   em_id: em_id,
                   em_no: empno,
                   em_cont_start: dateofjoining,
-                  em_cont_end: moment(cont_perioddate).format('YYYY-MM-DD'),
-                  em_prob_end_date: moment(probationendDate).format('YYYY-MM-DD'),
-                  em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
+                  em_cont_end: moment(endOfMonth(new Date(cont_perioddate))).format('YYYY-MM-DD'),
+                  em_prob_end_date: moment(endOfMonth(new Date(probationendDate))).format('YYYY-MM-DD'),
+                  em_conf_end_date: moment(endOfMonth(new Date(cont_gracedate))).format('YYYY-MM-DD'),
                   status: 0
                 }
                 const result = await axioslogin.post('/empmast/createContract', postContractDetl)
@@ -424,7 +424,7 @@ const EmployeeRecord = () => {
       }
 
       if (contractflag === 1) {
-       contractEmployee(submitdata)
+        contractEmployee(submitdata)
       } else {
         permanentEmployee(submitdata)
       }
