@@ -5,7 +5,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Box, Button, CssVarsProvider, Input, Tooltip, Typography } from '@mui/joy'
 import { Paper } from '@mui/material'
 import { useState } from 'react';
-import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { addDays, addHours, addMinutes, differenceInMinutes, format, lastDayOfMonth, startOfMonth, subHours } from 'date-fns';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { useSelector } from 'react-redux';
 import { getCaualLeaveDetl, getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
@@ -29,6 +29,8 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
     const [reson, setReason] = useState('')
     const [empShiftInform, setempShiftInform] = useState({})
     const [disabled, setdisabled] = useState(true)
+
+    const [dateDisable, setDisable] = useState(true)
 
 
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
@@ -57,7 +59,59 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
 
     const state = useSelector((state) => state?.getCommonSettings)
     const commonStates = useMemo(() => state, [state])
-    const { holiday_leave_request } = commonStates;
+    const { holiday_leave_request, comp_hour_count } = commonStates;
+
+
+    const handleChangeDate = useCallback(async (date) => {
+        setFromDate(date)
+        const postData = {
+            emp_id: em_id,
+            duty_day: format(new Date(date), 'yyyy-MM-dd')
+        }
+        const result = await axioslogin.post('common/getShiftdetails/', postData);
+        const { success, data } = result.data;
+        if (success === 1) {
+            const { shft_chkin_time, shft_chkout_time, shft_cross_day } = data[0];
+            const inTime = format(new Date(shft_chkin_time), 'HH:mm');
+            const outTime = format(new Date(shft_chkout_time), 'HH:mm');
+
+            // const breakTime = format(new Date(shft_brk_start), 'HH:mm:ss');
+
+            const chekIn = `${format(new Date(date), 'yyyy-MM-dd')} ${inTime}`;
+            const chekOut = `${format(new Date(date), 'yyyy-MM-dd')} ${outTime}`;
+            // const breakday = `${format(new Date(date), 'yyyy-MM-dd')} ${breakTime}`;
+
+
+            //TO FETCH PUNCH DATA FROM TABLE
+            const postDataForpunchMaster = {
+                date1: shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                date2: shft_cross_day === 0 ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                em_no: em_no
+            }
+
+            //FETCH THE PUNCH TIME FROM PUNCH DATA
+            const result = await axioslogin.post('common/getShiftdata/', postDataForpunchMaster)
+            const { success, data: punchdata } = result.data;
+            if (success === 1) {
+                if (punchdata?.length >= 2) {
+                    succesNofity('Done , Select The Punching Info')
+                    setDisable(false)
+                } else {
+                    warningNofity("Two Punches Are Required On Particular Date.")
+
+                }
+                // const inTimesArray = punchdata?.filter((e) => e.punch_time <= breakday)
+                // const outTimeArray = punchdata?.filter((e) => (e.punch_time >= breakday))
+
+
+
+            } else {
+                warningNofity("There Is No Punch In This Date!")
+            }
+        } else {
+            warningNofity('Duty Plan Not Done')
+        }
+    }, [em_id])
 
     const handleGetCreditedLeaves = useCallback(async () => {
         if (halfDayStat === null || creditedLve === null) {
@@ -199,7 +253,7 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
                                     inputFormat="dd-MM-yyyy"
                                     value={fromDate}
                                     size="small"
-                                    onChange={(newValue) => setFromDate(newValue)}
+                                    onChange={handleChangeDate}
                                     renderInput={({ inputRef, inputProps, InputProps }) => (
                                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
                                             <CssVarsProvider>
@@ -219,7 +273,7 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
                                 sx={{ width: '100%' }}
                                 // value={deptID}
                                 size='sm'
-                                // disabled={disabled}
+                                disabled={dateDisable}
                                 placeholder="Select Half Day Section"
                                 slotProps={{
                                     listbox: {
@@ -238,7 +292,7 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
                                 sx={{ width: '100%' }}
                                 // value={deptID}
                                 size='sm'
-                                // disabled={disabled}
+                                disabled={dateDisable}
                                 placeholder="Allowed Leave Types"
                                 slotProps={{
                                     listbox: {
@@ -260,7 +314,7 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
                                         size='sm'
                                         sx={{ width: '100%' }}
                                         endDecorator={<Box>Get Credited Leaves</Box>}
-                                    // disabled={addDateDisable}
+                                        disabled={dateDisable}
                                     >
                                         <ExitToAppOutlinedIcon fontSize='large' />
                                     </Button>

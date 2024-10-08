@@ -560,6 +560,7 @@ const routes = [
   { path: '/Home/TrainingSubTypeMaster', exact: true, name: 'Training Sub Type Master', component: TrainingSubTypeMaster },
   { path: '/Home/ManualRequestReport', exact: true, name: 'Manual Request Report', component: ManualRequestReport },
 
+
 ]
 
 export default routes

@@ -13,6 +13,15 @@ const {
     FETCH_EMP_ESI_PF_DATA
 } = Actiontypes;
 
+export const getHolidayListUsingReactQuery = async () => {
+    return await axioslogin.get('/yearleaveprocess/year/holiday').then((res) => {
+        const { success, data } = res.data
+        if (success === 1) {
+            return data
+        }
+    })
+}
+
 //gET tHE hOLIDAY lIST (cURRENT yEAR)
 export const getHolidayList = () => async (dispatch) => {
     let holidayListData;

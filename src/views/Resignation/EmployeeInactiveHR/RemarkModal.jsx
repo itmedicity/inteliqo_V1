@@ -27,6 +27,7 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
     const { emno, name, section, emid } = details;
     const [selectValue, setSelectValue] = useState(0)
     const [absentDate, setAbsentDate] = useState(new Date())
+    const [resignDate, setResigndate] = useState(new Date())
 
 
     const confirmationArray = [
@@ -60,7 +61,7 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
         const postData = {
             em_id: emid,
             em_no: emno,
-            resign_status: selectValue === 3 ? 1 : 0,
+            resign_status: selectValue === 2 ? 1 : 0,
             em_status: selectValue === 1 ? 0 : 1,
             unauthorized_absent_status: selectValue === 1 ? 1 : 0,
             unauthorised_absent_date: selectValue === 1 ? format(new Date(absentDate), 'yyyy-MM-dd') : null,
@@ -70,7 +71,8 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
             em_id: emid,
             em_no: emno,
             remark: reason,
-            resign_status: selectValue === 3 ? 1 : 0,
+            resign_status: selectValue === 2 ? 1 : 0,
+            resign_date: selectValue === 2 ? format(new Date(resignDate), 'yyyy-MM-dd') : null,
             unauthorized_absent_status: selectValue === 1 ? 1 : 0,
             unauthorised_absent_date: selectValue === 1 ? format(new Date(absentDate), 'yyyy-MM-dd') : null,
             create_user: loginEmid
@@ -83,7 +85,6 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
             const duedeptdetl = dueDepartment.map((val) => {
                 return { deptcode: val.deptcode, deptname: val.deptdesc, emp_id: emid }
             })
-
             //inactive employee
             const result = await axioslogin.patch('/Resignation/Inactiveemp', postData)
             const { success } = result.data
@@ -108,7 +109,7 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
             }
         }
     }, [emid, reason, emno, setCount, setOpen, dueDepartment, selectValue,
-        absentDate, loginEmid])
+        absentDate, loginEmid, resignDate])
 
     const CloseModel = useCallback(() => {
         setOpen(false)
@@ -228,16 +229,25 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
                 }
                 {
                     selectValue === 2 ? <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', }} >
-
-
-                        <Input
-                            size="md"
-                            fullWidth
-                            variant="outlined"
-                            value={format(new Date(), 'dd-MM-yyyy')}
-                            disabled
-                        />
-
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                views={['day']}
+                                // minDate={subMonths(new Date(), 1)}
+                                maxDate={new Date()}
+                                value={resignDate}
+                                inputFormat="dd-MM-yyyy"
+                                size="small"
+                                onChange={(newValue) => {
+                                    setResigndate(newValue);
+                                }}
+                                renderInput={({ inputRef, inputProps, InputProps }) => (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                        <Input ref={inputRef} {...inputProps} style={{ width: '80%' }} disabled={true} />
+                                        {InputProps?.endAdornment}
+                                    </Box>
+                                )}
+                            />
+                        </LocalizationProvider>
                     </Box> : null
                 }
                 <Box sx={{ pt: 0.5 }} >

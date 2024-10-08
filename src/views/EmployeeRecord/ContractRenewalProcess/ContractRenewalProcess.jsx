@@ -276,7 +276,7 @@ const ContractRenewalProcess = () => {
       }
     }
   }, [contractTpPermanent, newCatgeory, permanentEmpNo, updateempMast, attendancedetls,
-    contractrenew, history, id, newempId, olDataTocopy, oldPersonalData, no, contstatus])
+    contractrenew, history, newempId, olDataTocopy, oldPersonalData, no, contstatus])
 
 
 

@@ -452,7 +452,7 @@ const EmployeeRecordEdit = () => {
             }
         }
     }, [submitdata, oldprob_end_date, old_cont_end_date, id, clearForm,
-        cont_gracedate, cont_perioddate, oldCategory, category, oldDoj,
+        cont_gracedate, cont_perioddate, oldDoj,
         contractflag, dateofjoining, no, probationendDate, history, oldContract_Status])
 
     return (

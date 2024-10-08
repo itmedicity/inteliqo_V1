@@ -22,7 +22,6 @@ import SaveIcon from '@mui/icons-material/Save';
 import BankSelection from 'src/views/Master/BankMaster/BankSelection';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import BankBranchselection from 'src/views/Master/BankMaster/BankBranchselection';
-import QueueIcon from '@mui/icons-material/Queue';
 
 const Personaldetails = () => {
 
