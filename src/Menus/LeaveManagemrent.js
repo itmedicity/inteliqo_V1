@@ -110,18 +110,6 @@ const Leavemanagement = [
         to: '/Home/OTApprovalHR',
     },
     // {
-    //     men_slno: 241,
-    //     component: CNavItem,
-    //     name: 'Common Request Incharge Approval',
-    //     to: '/Home/CommonReqstInchargeApprvl',
-    // },
-    // {
-    //     men_slno: 242,
-    //     component: CNavItem,
-    //     name: 'Common Request HOD Approval',
-    //     to: '/Home/CommonReqstHodApprvl',
-    // },
-    // {
     //     men_slno: 243,
     //     component: CNavItem,
     //     name: 'Common Request CEO Approval',

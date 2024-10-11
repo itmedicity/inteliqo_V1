@@ -12,7 +12,7 @@ import {
 } from 'src/views/CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import { Box, Button, CssVarsProvider, Tooltip } from '@mui/joy'
+import { Box, Button, CssVarsProvider, Option, Select, Tooltip } from '@mui/joy'
 import JoySalutation from 'src/views/MuiComponents/JoyComponent/JoySalutation'
 import SaveIcon from '@mui/icons-material/Save';
 import PreviewIcon from '@mui/icons-material/Preview';
@@ -29,7 +29,7 @@ import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategoryS
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import JoyDoctorTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyDoctorTypeSelect'
-import { addDays, addYears,endOfMonth  } from 'date-fns'
+import { addDays, addYears, endOfMonth } from 'date-fns'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'underscore'
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
@@ -83,6 +83,7 @@ const EmployeeRecord = () => {
   const [prob_status, setProb_status] = useState(0)
   const [clinictype, setClinictype] = useState(0)
   const [doctor, setDoctor] = useState(false)
+  const [leaveprocesstype, setLeaveprocesstype] = useState(0)
 
   // usestate for age
   const [agestate, agesetstate] = useState({
@@ -209,14 +210,15 @@ const EmployeeRecord = () => {
       gross_salary: Salary,
       recomend_salary: Salary,
       clinicaltype: clinictype,
-      doctor_status: doctor === true ? 1 : 0
+      doctor_status: doctor === true ? 1 : 0,
+      leaveprocess_type: leaveprocesstype,
     }
   }, [
     empno, salutation, empname, gender, dateofbirth, branch, dept, deptSect, institute, doct, region2,
     cont_gracedate, dateofjoining, category, retirementyear, cont_perioddate, permantPin, region1,
     yearage, mobileno, landphone, email, designation, bloodgrp, presentPin, mnthage, dayge, religion,
     Salary, empstatus, addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, doctortype,
-    probationendDate, prob_status, contractflag, clinictype, doctor
+    probationendDate, prob_status, contractflag, clinictype, doctor, leaveprocesstype
   ])
 
   const clearForm = useCallback(() => {
@@ -297,9 +299,9 @@ const EmployeeRecord = () => {
                   em_id: em_id,
                   em_no: empno,
                   em_cont_start: dateofjoining,
-                  em_cont_end: moment(cont_perioddate).format('YYYY-MM-DD'),
-                  em_prob_end_date: moment(probationendDate).format('YYYY-MM-DD'),
-                  em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
+                  em_cont_end: moment(endOfMonth(new Date(cont_perioddate))).format('YYYY-MM-DD'),
+                  em_prob_end_date: moment(endOfMonth(new Date(probationendDate))).format('YYYY-MM-DD'),
+                  em_conf_end_date: moment(endOfMonth(new Date(cont_gracedate))).format('YYYY-MM-DD'),
                   status: 0
                 }
                 const result = await axioslogin.post('/empmast/createContract', postContractDetl)
@@ -424,7 +426,7 @@ const EmployeeRecord = () => {
       }
 
       if (contractflag === 1) {
-       contractEmployee(submitdata)
+        contractEmployee(submitdata)
       } else {
         permanentEmployee(submitdata)
       }
@@ -706,6 +708,20 @@ const EmployeeRecord = () => {
             </Box>
             <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
               <JoyClicnicalType value={clinictype} setValue={setClinictype} />
+            </Box>
+            <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+              <Select
+                value={leaveprocesstype}
+                onChange={(event, newValue) => {
+                  setLeaveprocesstype(newValue);
+                }}
+                size='md'
+                variant='outlined'
+              >
+                <Option value={0} disabled>Select Leave Process Type</Option>
+                <Option value={1}>General</Option>
+                <Option value={2}>Accademic</Option>
+              </Select>
             </Box>
             <Box sx={{
               display: 'flex',

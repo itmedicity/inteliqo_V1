@@ -113,9 +113,9 @@ const DoffSubmitForm = () => {
         const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
         const { success, data } = result.data;
         if (success === 1) {
-            const { plan_slno, attendance_update_flag, shft_desc, twenty_four, shft_cross_day,
+            const { plan_slno, doff_updation_flag, shft_desc, twenty_four, shft_cross_day,
                 shft_chkin_time, shft_chkout_time, shift_id, holiday } = data[0];
-            if (attendance_update_flag === 1) {
+            if (doff_updation_flag === 1) {
                 infoNofity("This Date Is Already Used For DOFF Request")
                 setFromDate(moment(new Date()))
             } else if (twenty_four === 0) {

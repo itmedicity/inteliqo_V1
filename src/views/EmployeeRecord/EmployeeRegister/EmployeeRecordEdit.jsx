@@ -12,7 +12,7 @@ import {
 } from 'src/views/CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import { Box, Button, CssVarsProvider, Tooltip } from '@mui/joy'
+import { Box, Button, CssVarsProvider, Option, Select, Tooltip } from '@mui/joy'
 import JoySalutation from 'src/views/MuiComponents/JoyComponent/JoySalutation'
 import SaveIcon from '@mui/icons-material/Save';
 import PreviewIcon from '@mui/icons-material/Preview';
@@ -89,10 +89,12 @@ const EmployeeRecordEdit = () => {
     const [oldContract_Status, setOldContract_Status] = useState(0)
     const [oldprob_end_date, setOldprob_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
     const [old_cont_end_date, setOld_cont_end_date] = useState(moment(new Date()).format('YYYY-MM-DD'))
+    const [oldDoj, setOldDoj] = useState('')
     //const [oldprob_status, setOld_prob_Status] = useState(0)
 
     const [clinictype, setClinictype] = useState(0)
     const [doctor, setDoctor] = useState(false)
+    const [leaveprocesstype, setLeaveprocesstype] = useState(0)
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -208,7 +210,7 @@ const EmployeeRecordEdit = () => {
                     em_designation, hrm_region2, em_conf_end_date,
                     em_contract_end_date, em_prob_end_date, em_retirement_date,
                     clinicaltype, gross_salary,
-                    doctor_status } = data[0]
+                    doctor_status, leaveprocess_type } = data[0]
                 const age = {
                     yearage: em_age_year,
                     mnthage: em_age_month,
@@ -219,6 +221,7 @@ const EmployeeRecordEdit = () => {
                 setGender(em_gender)
                 setdateofbirth(em_dob)
                 setDateofJoining(em_doj)
+                setOldDoj(em_doj)
                 setSalary(gross_salary === null ? 0 : gross_salary)
                 setaddressPermnt1(addressPermnt1)
                 setaddressPermnt2(addressPermnt2)
@@ -254,6 +257,7 @@ const EmployeeRecordEdit = () => {
                 // setOld_prob_Status(probation_status)//setting old 
                 setClinictype(clinicaltype === 0 ? 0 : clinicaltype)
                 setDoctor(doctor_status === 1 ? true : false)
+                setLeaveprocesstype(leaveprocess_type)
             }
         }
         getEmployeedetails()
@@ -309,6 +313,7 @@ const EmployeeRecordEdit = () => {
             clinicaltype: clinictype,
             doctor_status: doctor === true ? 1 : 0,
             em_no: parseInt(empno),
+            leaveprocess_type: leaveprocesstype,
         }
 
     }, [empno, salutation, empname, gender, dateofbirth, branch, dept, deptSect, institute, doct, region2,
@@ -376,15 +381,21 @@ const EmployeeRecordEdit = () => {
                         em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
                         status: contractflag === 1 ? 0 : 1
                     }
-                    const result = await axioslogin.post('/empmast/createContract', postContractDetl)
-                    const { success, message } = result.data
-                    if (success === 1) {
+                    if (oldDoj !== dateofjoining) {
+                        const result = await axioslogin.post('/empcontract/registerUpdate', postContractDetl)
+                        const { success, message } = result.data
+                        if (success === 2) {
+                            succesNofity("Data Updated Successfully!")
+                            history.push('/Home/EmployeeRecord')
+                            clearForm()
+                        }
+                        else {
+                            warningNofity(message)
+                        }
+                    } else {
                         succesNofity("Data Updated Successfully!")
                         history.push('/Home/EmployeeRecord')
                         clearForm()
-                    }
-                    else {
-                        warningNofity(message)
                     }
                 }
                 else {
@@ -426,15 +437,15 @@ const EmployeeRecordEdit = () => {
         }
 
         if (contractflag === 0 && oldContract_Status === 1) {
-            warningNofity("You can't Edit Contract Employee to Permanent, Please close contract first!!")
+            warningNofity("You Can't Edit Contract Employee to Permanent, Please Close Contract First!!")
         } else if (contractflag === 1 && oldContract_Status === 1) {
             if (isBefore(new Date(cont_date), new Date()) && cont_date !== '2000-01-31') {
                 infoNofity("Employee Contract Date Already Exceeded, You Can Edit This Employee Through Contract Renewal Process!")
             } else {
                 updateContractEmp(submitdata)
             }
-        } else if (oldContract_Status === 0 && contractflag === 1) {
-            warningNofity("You can't Edit Employee Permanent to Any Contract")
+        } else if (contractflag === 1 && oldContract_Status === 0) {
+            warningNofity("You Can't Edit Employee Permanent to Any Contract")
         }
         else {
             if (isBefore(new Date(probdate), new Date()) && probdate !== '2000-01-31') {
@@ -444,7 +455,7 @@ const EmployeeRecordEdit = () => {
             }
         }
     }, [submitdata, oldprob_end_date, old_cont_end_date, id, clearForm,
-        cont_gracedate, cont_perioddate,
+        cont_gracedate, cont_perioddate, oldDoj,
         contractflag, dateofjoining, no, probationendDate, history, oldContract_Status])
 
     return (
@@ -718,6 +729,20 @@ const EmployeeRecordEdit = () => {
                         </Box>
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                             <JoyClicnicalType value={clinictype} setValue={setClinictype} />
+                        </Box>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+                            <Select
+                                value={leaveprocesstype}
+                                onChange={(event, newValue) => {
+                                    setLeaveprocesstype(newValue);
+                                }}
+                                size='md'
+                                variant='outlined'
+                            >
+                                <Option value={0} disabled>Select Employee Holiday Type</Option>
+                                <Option value={1}>General</Option>
+                                <Option value={2}>Accademic</Option>
+                            </Select>
                         </Box>
                         <Box sx={{
                             mt: 1.5, pl: 0.5,

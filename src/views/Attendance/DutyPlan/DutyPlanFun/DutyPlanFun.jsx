@@ -1,4 +1,4 @@
-import { eachDayOfInterval, endOfMonth, startOfMonth } from "date-fns";
+import { eachDayOfInterval, endOfMonth, format, startOfMonth } from "date-fns";
 import moment from "moment";
 import { axioslogin } from "src/views/Axios/Axios";
 
@@ -85,13 +85,25 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
     let holidayFilterList = []; // filter holidays based on from to dates
     let employeeDetails; //new object based on employee details
 
+    let fullMonthHolidayList = [];
+
     if (status === 1) {
         holidayFilterList = data?.map((values) => {
             return values.hld_date >= fromDate && values.hld_date <= toDate ? values : null;
         }).filter((val) => val !== null);
+
+
+        const startMonth = format(new Date(startOfMonth(new Date(fromDate))), 'yyyy-MM-dd')
+        const endMonth = format(new Date(endOfMonth(new Date(fromDate))), 'yyyy-MM-dd')
+
+        fullMonthHolidayList = data?.map((values) => {
+            return values.hld_date >= startMonth && values.hld_date <= endMonth ? values : null;
+        }).filter((val) => val !== null);
+
     } else {
         return { ...message, status: 0, message: 'Holiday List Not Updated', data: [] }
     }
+
 
     // return planState;
     employeeDetails = employeeDetl?.map((val) => {
@@ -102,6 +114,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             em_no: val.em_no,
             em_doj: val.contract_status === 1 ? val.em_cont_start : val.em_doj,
             unauthorized_absent_status: val.unauthorized_absent_status,
+            holiday_type: val.holiday_type
         }
     })
 
@@ -114,6 +127,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             //finding the dates between start date and end date
             const dateRange = eachDayOfInterval({ start: new Date(fromDate), end: new Date(toDate) });
 
+            //fullmonth date range for initial insert
             const fullMonthDateRange = eachDayOfInterval({ start: startOfMonth(new Date(fromDate)), end: endOfMonth(new Date(fromDate)) });
 
             //date format for top Head
@@ -121,12 +135,14 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                 return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d'), days: moment(val).format('ddd') }
             });
 
-            const fullDateandDayFormat = fullMonthDateRange.map((val) => {
-                return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d'), days: moment(val).format('ddd') }
-            });
+            //date format for full month
+            // const fullDateandDayFormat = fullMonthDateRange.map((val) => {
+            //     return { date: moment(val).format('MMM-D'), sunday: moment(val).format('d'), days: moment(val).format('ddd') }
+            // });
 
             const addHolidayToDateRange = (values) => {
                 const holidayDate = holidayFilterList.find((val) => moment(val.hld_date).format('MMM-D') === values.date)
+
                 if (holidayDate !== undefined) {
                     return {
                         date: values.date,
@@ -146,9 +162,31 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                 }
             }
 
+            // const addFullHolidayToDateRange = (values) => {
+            //     const holidayDate = fullMonthHolidayList.find((val) => moment(val.hld_date).format('MMM-D') === values.date)
+
+            //     if (holidayDate !== undefined) {
+            //         return {
+            //             date: values.date,
+            //             sunday: values.sunday,
+            //             days: values.days,
+            //             holiday: 1,
+            //             holidayDays: holidayDate.hld_desc
+            //         }
+            //     } else {
+            //         return {
+            //             date: values.date,
+            //             sunday: values.sunday,
+            //             days: values.days,
+            //             holiday: 0,
+            //             holidayDays: null
+            //         }
+            //     }
+            // }
+
             const newDateRange = dateAndDayFormat.map(addHolidayToDateRange)
 
-            const fullDayRange = fullDateandDayFormat.map(addHolidayToDateRange)
+            // const fullDayRange = fullDateandDayFormat.map(addFullHolidayToDateRange)
 
             //duty plan date range
             const dutyPlanDateRange = dateRange?.map((val) => { return { date: moment(val).format('YYYY-MM-DD') } });
@@ -161,36 +199,74 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             //hrm_duty_plan insert initial array data making
             const shiftDutyDay = await employeeDetails.map((val) => {
                 return dutyPlanDateRange.map((value) => {
-                    return { date: value.date, emp_id: val.em_id, doj: val.em_doj, em_no: val.em_no }
+                    return {
+                        date: value.date,
+                        emp_id: val.em_id,
+                        doj: val.em_doj,
+                        em_no: val.em_no,
+                        holiday_type: val.holiday_type
+                    }
                 })
             }).flat(Infinity)
 
 
             const fullShiftDutyDay = await employeeDetails.map((val) => {
                 return fullDutyplanDateRange.map((value) => {
-                    return { date: value.date, emp_id: val.em_id, doj: val.em_doj, em_no: val.em_no }
+                    return {
+                        date: value.date,
+                        emp_id: val.em_id,
+                        doj: val.em_doj,
+                        em_no: val.em_no,
+                        holiday_type: val.holiday_type
+                    }
                 })
             }).flat(Infinity)
 
             //add the holiday details into the shift plan array
             const holidayFilterFun = (values) => {
                 const holiday = holidayFilterList.find((val) => val.hld_date === values.date)
-                if (holiday !== undefined) {
+                if (holiday !== undefined || holiday !== null) {
                     return {
-                        date: values.date,
-                        emp_id: values.emp_id,
-                        em_no: values.em_no,
-                        shift: values.date >= values.doj ? default_shift : notapplicable_shift,
-                        holidayStatus: 1,
-                        holidayName: holiday.hld_desc,
-                        holidaySlno: holiday.hld_slno
+                        date: values?.date,
+                        emp_id: values?.emp_id,
+                        em_no: values?.em_no,
+                        shift: values?.date >= values?.doj ? default_shift : notapplicable_shift,
+                        holidayStatus: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : 1,
+                        holidayName: values?.holiday_type === 1 && holiday?.special_type === 2 ? null : holiday?.hld_desc,
+                        holidaySlno: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : holiday?.hld_slno
                     }
                 } else {
                     return {
-                        date: values.date,
-                        emp_id: values.emp_id,
-                        em_no: values.em_no,
-                        shift: values.date >= values.doj ? default_shift : notapplicable_shift,
+                        date: values?.date,
+                        emp_id: values?.emp_id,
+                        em_no: values?.em_no,
+                        shift: values?.date >= values?.doj ? default_shift : notapplicable_shift,
+                        holidayStatus: 0,
+                        holidayName: null,
+                        holidaySlno: 0
+                    }
+                }
+            }
+
+            //add the holiday details into the shift plan array
+            const fullholidayFilterFun = (values) => {
+                const holiday = fullMonthHolidayList.find((val) => val.hld_date === values.date)
+                if (holiday !== undefined || holiday !== null) {
+                    return {
+                        date: values?.date,
+                        emp_id: values?.emp_id,
+                        em_no: values?.em_no,
+                        shift: values?.date >= values?.doj ? default_shift : notapplicable_shift,
+                        holidayStatus: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : 1,
+                        holidayName: values?.holiday_type === 1 && holiday?.special_type === 2 ? null : holiday?.hld_desc,
+                        holidaySlno: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : holiday?.hld_slno
+                    }
+                } else {
+                    return {
+                        date: values?.date,
+                        emp_id: values?.emp_id,
+                        em_no: values?.em_no,
+                        shift: values?.date >= values?.doj ? default_shift : notapplicable_shift,
                         holidayStatus: 0,
                         holidayName: null,
                         holidaySlno: 0
@@ -264,7 +340,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                 } else {
 
                     // after the holiday inserted duty day array
-                    const insertDutyPlanArray = await fullShiftDutyDay.map(holidayFilterFun);
+                    const insertDutyPlanArray = await fullShiftDutyDay.map(fullholidayFilterFun);
 
                     // duty plan inserting function
                     const insertDutyPlainIntDB = await axioslogin.post("/plan/insert", insertDutyPlanArray)
@@ -272,7 +348,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                     if (success1 === 1) {
                         //duty plan inserted 
                         return getDutyPlanDetl(getDateOnly, employeeDetails).then((values) => {
-                            return { ...message, status: 1, message: 'initial Inserting Duty Plan', data: values, dateFormat: fullDayRange }
+                            return { ...message, status: 1, message: 'initial Inserting Duty Plan', data: values, dateFormat: newDateRange }
                         })
 
                     } else {
