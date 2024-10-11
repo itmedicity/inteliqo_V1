@@ -5,10 +5,6 @@ import { Option, Select } from '@mui/joy';
 
 const InductionTopics = ({ topic, setTopic }) => {
 
-    const dispatch = useDispatch()
-
-    useEffect(() => dispatch(InductionTrainingTopics()), [dispatch])
-
     const topicData = useSelector((state) => state?.gettrainingData?.InductionTopics?.InductionTopicsList)
 
     return (

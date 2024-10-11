@@ -62,6 +62,7 @@ const {
     FETCH_MONTHWISE_DEPT_SCHEDULE,
     FETCH_TRAINER_DEPT_SEC_NAMES,
     FETCH_INDUCTION_TRAINING_TOPICS_ALL,
+    FETCH_SUBTYPE_ALL
 } = Actiontypes;
 
 export const TrainingType = () => async (dispatch) => {
@@ -154,6 +155,16 @@ export const TrainerNames = () => async (dispatch) => {
     }
     else {
         dispatch({ type: FETCH_TRAINER_NAMES_ALL, payload: [], status: false })
+    }
+}
+export const TrainingSubType = () => async (dispatch) => {
+    const result = await axioslogin.get(`/TrainingSubType/select`)
+    const { data, success } = result.data
+    if (success === 2) {
+        dispatch({ type: FETCH_SUBTYPE_ALL, payload: data, status: true })
+    }
+    else {
+        dispatch({ type: FETCH_SUBTYPE_ALL, payload: [], status: false })
     }
 }
 export const DeptSectnWiseTrainerNames = (obj) => async (dispatch) => {

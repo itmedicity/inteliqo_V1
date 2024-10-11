@@ -7,11 +7,11 @@ import { useEffect } from 'react';
 
 
 const JoySectionWiseEmployee = ({ employee, getEmploy }) => {
-    console.log(employee);
+    // console.log(employee);
 
 
     //EMPLOYEE INFOR BASED ON SELECTED DEPT & SECTION
-    const empInform = useSelector((state) => state.getEmployeeBasedSection.emp);
+    const empInform = useSelector((state) => state?.getEmployeeBasedSection?.emp);
     const [empInfm, setEmpInform] = useState([{ em_id: 0, em_name: 'Employee Name' }])
     //SELECTED STATE FOR EMP NAME AND CODE
     const [value, setValue] = useState(empInfm[0]);

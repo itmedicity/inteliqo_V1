@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { Box, Paper } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -56,7 +56,8 @@ const InductionCompletedList = ({ setCompleteList, CompleteList, SetFlag }) => {
                         training_topic_name: val.training_topic_name,
                         pretest_status: val.pretest_status === 1 ? "Attented" : "Not Attented",
                         posttest_status: val.posttest_status === 1 ? "Attented" : "Not Attented",
-                        em_no: val.em_no
+                        em_no: val.em_no,
+                        subtype_no: val.subtype_no
                     }
                 })
                 setCompleteList(obj);
@@ -72,6 +73,7 @@ const InductionCompletedList = ({ setCompleteList, CompleteList, SetFlag }) => {
             warningNofity("Enter both 'From' and 'To' dates to initiate the search")
         }
     }, [Fromdate, Todate, setCompleteList, SetFlag])
+
 
     //table
     const [columnDef] = useState([
@@ -146,17 +148,6 @@ const InductionCompletedList = ({ setCompleteList, CompleteList, SetFlag }) => {
             </Box>
             <Box sx={{ width: "100%", overflow: 'auto' }}>
                 <Paper sx={{ height: 800, display: 'flex', flexDirection: "column" }}>
-                    {/* <CommonAgGrid
-                        columnDefs={columnDef}
-                        tableData={CompleteList}
-                        sx={{
-                            height: 700,
-                            width: "100%",
-                            mt: 1
-                        }}
-                        rowHeight={30}
-                        headerHeight={30}
-                    /> */}
                     <CustomAgGridRptFormatOne
                         tableDataMain={CompleteList}
                         columnDefMain={columnDef}

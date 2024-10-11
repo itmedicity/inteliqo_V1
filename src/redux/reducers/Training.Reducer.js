@@ -60,7 +60,8 @@ const {
     FETCH_CALENDER_DETAILS,
     FETCH_MONTHWISE_DEPT_SCHEDULE,
     FETCH_TRAINER_DEPT_SEC_NAMES,
-    FETCH_INDUCTION_TRAINING_TOPICS_ALL
+    FETCH_INDUCTION_TRAINING_TOPICS_ALL,
+    FETCH_SUBTYPE_ALL
 } = Actiontypes;
 
 const TrainingData = {
@@ -304,6 +305,10 @@ const TrainingData = {
     InductionTopics: {
         InductionTopicsList: [],
         InductionTopicsStatus: false
+    },
+    TrainingSubType: {
+        TrainingSubTypeList: [],
+        TrainingSubTypeStatus: false
     },
 }
 
@@ -848,6 +853,15 @@ export const gettrainingData = (state = TrainingData, { type, payload }) => {
                     ...state.InductionTopics,
                     InductionTopicsList: payload,
                     InductionTopicsStatus: true
+                }
+            }
+        case FETCH_SUBTYPE_ALL:
+            return {
+                ...state,
+                TrainingSubType: {
+                    ...state.TrainingSubType,
+                    TrainingSubTypeList: payload,
+                    TrainingSubTypeStatus: true
                 }
             }
         default:

@@ -1,5 +1,5 @@
 
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { Box, Paper } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -11,6 +11,8 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { ToastContainer } from 'react-toastify'
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 import InductionTopics from 'src/views/MuiComponents/JoyComponent/InductionTopics';
+import { useDispatch } from 'react-redux';
+import { InductionTrainingTopics } from 'src/redux/actions/Training.Action';
 
 const EmployeePassedList = ({ SetFlag, Success_emps, setSuccess_emps }) => {
 
@@ -18,6 +20,10 @@ const EmployeePassedList = ({ SetFlag, Success_emps, setSuccess_emps }) => {
     const [Fromdate, setFromdate] = useState('');
     const [Todate, setTodate] = useState('');
     const [topic, setTopic] = useState(0)
+
+    const dispatch = useDispatch()
+
+    useEffect(() => dispatch(InductionTrainingTopics()), [dispatch])
 
     const HandleFromDate = useCallback(async (newValue) => {
         const date = new Date(newValue);
@@ -47,7 +53,7 @@ const EmployeePassedList = ({ SetFlag, Success_emps, setSuccess_emps }) => {
         if (Fromdate !== '' && Todate !== '' && topic === 0) {
             const result = await axioslogin.post(`/TrainingInductionReport/inductionPassedEmpList`, obj)
             const { success, data } = result.data;
-            if (success === 2) {
+            if (success === 2 && data?.length !== 0) {
                 SetFlag(3)
                 const obj = data?.map((val, ndx) => {
                     return {
@@ -74,7 +80,7 @@ const EmployeePassedList = ({ SetFlag, Success_emps, setSuccess_emps }) => {
         else if (Fromdate !== '' && Todate !== '' && topic !== 0) {
             const result = await axioslogin.post(`/TrainingInductionReport/inductionPassedEmpList`, obj)
             const { success, data } = result.data;
-            if (success === 2) {
+            if (success === 2 && data?.length !== 0) {
                 SetFlag(3)
                 const obj = data?.map((val, ndx) => {
                     return {
@@ -181,24 +187,13 @@ const EmployeePassedList = ({ SetFlag, Success_emps, setSuccess_emps }) => {
                 </Box>
 
             </Box>
-            <Box sx={{ width: "100%", overflow: 'auto' }}>
-                <Paper sx={{ height: 800, display: 'flex', flexDirection: "column" }}>
-                    {/* <CommonAgGrid
-                        columnDefs={columnDef}
-                        tableData={CompleteList}
-                        sx={{
-                            height: 700,
-                            width: "100%",
-                            mt: 1
-                        }}
-                        rowHeight={30}
-                        headerHeight={30}
-                    /> */}
+            <Box sx={{ width: "100%" }}>
+                <Paper sx={{ height: 500, display: 'flex', flexDirection: "column" }}>
                     <CustomAgGridRptFormatOne
                         tableDataMain={Success_emps}
                         columnDefMain={columnDef}
                         sx={{
-                            height: 700,
+                            height: 300,
                             width: "100%",
                             mt: 1
                         }}
