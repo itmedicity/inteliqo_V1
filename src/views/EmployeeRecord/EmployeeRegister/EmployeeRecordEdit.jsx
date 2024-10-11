@@ -12,7 +12,7 @@ import {
 } from 'src/views/CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-import { Box, Button, CssVarsProvider, Tooltip } from '@mui/joy'
+import { Box, Button, CssVarsProvider, Option, Select, Tooltip } from '@mui/joy'
 import JoySalutation from 'src/views/MuiComponents/JoyComponent/JoySalutation'
 import SaveIcon from '@mui/icons-material/Save';
 import PreviewIcon from '@mui/icons-material/Preview';
@@ -94,6 +94,7 @@ const EmployeeRecordEdit = () => {
 
     const [clinictype, setClinictype] = useState(0)
     const [doctor, setDoctor] = useState(false)
+    const [leaveprocesstype, setLeaveprocesstype] = useState(0)
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -209,7 +210,7 @@ const EmployeeRecordEdit = () => {
                     em_designation, hrm_region2, em_conf_end_date,
                     em_contract_end_date, em_prob_end_date, em_retirement_date,
                     clinicaltype, gross_salary,
-                    doctor_status } = data[0]
+                    doctor_status, leaveprocess_type } = data[0]
                 const age = {
                     yearage: em_age_year,
                     mnthage: em_age_month,
@@ -256,6 +257,7 @@ const EmployeeRecordEdit = () => {
                 // setOld_prob_Status(probation_status)//setting old 
                 setClinictype(clinicaltype === 0 ? 0 : clinicaltype)
                 setDoctor(doctor_status === 1 ? true : false)
+                setLeaveprocesstype(leaveprocess_type)
             }
         }
         getEmployeedetails()
@@ -311,6 +313,7 @@ const EmployeeRecordEdit = () => {
             clinicaltype: clinictype,
             doctor_status: doctor === true ? 1 : 0,
             em_no: parseInt(empno),
+            leaveprocess_type: leaveprocesstype,
         }
 
     }, [empno, salutation, empname, gender, dateofbirth, branch, dept, deptSect, institute, doct, region2,
@@ -726,6 +729,20 @@ const EmployeeRecordEdit = () => {
                         </Box>
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                             <JoyClicnicalType value={clinictype} setValue={setClinictype} />
+                        </Box>
+                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+                            <Select
+                                value={leaveprocesstype}
+                                onChange={(event, newValue) => {
+                                    setLeaveprocesstype(newValue);
+                                }}
+                                size='md'
+                                variant='outlined'
+                            >
+                                <Option value={0} disabled>Select Employee Holiday Type</Option>
+                                <Option value={1}>General</Option>
+                                <Option value={2}>Accademic</Option>
+                            </Select>
                         </Box>
                         <Box sx={{
                             mt: 1.5, pl: 0.5,

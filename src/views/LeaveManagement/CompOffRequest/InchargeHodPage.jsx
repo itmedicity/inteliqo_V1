@@ -68,7 +68,7 @@ const InchargeHodPage = ({ state, setState }) => {
     // FILTERING AND SORTING DEPARTMENT SECTION AND EMPLOYEE
     useEffect(() => {
 
-        if (departmentSectionListFilterd?.length > 0 && hodBasedSection?.length === 0) {
+        if (departmentSectionListFilterd?.length > 0 && masterGroupStatus === true) {
             // NO FILTER FOR DEPARTMENT AND DEPARTMENT SECTION
             const departmentSection = departmentSectionListFilterd?.filter((e) => e.dept_id === deptID)
             setDeptSectionList(departmentSection)

@@ -62,7 +62,7 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
             em_id: emid,
             em_no: emno,
             resign_status: selectValue === 2 ? 1 : 0,
-            em_status: selectValue === 1 ? 0 : 1,
+            em_status: 0,
             unauthorized_absent_status: selectValue === 1 ? 1 : 0,
             unauthorised_absent_date: selectValue === 1 ? format(new Date(absentDate), 'yyyy-MM-dd') : null,
         }

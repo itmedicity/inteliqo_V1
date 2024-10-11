@@ -27,6 +27,7 @@ const ShiftSelect = ({ data, authStatus }) => {
         shift_id,
         //duty_day,
         attendance_update_flag,
+        doff_updation_flag,
         //holiday 
     } = shiftData;
 
@@ -59,7 +60,7 @@ const ShiftSelect = ({ data, authStatus }) => {
             style={{ width: '100%', backgroundColor: bgColor === 1 ? '#f3e5f5' : authStatus === 1 ? '#FF8B8B' : '' }}
             value={shift}
             onChange={(e) => shiftChangeFun(e)}
-            disabled={attendance_update_flag === 1 || shift === notapplicable_shift ? true : false}
+            disabled={attendance_update_flag === 1 || shift === notapplicable_shift || doff_updation_flag === 1 ? true : false}
         >
             <option disabled defaultValue={0} >Select...</option>
             {
