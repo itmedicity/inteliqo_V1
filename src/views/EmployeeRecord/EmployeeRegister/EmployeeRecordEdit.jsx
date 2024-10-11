@@ -739,7 +739,7 @@ const EmployeeRecordEdit = () => {
                                 size='md'
                                 variant='outlined'
                             >
-                                <Option value={0} disabled>Select Holiday Type</Option>
+                                <Option value={0} disabled>Select Employee Holiday Type</Option>
                                 <Option value={1}>General</Option>
                                 <Option value={2}>Accademic</Option>
                             </Select>
