@@ -15,7 +15,7 @@ const Announcement = () => {
 
     return (
         <Fragment>
-            <Paper square elevation={3} sx={{ width: '100%', height: { xl: 795, lg: 600, md: 500, sm: 500 } }} >
+            <Paper square elevation={3} sx={{ width: '100%', height: { xl: 795, lg: 660, md: 500, sm: 500 } }} >
                 <Card sx={{ width: '100%', height: "100%", borderRadius: 0 }} >
                     <CssVarsProvider>
                         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', px: 1, pt: 1 }}>
