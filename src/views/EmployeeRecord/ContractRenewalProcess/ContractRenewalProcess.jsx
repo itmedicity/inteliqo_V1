@@ -281,6 +281,7 @@ const ContractRenewalProcess = () => {
 
 
 
+
   /**
    * 1-> updation and salary closing of old attendance details and salary details 
    * 2 -> update employee master emp_no,category,contract_status,probation_status, start & aend date
