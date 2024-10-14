@@ -82,66 +82,68 @@ const Hrm_Alert = () => {
 
     return (
         <CustomLayout title="Alert" displayClose={true} >
-            <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'row', width: '100%', p: 1 }}>
-                <Box sx={{ flex: 1, px: 0.5 }}>
-                    <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
-                        <BranchSelectRedux value={branch} setValue={setBranch} />
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', p: 1 }}>
+                <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'row', width: '100%', p: 1 }}>
+                    <Box sx={{ flex: 1, px: 0.5 }}>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <BranchSelectRedux value={branch} setValue={setBranch} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <DeptSelectByRedux value={dept} setValue={setDept} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <DeptSecSelectByRedux dept={dept} value={deptSect} setValue={setDeptSect} />
+                        </Box>
                     </Box>
-                    <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
-                        <DeptSelectByRedux value={dept} setValue={setDept} />
+                    <Box sx={{ flex: 1, px: 0.5 }}>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <JoyCategorySelect value={category} setValue={setCategory} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <JoyDesignationSelect desgValue={designation} getDesg={setDesignation} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <InputComponent
+                                type="text"
+                                size="sm"
+                                placeholder="Alert Expiry Days"
+                                name="alertexprdays"
+                                value={alertexprdays}
+                                onchange={(e) => updateAlert(e)}
+                            />
+                        </Box>
                     </Box>
-                    <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
-                        <DeptSecSelectByRedux dept={dept} value={deptSect} setValue={setDeptSect} />
-                    </Box>
-                </Box>
-                <Box sx={{ flex: 1, px: 0.5 }}>
-                    <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
-                        <JoyCategorySelect value={category} setValue={setCategory} />
-                    </Box>
-                    <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
-                        <JoyDesignationSelect desgValue={designation} getDesg={setDesignation} />
-                    </Box>
-                    <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
-                        <InputComponent
-                            type="text"
+                    <Box sx={{ flex: 1, px: 0.5, }}>
+                        <Textarea
+                            label="Outlined"
+                            minRows={5}
+                            placeholder="Alert Message"
+                            variant="outlined"
+                            color="warning"
                             size="sm"
-                            placeholder="Alert Expiry Days"
-                            name="alertexprdays"
-                            value={alertexprdays}
-                            onchange={(e) => updateAlert(e)}
+                            value={alert}
+                            name="alert"
+                            onChange={(e) => updateAlert(e)}
+                            sx={{ flex: 1 }}
                         />
                     </Box>
-                </Box>
-                <Box sx={{ flex: 1, px: 0.5, }}>
-                    <Textarea
-                        label="Outlined"
-                        minRows={5}
-                        placeholder="Alert Message"
-                        variant="outlined"
-                        color="warning"
-                        size="sm"
-                        value={alert}
-                        name="alert"
-                        onChange={(e) => updateAlert(e)}
-                        sx={{ flex: 1 }}
-                    />
-                </Box>
-            </Paper>
-            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                <Tooltip title="Save" followCursor placement='top' arrow>
-                    <Box sx={{ px: 0.5, mt: 0.9 }}>
-                        <Button
-                            variant="outlined"
-                            component="label"
-                            size="sm"
-                            color="primary"
-                            onClick={submitFormData}
-                        >
-                            <SaveIcon />
-                        </Button>
-                    </Box>
-                </Tooltip>
+                </Paper>
+                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                    <Tooltip title="Save" followCursor placement='top' arrow>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                size="sm"
+                                color="primary"
+                                onClick={submitFormData}
+                            >
+                                <SaveIcon />
+                            </Button>
+                        </Box>
+                    </Tooltip>
 
+                </Box>
             </Box>
         </CustomLayout>
     )
