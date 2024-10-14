@@ -3,9 +3,8 @@ import React, { Fragment, Suspense, useEffect, useMemo, useState } from 'react'
 import DataSaverOffIcon from '@mui/icons-material/DataSaverOff';
 import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 const ListItemsHoliday = React.lazy(() => import('./ListItemHoliday'));
-
-
 
 const HolidayList = () => {
 
@@ -18,19 +17,29 @@ const HolidayList = () => {
         }
     }, [tdyformat])
 
+    const state = useSelector((state) => state?.getProfileData?.ProfileData[0] ?? 0)
+
+    const { holiday_type } = state;
+
     useEffect(() => {
         const getholidaylist = async (postData) => {
             const result = await axioslogin.post('/holidaylist/year', postData)
             const { success, data } = result.data
             if (success === 2) {
-                setArray(data)
+                if (holiday_type === 1) {
+                    const arr = data?.filter((val) => val.special_type === 1 || val.special_type === 3)
+                    setArray(arr)
+                } else if (holiday_type === 2) {
+                    const arr = data?.filter((val) => val.special_type === 2 || val.special_type === 3)
+                    setArray(arr)
+                }
             }
             else {
                 setArray([])
             }
         }
         getholidaylist(postData)
-    }, [postData])
+    }, [postData, holiday_type])
 
     return (
         <Fragment>
