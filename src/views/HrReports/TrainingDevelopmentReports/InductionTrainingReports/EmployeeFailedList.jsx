@@ -1,5 +1,5 @@
 
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { Box, Paper } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -11,12 +11,18 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { ToastContainer } from 'react-toastify'
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 import InductionTopics from 'src/views/MuiComponents/JoyComponent/InductionTopics';
+import { useDispatch } from 'react-redux';
+import { InductionTrainingTopics } from 'src/redux/actions/Training.Action';
 
 const EmployeeFailedList = ({ SetFlag, Failed_emps, setFailed_emps }) => {
 
     const [Fromdate, setFromdate] = useState('');
     const [Todate, setTodate] = useState('');
     const [topic, setTopic] = useState(0)
+
+    const dispatch = useDispatch()
+
+    useEffect(() => dispatch(InductionTrainingTopics()), [dispatch])
 
     const HandleFromDate = useCallback(async (newValue) => {
         const date = new Date(newValue);
@@ -46,7 +52,7 @@ const EmployeeFailedList = ({ SetFlag, Failed_emps, setFailed_emps }) => {
         if (Fromdate !== '' && Todate !== '' && topic === 0) {
             const result = await axioslogin.post(`/TrainingInductionReport/inductionFailedEmpList`, obj)
             const { success, data } = result.data;
-            if (success === 2) {
+            if (success === 2 && data?.length !== 0) {
                 SetFlag(4)
                 const obj = data?.map((val, ndx) => {
                     return {
@@ -60,7 +66,8 @@ const EmployeeFailedList = ({ SetFlag, Failed_emps, setFailed_emps }) => {
                         training_topic_name: val.training_topic_name,
                         pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
                         posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
-                        schedule_topic: val.schedule_topic
+                        schedule_topic: val.schedule_topic,
+                        trainers_name: val.trainers_name
                     }
                 })
                 setFailed_emps(obj);
@@ -73,7 +80,7 @@ const EmployeeFailedList = ({ SetFlag, Failed_emps, setFailed_emps }) => {
         else if (Fromdate !== '' && Todate !== '' && topic !== 0) {
             const result = await axioslogin.post(`/TrainingInductionReport/inductionFailedEmpList`, obj)
             const { success, data } = result.data;
-            if (success === 2) {
+            if (success === 2 && data?.length !== 0) {
                 SetFlag(4)
                 const obj = data?.map((val, ndx) => {
                     return {
@@ -87,7 +94,8 @@ const EmployeeFailedList = ({ SetFlag, Failed_emps, setFailed_emps }) => {
                         training_topic_name: val.training_topic_name,
                         pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
                         posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
-                        schedule_topic: val.schedule_topic
+                        schedule_topic: val.schedule_topic,
+                        trainers_name: val.trainers_name
                     }
                 })
                 const topicwise = obj?.filter((val) => val.schedule_topic === topic)
@@ -113,6 +121,7 @@ const EmployeeFailedList = ({ SetFlag, Failed_emps, setFailed_emps }) => {
         { headerName: 'Emp Name', field: 'em_name', filter: true, width: 350 },
         { headerName: 'Department', field: 'dept_name', filter: true, width: 350 },
         { headerName: 'Training Topics', field: 'training_topic_name', filter: true, width: 350 },
+        { headerName: 'Trainer Names', field: 'trainers_name', filter: true, width: 350 },
         { headerName: 'Pre-Test Mark', field: 'pretest_mark', filter: true, width: 200 },
         { headerName: 'Post-Test Mark', field: 'posttest_mark', filter: true, width: 200 },
     ])
@@ -181,23 +190,12 @@ const EmployeeFailedList = ({ SetFlag, Failed_emps, setFailed_emps }) => {
 
             </Box>
             <Box sx={{ width: "100%", overflow: 'auto' }}>
-                <Paper sx={{ height: 800, display: 'flex', flexDirection: "column" }}>
-                    {/* <CommonAgGrid
-                        columnDefs={columnDef}
-                        tableData={CompleteList}
-                        sx={{
-                            height: 700,
-                            width: "100%",
-                            mt: 1
-                        }}
-                        rowHeight={30}
-                        headerHeight={30}
-                    /> */}
+                <Paper sx={{ height: 700, display: 'flex', flexDirection: "column" }}>
                     <CustomAgGridRptFormatOne
                         tableDataMain={Failed_emps}
                         columnDefMain={columnDef}
                         sx={{
-                            height: 700,
+                            height: 600,
                             width: "100%",
                             mt: 1
                         }}

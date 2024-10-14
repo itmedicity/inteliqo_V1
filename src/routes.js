@@ -278,9 +278,13 @@ const CreditedLeaveCount = React.lazy(() => import('./views/HrReports/LeaveCount
 const ApprovedLeaveCancel = React.lazy(() => import('./views/LeaveManagement/ApprovedleaveCancel/LeaveCancelByHR'))
 const OffRequest = React.lazy(() => import('./views/LeaveManagement/OffRequest/OffrequestCombinePage'))
 const FullandFinal = React.lazy(() => import('./views/Resignation/EndOfService/EndofProcess'))
-const CompletedAndPendingStaffList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/CompletedAndPendingStaffList'))
+const InductionCompleteList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionCompleteList'))
 const TrainingSubTypeMaster = React.lazy(() => import('./views/Master/TrainingSubTypeMaster/TrainingSubTypeMaster'))
 const ManualRequestReport = React.lazy(() => import('./views/HrReports/ManualRequestReport/ManualReqstReport'))
+const InductPendingList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/IductPendingList'))
+const InductPassAndFailList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/CompletedAndPendingStaffList'))
+const InductionDetailsMainpage = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionPdfReport/InductionDetailsMainpage'))
+const InductionAttendedStaffReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionAttendedStaffReport'))
 
 
 const routes = [
@@ -556,9 +560,13 @@ const routes = [
   { path: '/Home/ApprovedLeaveCancel', exact: true, name: 'Approved Leave Cancel By HR', component: ApprovedLeaveCancel },
   { path: '/Home/DoffRequest', exact: true, name: 'DOFF Request', component: OffRequest },
   { path: '/Home/FullandFinal/:id', exact: true, name: 'Full and Final Settlement', component: FullandFinal },
-  { path: '/Home/CompletedAndPendingStaffList', exact: true, name: 'Completed And Pending Staff List', component: CompletedAndPendingStaffList },
+  { path: '/Home/CompletedAndPendingStaffList', exact: true, name: 'Completed And Pending Staff List', component: InductionCompleteList },
   { path: '/Home/TrainingSubTypeMaster', exact: true, name: 'Training Sub Type Master', component: TrainingSubTypeMaster },
   { path: '/Home/ManualRequestReport', exact: true, name: 'Manual Request Report', component: ManualRequestReport },
+  { path: '/Home/InductPendingList', exact: true, name: 'Induction pending Report', component: InductPendingList },
+  { path: '/Home/InductPassAndFailList', exact: true, name: 'Induction Pass and Fail Report', component: InductPassAndFailList },
+  { path: '/Home/InductionDetailsMainpage', exact: true, name: 'Induction Details Report', component: InductionDetailsMainpage },
+  { path: '/Home/InductionAttendedStaffReport', exact: true, name: 'Induction Attended Staff Report', component: InductionAttendedStaffReport },
 
 
 ]

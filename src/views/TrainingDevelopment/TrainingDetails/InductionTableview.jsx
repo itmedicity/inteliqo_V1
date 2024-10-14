@@ -21,7 +21,7 @@ const InductionTableview = ({ Inductdata }) => {
             const object = {
                 em_name: val.em_name,
                 em_no: val.em_no,
-                Induct_slno: val.Induct_slno,
+                Induct_slno: val.slnum,
                 em_id: val.em_id,
                 dept_id: val.dept_id,
                 dept_name: val.dept_name,

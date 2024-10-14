@@ -15,16 +15,15 @@ import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
 import CloseIcon from '@mui/icons-material/Close'
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import JoyTrainerMultipleSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainerMultipleSelect';
-import { TrainerNames } from 'src/redux/actions/Training.Action';
+import { TrainerNames, TrainingSubType } from 'src/redux/actions/Training.Action';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import JoyDeptWiseTrainingNames from 'src/views/MuiComponents/JoyDeptWiseTrainingNames';
 import ShowFile from './ShowFile';
 import CustomSettingsLayout from 'src/views/Component/MuiCustomComponent/CustomSettingsLayout';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-// import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import { setDepartment } from 'src/redux/actions/Department.action';
-import JoyTrainingSubtype from 'src/views/MuiComponents/JoyTrainingSubtype';
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
+import JoyTrainingSubtype from 'src/views/MuiComponents/JoyTrainingSubtype';
 
 const TrainingTopic = () => {
 
@@ -48,7 +47,7 @@ const TrainingTopic = () => {
     const [hours, setHours] = useState('');
     const [videos, SetVideos] = useState('');
     const [dept_status, setdept_status] = useState(false);
-    const [subtype_name, setsubtype_name] = useState('');
+    const [subtype_name, setsubtype_name] = useState([]);
     //file
     const [selectFile, setSelectFile] = useState([]);
     const [uploads, setUploads] = useState([]);
@@ -60,7 +59,7 @@ const TrainingTopic = () => {
     const [trainer_names, SetTrainerNames] = useState([]);
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [dept, setdept] = useState(0);
-    const [subtype, SetSubType] = useState(0);
+    const [subtype, SetSubType] = useState([]);
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
@@ -69,6 +68,7 @@ const TrainingTopic = () => {
     useEffect(() => {
         dispatch(TrainerNames())
         dispatch(setDepartment());
+        dispatch(TrainingSubType())
     }, [dispatch])
 
     //reset
@@ -92,8 +92,8 @@ const TrainingTopic = () => {
         setTrainers([])
         SetTrainerNames([])
         setOpenBkDrop(false)
-        SetSubType(0)
-        setsubtype_name('')
+        SetSubType([])
+        setsubtype_name([])
         setdept(0)
     }, [])
 
@@ -159,8 +159,8 @@ const TrainingTopic = () => {
                     const obj = {
                         topic_slno: val.topic_slno,
                         dept_status: val.dept_status,
-                        subtype_slno: val.subtype_slno,
-                        subtypename: val.subtype_name,
+                        subtype_slno: val.subtype_slno !== null || undefined || '' ? val.subtype_slno : null,
+                        subtypename: val.subtype_name !== null || undefined || '' ? val.subtype_name : null,
                         deptstatus: val.dept_status === 0 ? "NO" : "YES",
                         dept_id: val.dept_id,
                         dept_name: val.dept_name,
@@ -207,7 +207,6 @@ const TrainingTopic = () => {
         }
     }, [SetEditFlag, uploads])
 
-
     const getDataTable = useCallback(async (rowData) => {
         setFlag(1);
         const {
@@ -231,8 +230,8 @@ const TrainingTopic = () => {
         setUploads([])
         SetTrainerNames(trainers_name)
         setTrainers(trainerss)
-        SetSubType(subtype_slno)
-        setsubtype_name(subtypename)
+        SetSubType(subtype_slno === null ? [] : subtype_slno)
+        setsubtype_name(subtypename === null ? [] : subtypename)
         setdept_status(dept_status === 1 ? true : false)
         setdept(dept_id)
 
@@ -498,6 +497,7 @@ const TrainingTopic = () => {
 
                             <Box sx={{ flex: 1 }}>
                                 <JoyTrainingSubtype value={subtype} setValue={SetSubType} />
+                                {/* <JoySubTypeMultipleSelect value={subtype} setValue={SetSubType} /> */}
                             </Box>
                             <Box sx={{ flex: 1 }}>
                                 <Input
@@ -775,7 +775,10 @@ const TrainingTopic = () => {
                                         <td style={{ textAlign: "center" }}>{ndx + 1}</td>
                                         <td style={{ textTransform: "capitalize", flex: 1 }}>
                                             {row?.training_topic_name?.toLowerCase()}</td>
-                                        <td style={{ textAlign: "center", textTransform: "capitalize" }}>{row?.subtypename?.toLowerCase()}</td>
+                                        <td style={{ textAlign: "center", textTransform: "capitalize" }}>
+                                            {row?.subtypename === 0 ? " Not Updated" : row?.subtypename?.toLowerCase()}
+                                            {/* {row?.subtypename !== null ? Array.from(new Set(row?.subtypename?.toLowerCase().split(','))).join(', ') : "Not Updated"} */}
+                                        </td>
                                         <td>{row?.training_name?.toLowerCase()}</td>
                                         <td style={{ textTransform: "capitalize" }}>
                                             {row?.trainers_name}</td>

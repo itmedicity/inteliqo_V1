@@ -82,7 +82,6 @@ const DetailsHomepage = () => {
                 postId: emid
             }
             const result = await axioslogin.post(`/TrainingDetails/getDepartmental`, obj)
-            // const result = await axioslogin.get(`/TrainingDetails/getDepartmental/${emid}`)
             const { success, data } = result.data;
             if (success === 2) {
                 getHod(emid).then((value) => {
