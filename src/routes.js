@@ -278,13 +278,18 @@ const CreditedLeaveCount = React.lazy(() => import('./views/HrReports/LeaveCount
 const ApprovedLeaveCancel = React.lazy(() => import('./views/LeaveManagement/ApprovedleaveCancel/LeaveCancelByHR'))
 const OffRequest = React.lazy(() => import('./views/LeaveManagement/OffRequest/OffrequestCombinePage'))
 const FullandFinal = React.lazy(() => import('./views/Resignation/EndOfService/EndofProcess'))
-const InductionCompleteList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionCompleteList'))
 const TrainingSubTypeMaster = React.lazy(() => import('./views/Master/TrainingSubTypeMaster/TrainingSubTypeMaster'))
 const ManualRequestReport = React.lazy(() => import('./views/HrReports/ManualRequestReport/ManualReqstReport'))
+const InductionCompleteList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionCompleteList'))
 const InductPendingList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/IductPendingList'))
 const InductPassAndFailList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/CompletedAndPendingStaffList'))
 const InductionDetailsMainpage = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionPdfReport/InductionDetailsMainpage'))
 const InductionAttendedStaffReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionAttendedStaffReport'))
+const InductRetestEmpDetailsReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductRetestEmpDetails'))
+const InductionFeedback = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionFeedback'))
+const TrainerTrainingCount = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/TrainerTrainingCount'))
+const InductionTrainingTopicWise = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionTrainingTopicWise'))
+const StaffAttendedMainpage = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/StaffAttendedInduction/StaffAttendedMainpage'))
 
 
 const routes = [
@@ -567,7 +572,11 @@ const routes = [
   { path: '/Home/InductPassAndFailList', exact: true, name: 'Induction Pass and Fail Report', component: InductPassAndFailList },
   { path: '/Home/InductionDetailsMainpage', exact: true, name: 'Induction Details Report', component: InductionDetailsMainpage },
   { path: '/Home/InductionAttendedStaffReport', exact: true, name: 'Induction Attended Staff Report', component: InductionAttendedStaffReport },
-
+  { path: '/Home/InductRetestEmpDetailsReport', exact: true, name: 'Induction Retest Employee Report', component: InductRetestEmpDetailsReport },
+  { path: '/Home/InductionFeedback', exact: true, name: 'Induction Feedback Report', component: InductionFeedback },
+  { path: '/Home/TrainerTrainingCount', exact: true, name: 'Trainer Training Count Report', component: TrainerTrainingCount },
+  { path: '/Home/InductionTrainingTopicWise', exact: true, name: 'Induction Training TopicWise Report', component: InductionTrainingTopicWise },
+  { path: '/Home/StaffAttendedMainpage', exact: true, name: 'Induction Attended Staff Report', component: StaffAttendedMainpage },
 
 ]
 

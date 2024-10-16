@@ -7,7 +7,6 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useDispatch, useSelector } from 'react-redux';
 import { InductionTrainingCalender } from 'src/redux/actions/Training.Action';
 import Typography from '@mui/joy/Typography';
-import { Tooltip } from '@mui/joy';
 import { InductRedux } from './InductRedux';
 
 const InductionCalenderFormat = () => {

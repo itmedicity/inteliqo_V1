@@ -496,7 +496,7 @@ const QuestionMainPage = () => {
             }
 
         }
-    }, [postdata, patchdata, reset, flag, selectedFiles, training_topic, setCount, count, questions, training_topic, answerA, answerB, answerC, answerD, marks]);
+    }, [postdata, patchdata, reset, flag, selectedFiles, training_topic, setCount, count, questions, answerA, answerB, answerC, answerD, marks]);
 
     //column def
     const [columnDef] = useState([

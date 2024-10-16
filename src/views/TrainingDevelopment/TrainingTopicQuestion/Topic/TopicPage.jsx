@@ -56,14 +56,15 @@ const TopicPage = () => {
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
     const { em_id, em_department, em_dept_section } = employeeProfileDetl;
 
-    const obj = {
-        em_department: em_department,
-        em_dept_section: em_dept_section
-    }
+
     useEffect(() => {
+        const obj = {
+            em_department: em_department,
+            em_dept_section: em_dept_section
+        }
         // dispatch(TrainerNames())
         dispatch(DeptSectnWiseTrainerNames(obj))
-    }, [dispatch, obj])
+    }, [dispatch, em_department, em_dept_section])
 
     //reset
     const reset = useCallback(() => {
