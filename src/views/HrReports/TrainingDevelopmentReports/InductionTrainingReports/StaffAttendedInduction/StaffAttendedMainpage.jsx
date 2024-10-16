@@ -3,7 +3,7 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartmentSectionAll, getDepartmentAll, getEmployeeInformationLimited, getCommonSettings } from 'src/redux/reduxFun/reduxHelperFun';
-import { Box, CssVarsProvider, Tooltip, Typography, IconButton } from '@mui/joy';
+import { Box, CssVarsProvider, Tooltip, Typography, IconButton, Input, Checkbox } from '@mui/joy';
 import { setDept } from 'src/redux/actions/Dept.Action';
 import { setdeptSection } from 'src/redux/actions/DeptSection.action';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -13,13 +13,17 @@ import { ToastContainer } from 'react-toastify';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import SearchIcon from '@mui/icons-material/Search';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from 'src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction';
-import ReportLayout from '../../ReportComponent/ReportLayout';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
+import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout';
+import InductionTopics from 'src/views/MuiComponents/JoyComponent/InductionTopics';
+import { InductionTrainingTopics } from 'src/redux/actions/Training.Action';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
-const InductionAttendedStaffReport = () => {
+const StaffAttendedMainpage = () => {
 
     const dispatch = useDispatch();
 
@@ -27,6 +31,7 @@ const InductionAttendedStaffReport = () => {
     useEffect(() => {
         dispatch(setDept())
         dispatch(setdeptSection())
+        dispatch(InductionTrainingTopics())
     }, [dispatch])
 
     const [deptID, setDeptID] = useState(0);
@@ -48,6 +53,9 @@ const InductionAttendedStaffReport = () => {
     })
     const [drop, setDropOpen] = useState(false)
     const [EmployeeData, SetEmployeeData] = useState([]);
+    const [topic, setTopic] = useState(0);
+    const [selectedMonth, setselectedMonth] = useState('');
+    const [AllEmpList, setAllEmpList] = useState(false);
 
     const department = useSelector((state) => getDepartmentAll(state))
     const departmentNameList = useMemo(() => department, [department])
@@ -65,7 +73,7 @@ const InductionAttendedStaffReport = () => {
         setMasterGroupStatus(groupStatus)
         dispatch(setCommonSetting());
         dispatch(setShiftDetails())
-    }, [groupStatus, dispatch])
+    }, [groupStatus])
 
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
@@ -154,25 +162,39 @@ const InductionAttendedStaffReport = () => {
         setRequestUser({ ...requestUser, emNo: value })
     }, [requestUser, setRequestUser])
 
+    const HandleMonth = useCallback(async (newValue) => {
+        const date = new Date(newValue);
+        if (isValid(date) && date !== null && date !== undefined) {
+            const formattedDate = format(date, 'yyyy-MM-dd');
+            setselectedMonth(formattedDate);
+        } else {
+            warningNofity("Selected Date is not valid");
+        }
+    }, []);
+
     const SearchingProcess = useCallback(async () => {
-        const id = requestUser?.emID;
-        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && requestUser?.emID !== 0) {
+        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && topic !== 0 && selectedMonth !== '' && AllEmpList === false) {
+            const obj = {
+                deptID: requestUser?.deptID,
+                sectionID: requestUser?.sectionID,
+                topic: topic,
+                selectedMonth: format(new Date(selectedMonth), 'MM')
+            };
             try {
-                const result = await axioslogin.get(`/TrainingDetails/getInductiontrainings/${id}`);
+                const result = await axioslogin.post(`/TrainingInductionReport/getInductionDeptWise`, obj);
                 const { success, data } = result.data;
                 if (success === 2 && data?.length !== 0) {
-                    let obj = data.map((val) => ({
-                        Induct_slno: val.Induct_slno,
+                    const mappedData = data.map((val) => ({
+                        Induct_slno: val.serialno,
                         em_no: val.em_no,
                         em_name: val.em_name,
                         em_id: val.em_id,
-                        induction_date: val.induction_date,
-                        date: format(new Date(val.induction_date), 'dd-MM-yyyy'),
-                        trainer_name: val.trainer_name,
+                        induct_detail_date: val.induct_detail_date,
+                        date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
                         dept_name: val.dept_name,
                         training_topic_name: val.training_topic_name,
-                        pretest_mark: val.induct_pre_mark !== null ? val.induct_pre_mark : "Not Updated",
-                        posttest_mark: val.induct_post_mark !== null ? val.induct_post_mark : "Not Updated",
+                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
+                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
                         schedule_topic: val.schedule_topic,
                         retest: val.retest === 0 ? "No" : "Yes",
                         HodVerification: val.training_induct_hod_aprvl_status !== 0 ? "Verified" : "Not Verified",
@@ -184,21 +206,76 @@ const InductionAttendedStaffReport = () => {
                         offline_mode: val.offline_mode,
                         online_mode: val.online_mode,
                         TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
-                        sect_name: val.sect_name
+                        sect_name: val.sect_name,
+                        trainers_name: val.trainers_name,
                     }));
-                    SetEmployeeData(obj); // Update state with final object
+
+                    // Set the mapped data to the state
+                    SetEmployeeData(mappedData);
+                    if (employeeID !== 0) {
+                        const filterWithEmNo = mappedData?.filter((val) => val.em_no === employeeID)
+                        SetEmployeeData(filterWithEmNo);
+                    }
                 } else {
-                    SetEmployeeData([]) // Clear data if no result
+                    warningNofity("No Records Found");
+                    SetEmployeeData([]); // Clear data when no records are found
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 SetEmployeeData([]); // Clear data on error
             }
-        } else {
-            warningNofity("Select Basic Information for Search");
-            SetEmployeeData([]); // Clear data if no department or section is selected
         }
-    }, [requestUser, setDropOpen]);
+        if (requestUser?.deptID === 0 && requestUser?.sectionID === 0 && topic !== 0 && selectedMonth !== '' && AllEmpList === true) {
+            const obj = {
+                topic: topic,
+                selectedMonth: format(new Date(selectedMonth), 'MM')
+            };
+            try {
+                const result = await axioslogin.post(`/TrainingInductionReport/getInductionAllStaffReport`, obj);
+                const { success, data } = result.data;
+                if (success === 2 && data?.length !== 0) {
+                    const mappedData = data.map((val) => ({
+                        Induct_slno: val.serialno,
+                        em_no: val.em_no,
+                        em_name: val.em_name,
+                        em_id: val.em_id,
+                        induct_detail_date: val.induct_detail_date,
+                        date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
+                        dept_name: val.dept_name,
+                        training_topic_name: val.training_topic_name,
+                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
+                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
+                        schedule_topic: val.schedule_topic,
+                        retest: val.retest === 0 ? "No" : "Yes",
+                        HodVerification: val.training_induct_hod_aprvl_status !== 0 ? "Verified" : "Not Verified",
+                        TndVerification: val.training_iduct_tnd_verify_status !== 0 ? "Verified" : "Not Verified",
+                        training_status: val.training_status,
+                        Attandance: val.training_status === 1 ? "Present" : "Absent",
+                        pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
+                        posttest_status: val.posttest_status === 1 ? "Attended" : "Not Attended",
+                        offline_mode: val.offline_mode,
+                        online_mode: val.online_mode,
+                        TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
+                        sect_name: val.sect_name,
+                        trainers_name: val.trainers_name,
+                    }));
+
+                    // Set the mapped data to the state
+                    SetEmployeeData(mappedData);
+                } else {
+                    warningNofity("No Records Found");
+                    SetEmployeeData([]); // Clear data when no records are found
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                SetEmployeeData([]); // Clear data on error
+            }
+        }
+        else {
+            // warningNofity("Select Department & Department Section");
+        }
+    }, [employeeID, topic, requestUser, selectedMonth, AllEmpList]);
+
 
 
     const [columnDef] = useState([
@@ -209,7 +286,7 @@ const InductionAttendedStaffReport = () => {
         { headerName: 'Department section', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Date', field: 'date', filter: true, width: 150 },
         { headerName: 'Topic', field: 'training_topic_name', filter: true, width: 250 },
-        { headerName: 'Trainer Name', field: 'trainer_name', filter: true, width: 250 },
+        { headerName: 'Trainer Name', field: 'trainers_name', filter: true, width: 250 },
         { headerName: 'Attandance', field: 'Attandance', filter: true, width: 150 },
         { headerName: 'Pretest_status', field: 'pretest_status', filter: true, width: 150 },
         { headerName: 'Post_status', field: 'posttest_status', filter: true, width: 150 },
@@ -219,64 +296,104 @@ const InductionAttendedStaffReport = () => {
         { headerName: 'Re-Test', field: 'retest', filter: true, width: 150 },
         { headerName: 'HOD Verification', field: 'HodVerification', filter: true, width: 200 },
         { headerName: 'TND Verification', field: 'TndVerification', filter: true, width: 200 },
-    ])
 
+    ])
+    const HandleAllEmpList = useCallback((e) => {
+        if (e.target.checked === true) {
+            setAllEmpList(e.target.checked)
+        }
+        else {
+            setAllEmpList(false)
+        }
+    }, [setAllEmpList])
 
     return (
         <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
-            <ReportLayout title="Induction Employee Wise Training Report" data={EmployeeData} displayClose={true} >
+            <ReportLayout title="Induction Attended Staff Report" data={EmployeeData} displayClose={true} >
                 <ToastContainer />
                 <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
                 <Box sx={{ width: '100%', }} >
                     <Paper variant="outlined" sx={{ p: 0.5, mt: 0.5 }}>
-                        <Box sx={{ display: 'flex', flex: 1 }} >
-                            <Box sx={{ flex: 1, px: 0.3 }} >
-                                <Select
-                                    defaultValue={0}
-                                    onChange={handleChangeDepartmentID}
-                                    sx={{ width: '100%' }}
-                                    value={deptID}
-                                    variant='outlined'
-                                    color='primary'
-                                    size='sm'
-                                    disabled={disabled}
-                                    placeholder="Select Department"
-                                    slotProps={{
-                                        listbox: {
-                                            placement: 'bottom-start',
-                                        },
-                                    }}
-                                >
-                                    <Option disabled value={0}>Select Department</Option>
-                                    {
-                                        departmentNameList && departmentNameList?.map((val, index) => {
-                                            return <Option key={index} value={val.dept_id}>{val.dept_name}</Option>
-                                        })
-                                    }
-                                </Select>
+                        <Box sx={{ display: 'flex', flex: 1, justifyContent: "space-between" }} >
+                            <Box sx={{ p: 1 }}>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={AllEmpList}
+                                    className="ml-1"
+                                    onChange={(e) => HandleAllEmpList(e)}
+                                    label="All"
+                                />
                             </Box>
-                            <Box sx={{ flex: 1, px: 0.3 }}>
-                                <Select
-                                    defaultValue={0}
-                                    value={deptSection}
-                                    onChange={handleChangeDepetSection}
-                                    sx={{ width: '100%' }}
-                                    size='sm'
-                                    variant='outlined'
-                                    color='primary'
-                                    placeholder="Select Department Section"
-                                    endDecorator={deptSectionList?.length === 0 && <div className='loading-spinner' ></div>}
+                            <Box sx={{ flex: 1 }}>
+                                <LocalizationProvider dateAdapter={AdapterMoment} >
+                                    <DatePicker
+                                        views={['month']}
+                                        inputFormat="DD-MM-YYYY"
+                                        value={selectedMonth}
+                                        onChange={(newValue) => {
+                                            HandleMonth(newValue);
+                                        }}
+                                        renderInput={({ inputRef, inputProps, InputProps }) => (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                <CssVarsProvider>
+                                                    <Input ref={inputRef} {...inputProps} style={{ width: '100%' }} disabled={true} />
+                                                </CssVarsProvider>
+                                                {InputProps?.endAdornment}
+                                            </Box>
+                                        )}
+                                    />
+                                </LocalizationProvider>
+                            </Box>
+                            {AllEmpList === false ?
+                                <Box sx={{ flex: 1, px: 0.3 }} >
+                                    <Select
+                                        defaultValue={0}
+                                        onChange={handleChangeDepartmentID}
+                                        sx={{ width: '100%' }}
+                                        value={deptID}
+                                        variant='outlined'
+                                        color='primary'
+                                        size='sm'
+                                        disabled={disabled}
+                                        placeholder="Select Department"
+                                        slotProps={{
+                                            listbox: {
+                                                placement: 'bottom-start',
+                                            },
+                                        }}
+                                    >
+                                        <Option disabled value={0}>Select Department</Option>
+                                        {
+                                            departmentNameList && departmentNameList?.map((val, index) => {
+                                                return <Option key={index} value={val.dept_id}>{val.dept_name}</Option>
+                                            })
+                                        }
+                                    </Select>
+                                </Box> : null}
+                            {AllEmpList === false ?
+                                <Box sx={{ flex: 1, px: 0.3 }}>
+                                    <Select
+                                        defaultValue={0}
+                                        value={deptSection}
+                                        onChange={handleChangeDepetSection}
+                                        sx={{ width: '100%' }}
+                                        size='sm'
+                                        variant='outlined'
+                                        color='primary'
+                                        placeholder="Select Department Section"
+                                        endDecorator={deptSectionList?.length === 0 && <div className='loading-spinner' ></div>}
 
-                                >
-                                    <Option disabled value={0}>Select Department Section</Option>
-                                    {
-                                        deptSectionList && deptSectionList?.map((val, index) => {
-                                            return <Option key={index} value={val.sect_id}  >{val.sect_name}</Option>
-                                        })
-                                    }
-                                </Select>
-                            </Box>
-                            <Box sx={{ width: '15%', px: 0.3 }}>
+                                    >
+                                        <Option disabled value={0}>Select Department Section</Option>
+                                        {
+                                            deptSectionList && deptSectionList?.map((val, index) => {
+                                                return <Option key={index} value={val.sect_id}  >{val.sect_name}</Option>
+                                            })
+                                        }
+                                    </Select>
+                                </Box> : null}
+                            {AllEmpList === false ? <Box sx={{ width: '15%', px: 0.3 }}>
                                 <Select
                                     onChange={handleChangeEmployeeName}
                                     sx={{ width: '100%' }}
@@ -309,6 +426,11 @@ const InductionAttendedStaffReport = () => {
                                         })
                                     }
                                 </Select>
+                            </Box> : null}
+                            <Box sx={{ flex: 1, }}>
+                                <Box sx={{ flex: 1 }}>
+                                    <InductionTopics topic={topic} setTopic={setTopic} />
+                                </Box>
                             </Box>
                             <Box sx={{ px: 0.3 }}>
                                 <CssVarsProvider>
@@ -321,7 +443,6 @@ const InductionAttendedStaffReport = () => {
                                 </CssVarsProvider>
                             </Box>
                         </Box>
-
                     </Paper>
 
                     <Box sx={{ width: "100%" }}>
@@ -344,5 +465,4 @@ const InductionAttendedStaffReport = () => {
         </Paper>
     )
 }
-
-export default memo(InductionAttendedStaffReport) 
+export default memo(StaffAttendedMainpage) 
