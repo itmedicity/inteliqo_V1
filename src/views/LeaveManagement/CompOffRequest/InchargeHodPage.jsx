@@ -91,7 +91,7 @@ const InchargeHodPage = ({ state, setState }) => {
             setEmpList([])
         }
 
-    }, [departmentSectionListFilterd, deptID, hodBasedSection])
+    }, [departmentSectionListFilterd, deptID, hodBasedSection, masterGroupStatus])
 
     //HANDELE CHANGE DEPARTMENT
     const handleChangeDepartmentID = useCallback((e, value) => {

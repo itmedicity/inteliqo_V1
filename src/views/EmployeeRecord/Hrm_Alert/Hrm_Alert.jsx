@@ -1,147 +1,152 @@
-import { TextareaAutosize } from '@material-ui/core'
+import { Button, Textarea, Tooltip } from '@mui/joy'
+import { Box, Paper } from '@mui/material'
 import { addDays } from 'date-fns/esm'
 import moment from 'moment'
-import React, { Fragment, useContext, useState } from 'react'
-import { useHistory } from 'react-router-dom'
-import { PayrolMasterContext } from 'src/Context/MasterContext'
+import React, { memo, useCallback, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-import BrnachMastSelection from 'src/views/CommonCode/BrnachMastSelection'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
-import DepartmentSelect from 'src/views/CommonCode/DepartmentSelect'
-import DesignationMast from 'src/views/CommonCode/DesignationMast'
-import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory'
-import PageLayoutSave from 'src/views/CommonCode/PageLayoutSave'
-import TextInput from 'src/views/Component/TextInput'
-import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
+import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
+import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux'
+import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategorySelect'
+import JoyDesignationSelect from 'src/views/MuiComponents/JoyComponent/JoyDesignationSelect'
+import SaveIcon from '@mui/icons-material/Save';
+import { useMemo } from 'react'
 
 const Hrm_Alert = () => {
-    const { selectBranchMast, updateBranchSelected,
-        selectDeptSection, updateDepartmentSection,
-        selectedDept, updateSelected,
-        selectDesignation, updateDesignation,
-        getemployeecategory, udateemployeecategory } = useContext(PayrolMasterContext);
-    const history = useHistory()
-    const RedirectToProfilePage = () => {
-        history.push(`/Home`)
-    }
+
+    const [branch, setBranch] = useState(0)
+    const [dept, setDept] = useState(0)
+    const [deptSect, setDeptSect] = useState(0)
+    const [category, setCategory] = useState(0)
+    const [designation, setDesignation] = useState(0)
+
     const [formData, setFormData] = useState({
         alertexprdays: '',
         alert: ''
     })
-    const defaultState = {
-        alertexprdays: '',
-        alert: ''
-    }
-    const { alertexprdays, alert } = formData
-    const updateAlert = async (e) => {
+    const defaultState = useMemo(() => {
+        return {
+            alertexprdays: '',
+            alert: ''
+        }
+    }, [])
+
+    const { alertexprdays, alert } = formData;
+
+    const updateAlert = useCallback(async (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...formData, [e.target.name]: value })
-    }
-    const postData = {
-        alert_branch: selectBranchMast,
-        alert_department: selectedDept,
-        aler_deptsec: selectDeptSection,
-        emp_category: getemployeecategory,
-        designation: selectDesignation,
-        alert: alert,
-        alert_expr_date: moment(addDays(new Date(), alertexprdays)).format('YYYY-MM-DD'),
-        create_date: moment(new Date()).format('YYYY-MM-DD'),
-    }
+    }, [formData])
+
+    const postData = useMemo(() => {
+        return {
+            alert_branch: branch,
+            alert_department: dept,
+            aler_deptsec: deptSect,
+            emp_category: category,
+            designation: designation,
+            alert: alert,
+            alert_expr_date: moment(addDays(new Date(), alertexprdays)).format('YYYY-MM-DD'),
+            create_date: moment(new Date()).format('YYYY-MM-DD'),
+        }
+    }, [branch, dept, deptSect, category, designation, alert, alertexprdays])
+
     //save
-    const submitFormData = async () => {
+    const submitFormData = useCallback(async () => {
         if (alertexprdays !== '') {
             const result = await axioslogin.post('/hrmAlert', postData)
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
                 setFormData(defaultState)
-                updateBranchSelected(0)
-                updateDepartmentSection(0)
-                updateSelected(0)
-                updateDesignation(0)
-                udateemployeecategory(0)
+                setBranch(0)
+                setDept(0)
+                setDeptSect(0)
+                setCategory(0)
+                setDesignation(0)
             }
             else if (success === 2) {
                 warningNofity(message)
             }
             else {
-                errorNofity("Error Occured!!!Please Contact EDP")
+                errorNofity("Error Occured, Contact IT")
             }
         }
         else {
-            warningNofity("Alert Expiry Days Is Null")
+            warningNofity("Expiry Days Can't Be Null")
         }
+    }, [postData, alertexprdays, defaultState])
 
-    }
     return (
-        <Fragment>
-            <PageLayoutSave
-                heading="Alert"
-                redirect={RedirectToProfilePage}
-                submit={submitFormData}
-            >
-                <form>
-                    <div className="col-md-12">
-                        <div className="row g-1">
-                            <div className="col-md-4">
-                                <div className="row g-1">
-                                    <div className="col-md-12">
-                                        <BrnachMastSelection style={SELECT_CMP_STYLE} />
-                                    </div>
-                                </div>
-                                <div className="row g-1">
-                                    <div className="col-md-12">
-                                        <DepartmentSelect style={SELECT_CMP_STYLE} />
-                                    </div>
-                                </div>
-                                <div className="row g-1">
-                                    <div className="col-md-12">
-                                        <DepartmentSectionSelect style={SELECT_CMP_STYLE} />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="row g-1">
-                                    <div className="col-md-12">
-                                        <EmployeeCategory style={SELECT_CMP_STYLE} />
-                                    </div>
-                                </div>
-                                <div className="row g-1">
-                                    <div className="col-md-12">
-                                        <DesignationMast style={SELECT_CMP_STYLE} />
-                                    </div>
-                                </div>
-                                <div className="row g-1">
-                                    <div className="col-md-12">
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder="Alert Expiry Days"
-                                            name="alertexprdays"
-                                            value={alertexprdays}
-                                            changeTextValue={(e) => updateAlert(e)}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-3">
-                                <TextareaAutosize
-                                    aria-label="minimum height"
-                                    minRows={3}
-                                    placeholder="Alert"
-                                    style={{ width: 520, height: 100 }}
-                                    name="alert"
-                                    value={alert}
-                                    onChange={(e) => updateAlert(e)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </PageLayoutSave>
-        </Fragment>
+        <CustomLayout title="Alert" displayClose={true} >
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', p: 1 }}>
+                <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'row', width: '100%', p: 1 }}>
+                    <Box sx={{ flex: 1, px: 0.5 }}>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <BranchSelectRedux value={branch} setValue={setBranch} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <DeptSelectByRedux value={dept} setValue={setDept} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <DeptSecSelectByRedux dept={dept} value={deptSect} setValue={setDeptSect} />
+                        </Box>
+                    </Box>
+                    <Box sx={{ flex: 1, px: 0.5 }}>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <JoyCategorySelect value={category} setValue={setCategory} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <JoyDesignationSelect desgValue={designation} getDesg={setDesignation} />
+                        </Box>
+                        <Box sx={{ flex: 1, px: 0.5, py: 0.1 }}>
+                            <InputComponent
+                                type="text"
+                                size="sm"
+                                placeholder="Alert Expiry Days"
+                                name="alertexprdays"
+                                value={alertexprdays}
+                                onchange={(e) => updateAlert(e)}
+                            />
+                        </Box>
+                    </Box>
+                    <Box sx={{ flex: 1, px: 0.5, }}>
+                        <Textarea
+                            label="Outlined"
+                            minRows={5}
+                            placeholder="Alert Message"
+                            variant="outlined"
+                            color="warning"
+                            size="sm"
+                            value={alert}
+                            name="alert"
+                            onChange={(e) => updateAlert(e)}
+                            sx={{ flex: 1 }}
+                        />
+                    </Box>
+                </Paper>
+                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                    <Tooltip title="Save" followCursor placement='top' arrow>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                size="sm"
+                                color="primary"
+                                onClick={submitFormData}
+                            >
+                                <SaveIcon />
+                            </Button>
+                        </Box>
+                    </Tooltip>
+
+                </Box>
+            </Box>
+        </CustomLayout>
     )
 }
 
-export default Hrm_Alert
+export default memo(Hrm_Alert) 

@@ -320,7 +320,7 @@ const EmployeeRecordEdit = () => {
         cont_gracedate, dateofjoining, category, retirementyear, cont_perioddate, permantPin, region1,
         yearage, mobileno, landphone, email, designation, bloodgrp, presentPin, mnthage, dayge, religion,
         Salary, empstatus, addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, doctortype,
-        probationendDate, prob_status, contractflag, clinictype, doctor])
+        probationendDate, prob_status, contractflag, clinictype, doctor, leaveprocesstype])
 
     const clearForm = useCallback(() => {
         setEmpno('')
