@@ -65,7 +65,7 @@ const InductionAttendedStaffReport = () => {
         setMasterGroupStatus(groupStatus)
         dispatch(setCommonSetting());
         dispatch(setShiftDetails())
-    }, [groupStatus])
+    }, [groupStatus, dispatch])
 
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
@@ -198,7 +198,7 @@ const InductionAttendedStaffReport = () => {
             warningNofity("Select Basic Information for Search");
             SetEmployeeData([]); // Clear data if no department or section is selected
         }
-    }, [employeeID, requestUser]);
+    }, [requestUser, setDropOpen]);
 
 
     const [columnDef] = useState([
