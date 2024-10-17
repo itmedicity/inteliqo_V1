@@ -18,12 +18,12 @@ import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from 'src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout';
-import InductionTopics from 'src/views/MuiComponents/JoyComponent/InductionTopics';
 import { InductionTrainingTopics } from 'src/redux/actions/Training.Action';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import DepartmentalTrainingTopics from 'src/views/MuiComponents/DepartmentalTrainingTopics';
 
-const StaffAttendedMainpage = () => {
+const DeptStaffExamReport = () => {
 
     const dispatch = useDispatch();
 
@@ -55,7 +55,7 @@ const StaffAttendedMainpage = () => {
     const [EmployeeData, SetEmployeeData] = useState([]);
     const [topic, setTopic] = useState(0);
     const [selectedMonth, setselectedMonth] = useState('');
-    const [AllEmpList, setAllEmpList] = useState(false);
+    const [Pending_flag, setPending_flag] = useState(false);
 
     const department = useSelector((state) => getDepartmentAll(state))
     const departmentNameList = useMemo(() => department, [department])
@@ -173,7 +173,7 @@ const StaffAttendedMainpage = () => {
     }, []);
 
     const SearchingProcess = useCallback(async () => {
-        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && topic !== 0 && selectedMonth !== '' && AllEmpList === false) {
+        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && topic !== 0 && selectedMonth !== '') {
             const obj = {
                 deptID: requestUser?.deptID,
                 sectionID: requestUser?.sectionID,
@@ -181,100 +181,105 @@ const StaffAttendedMainpage = () => {
                 selectedMonth: format(new Date(selectedMonth), 'MM')
             };
             try {
-                const result = await axioslogin.post(`/TrainingInductionReport/getInductionDeptWise`, obj);
-                const { success, data } = result.data;
-                if (success === 2 && data?.length !== 0) {
-                    const mappedData = data.map((val) => ({
-                        Induct_slno: val.serialno,
-                        em_no: val.em_no,
-                        em_name: val.em_name,
-                        em_id: val.em_id,
-                        induct_detail_date: val.induct_detail_date,
-                        date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
-                        dept_name: val.dept_name,
-                        training_topic_name: val.training_topic_name,
-                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
-                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
-                        schedule_topic: val.schedule_topic,
-                        retest: val.retest === 0 ? "No" : "Yes",
-                        HodVerification: val.training_induct_hod_aprvl_status !== 0 ? "Verified" : "Not Verified",
-                        TndVerification: val.training_iduct_tnd_verify_status !== 0 ? "Verified" : "Not Verified",
-                        training_status: val.training_status,
-                        Attandance: val.training_status === 1 ? "Present" : "Absent",
-                        pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
-                        posttest_status: val.posttest_status === 1 ? "Attended" : "Not Attended",
-                        offline_mode: val.offline_mode,
-                        online_mode: val.online_mode,
-                        TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
-                        sect_name: val.sect_name,
-                        trainers_name: val.trainers_name,
-                    }));
-
-                    // Set the mapped data to the state
-                    SetEmployeeData(mappedData);
-                    if (employeeID !== 0) {
-                        const filterWithEmNo = mappedData?.filter((val) => val.em_no === employeeID)
-                        SetEmployeeData(filterWithEmNo);
+                if (Pending_flag === false) {
+                    const result = await axioslogin.post(`/TrainingInductionReport/GetDeptStaffExamPassedReport`, obj);
+                    const { success, data } = result.data;
+                    if (success === 2 && data?.length !== 0) {
+                        const mappedData = data.map((val) => ({
+                            Induct_slno: val.serialno,
+                            em_no: val.em_no,
+                            em_name: val.emp_name,
+                            em_id: val.em_id,
+                            schedule_date: val.schedule_date,
+                            date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
+                            dept_name: val.dept_name,
+                            training_topic_name: val.training_topic_name,
+                            pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
+                            posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
+                            schedule_topic: val.schedule_topic,
+                            retest: val.retest === 0 ? "No" : "Yes",
+                            HodVerification: val.training_hod_apprvls_status !== 0 ? "Verified" : "Not Verified",
+                            TndVerification: val.tnd_verification_status !== 0 ? "Verified" : "Not Verified",
+                            training_status: val.training_status,
+                            Attandance: val.training_status === 1 ? "Present" : "Absent",
+                            pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
+                            posttest_status: val.posttest_status === 1 ? "Attended" : "Not Attended",
+                            offline_mode: val.offline_mode,
+                            online_mode: val.online_mode,
+                            TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
+                            sect_name: val.sect_name,
+                            trainers_name: val.trainers_name,
+                            preAttendance: val.pretest_status,
+                            postAttendance: val.posttest_status,
+                            pre_mark: val.pre_mark,
+                            post_mark: val.post_mark
+                        }));
+                        SetEmployeeData(mappedData)
+                        if (employeeID !== 0) {
+                            const filterWithEmNo = mappedData?.filter((val) => val.em_no === employeeID)
+                            SetEmployeeData(filterWithEmNo);
+                        }
                     }
-                } else {
-                    warningNofity("No Records Found");
-                    SetEmployeeData([]); // Clear data when no records are found
+                    else {
+                        SetEmployeeData([]);
+                        warningNofity("No Record Found")
+                    }
                 }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                SetEmployeeData([]); // Clear data on error
-            }
-        }
-        else if (requestUser?.deptID === 0 && requestUser?.sectionID === 0 && topic !== 0 && selectedMonth !== '' && AllEmpList === true) {
-            const obj = {
-                topic: topic,
-                selectedMonth: format(new Date(selectedMonth), 'MM')
-            };
-            try {
-                const result = await axioslogin.post(`/TrainingInductionReport/getInductionAllStaffReport`, obj);
-                const { success, data } = result.data;
-                if (success === 2 && data?.length !== 0) {
-                    const mappedData = data.map((val) => ({
-                        Induct_slno: val.serialno,
-                        em_no: val.em_no,
-                        em_name: val.em_name,
-                        em_id: val.em_id,
-                        induct_detail_date: val.induct_detail_date,
-                        date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
-                        dept_name: val.dept_name,
-                        training_topic_name: val.training_topic_name,
-                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
-                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
-                        schedule_topic: val.schedule_topic,
-                        retest: val.retest === 0 ? "No" : "Yes",
-                        HodVerification: val.training_induct_hod_aprvl_status !== 0 ? "Verified" : "Not Verified",
-                        TndVerification: val.training_iduct_tnd_verify_status !== 0 ? "Verified" : "Not Verified",
-                        training_status: val.training_status,
-                        Attandance: val.training_status === 1 ? "Present" : "Absent",
-                        pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
-                        posttest_status: val.posttest_status === 1 ? "Attended" : "Not Attended",
-                        offline_mode: val.offline_mode,
-                        online_mode: val.online_mode,
-                        TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
-                        sect_name: val.sect_name,
-                        trainers_name: val.trainers_name,
-                    }));
+                else if (Pending_flag === true) {
+                    const result = await axioslogin.post(`/TrainingInductionReport/GetDeptStaffExamFailledReport`, obj);
+                    const { success, data } = result.data;
+                    if (success === 2 && data?.length !== 0) {
+                        const FailledmappedData = data.map((val) => ({
+                            Induct_slno: val.serialno,
+                            em_no: val.em_no,
+                            em_name: val.emp_name,
+                            em_id: val.em_id,
+                            schedule_date: val.schedule_date,
+                            date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
+                            dept_name: val.dept_name,
+                            training_topic_name: val.training_topic_name,
+                            pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
+                            posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
+                            schedule_topic: val.schedule_topic,
+                            retest: val.retest === 0 ? "No" : "Yes",
+                            HodVerification: val.training_hod_apprvls_status !== 0 ? "Verified" : "Not Verified",
+                            TndVerification: val.tnd_verification_status !== 0 ? "Verified" : "Not Verified",
+                            training_status: val.training_status,
+                            Attandance: val.training_status === 1 ? "Present" : "Absent",
+                            pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
+                            posttest_status: val.posttest_status === 1 ? "Attended" : "Not Attended",
+                            offline_mode: val.offline_mode,
+                            online_mode: val.online_mode,
+                            TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
+                            sect_name: val.sect_name,
+                            trainers_name: val.trainers_name,
+                            preAttendance: val.pretest_status,
+                            postAttendance: val.posttest_status,
+                            pre_mark: val.pre_mark,
+                            post_mark: val.post_mark
+                        }));
+                        SetEmployeeData(FailledmappedData)
+                        if (employeeID !== 0) {
+                            const filterWithEmNo = FailledmappedData?.filter((val) => val.em_no === employeeID)
+                            SetEmployeeData(filterWithEmNo);
+                        }
+                    }
+                    else {
+                        SetEmployeeData([]);
+                        warningNofity("No Record Found")
+                    }
+                }
 
-                    // Set the mapped data to the state
-                    SetEmployeeData(mappedData);
-                } else {
-                    warningNofity("No Records Found");
-                    SetEmployeeData([]); // Clear data when no records are found
-                }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 SetEmployeeData([]); // Clear data on error
             }
+
         }
         else {
-            // warningNofity("Select Department & Department Section");
+            warningNofity("Enter Basic Informations For Search");
         }
-    }, [employeeID, topic, requestUser, selectedMonth, AllEmpList]);
+    }, [employeeID, topic, requestUser, selectedMonth, Pending_flag]);
 
 
 
@@ -298,14 +303,14 @@ const StaffAttendedMainpage = () => {
         { headerName: 'TND Verification', field: 'TndVerification', filter: true, width: 200 },
 
     ])
-    const HandleAllEmpList = useCallback((e) => {
+    const HandlePendingList = useCallback((e) => {
         if (e.target.checked === true) {
-            setAllEmpList(e.target.checked)
+            setPending_flag(e.target.checked)
         }
         else {
-            setAllEmpList(false)
+            setPending_flag(false)
         }
-    }, [setAllEmpList])
+    }, [setPending_flag])
 
     return (
         <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
@@ -319,9 +324,9 @@ const StaffAttendedMainpage = () => {
                                 <Checkbox
                                     name="status"
                                     color="primary"
-                                    checked={AllEmpList}
+                                    checked={Pending_flag}
                                     className="ml-1"
-                                    onChange={(e) => HandleAllEmpList(e)}
+                                    onChange={(e) => HandlePendingList(e)}
                                     label="All"
                                 />
                             </Box>
@@ -345,55 +350,53 @@ const StaffAttendedMainpage = () => {
                                     />
                                 </LocalizationProvider>
                             </Box>
-                            {AllEmpList === false ?
-                                <Box sx={{ flex: 1, px: 0.3 }} >
-                                    <Select
-                                        defaultValue={0}
-                                        onChange={handleChangeDepartmentID}
-                                        sx={{ width: '100%' }}
-                                        value={deptID}
-                                        variant='outlined'
-                                        color='primary'
-                                        size='sm'
-                                        disabled={disabled}
-                                        placeholder="Select Department"
-                                        slotProps={{
-                                            listbox: {
-                                                placement: 'bottom-start',
-                                            },
-                                        }}
-                                    >
-                                        <Option disabled value={0}>Select Department</Option>
-                                        {
-                                            departmentNameList && departmentNameList?.map((val, index) => {
-                                                return <Option key={index} value={val.dept_id}>{val.dept_name}</Option>
-                                            })
-                                        }
-                                    </Select>
-                                </Box> : null}
-                            {AllEmpList === false ?
-                                <Box sx={{ flex: 1, px: 0.3 }}>
-                                    <Select
-                                        defaultValue={0}
-                                        value={deptSection}
-                                        onChange={handleChangeDepetSection}
-                                        sx={{ width: '100%' }}
-                                        size='sm'
-                                        variant='outlined'
-                                        color='primary'
-                                        placeholder="Select Department Section"
-                                        endDecorator={deptSectionList?.length === 0 && <div className='loading-spinner' ></div>}
+                            <Box sx={{ flex: 1, px: 0.3 }} >
+                                <Select
+                                    defaultValue={0}
+                                    onChange={handleChangeDepartmentID}
+                                    sx={{ width: '100%' }}
+                                    value={deptID}
+                                    variant='outlined'
+                                    color='primary'
+                                    size='sm'
+                                    disabled={disabled}
+                                    placeholder="Select Department"
+                                    slotProps={{
+                                        listbox: {
+                                            placement: 'bottom-start',
+                                        },
+                                    }}
+                                >
+                                    <Option disabled value={0}>Select Department</Option>
+                                    {
+                                        departmentNameList && departmentNameList?.map((val, index) => {
+                                            return <Option key={index} value={val.dept_id}>{val.dept_name}</Option>
+                                        })
+                                    }
+                                </Select>
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.3 }}>
+                                <Select
+                                    defaultValue={0}
+                                    value={deptSection}
+                                    onChange={handleChangeDepetSection}
+                                    sx={{ width: '100%' }}
+                                    size='sm'
+                                    variant='outlined'
+                                    color='primary'
+                                    placeholder="Select Department Section"
+                                    endDecorator={deptSectionList?.length === 0 && <div className='loading-spinner' ></div>}
 
-                                    >
-                                        <Option disabled value={0}>Select Department Section</Option>
-                                        {
-                                            deptSectionList && deptSectionList?.map((val, index) => {
-                                                return <Option key={index} value={val.sect_id}  >{val.sect_name}</Option>
-                                            })
-                                        }
-                                    </Select>
-                                </Box> : null}
-                            {AllEmpList === false ? <Box sx={{ width: '15%', px: 0.3 }}>
+                                >
+                                    <Option disabled value={0}>Select Department Section</Option>
+                                    {
+                                        deptSectionList && deptSectionList?.map((val, index) => {
+                                            return <Option key={index} value={val.sect_id}  >{val.sect_name}</Option>
+                                        })
+                                    }
+                                </Select>
+                            </Box>
+                            <Box sx={{ width: '15%', px: 0.3 }}>
                                 <Select
                                     onChange={handleChangeEmployeeName}
                                     sx={{ width: '100%' }}
@@ -426,10 +429,10 @@ const StaffAttendedMainpage = () => {
                                         })
                                     }
                                 </Select>
-                            </Box> : null}
+                            </Box>
                             <Box sx={{ flex: 1, }}>
                                 <Box sx={{ flex: 1 }}>
-                                    <InductionTopics topic={topic} setTopic={setTopic} />
+                                    <DepartmentalTrainingTopics topic={topic} setTopic={setTopic} dept={requestUser?.deptID} />
                                 </Box>
                             </Box>
                             <Box sx={{ px: 0.3 }}>
@@ -465,4 +468,4 @@ const StaffAttendedMainpage = () => {
         </Paper>
     )
 }
-export default memo(StaffAttendedMainpage) 
+export default memo(DeptStaffExamReport) 

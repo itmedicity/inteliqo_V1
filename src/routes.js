@@ -290,6 +290,10 @@ const InductionFeedback = React.lazy(() => import('./views/HrReports/TrainingDev
 const TrainerTrainingCount = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/TrainerTrainingCount'))
 const InductionTrainingTopicWise = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionTrainingTopicWise'))
 const StaffAttendedMainpage = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/StaffAttendedInduction/StaffAttendedMainpage'))
+const MonthlyDepartmentalTrainingReports = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/MonthlyDepartmentalTrainingReports'))
+const DepmtlAttendPendingList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DepmtlAttendPendingList'))
+const DeptStaffExamReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptStaffExamReport'))
+const DeptYearlyCalender = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptYearlyCalender'))
 
 
 const routes = [
@@ -577,6 +581,10 @@ const routes = [
   { path: '/Home/TrainerTrainingCount', exact: true, name: 'Trainer Training Count Report', component: TrainerTrainingCount },
   { path: '/Home/InductionTrainingTopicWise', exact: true, name: 'Induction Training TopicWise Report', component: InductionTrainingTopicWise },
   { path: '/Home/StaffAttendedMainpage', exact: true, name: 'Induction Attended Staff Report', component: StaffAttendedMainpage },
+  { path: '/Home/MonthlyDepartmentalTrainingReports', exact: true, name: 'Monthly Departmental Training Reports', component: MonthlyDepartmentalTrainingReports },
+  { path: '/Home/DepmtlAttendPendingList', exact: true, name: 'Departmental Attend & Pending List', component: DepmtlAttendPendingList },
+  { path: '/Home/DeptStaffExamReport', exact: true, name: 'Departmental StafExam Reports', component: DeptStaffExamReport },
+  { path: '/Home/DeptYearlyCalender', exact: true, name: 'Yearly Departmental Training Reports', component: DeptYearlyCalender },
 
 ]
 
