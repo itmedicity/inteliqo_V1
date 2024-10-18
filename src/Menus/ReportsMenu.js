@@ -70,10 +70,10 @@ export const tarning_two = [
 
 ]
 export const traning_three = [
-
-
-
-
+    { to: '/Home/MonthlyDepartmentalTrainingReports', name: 'Monthly Departmental Training Reports', slno: 312 },
+    { to: '/Home/DepmtlAttendPendingList', name: 'Departmental Staff Training Reports', slno: 314 },
+    { to: '/Home/DeptStaffExamReport', name: 'Departmental Staff Exam Report', slno: 315 },
+    { to: '/Home/DeptYearlyCalender', name: 'Yearly Departmental Calender Report', slno: 317 },
 
     // { to: '/Home/TrainingCompletionEmpReport', name: 'Department wise Training Completion Report', slno: 268 },
     // { to: '/Home/TrainingPendingReport', name: 'Department Training Pending Report', slno: 266 },

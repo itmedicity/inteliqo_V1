@@ -3,7 +3,7 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartmentSectionAll, getDepartmentAll, getEmployeeInformationLimited, getCommonSettings } from 'src/redux/reduxFun/reduxHelperFun';
-import { Box, CssVarsProvider, Tooltip, Typography, IconButton, Input, Checkbox } from '@mui/joy';
+import { Box, CssVarsProvider, Tooltip, Typography, IconButton, Checkbox } from '@mui/joy';
 import { setDept } from 'src/redux/actions/Dept.Action';
 import { setdeptSection } from 'src/redux/actions/DeptSection.action';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -13,17 +13,13 @@ import { ToastContainer } from 'react-toastify';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import SearchIcon from '@mui/icons-material/Search';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { format, isValid } from 'date-fns';
+import { format } from 'date-fns';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from 'src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout';
-import InductionTopics from 'src/views/MuiComponents/JoyComponent/InductionTopics';
-import { InductionTrainingTopics } from 'src/redux/actions/Training.Action';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
-const StaffAttendedMainpage = () => {
+const DepmtlAttendPendingList = () => {
 
     const dispatch = useDispatch();
 
@@ -31,7 +27,6 @@ const StaffAttendedMainpage = () => {
     useEffect(() => {
         dispatch(setDept())
         dispatch(setdeptSection())
-        dispatch(InductionTrainingTopics())
     }, [dispatch])
 
     const [deptID, setDeptID] = useState(0);
@@ -53,9 +48,7 @@ const StaffAttendedMainpage = () => {
     })
     const [drop, setDropOpen] = useState(false)
     const [EmployeeData, SetEmployeeData] = useState([]);
-    const [topic, setTopic] = useState(0);
-    const [selectedMonth, setselectedMonth] = useState('');
-    const [AllEmpList, setAllEmpList] = useState(false);
+    const [PendingFlag, setPendingFlag] = useState(false);
 
     const department = useSelector((state) => getDepartmentAll(state))
     const departmentNameList = useMemo(() => department, [department])
@@ -162,43 +155,33 @@ const StaffAttendedMainpage = () => {
         setRequestUser({ ...requestUser, emNo: value })
     }, [requestUser, setRequestUser])
 
-    const HandleMonth = useCallback(async (newValue) => {
-        const date = new Date(newValue);
-        if (isValid(date) && date !== null && date !== undefined) {
-            const formattedDate = format(date, 'yyyy-MM-dd');
-            setselectedMonth(formattedDate);
-        } else {
-            warningNofity("Selected Date is not valid");
-        }
-    }, []);
 
     const SearchingProcess = useCallback(async () => {
-        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && topic !== 0 && selectedMonth !== '' && AllEmpList === false) {
+        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && requestUser?.emID !== 0 && PendingFlag === false) {
             const obj = {
                 deptID: requestUser?.deptID,
                 sectionID: requestUser?.sectionID,
-                topic: topic,
-                selectedMonth: format(new Date(selectedMonth), 'MM')
+                emID: requestUser?.emID,
             };
             try {
-                const result = await axioslogin.post(`/TrainingInductionReport/getInductionDeptWise`, obj);
+                const result = await axioslogin.post(`/TrainingInductionReport/getDeptScheduleList`, obj);
                 const { success, data } = result.data;
                 if (success === 2 && data?.length !== 0) {
                     const mappedData = data.map((val) => ({
-                        Induct_slno: val.serialno,
+                        calender_slno: val.calender_slno,
                         em_no: val.em_no,
                         em_name: val.em_name,
                         em_id: val.em_id,
-                        induct_detail_date: val.induct_detail_date,
-                        date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
+                        schedule_date: val.schedule_date,
+                        date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                         dept_name: val.dept_name,
                         training_topic_name: val.training_topic_name,
-                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
-                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
+                        pretest_mark: val.Pretest_mark !== null ? val.Pretest_mark : "Not Updated",
+                        posttest_mark: val.posttest_mark !== null ? val.posttest_mark : "Not Updated",
                         schedule_topic: val.schedule_topic,
-                        retest: val.retest === 0 ? "No" : "Yes",
-                        HodVerification: val.training_induct_hod_aprvl_status !== 0 ? "Verified" : "Not Verified",
-                        TndVerification: val.training_iduct_tnd_verify_status !== 0 ? "Verified" : "Not Verified",
+                        retest: val.retest === 0 || null ? "No" : "Yes",
+                        HodVerification: val.training_hod_apprvls_status !== 0 ? "Verified" : "Not Verified",
+                        TndVerification: val.tnd_verification_status !== 0 ? "Verified" : "Not Verified",
                         training_status: val.training_status,
                         Attandance: val.training_status === 1 ? "Present" : "Absent",
                         pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
@@ -207,15 +190,12 @@ const StaffAttendedMainpage = () => {
                         online_mode: val.online_mode,
                         TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
                         sect_name: val.sect_name,
-                        trainers_name: val.trainers_name,
+                        // trainer_name: val.trainer_name
                     }));
 
                     // Set the mapped data to the state
                     SetEmployeeData(mappedData);
-                    if (employeeID !== 0) {
-                        const filterWithEmNo = mappedData?.filter((val) => val.em_no === employeeID)
-                        SetEmployeeData(filterWithEmNo);
-                    }
+
                 } else {
                     warningNofity("No Records Found");
                     SetEmployeeData([]); // Clear data when no records are found
@@ -225,30 +205,32 @@ const StaffAttendedMainpage = () => {
                 SetEmployeeData([]); // Clear data on error
             }
         }
-        else if (requestUser?.deptID === 0 && requestUser?.sectionID === 0 && topic !== 0 && selectedMonth !== '' && AllEmpList === true) {
+        else if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && PendingFlag === true) {
             const obj = {
-                topic: topic,
-                selectedMonth: format(new Date(selectedMonth), 'MM')
+                deptID: requestUser?.deptID,
+                sectionID: requestUser?.sectionID,
             };
             try {
-                const result = await axioslogin.post(`/TrainingInductionReport/getInductionAllStaffReport`, obj);
+                const result = await axioslogin.post(`/TrainingInductionReport/getDeptPendingList`, obj);
                 const { success, data } = result.data;
+                console.log(data);
+
                 if (success === 2 && data?.length !== 0) {
                     const mappedData = data.map((val) => ({
-                        Induct_slno: val.serialno,
+                        calender_slno: val.calender_slno,
                         em_no: val.em_no,
                         em_name: val.em_name,
                         em_id: val.em_id,
-                        induct_detail_date: val.induct_detail_date,
-                        date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
+                        schedule_date: val.schedule_date,
+                        date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                         dept_name: val.dept_name,
                         training_topic_name: val.training_topic_name,
-                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
-                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
+                        pretest_mark: val.Pretest_mark !== null ? val.Pretest_mark : "Not Updated",
+                        posttest_mark: val.posttest_mark !== null ? val.posttest_mark : "Not Updated",
                         schedule_topic: val.schedule_topic,
-                        retest: val.retest === 0 ? "No" : "Yes",
-                        HodVerification: val.training_induct_hod_aprvl_status !== 0 ? "Verified" : "Not Verified",
-                        TndVerification: val.training_iduct_tnd_verify_status !== 0 ? "Verified" : "Not Verified",
+                        retest: val.retest === 0 || null ? "No" : "Yes",
+                        HodVerification: val.training_hod_apprvls_status !== 0 ? "Verified" : "Not Verified",
+                        TndVerification: val.tnd_verification_status !== 0 ? "Verified" : "Not Verified",
                         training_status: val.training_status,
                         Attandance: val.training_status === 1 ? "Present" : "Absent",
                         pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
@@ -257,7 +239,7 @@ const StaffAttendedMainpage = () => {
                         online_mode: val.online_mode,
                         TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
                         sect_name: val.sect_name,
-                        trainers_name: val.trainers_name,
+                        // trainer_name: val.trainer_name
                     }));
 
                     // Set the mapped data to the state
@@ -272,21 +254,21 @@ const StaffAttendedMainpage = () => {
             }
         }
         else {
-            // warningNofity("Select Department & Department Section");
+            // warningNofity("Enter Basic Information To Search");
         }
-    }, [employeeID, topic, requestUser, selectedMonth, AllEmpList]);
+    }, [employeeID, requestUser, PendingFlag]);
 
 
 
     const [columnDef] = useState([
-        { headerName: 'Sl no', field: 'Induct_slno', filter: true, width: 100 },
+        { headerName: 'Sl no', field: 'calender_slno', filter: true, width: 100 },
         { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         { headerName: 'Department', field: 'dept_name', filter: true, width: 250 },
         { headerName: 'Department section', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Date', field: 'date', filter: true, width: 150 },
         { headerName: 'Topic', field: 'training_topic_name', filter: true, width: 250 },
-        { headerName: 'Trainer Name', field: 'trainers_name', filter: true, width: 250 },
+        // { headerName: 'Trainer Name', field: 'trainer_name', filter: true, width: 250 },
         { headerName: 'Attandance', field: 'Attandance', filter: true, width: 150 },
         { headerName: 'Pretest_status', field: 'pretest_status', filter: true, width: 150 },
         { headerName: 'Post_status', field: 'posttest_status', filter: true, width: 150 },
@@ -298,18 +280,18 @@ const StaffAttendedMainpage = () => {
         { headerName: 'TND Verification', field: 'TndVerification', filter: true, width: 200 },
 
     ])
-    const HandleAllEmpList = useCallback((e) => {
+    const HandlePendingFlag = useCallback((e) => {
         if (e.target.checked === true) {
-            setAllEmpList(e.target.checked)
+            setPendingFlag(e.target.checked)
         }
         else {
-            setAllEmpList(false)
+            setPendingFlag(false)
         }
-    }, [setAllEmpList])
+    }, [setPendingFlag])
 
     return (
         <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
-            <ReportLayout title="Induction Attended Staff Report" data={EmployeeData} displayClose={true} >
+            <ReportLayout title="Department Wise Staff Training Report" data={EmployeeData} displayClose={true} >
                 <ToastContainer />
                 <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
                 <Box sx={{ width: '100%', }} >
@@ -319,81 +301,61 @@ const StaffAttendedMainpage = () => {
                                 <Checkbox
                                     name="status"
                                     color="primary"
-                                    checked={AllEmpList}
+                                    checked={PendingFlag}
                                     className="ml-1"
-                                    onChange={(e) => HandleAllEmpList(e)}
-                                    label="All"
+                                    onChange={(e) => HandlePendingFlag(e)}
+                                    label="Pending List"
                                 />
                             </Box>
-                            <Box sx={{ flex: 1 }}>
-                                <LocalizationProvider dateAdapter={AdapterMoment} >
-                                    <DatePicker
-                                        views={['month']}
-                                        inputFormat="DD-MM-YYYY"
-                                        value={selectedMonth}
-                                        onChange={(newValue) => {
-                                            HandleMonth(newValue);
-                                        }}
-                                        renderInput={({ inputRef, inputProps, InputProps }) => (
-                                            <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                                <CssVarsProvider>
-                                                    <Input ref={inputRef} {...inputProps} style={{ width: '100%' }} disabled={true} />
-                                                </CssVarsProvider>
-                                                {InputProps?.endAdornment}
-                                            </Box>
-                                        )}
-                                    />
-                                </LocalizationProvider>
-                            </Box>
-                            {AllEmpList === false ?
-                                <Box sx={{ flex: 1, px: 0.3 }} >
-                                    <Select
-                                        defaultValue={0}
-                                        onChange={handleChangeDepartmentID}
-                                        sx={{ width: '100%' }}
-                                        value={deptID}
-                                        variant='outlined'
-                                        color='primary'
-                                        size='sm'
-                                        disabled={disabled}
-                                        placeholder="Select Department"
-                                        slotProps={{
-                                            listbox: {
-                                                placement: 'bottom-start',
-                                            },
-                                        }}
-                                    >
-                                        <Option disabled value={0}>Select Department</Option>
-                                        {
-                                            departmentNameList && departmentNameList?.map((val, index) => {
-                                                return <Option key={index} value={val.dept_id}>{val.dept_name}</Option>
-                                            })
-                                        }
-                                    </Select>
-                                </Box> : null}
-                            {AllEmpList === false ?
-                                <Box sx={{ flex: 1, px: 0.3 }}>
-                                    <Select
-                                        defaultValue={0}
-                                        value={deptSection}
-                                        onChange={handleChangeDepetSection}
-                                        sx={{ width: '100%' }}
-                                        size='sm'
-                                        variant='outlined'
-                                        color='primary'
-                                        placeholder="Select Department Section"
-                                        endDecorator={deptSectionList?.length === 0 && <div className='loading-spinner' ></div>}
 
-                                    >
-                                        <Option disabled value={0}>Select Department Section</Option>
-                                        {
-                                            deptSectionList && deptSectionList?.map((val, index) => {
-                                                return <Option key={index} value={val.sect_id}  >{val.sect_name}</Option>
-                                            })
-                                        }
-                                    </Select>
-                                </Box> : null}
-                            {AllEmpList === false ? <Box sx={{ width: '15%', px: 0.3 }}>
+                            <Box sx={{ flex: 1, px: 0.3 }} >
+                                <Select
+                                    defaultValue={0}
+                                    onChange={handleChangeDepartmentID}
+                                    sx={{ width: '100%' }}
+                                    value={deptID}
+                                    variant='outlined'
+                                    color='primary'
+                                    size='sm'
+                                    disabled={disabled}
+                                    placeholder="Select Department"
+                                    slotProps={{
+                                        listbox: {
+                                            placement: 'bottom-start',
+                                        },
+                                    }}
+                                >
+                                    <Option disabled value={0}>Select Department</Option>
+                                    {
+                                        departmentNameList && departmentNameList?.map((val, index) => {
+                                            return <Option key={index} value={val.dept_id}>{val.dept_name}</Option>
+                                        })
+                                    }
+                                </Select>
+                            </Box>
+                            <Box sx={{ flex: 1, px: 0.3 }}>
+                                <Select
+                                    defaultValue={0}
+                                    value={deptSection}
+                                    onChange={handleChangeDepetSection}
+                                    sx={{ width: '100%' }}
+                                    size='sm'
+                                    variant='outlined'
+                                    color='primary'
+                                    placeholder="Select Department Section"
+                                    endDecorator={deptSectionList?.length === 0 && <div className='loading-spinner' ></div>}
+
+                                >
+                                    <Option disabled value={0}>Select Department Section</Option>
+                                    {
+                                        deptSectionList && deptSectionList?.map((val, index) => {
+                                            return <Option key={index} value={val.sect_id}  >{val.sect_name}</Option>
+                                        })
+                                    }
+                                </Select>
+                            </Box>
+
+                            <Box sx={{ width: '15%', px: 0.3 }}>
                                 <Select
                                     onChange={handleChangeEmployeeName}
                                     sx={{ width: '100%' }}
@@ -426,12 +388,8 @@ const StaffAttendedMainpage = () => {
                                         })
                                     }
                                 </Select>
-                            </Box> : null}
-                            <Box sx={{ flex: 1, }}>
-                                <Box sx={{ flex: 1 }}>
-                                    <InductionTopics topic={topic} setTopic={setTopic} />
-                                </Box>
                             </Box>
+
                             <Box sx={{ px: 0.3 }}>
                                 <CssVarsProvider>
                                     <Tooltip title="Search Employees">
@@ -465,4 +423,5 @@ const StaffAttendedMainpage = () => {
         </Paper>
     )
 }
-export default memo(StaffAttendedMainpage) 
+
+export default memo(DepmtlAttendPendingList) 
