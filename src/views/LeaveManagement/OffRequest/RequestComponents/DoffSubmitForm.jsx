@@ -246,7 +246,7 @@ const DoffSubmitForm = () => {
             warningNofity("Add Reason!")
 
         } else {
-            const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+            const monthStartDate = format(startOfMonth(new Date(requiredDate)), 'yyyy-MM-dd')
             const postData = {
                 month: monthStartDate,
                 section: em_dept_section
@@ -254,8 +254,8 @@ const DoffSubmitForm = () => {
             const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
             const { success, data } = checkPunchMarkingHr.data
             if (success === 0 || success === 1) {
-                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
-                const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(requiredDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                const lastDay_month = format(lastDayOfMonth(new Date(requiredDate)), 'yyyy-MM-dd')
                 if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
                     warningNofity("Punch Marking Monthly Process Done !! Can't Apply DOFF Request!!  ")
                     setOpenBkDrop(false)
