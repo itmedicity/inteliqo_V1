@@ -18,11 +18,10 @@ import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { getAttendanceCalculation, getLateInTimeIntervel, } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { addDays, addHours, differenceInHours, format, endOfMonth, isValid, max, min, subHours, formatDuration, intervalToDuration } from "date-fns";
+import { addDays, addHours, differenceInHours, format, endOfMonth, isValid, max, min, subHours, formatDuration, intervalToDuration, eachDayOfInterval } from "date-fns";
 import { axioslogin } from 'src/views/Axios/Axios';
 import Table from '@mui/joy/Table';
 import _ from 'underscore';
-import { DeptWiseAttendanceViewFun } from 'src/views/Attendance/AttendanceView/Functions';
 import { getHolidayList } from 'src/redux/actions/LeaveProcess.action';
 import DownloadIcon from '@mui/icons-material/Download';
 import { ExporttoExcel } from './ExportToExcel';
@@ -41,9 +40,11 @@ const DayWiseAttendence = () => {
 
     const [fromdate, Setfromdate] = useState(moment(new Date()));
     const [todate, Settodate] = useState(moment(new Date()));
-    const [dateArray, setDateArray] = useState([])
+    //const [dateArray, setDateArray] = useState([])
     const [empArray, setEmpArray] = useState([])
     const [all, setAll] = useState(false)
+    const [daysNum, setdaysNum] = useState([])
+    const [daysStr, setdaysStr] = useState([])
 
     const commonSettings = useSelector((state) => state?.getCommonSettings)
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
@@ -72,7 +73,8 @@ const DayWiseAttendence = () => {
         week_off_day, // week off SHIFT ID
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
-        noff // night off SHIFT ID
+        noff, // night off SHIFT ID
+        halfday_time_count,
     } = commonSettings; //COMMON SETTING
     const postPunchData = useMemo(() => {
         return {
@@ -101,7 +103,7 @@ const DayWiseAttendence = () => {
             const result = await axioslogin.post('/empmast/empmaster/getdeptByDept', postDataDept)
             const { success, data } = result.data
             if (success === 1) {
-                const empData = data;
+                // const empData = data;
                 const getPunchMast_PostData = {
                     fromDate_punchMaster: format(new Date(fromdate), 'yyyy-MM-dd'),
                     toDate_punchMaster: isValid(new Date(todate)) ? format(addDays(new Date(todate), 2), 'yyyy-MM-dd ') : null,
@@ -111,13 +113,11 @@ const DayWiseAttendence = () => {
                 }
                 const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", getPunchMast_PostData); //GET PUNCH MASTER DATA
                 const { success, planData: punchMasterData } = punch_master_data.data;
-                // console.log(success, planData);
                 if (success === 1) {
                     const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", getPunchMast_PostData);
                     const { su, result_data: punchaMasData } = punch_data.data;
                     if (su === 1) {
                         const maindata = await Promise.allSettled(
-
                             punchMasterData?.map(async (data, index) => {
                                 const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
                                 // const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
@@ -176,14 +176,15 @@ const DayWiseAttendence = () => {
                                             val.noff,
                                             val.woff,
                                             salaryLimit,
-                                            val.maximumLateInTime
+                                            val.maximumLateInTime,
+                                            halfday_time_count
                                         )
 
                                         return {
-
                                             punch_slno: val.punch_slno,
                                             punch_in: val.punch_in,
                                             punch_out: val.punch_out,
+                                            duty_day: val.duty_day,
                                             hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
                                             late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
                                             early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
@@ -206,7 +207,6 @@ const DayWiseAttendence = () => {
                                             early: val?.early_out,
                                             em_no: val?.em_no,
                                         }
-
                                     })
 
                                 ).then(async (element) => {
@@ -214,7 +214,6 @@ const DayWiseAttendence = () => {
                                     if (element?.length > 0) {
                                         const extractedValues = element?.map(item => item.value);
                                         return { status: 1, data: extractedValues }
-                                        // setTableData(extractedValues)
                                     } else {
                                         return { status: 0, message: "something went wrong", errorMessage: '' }
                                     }
@@ -227,25 +226,41 @@ const DayWiseAttendence = () => {
                         })
                         if (maindata?.status === 1) {
                             const mainarray = maindata?.data
+                            const dateRange = eachDayOfInterval({ start: new Date(fromdate), end: new Date(todate) })
+                                ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
 
-                            //to get the Holiday and add the details to the Emp Array
+                            const resultss = [...new Set(mainarray?.map(e => e.em_no))]?.map((el) => {
+                                const empArray = mainarray?.filter(e => e.em_no === el)
+                                let emName = empArray?.find(e => e.em_no === el).name;
+                                let deptName = empArray?.find(e => e.em_no === el).dept;
+                                let emNo = empArray?.find(e => e.em_no === el).em_no;
+                                let sect_name = empArray?.find(e => e.em_no === el).sect;
 
-                            DeptWiseAttendanceViewFun(fromdate, holidayList).then((values) => {
-                                const datearr = values?.filter(item => item.dateFormat >= fromdate && item.dateFormat <= todate);
-                                setDateArray(datearr);
-                                // setDateArray(values)
-                                const newFun = (val) => {
-                                    const arr = mainarray.filter(item => val.em_no === item.em_no)
-                                    const array = arr.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
-                                    return {
-                                        ...val,
-                                        "arr": array.slice(0, -2)
-                                    }
+                                return {
+                                    em_no: el,
+                                    emName: emName,
+                                    dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
+                                    daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
+                                    //em_no: emNo,
+                                    dept_name: deptName,
+                                    sect_name: sect_name,
+                                    punchMaster: dateRange?.map((e) => {
+                                        // console.log(e)
+                                        return {
+                                            attDate: e,
+                                            em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
+
+                                            duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
+                                            lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+
+                                        }
+                                    }),
                                 }
-                                const newEmp = empData?.map(newFun)
-                                setEmpArray(newEmp);
-                                setOpenBkDrop(false)
                             })
+                            setEmpArray(resultss);
+                            setdaysStr(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
+                            setdaysNum(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
+                            setOpenBkDrop(false)
                         } else {
                             setOpenBkDrop(false)
                             setEmpArray([])
@@ -275,7 +290,7 @@ const DayWiseAttendence = () => {
             const { success, data } = result.data
 
             if (success === 1 && data?.length > 0) {
-                const empData = data;
+                // const empData = data;
                 const punchdep_data = await axioslogin.post("/AttendenceReport/getPunchDataDptWiseDateWise/", postPunchData);
                 const { su, resultPunch_data } = punchdep_data?.data;
                 if (su === 1 && resultPunch_data?.length > 0) {
@@ -345,7 +360,8 @@ const DayWiseAttendence = () => {
                                             val.noff,
                                             val.woff,
                                             salaryLimit,
-                                            val.maximumLateInTime
+                                            val.maximumLateInTime,
+                                            halfday_time_count
                                         )
 
                                         return {
@@ -353,6 +369,7 @@ const DayWiseAttendence = () => {
                                             punch_slno: val.punch_slno,
                                             punch_in: val.punch_in,
                                             punch_out: val.punch_out,
+                                            duty_day: val.duty_day,
                                             hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
                                             late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
                                             early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
@@ -395,25 +412,42 @@ const DayWiseAttendence = () => {
                         })
                         if (maindata?.status === 1) {
                             const mainarray = maindata?.data
+                            const dateRange = eachDayOfInterval({ start: new Date(fromdate), end: new Date(todate) })
+                                ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
 
-                            //to get the Holiday and add the details to the Emp Array
+                            const resultss = [...new Set(mainarray?.map(e => e.em_no))]?.map((el) => {
+                                const empArray = mainarray?.filter(e => e.em_no === el)
 
-                            DeptWiseAttendanceViewFun(fromdate, holidayList).then((values) => {
-                                const datearr = values?.filter(item => item.dateFormat >= fromdate && item.dateFormat <= todate);
-                                setDateArray(datearr);
-                                // setDateArray(values)
-                                const newFun = (val) => {
-                                    const arr = mainarray.filter(item => val.em_no === item.em_no)
-                                    const array = arr.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
-                                    return {
-                                        ...val,
-                                        "arr": array.slice(0, -2)
-                                    }
+                                let emName = empArray?.find(e => e.em_no === el).name;
+                                let deptName = empArray?.find(e => e.em_no === el).dept;
+                                let emNo = empArray?.find(e => e.em_no === el).em_no;
+                                let sect_name = empArray?.find(e => e.em_no === el).sect;
+
+                                return {
+                                    em_no: el,
+                                    emName: emName,
+                                    dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
+                                    daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
+                                    // em_no: emNo,
+                                    dept_name: deptName,
+                                    sect_name: sect_name,
+                                    punchMaster: dateRange?.map((e) => {
+                                        // console.log(e)
+                                        return {
+                                            attDate: e,
+                                            em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
+
+                                            duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
+                                            lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+
+                                        }
+                                    }),
                                 }
-                                const newEmp = empData?.map(newFun)
-                                setEmpArray(newEmp);
-                                setOpenBkDrop(false)
                             })
+                            setEmpArray(resultss);
+                            setdaysStr(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
+                            setdaysNum(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
+                            setOpenBkDrop(false)
                         } else {
                             setOpenBkDrop(false)
                             setEmpArray([])
@@ -441,7 +475,7 @@ const DayWiseAttendence = () => {
             const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
             const { succes, dataa: employeeData } = result1.data
             if (succes === 1) {
-                const empData = employeeData;
+                // const empData = employeeData;
                 const arr = employeeData?.map((val) => val.em_no)
                 const getPunchMast_PostData = {
                     fromDate_punchMaster: format(new Date(fromdate), 'yyyy-MM-dd'),
@@ -516,7 +550,8 @@ const DayWiseAttendence = () => {
                                             val.noff,
                                             val.woff,
                                             salaryLimit,
-                                            val.maximumLateInTime
+                                            val.maximumLateInTime,
+                                            halfday_time_count
                                         )
 
                                         return {
@@ -524,6 +559,7 @@ const DayWiseAttendence = () => {
                                             punch_slno: val.punch_slno,
                                             punch_in: val.punch_in,
                                             punch_out: val.punch_out,
+                                            duty_day: val.duty_day,
                                             hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
                                             late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
                                             early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
@@ -567,25 +603,41 @@ const DayWiseAttendence = () => {
                         })
                         if (maindata?.status === 1) {
                             const mainarray = maindata?.data
+                            const dateRange = eachDayOfInterval({ start: new Date(fromdate), end: new Date(todate) })
+                                ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
 
-                            //to get the Holiday and add the details to the Emp Array
+                            const resultss = [...new Set(mainarray?.map(e => e.em_no))]?.map((el) => {
+                                const empArray = mainarray?.filter(e => e.em_no === el)
+                                let emName = empArray?.find(e => e.em_no === el).name;
+                                let deptName = empArray?.find(e => e.em_no === el).dept;
+                                let emNo = empArray?.find(e => e.em_no === el).em_no;
+                                let sect_name = empArray?.find(e => e.em_no === el).sect;
 
-                            DeptWiseAttendanceViewFun(fromdate, holidayList).then((values) => {
-                                const datearr = values?.filter(item => item.dateFormat >= fromdate && item.dateFormat <= todate);
-                                setDateArray(datearr);
-                                // setDateArray(values)
-                                const newFun = (val) => {
-                                    const arr = mainarray.filter(item => val.em_no === item.em_no)
-                                    const array = arr.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
-                                    return {
-                                        ...val,
-                                        "arr": array.slice(0, -2)
-                                    }
+                                return {
+                                    em_no: el,
+                                    emName: emName,
+                                    dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
+                                    daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
+                                    //em_no: emNo,
+                                    dept_name: deptName,
+                                    sect_name: sect_name,
+                                    punchMaster: dateRange?.map((e) => {
+                                        // console.log(e)
+                                        return {
+                                            attDate: e,
+                                            em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
+
+                                            duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
+                                            lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+
+                                        }
+                                    }),
                                 }
-                                const newEmp = empData?.map(newFun)
-                                setEmpArray(newEmp);
-                                setOpenBkDrop(false)
                             })
+                            setEmpArray(resultss);
+                            setdaysStr(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
+                            setdaysNum(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
+                            setOpenBkDrop(false)
                         } else {
                             setOpenBkDrop(false)
                             setEmpArray([])
@@ -609,7 +661,7 @@ const DayWiseAttendence = () => {
 
     }, [fromdate, todate, postPunchData, shiftInformation, cmmn_early_out, deptSecName, deptName, holidayList,
         cmmn_grace_period, cmmn_late_in, salary_above, week_off_day, notapplicable_shift, default_shift, noff,
-        all, allDept, allSection])
+        all, allDept, allSection, halfday_time_count])
 
     const punchInOutMapping = async (shiftMergedPunchMaster, employeeBasedPunchData) => {
         const crossDay = shiftMergedPunchMaster?.shft_cross_day;
@@ -664,16 +716,16 @@ const DayWiseAttendence = () => {
     //for excel convertion
     const toDownload = useCallback(() => {
         const fileName = "Attendance_Report";
-        const headers = ["Name", "Emp Id", "Department", "Department Section", ...dateArray.map(val => val.date)];
-        const days = ["Days", "", "", "", ...dateArray.map(val => val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days)];
+        const headers = ["Name", "Emp Id", "Department", "Department Section", ...daysNum.map(val => val)];
+        const days = ["Days", "", "", "", ...daysStr.map(val => val)];
         // Rows for Excel file
-        const rows = empArray.map(row => {
+        const rows = empArray?.map(row => {
             const rowData = [
-                row.emp_name,
+                row.emName,
                 row.em_no,
                 row.dept_name,
                 row.sect_name,
-                ...row.arr.map(val => val.lvereq_desc)
+                ...row.punchMaster.map(val => val.lvereq_desc)
             ];
             return rowData;
         });
@@ -683,7 +735,7 @@ const DayWiseAttendence = () => {
 
         // Call ExporttoExcel function
         ExporttoExcel(excelData, fileName);
-    }, [empArray, dateArray]);
+    }, [empArray, daysNum, daysStr]);
 
 
     return (
@@ -834,9 +886,9 @@ const DayWiseAttendence = () => {
                                         <th style={{ width: 100, p: 0, m: 0 }}>ID#</th>
                                         <th style={{ width: 100, p: 0, m: 0 }}>Department</th>
                                         <th style={{ width: 100, p: 0, m: 0 }}>Department Section</th>
-                                        {dateArray && dateArray.map((val, index) => (
+                                        {daysNum && daysNum.map((val, index) => (
                                             <th key={index} style={{ width: 70, p: 0, m: 0, textAlign: "center", }}>
-                                                {val.date}
+                                                {val}
                                             </th>
                                         ))}
 
@@ -846,14 +898,14 @@ const DayWiseAttendence = () => {
                                         <th style={{ textAlign: "center", }}>  </th>
                                         <th style={{ textAlign: "center", }}>  </th>
                                         <th style={{ textAlign: "center", }}>  </th>
-                                        {dateArray && dateArray.map((val, index) => (
+                                        {daysStr && daysStr.map((val, index) => (
                                             <th key={index} style={{}}>
                                                 <Box sx={{
                                                     textAlign: "center",
                                                     textTransform: 'capitalize',
-                                                    color: val.holiday === 1 || val.sunday === '0' ? 'red' : '#212121'
+                                                    // color: val.holiday === 1 || val.sunday === '0' ? 'red' : '#212121'
                                                 }} >
-                                                    {val.holiday === 1 ? val.holidayDays.toLowerCase() : val.days}
+                                                    {val}
                                                 </Box>
                                             </th>
                                         ))}
@@ -864,18 +916,18 @@ const DayWiseAttendence = () => {
                                     {empArray && empArray.map((row, index) => (
                                         <tr key={index} >
                                             <td >
-                                                <Box > {row.emp_name}</Box>
+                                                <Box > {row.emName}</Box>
                                             </td>
                                             <td >
-                                                <Box sx={{ textAlign: "center", }}> {row.em_no}</Box>
+                                                <Box sx={{ textAlign: "center", }}> {row?.em_no}</Box>
                                             </td>
                                             <td >
-                                                <Box sx={{ textAlign: "center", }}> {row.dept_name}</Box>
+                                                <Box sx={{ textAlign: "center", }}> {row?.dept_name}</Box>
                                             </td>
                                             <td >
-                                                <Box sx={{ textAlign: "center", }}> {row.sect_name}</Box>
+                                                <Box sx={{ textAlign: "center", }}> {row?.sect_name}</Box>
                                             </td>
-                                            {row.arr.map((val, index) => (
+                                            {row.punchMaster?.map((val, index) => (
 
                                                 <td key={index} style={{
 
@@ -911,9 +963,6 @@ const DayWiseAttendence = () => {
 
                 </Paper>
             </Box>
-
-
-
         </Box >
     )
 }

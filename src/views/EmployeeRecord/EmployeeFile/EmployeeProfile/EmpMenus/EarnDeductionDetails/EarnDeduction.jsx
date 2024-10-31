@@ -89,12 +89,9 @@ const EarnDeduction = () => {
             }
             getWageType()
         }
-        console.log(no);
         const getGrossSalary = async (no) => {
-            console.log(no);
             const result = await axioslogin.get(`/common/getgrossSalary/${no}`);
             const { dataa, success } = await result.data;
-            console.log(dataa);
             if (success === 1) {
                 const { gross_salary } = dataa[0]
                 setGrossSalary(gross_salary)
