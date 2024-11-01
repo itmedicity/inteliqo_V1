@@ -285,10 +285,8 @@ const InductPendingList = React.lazy(() => import('./views/HrReports/TrainingDev
 const InductPassAndFailList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/CompletedAndPendingStaffList'))
 const InductionDetailsMainpage = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionPdfReport/InductionDetailsMainpage'))
 const InductionAttendedStaffReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionAttendedStaffReport'))
-<<<<<<< HEAD
 const menuCreation = React.lazy(() => import('./views/Master/MenuCreationMaster/MenuCreation'))
 const MonthlySalaryProcess = React.lazy(() => import('./views/Attendance/SalaryProcess/MonthlySalaryProcess'))
-=======
 const InductRetestEmpDetailsReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductRetestEmpDetails'))
 const InductionFeedback = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionFeedback'))
 const TrainerTrainingCount = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/TrainerTrainingCount'))
@@ -299,7 +297,6 @@ const DepmtlAttendPendingList = React.lazy(() => import('./views/HrReports/Train
 const DeptStaffExamReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptStaffExamReport'))
 const DeptYearlyCalender = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptYearlyCalender'))
 
->>>>>>> cf6687530166e7f68ee0cd3d3f53bafaf3b20e05
 
 const routes = [
 
@@ -582,7 +579,7 @@ const routes = [
   { path: '/Home/InductionDetailsMainpage', exact: true, name: 'Induction Details Report', component: InductionDetailsMainpage },
   { path: '/Home/InductionAttendedStaffReport', exact: true, name: 'Induction Attended Staff Report', component: InductionAttendedStaffReport },
   { path: '/Home/menuCreation', exact: true, name: 'Menu Creation', component: menuCreation },
-  { path: '/Home/MonthlySalaryProcess', exact: true, name: 'Monthly Salary Process', component: MonthlySalaryProcess }
+  { path: '/Home/MonthlySalaryProcess', exact: true, name: 'Monthly Salary Process', component: MonthlySalaryProcess },
   { path: '/Home/InductRetestEmpDetailsReport', exact: true, name: 'Induction Retest Employee Report', component: InductRetestEmpDetailsReport },
   { path: '/Home/InductionFeedback', exact: true, name: 'Induction Feedback Report', component: InductionFeedback },
   { path: '/Home/TrainerTrainingCount', exact: true, name: 'Trainer Training Count Report', component: TrainerTrainingCount },
