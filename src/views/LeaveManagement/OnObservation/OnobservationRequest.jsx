@@ -34,6 +34,7 @@ const OnobservationRequest = () => {
     const [viewData, setViewData] = useState(false)
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [employeeData, setEmployeeData] = useState({})
+    const [show, setShow] = useState(0)
 
     const dispatch = useDispatch();
 
@@ -47,6 +48,32 @@ const OnobservationRequest = () => {
 
     const getEmployeeList = useCallback(async () => {
         if (department !== 0 && deptSection !== 0) {
+            setShow(2)
+        } else {
+            setShow(1)
+        }
+
+    }, [department, deptSection, fromDate, toDate])
+
+
+
+    useEffect(() => {
+        const showdateWiseList = async () => {
+            const postData = {
+                fromDate: format(new Date(fromDate), 'yyyy-MM-dd'),
+                toDate: format(new Date(toDate), 'yyyy-MM-dd'),
+            }
+            const empData = await axioslogin.post("/OnObservationRequest/employee/list/", postData);
+            const { success, data } = empData.data;
+            if (success === 1) {
+                setTableData(data)
+                setShow(0)
+            } else {
+                warningNofity("No new joinees between the dates!!.")
+                setTableData([])
+            }
+        }
+        const showDeptWise = async () => {
             const getData = {
                 fromDate: format(new Date(fromDate), 'yyyy-MM-dd'),
                 toDate: format(new Date(toDate), 'yyyy-MM-dd'),
@@ -57,27 +84,18 @@ const OnobservationRequest = () => {
             const { success, data } = empData.data;
             if (success === 1) {
                 setTableData(data)
-
+                setShow(0)
             } else {
                 warningNofity("There is no new joinees under this department!")
                 setTableData([])
             }
-        } else {
-            const postData = {
-                fromDate: format(new Date(fromDate), 'yyyy-MM-dd'),
-                toDate: format(new Date(toDate), 'yyyy-MM-dd'),
-            }
-            const empData = await axioslogin.post("/OnObservationRequest/employee/list/", postData);
-            const { success, data } = empData.data;
-            if (success === 1) {
-                setTableData(data)
-            } else {
-                warningNofity("No new joinees between the dates!!.")
-                setTableData([])
-            }
         }
-
-    }, [department, deptSection, fromDate, toDate])
+        if (show === 1) {
+            showdateWiseList()
+        } else if (show === 2) {
+            showDeptWise()
+        }
+    }, [fromDate, toDate, show, department, deptSection])
 
 
     const [columnDef] = useState([
@@ -231,7 +249,7 @@ const OnobservationRequest = () => {
                     />
                 </Paper>
             </Box>
-            <ObservationModal open={open} setOpen={setOpen} empdata={empdata} />
+            <ObservationModal open={open} setOpen={setOpen} empdata={empdata} setShow={setShow} />
         </CustomLayout>
     )
 }

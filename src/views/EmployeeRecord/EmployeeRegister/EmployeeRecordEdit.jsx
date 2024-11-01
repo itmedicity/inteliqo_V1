@@ -210,7 +210,7 @@ const EmployeeRecordEdit = () => {
                     em_designation, hrm_region2, em_conf_end_date,
                     em_contract_end_date, em_prob_end_date, em_retirement_date,
                     clinicaltype, gross_salary,
-                    doctor_status, leaveprocess_type } = data[0]
+                    doctor_status, holiday_type } = data[0]
                 const age = {
                     yearage: em_age_year,
                     mnthage: em_age_month,
@@ -257,7 +257,7 @@ const EmployeeRecordEdit = () => {
                 // setOld_prob_Status(probation_status)//setting old 
                 setClinictype(clinicaltype === 0 ? 0 : clinicaltype)
                 setDoctor(doctor_status === 1 ? true : false)
-                setLeaveprocesstype(leaveprocess_type)
+                setLeaveprocesstype(holiday_type)
             }
         }
         getEmployeedetails()
@@ -313,7 +313,7 @@ const EmployeeRecordEdit = () => {
             clinicaltype: clinictype,
             doctor_status: doctor === true ? 1 : 0,
             em_no: parseInt(empno),
-            leaveprocess_type: leaveprocesstype,
+            holiday_type: leaveprocesstype,
         }
 
     }, [empno, salutation, empname, gender, dateofbirth, branch, dept, deptSect, institute, doct, region2,

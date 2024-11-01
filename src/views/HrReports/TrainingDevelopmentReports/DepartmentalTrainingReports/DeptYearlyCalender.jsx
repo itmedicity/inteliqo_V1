@@ -3,7 +3,7 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartmentSectionAll, getDepartmentAll, getEmployeeInformationLimited, getCommonSettings } from 'src/redux/reduxFun/reduxHelperFun';
-import { Box, CssVarsProvider, Tooltip, Typography, IconButton } from '@mui/joy';
+import { Box, CssVarsProvider, Tooltip, IconButton, Input } from '@mui/joy';
 import { setDept } from 'src/redux/actions/Dept.Action';
 import { setdeptSection } from 'src/redux/actions/DeptSection.action';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -13,13 +13,15 @@ import { ToastContainer } from 'react-toastify';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import SearchIcon from '@mui/icons-material/Search';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from 'src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction';
-import ReportLayout from '../../ReportComponent/ReportLayout';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
+import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
-const InductionAttendedStaffReport = () => {
+const DeptYearlyCalender = () => {
 
     const dispatch = useDispatch();
 
@@ -47,7 +49,8 @@ const InductionAttendedStaffReport = () => {
         emID: 0
     })
     const [drop, setDropOpen] = useState(false)
-    const [EmployeeData, SetEmployeeData] = useState([]);
+    const [TrainingData, SetTrainingData] = useState([]);
+    const [selectedYear, setselectedYear] = useState('');
 
     const department = useSelector((state) => getDepartmentAll(state))
     const departmentNameList = useMemo(() => department, [department])
@@ -65,7 +68,7 @@ const InductionAttendedStaffReport = () => {
         setMasterGroupStatus(groupStatus)
         dispatch(setCommonSetting());
         dispatch(setShiftDetails())
-    }, [groupStatus, dispatch])
+    }, [groupStatus])
 
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
@@ -149,87 +152,96 @@ const InductionAttendedStaffReport = () => {
     }, [emplist, hodEmpFilter, setRequestUser, requestUser, em_no, em_id, em_department, em_dept_section])
 
     //HANDLE CHANGE EMPLOYEE NAME 
-    const handleChangeEmployeeName = useCallback((e, value) => {
-        setEmployeeID(value)
-        setRequestUser({ ...requestUser, emNo: value })
-    }, [requestUser, setRequestUser])
 
     const SearchingProcess = useCallback(async () => {
-        const id = requestUser?.emID;
-        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && requestUser?.emID !== 0) {
+        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && selectedYear !== '') {
+            const obj = {
+                deptID: requestUser?.deptID,
+                sectionID: requestUser?.sectionID,
+                selectedYear: format(new Date(selectedYear), 'yyyy')
+            };
             try {
-                const result = await axioslogin.get(`/TrainingDetails/getInductiontrainings/${id}`);
+                const result = await axioslogin.post(`/TrainingInductionReport/GetYearWiseDepartmentalTrainingList`, obj);
                 const { success, data } = result.data;
                 if (success === 2 && data?.length !== 0) {
-                    let obj = data.map((val) => ({
-                        Induct_slno: val.Induct_slno,
-                        em_no: val.em_no,
-                        em_name: val.em_name,
-                        em_id: val.em_id,
-                        induction_date: val.induction_date,
-                        date: format(new Date(val.induction_date), 'dd-MM-yyyy'),
-                        trainer_name: val.trainer_name,
+                    const mappedData = data.map((val) => ({
+                        Slno: val.Slno,
+                        schedule_date: val.schedule_date,
+                        date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                         dept_name: val.dept_name,
                         training_topic_name: val.training_topic_name,
-                        pretest_mark: val.induct_pre_mark !== null ? val.induct_pre_mark : "Not Updated",
-                        posttest_mark: val.induct_post_mark !== null ? val.induct_post_mark : "Not Updated",
-                        schedule_topic: val.schedule_topic,
-                        retest: val.retest === 0 ? "No" : "Yes",
-                        HodVerification: val.training_induct_hod_aprvl_status !== 0 ? "Verified" : "Not Verified",
-                        TndVerification: val.training_iduct_tnd_verify_status !== 0 ? "Verified" : "Not Verified",
-                        training_status: val.training_status,
-                        Attandance: val.training_status === 1 ? "Present" : "Absent",
-                        pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
-                        posttest_status: val.posttest_status === 1 ? "Attended" : "Not Attended",
-                        offline_mode: val.offline_mode,
-                        online_mode: val.online_mode,
-                        TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
+                        schedule_remark: val.schedule_remark,
+                        trainer_name: val.trainer_name,
                         sect_name: val.sect_name
                     }));
-                    SetEmployeeData(obj); // Update state with final object
+
+                    // Set the mapped data to the state
+                    SetTrainingData(mappedData);
                 } else {
-                    SetEmployeeData([]) // Clear data if no result
+                    warningNofity("No Records Found");
+                    SetTrainingData([]); // Clear data when no records are found
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
-                SetEmployeeData([]); // Clear data on error
+                SetTrainingData([]); // Clear data on error
             }
-        } else {
-            warningNofity("Select Basic Information for Search");
-            SetEmployeeData([]); // Clear data if no department or section is selected
         }
-    }, [requestUser, setDropOpen]);
+        else {
+            // warningNofity("Select Department & Department Section");
+        }
+    }, [employeeID, requestUser, selectedYear, setDropOpen]);
+
 
 
     const [columnDef] = useState([
-        { headerName: 'Sl no', field: 'Induct_slno', filter: true, width: 100 },
-        { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
-        { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
-        { headerName: 'Department', field: 'dept_name', filter: true, width: 250 },
+        { headerName: 'Sl no', field: 'Slno', filter: true, width: 150 },
+        { headerName: 'Department', field: 'dept_name', filter: true, width: 300 },
         { headerName: 'Department section', field: 'sect_name', filter: true, width: 250 },
-        { headerName: 'Training Date', field: 'date', filter: true, width: 150 },
+        { headerName: 'Training Date', field: 'date', filter: true, width: 160 },
         { headerName: 'Topic', field: 'training_topic_name', filter: true, width: 250 },
         { headerName: 'Trainer Name', field: 'trainer_name', filter: true, width: 250 },
-        { headerName: 'Attandance', field: 'Attandance', filter: true, width: 150 },
-        { headerName: 'Pretest_status', field: 'pretest_status', filter: true, width: 150 },
-        { headerName: 'Post_status', field: 'posttest_status', filter: true, width: 150 },
-        { headerName: 'Pre-Mark', field: 'pretest_mark', filter: true, width: 150 },
-        { headerName: 'Post_Mark', field: 'posttest_mark', filter: true, width: 150 },
-        { headerName: 'Training Mode', field: 'TrainingMode', filter: true, width: 150 },
-        { headerName: 'Re-Test', field: 'retest', filter: true, width: 150 },
-        { headerName: 'HOD Verification', field: 'HodVerification', filter: true, width: 200 },
-        { headerName: 'TND Verification', field: 'TndVerification', filter: true, width: 200 },
+        { headerName: 'Remark', field: 'schedule_remark', filter: true, width: 250 },
+
     ])
 
+    const HandleYear = useCallback(async (newValue) => {
+        const date = new Date(newValue);
+        if (isValid(date) && date !== null && date !== undefined) {
+            const formattedDate = format(date, 'yyyy-MM-dd');
+            setselectedYear(formattedDate);
+        } else {
+            warningNofity("Selected Date is not valid");
+        }
+    }, []);
 
     return (
         <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
-            <ReportLayout title="Induction Employee Wise Training Report" data={EmployeeData} displayClose={true} >
+            <ReportLayout title="Yearly Departmental Calendar Reports" data={TrainingData} displayClose={true} >
                 <ToastContainer />
                 <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
                 <Box sx={{ width: '100%', }} >
                     <Paper variant="outlined" sx={{ p: 0.5, mt: 0.5 }}>
-                        <Box sx={{ display: 'flex', flex: 1 }} >
+                        <Box sx={{ display: 'flex', flex: 1, justifyContent: "space-between" }} >
+                            <Box sx={{ flex: 1 }}>
+                                <LocalizationProvider dateAdapter={AdapterMoment} >
+                                    <DatePicker
+                                        views={['year']}
+                                        inputFormat="DD-MM-YYYY"
+                                        value={selectedYear}
+                                        onChange={(newValue) => {
+                                            HandleYear(newValue);
+                                        }}
+                                        renderInput={({ inputRef, inputProps, InputProps }) => (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                                <CssVarsProvider>
+                                                    <Input ref={inputRef} {...inputProps} style={{ width: '100%' }} disabled={true} />
+                                                </CssVarsProvider>
+                                                {InputProps?.endAdornment}
+                                            </Box>
+                                        )}
+                                    />
+                                </LocalizationProvider>
+                            </Box>
                             <Box sx={{ flex: 1, px: 0.3 }} >
                                 <Select
                                     defaultValue={0}
@@ -276,40 +288,7 @@ const InductionAttendedStaffReport = () => {
                                     }
                                 </Select>
                             </Box>
-                            <Box sx={{ width: '15%', px: 0.3 }}>
-                                <Select
-                                    onChange={handleChangeEmployeeName}
-                                    sx={{ width: '100%' }}
-                                    value={employeeID}
-                                    size='sm'
-                                    variant='outlined'
-                                    color='primary'
-                                    disabled={empDisableStat}
-                                    placeholder="Employee Name"
-                                    endDecorator={mapEmpList?.length === 0 && <div className='loading-spinner' ></div>}
-                                >
-                                    <Option disabled value={0}  >Employee Name</Option>
-                                    {
-                                        mapEmpList && mapEmpList?.map((val, index) => {
-                                            return <Option key={index} value={val.em_no} label={val.em_name} onClick={() => setRequestUser({ ...requestUser, emID: val.em_id })} >
-                                                <Box gap={-1}
-                                                    sx={{
-                                                        display: 'flex',
-                                                        flex: 1,
-                                                        alignItems: 'center',
-                                                        justifyContent: 'space-between',
-                                                        paddingX: 1,
-                                                        mx: -1,
-                                                        gap: 0
-                                                    }}>
-                                                    <Typography level='body-sm'>{val.em_name}</Typography>
-                                                    <Typography endDecorator={val.em_no} color='success' level='body-md'></Typography>
-                                                </Box>
-                                            </Option>
-                                        })
-                                    }
-                                </Select>
-                            </Box>
+
                             <Box sx={{ px: 0.3 }}>
                                 <CssVarsProvider>
                                     <Tooltip title="Search Employees">
@@ -321,13 +300,12 @@ const InductionAttendedStaffReport = () => {
                                 </CssVarsProvider>
                             </Box>
                         </Box>
-
                     </Paper>
 
                     <Box sx={{ width: "100%" }}>
                         <Paper sx={{ height: 500, display: 'flex', flexDirection: "column" }}>
                             <CustomAgGridRptFormatOne
-                                tableDataMain={EmployeeData}
+                                tableDataMain={TrainingData}
                                 columnDefMain={columnDef}
                                 sx={{
                                     height: 300,
@@ -345,4 +323,4 @@ const InductionAttendedStaffReport = () => {
     )
 }
 
-export default memo(InductionAttendedStaffReport) 
+export default memo(DeptYearlyCalender) 

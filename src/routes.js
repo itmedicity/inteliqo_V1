@@ -278,15 +278,28 @@ const CreditedLeaveCount = React.lazy(() => import('./views/HrReports/LeaveCount
 const ApprovedLeaveCancel = React.lazy(() => import('./views/LeaveManagement/ApprovedleaveCancel/LeaveCancelByHR'))
 const OffRequest = React.lazy(() => import('./views/LeaveManagement/OffRequest/OffrequestCombinePage'))
 const FullandFinal = React.lazy(() => import('./views/Resignation/EndOfService/EndofProcess'))
-const InductionCompleteList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionCompleteList'))
 const TrainingSubTypeMaster = React.lazy(() => import('./views/Master/TrainingSubTypeMaster/TrainingSubTypeMaster'))
 const ManualRequestReport = React.lazy(() => import('./views/HrReports/ManualRequestReport/ManualReqstReport'))
+const InductionCompleteList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionCompleteList'))
 const InductPendingList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/IductPendingList'))
 const InductPassAndFailList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/CompletedAndPendingStaffList'))
 const InductionDetailsMainpage = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionPdfReport/InductionDetailsMainpage'))
 const InductionAttendedStaffReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionAttendedStaffReport'))
+<<<<<<< HEAD
 const menuCreation = React.lazy(() => import('./views/Master/MenuCreationMaster/MenuCreation'))
 const MonthlySalaryProcess = React.lazy(() => import('./views/Attendance/SalaryProcess/MonthlySalaryProcess'))
+=======
+const InductRetestEmpDetailsReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductRetestEmpDetails'))
+const InductionFeedback = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionFeedback'))
+const TrainerTrainingCount = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/TrainerTrainingCount'))
+const InductionTrainingTopicWise = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionTrainingTopicWise'))
+const StaffAttendedMainpage = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/StaffAttendedInduction/StaffAttendedMainpage'))
+const MonthlyDepartmentalTrainingReports = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/MonthlyDepartmentalTrainingReports'))
+const DepmtlAttendPendingList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DepmtlAttendPendingList'))
+const DeptStaffExamReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptStaffExamReport'))
+const DeptYearlyCalender = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptYearlyCalender'))
+
+>>>>>>> cf6687530166e7f68ee0cd3d3f53bafaf3b20e05
 
 const routes = [
 
@@ -570,6 +583,15 @@ const routes = [
   { path: '/Home/InductionAttendedStaffReport', exact: true, name: 'Induction Attended Staff Report', component: InductionAttendedStaffReport },
   { path: '/Home/menuCreation', exact: true, name: 'Menu Creation', component: menuCreation },
   { path: '/Home/MonthlySalaryProcess', exact: true, name: 'Monthly Salary Process', component: MonthlySalaryProcess }
+  { path: '/Home/InductRetestEmpDetailsReport', exact: true, name: 'Induction Retest Employee Report', component: InductRetestEmpDetailsReport },
+  { path: '/Home/InductionFeedback', exact: true, name: 'Induction Feedback Report', component: InductionFeedback },
+  { path: '/Home/TrainerTrainingCount', exact: true, name: 'Trainer Training Count Report', component: TrainerTrainingCount },
+  { path: '/Home/InductionTrainingTopicWise', exact: true, name: 'Induction Training TopicWise Report', component: InductionTrainingTopicWise },
+  { path: '/Home/StaffAttendedMainpage', exact: true, name: 'Induction Attended Staff Report', component: StaffAttendedMainpage },
+  { path: '/Home/MonthlyDepartmentalTrainingReports', exact: true, name: 'Monthly Departmental Training Reports', component: MonthlyDepartmentalTrainingReports },
+  { path: '/Home/DepmtlAttendPendingList', exact: true, name: 'Departmental Attend & Pending List', component: DepmtlAttendPendingList },
+  { path: '/Home/DeptStaffExamReport', exact: true, name: 'Departmental StafExam Reports', component: DeptStaffExamReport },
+  { path: '/Home/DeptYearlyCalender', exact: true, name: 'Yearly Departmental Training Reports', component: DeptYearlyCalender },
 
 ]
 

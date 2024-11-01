@@ -1,5 +1,6 @@
+
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { Box, Paper } from '@mui/material'
-import React, { memo, useCallback, useState } from 'react'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import SearchIcon from '@mui/icons-material/Search';
@@ -8,20 +9,23 @@ import { CssVarsProvider, IconButton, Input, Tooltip, Typography } from '@mui/jo
 import { format, isValid } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { ToastContainer } from 'react-toastify'
+import { useDispatch } from 'react-redux';
+import { InductionTrainingTopics } from 'src/redux/actions/Training.Action';
+import InductionTopics from 'src/views/MuiComponents/JoyComponent/InductionTopics';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 import ReportLayout from '../../ReportComponent/ReportLayout';
-import JoyTrainingSubtype from 'src/views/MuiComponents/JoyTrainingSubtype';
 
-const InductionCompleteList = () => {
 
-    const [flag, SetFlag] = useState(0);
-
-    //new
-    const [subtype, SetSubType] = useState(0);
-    const [CompletedList, setCompletedList] = useState([]);
+const InductRetestEmpDetails = () => {
 
     const [Fromdate, setFromdate] = useState('');
     const [Todate, setTodate] = useState('');
+    const [topic, setTopic] = useState(0)
+    const [EmpDetails, setEmpDetails] = useState([])
+
+    const dispatch = useDispatch()
+
+    useEffect(() => dispatch(InductionTrainingTopics()), [dispatch])
 
     const HandleFromDate = useCallback(async (newValue) => {
         const date = new Date(newValue);
@@ -46,76 +50,88 @@ const InductionCompleteList = () => {
     const SearchingProcess = useCallback(async () => {
         const obj = {
             Fromdate: Fromdate,
-            Todate: Todate,
-            typeId: subtype
-        };
-
-        if (Fromdate !== '' && Todate !== '') {
-
-            const result = await axioslogin.post(`/TrainingInductionReport/inductionGeneralList`, obj);
-            const { success, data } = result.data;
-            if (success === 2 && data.length !== 0) {
-                const obj = data?.map((val, ndx) => ({
-                    serialno: ndx + 1,
-                    indct_emp_no: val.indct_emp_no,
-                    induct_detail_date: val.induct_detail_date,
-                    date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
-                    em_name: val.em_name,
-                    dept_name: val.dept_name,
-                    training_topic_name: val.training_topic_name,
-                    pretest_status: val.pretest_status,
-                    posttest_status: val.posttest_status,
-                    em_no: val.em_no,
-                    subtype_no: val.subtype_no,
-                    subtype_count: val.subtype_count,
-                    topic_pre_status: val.topic_pre_status,
-                    topic_post_status: val.topic_post_status,
-                    topic_offline_status: val.topic_offline_status,
-                    topic_online_status: val.topic_online_status,
-                    training_status: val.training_status,
-                    online_mode: val.online_mode,
-                    offline_mode: val.offline_mode,
-                    retest: val.retest,
-                    training_iduct_tnd_verify_status: val.training_iduct_tnd_verify_status,
-                    sect_name: val.sect_name
-                }));
-                // const employees = obj?.filter(val =>
-                //     val.topic_pre_status === 1 &&
-                //     val.topic_post_status === 1 &&
-                //     val.topic_offline_status === 1 &&
-                //     val.training_status === 1 &&
-                //     val.pretest_status === 1 &&
-                //     val.posttest_status === 1 &&
-                //     val.offline_mode === 1
-                // );
-                setCompletedList(obj);
-                SetFlag(1);
-            } else {
-                warningNofity("No Employee Records Found For The Selected Period");
-                setCompletedList([]);
-            }
-
-        } else {
-            setFromdate('');
-            setTodate('');
-            warningNofity("Enter both 'From' and 'To' dates to initiate the search");
+            Todate: Todate
         }
-    }, [Fromdate, Todate, SetFlag, subtype]);
+        if (Fromdate !== '' && Todate !== '' && topic === 0) {
+            const result = await axioslogin.post(`/TrainingInductionReport/inductionReTestEmpList`, obj)
+            const { success, data } = result.data;
+            if (success === 2 && data?.length !== 0) {
 
+                const obj = data?.map((val, ndx) => {
+                    return {
+                        serialno: ndx + 1,
+                        indct_emp_no: val.indct_emp_no,
+                        em_no: val.em_no,
+                        induct_detail_date: val.induct_detail_date,
+                        date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
+                        em_name: val.em_name,
+                        dept_name: val.dept_name,
+                        training_topic_name: val.training_topic_name,
+                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
+                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
+                        schedule_topic: val.schedule_topic,
+                        trainers_name: val.trainers_name
+                    }
+                })
+                setEmpDetails(obj);
+            }
+            else {
+                warningNofity("No Employee Records Found For The Selected Period")
+                setEmpDetails([])
+            }
+        }
+        else if (Fromdate !== '' && Todate !== '' && topic !== 0) {
+            const result = await axioslogin.post(`/TrainingInductionReport/inductionReTestEmpList`, obj)
+            const { success, data } = result.data;
+            if (success === 2 && data?.length !== 0) {
+                const obj = data?.map((val, ndx) => {
+                    return {
+                        serialno: ndx + 1,
+                        indct_emp_no: val.indct_emp_no,
+                        em_no: val.em_no,
+                        induct_detail_date: val.induct_detail_date,
+                        date: format(new Date(val.induct_detail_date), 'dd-MM-yyyy'),
+                        em_name: val.em_name,
+                        dept_name: val.dept_name,
+                        training_topic_name: val.training_topic_name,
+                        pretest_mark: val.pre_mark !== null ? val.pre_mark : "Not Updated",
+                        posttest_mark: val.post_mark !== null ? val.post_mark : "Not Updated",
+                        schedule_topic: val.schedule_topic,
+                        trainers_name: val.trainers_name
+                    }
+                })
+                const topicwise = obj?.filter((val) => val.schedule_topic === topic)
+                setEmpDetails(topicwise);
+            }
+            else {
+                warningNofity("No Employee Records Found For The Selected Period")
+                setEmpDetails([])
+            }
+        }
+        else {
+            setFromdate('')
+            setTodate('')
+            warningNofity("Enter both 'From' and 'To' dates to initiate the search")
+        }
+    }, [Fromdate, Todate, setEmpDetails, topic])
+
+    //table
     const [columnDef] = useState([
         { headerName: 'Sl.No', field: 'serialno', filter: true, width: 150 },
-        { headerName: 'Training Date', field: 'date', filter: true, width: 250 },
-        { headerName: 'Employee ID', field: 'em_no', filter: true, width: 250 },
+        { headerName: 'Date', field: 'date', filter: true, width: 250 },
+        { headerName: 'Em ID', field: 'em_no', filter: true, width: 250 },
         { headerName: 'Emp Name', field: 'em_name', filter: true, width: 350 },
-        { headerName: 'Department', field: 'dept_name', filter: true, width: 300 },
-        { headerName: 'Department Section', field: 'sect_name', filter: true, width: 300 },
+        { headerName: 'Department', field: 'dept_name', filter: true, width: 350 },
+        { headerName: 'Training Topics', field: 'training_topic_name', filter: true, width: 350 },
+        { headerName: 'Trainer Names', field: 'trainers_name', filter: true, width: 350 },
+        { headerName: 'Pre-Test Mark', field: 'pretest_mark', filter: true, width: 200 },
+        { headerName: 'Post-Test Mark', field: 'posttest_mark', filter: true, width: 200 },
     ])
-
     return (
         <Paper elevation={0}>
-            <ReportLayout title="Induction Training Completed Reports" data={CompletedList} displayClose={true} >
+            <ReportLayout title="Induction Retest Employee Reports" data={[]} displayClose={true} >
+                <ToastContainer />
                 <Box sx={{ width: "100%" }}>
-                    <ToastContainer />
                     <Box sx={{ mt: 0.3, p: 1, display: "flex", flexDirection: "row" }}>
                         <Box sx={{ flex: 1, px: 1 }} >
                             <Typography sx={{ fontWeight: "bold" }}>From Date</Typography>
@@ -159,9 +175,9 @@ const InductionCompleteList = () => {
                                 />
                             </LocalizationProvider>
                         </Box>
-                        <Box sx={{ flex: 1, px: 1 }} >
-                            <Typography sx={{ fontWeight: "bold" }}>Select Type</Typography>
-                            <JoyTrainingSubtype value={subtype} setValue={SetSubType} />
+                        <Typography sx={{ fontWeight: "bold" }}>Topic</Typography>
+                        <Box sx={{ flex: 1, mt: 3, px: 0.3, }} >
+                            <InductionTopics topic={topic} setTopic={setTopic} />
                         </Box>
 
                         <Box sx={{ flex: 1, mt: 3 }}>
@@ -175,17 +191,16 @@ const InductionCompleteList = () => {
                                 </Tooltip>
                             </CssVarsProvider>
                         </Box>
-
                     </Box>
-                    <Box sx={{ width: "100%" }}>
-                        <Paper sx={{ height: 600, display: 'flex', flexDirection: "column" }}>
+                    <Box sx={{ width: "100%", overflow: 'auto' }}>
+                        <Paper sx={{ height: 700, display: 'flex', flexDirection: "column" }}>
                             <CustomAgGridRptFormatOne
-                                tableDataMain={CompletedList}
+                                tableDataMain={EmpDetails}
                                 columnDefMain={columnDef}
                                 sx={{
-                                    height: 450,
+                                    height: 600,
                                     width: "100%",
-                                    // mt: 1,
+                                    mt: 1
                                 }}
                                 rowHeight={30}
                                 headerHeight={30}
@@ -193,10 +208,10 @@ const InductionCompleteList = () => {
                         </Paper>
                     </Box>
                 </Box>
-
             </ReportLayout>
         </Paper>
     )
 }
 
-export default memo(InductionCompleteList) 
+
+export default memo(InductRetestEmpDetails) 

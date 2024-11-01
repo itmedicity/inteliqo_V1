@@ -22,7 +22,6 @@ import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 const DepartmentalCalender = () => {
 
     const dispatch = useDispatch()
-
     const [dept, setDept] = useState(0)
     const [deptSect, setDepartSection] = useState(0)
     const [fromdate, Setfromdate] = useState('')

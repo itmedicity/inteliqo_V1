@@ -1,6 +1,5 @@
-import React, { memo, useEffect, } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { InductionTrainingTopics } from 'src/redux/actions/Training.Action';
+import React, { memo } from 'react'
+import { useSelector } from 'react-redux';
 import { Option, Select } from '@mui/joy';
 
 const InductionTopics = ({ topic, setTopic }) => {

@@ -48,13 +48,13 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
 
     const { schedule_date, traineer_name, training_topic_name } = data;
 
-    const obj = {
-        em_department: em_department,
-        em_dept_section: em_dept_section
-    }
     useEffect(() => {
+        const obj = {
+            em_department: em_department,
+            em_dept_section: em_dept_section
+        }
         dispatch(DeptSectnWiseTrainerNames(obj))
-    }, [dispatch, count, obj])
+    }, [dispatch, count, em_department, em_dept_section])
 
     useEffect(() => {
         if (Object.keys(modalData).length !== 0) {
@@ -209,9 +209,7 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
             }
             editTrainers(updateTrainers)
         }
-        {
-            warningNofity()
-        }
+
     }, [patchdata, updateFlag, postdata, SetOpen, editTrainer, seteditTrainer, setTrainer, SetCount, count, updateTrainers])
 
     return (

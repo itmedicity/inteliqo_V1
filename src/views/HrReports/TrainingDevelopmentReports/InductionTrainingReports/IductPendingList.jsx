@@ -1,6 +1,5 @@
 import { Box, Paper } from '@mui/material'
 import React, { memo, useCallback, useState } from 'react'
-import ReportLayout from '../../ReportComponent/ReportLayout'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import SearchIcon from '@mui/icons-material/Search';
@@ -9,12 +8,11 @@ import { CssVarsProvider, IconButton, Input, Tooltip, Typography } from '@mui/jo
 import { format, isValid } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { ToastContainer } from 'react-toastify'
+import ReportLayout from '../../ReportComponent/ReportLayout';
 import JoyTrainingSubtype from 'src/views/MuiComponents/JoyTrainingSubtype';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 
 const IductPendingList = () => {
-
-    const [flag, SetFlag] = useState(0);
 
     //new
     const [subtype, SetSubType] = useState(0);
@@ -51,7 +49,6 @@ const IductPendingList = () => {
         };
 
         if (Fromdate !== '' && Todate !== '') {
-
             const result = await axioslogin.post(`/TrainingInductionReport/inductPendingList`, obj);
             const { success, data } = result.data;
             if (success === 2 && data.length !== 0) {
@@ -89,10 +86,9 @@ const IductPendingList = () => {
                 //     val.offline_mode === 1
                 // );
                 SetPendingList(obj);
-                SetFlag(1);
             } else {
                 warningNofity("No Employee Records Found For The Selected Period");
-                // setCompleteList([]);
+                SetPendingList([]);
             }
 
         } else {
@@ -100,7 +96,7 @@ const IductPendingList = () => {
             setTodate('');
             warningNofity("Enter both 'From' and 'To' dates to initiate the search");
         }
-    }, [Fromdate, Todate, SetFlag, subtype]);
+    }, [Fromdate, Todate, subtype]);
 
     const [columnDef] = useState([
         { headerName: 'Sl.No', field: 'serialno', filter: true, width: 150 },

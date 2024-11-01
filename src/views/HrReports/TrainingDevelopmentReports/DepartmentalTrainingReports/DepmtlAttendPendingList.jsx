@@ -3,7 +3,7 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDepartmentSectionAll, getDepartmentAll, getEmployeeInformationLimited, getCommonSettings } from 'src/redux/reduxFun/reduxHelperFun';
-import { Box, CssVarsProvider, Tooltip, Typography, IconButton } from '@mui/joy';
+import { Box, CssVarsProvider, Tooltip, Typography, IconButton, Checkbox } from '@mui/joy';
 import { setDept } from 'src/redux/actions/Dept.Action';
 import { setdeptSection } from 'src/redux/actions/DeptSection.action';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -16,10 +16,10 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { format } from 'date-fns';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from 'src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction';
-import ReportLayout from '../../ReportComponent/ReportLayout';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
+import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout';
 
-const InductionAttendedStaffReport = () => {
+const DepmtlAttendPendingList = () => {
 
     const dispatch = useDispatch();
 
@@ -48,6 +48,7 @@ const InductionAttendedStaffReport = () => {
     })
     const [drop, setDropOpen] = useState(false)
     const [EmployeeData, SetEmployeeData] = useState([]);
+    const [PendingFlag, setPendingFlag] = useState(false);
 
     const department = useSelector((state) => getDepartmentAll(state))
     const departmentNameList = useMemo(() => department, [department])
@@ -65,7 +66,7 @@ const InductionAttendedStaffReport = () => {
         setMasterGroupStatus(groupStatus)
         dispatch(setCommonSetting());
         dispatch(setShiftDetails())
-    }, [groupStatus, dispatch])
+    }, [groupStatus])
 
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
@@ -154,29 +155,33 @@ const InductionAttendedStaffReport = () => {
         setRequestUser({ ...requestUser, emNo: value })
     }, [requestUser, setRequestUser])
 
+
     const SearchingProcess = useCallback(async () => {
-        const id = requestUser?.emID;
-        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && requestUser?.emID !== 0) {
+        if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && requestUser?.emID !== 0 && PendingFlag === false) {
+            const obj = {
+                deptID: requestUser?.deptID,
+                sectionID: requestUser?.sectionID,
+                emID: requestUser?.emID,
+            };
             try {
-                const result = await axioslogin.get(`/TrainingDetails/getInductiontrainings/${id}`);
+                const result = await axioslogin.post(`/TrainingInductionReport/getDeptScheduleList`, obj);
                 const { success, data } = result.data;
                 if (success === 2 && data?.length !== 0) {
-                    let obj = data.map((val) => ({
-                        Induct_slno: val.Induct_slno,
+                    const mappedData = data.map((val) => ({
+                        calender_slno: val.calender_slno,
                         em_no: val.em_no,
                         em_name: val.em_name,
                         em_id: val.em_id,
-                        induction_date: val.induction_date,
-                        date: format(new Date(val.induction_date), 'dd-MM-yyyy'),
-                        trainer_name: val.trainer_name,
+                        schedule_date: val.schedule_date,
+                        date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
                         dept_name: val.dept_name,
                         training_topic_name: val.training_topic_name,
-                        pretest_mark: val.induct_pre_mark !== null ? val.induct_pre_mark : "Not Updated",
-                        posttest_mark: val.induct_post_mark !== null ? val.induct_post_mark : "Not Updated",
+                        pretest_mark: val.Pretest_mark !== null ? val.Pretest_mark : "Not Updated",
+                        posttest_mark: val.posttest_mark !== null ? val.posttest_mark : "Not Updated",
                         schedule_topic: val.schedule_topic,
-                        retest: val.retest === 0 ? "No" : "Yes",
-                        HodVerification: val.training_induct_hod_aprvl_status !== 0 ? "Verified" : "Not Verified",
-                        TndVerification: val.training_iduct_tnd_verify_status !== 0 ? "Verified" : "Not Verified",
+                        retest: val.retest === 0 || null ? "No" : "Yes",
+                        HodVerification: val.training_hod_apprvls_status !== 0 ? "Verified" : "Not Verified",
+                        TndVerification: val.tnd_verification_status !== 0 ? "Verified" : "Not Verified",
                         training_status: val.training_status,
                         Attandance: val.training_status === 1 ? "Present" : "Absent",
                         pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
@@ -184,32 +189,86 @@ const InductionAttendedStaffReport = () => {
                         offline_mode: val.offline_mode,
                         online_mode: val.online_mode,
                         TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
-                        sect_name: val.sect_name
+                        sect_name: val.sect_name,
+                        // trainer_name: val.trainer_name
                     }));
-                    SetEmployeeData(obj); // Update state with final object
+
+                    // Set the mapped data to the state
+                    SetEmployeeData(mappedData);
+
                 } else {
-                    SetEmployeeData([]) // Clear data if no result
+                    warningNofity("No Records Found");
+                    SetEmployeeData([]); // Clear data when no records are found
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 SetEmployeeData([]); // Clear data on error
             }
-        } else {
-            warningNofity("Select Basic Information for Search");
-            SetEmployeeData([]); // Clear data if no department or section is selected
         }
-    }, [requestUser, setDropOpen]);
+        else if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && PendingFlag === true) {
+            const obj = {
+                deptID: requestUser?.deptID,
+                sectionID: requestUser?.sectionID,
+            };
+            try {
+                const result = await axioslogin.post(`/TrainingInductionReport/getDeptPendingList`, obj);
+                const { success, data } = result.data;
+                console.log(data);
+
+                if (success === 2 && data?.length !== 0) {
+                    const mappedData = data.map((val) => ({
+                        calender_slno: val.calender_slno,
+                        em_no: val.em_no,
+                        em_name: val.em_name,
+                        em_id: val.em_id,
+                        schedule_date: val.schedule_date,
+                        date: format(new Date(val.schedule_date), 'dd-MM-yyyy'),
+                        dept_name: val.dept_name,
+                        training_topic_name: val.training_topic_name,
+                        pretest_mark: val.Pretest_mark !== null ? val.Pretest_mark : "Not Updated",
+                        posttest_mark: val.posttest_mark !== null ? val.posttest_mark : "Not Updated",
+                        schedule_topic: val.schedule_topic,
+                        retest: val.retest === 0 || null ? "No" : "Yes",
+                        HodVerification: val.training_hod_apprvls_status !== 0 ? "Verified" : "Not Verified",
+                        TndVerification: val.tnd_verification_status !== 0 ? "Verified" : "Not Verified",
+                        training_status: val.training_status,
+                        Attandance: val.training_status === 1 ? "Present" : "Absent",
+                        pretest_status: val.pretest_status === 1 ? "Attended" : "Not Attended",
+                        posttest_status: val.posttest_status === 1 ? "Attended" : "Not Attended",
+                        offline_mode: val.offline_mode,
+                        online_mode: val.online_mode,
+                        TrainingMode: val.offline_mode === 1 ? "Offline" : val.online_mode === 1 ? "Online" : "Not Updated",
+                        sect_name: val.sect_name,
+                        // trainer_name: val.trainer_name
+                    }));
+
+                    // Set the mapped data to the state
+                    SetEmployeeData(mappedData);
+                } else {
+                    warningNofity("No Records Found");
+                    SetEmployeeData([]); // Clear data when no records are found
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                SetEmployeeData([]); // Clear data on error
+            }
+        }
+        else {
+            // warningNofity("Enter Basic Information To Search");
+        }
+    }, [employeeID, requestUser, PendingFlag]);
+
 
 
     const [columnDef] = useState([
-        { headerName: 'Sl no', field: 'Induct_slno', filter: true, width: 100 },
+        { headerName: 'Sl no', field: 'calender_slno', filter: true, width: 100 },
         { headerName: 'Employee ID', field: 'em_no', filter: true, width: 150 },
         { headerName: 'Employee Names', field: 'em_name', filter: true, width: 250 },
         { headerName: 'Department', field: 'dept_name', filter: true, width: 250 },
         { headerName: 'Department section', field: 'sect_name', filter: true, width: 250 },
         { headerName: 'Training Date', field: 'date', filter: true, width: 150 },
         { headerName: 'Topic', field: 'training_topic_name', filter: true, width: 250 },
-        { headerName: 'Trainer Name', field: 'trainer_name', filter: true, width: 250 },
+        // { headerName: 'Trainer Name', field: 'trainer_name', filter: true, width: 250 },
         { headerName: 'Attandance', field: 'Attandance', filter: true, width: 150 },
         { headerName: 'Pretest_status', field: 'pretest_status', filter: true, width: 150 },
         { headerName: 'Post_status', field: 'posttest_status', filter: true, width: 150 },
@@ -219,17 +278,36 @@ const InductionAttendedStaffReport = () => {
         { headerName: 'Re-Test', field: 'retest', filter: true, width: 150 },
         { headerName: 'HOD Verification', field: 'HodVerification', filter: true, width: 200 },
         { headerName: 'TND Verification', field: 'TndVerification', filter: true, width: 200 },
-    ])
 
+    ])
+    const HandlePendingFlag = useCallback((e) => {
+        if (e.target.checked === true) {
+            setPendingFlag(e.target.checked)
+        }
+        else {
+            setPendingFlag(false)
+        }
+    }, [setPendingFlag])
 
     return (
         <Paper variant="outlined" sx={{ width: '100%', p: 0.5 }}  >
-            <ReportLayout title="Induction Employee Wise Training Report" data={EmployeeData} displayClose={true} >
+            <ReportLayout title="Department Wise Staff Training Report" data={EmployeeData} displayClose={true} >
                 <ToastContainer />
                 <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
                 <Box sx={{ width: '100%', }} >
                     <Paper variant="outlined" sx={{ p: 0.5, mt: 0.5 }}>
-                        <Box sx={{ display: 'flex', flex: 1 }} >
+                        <Box sx={{ display: 'flex', flex: 1, justifyContent: "space-between" }} >
+                            <Box sx={{ p: 1 }}>
+                                <Checkbox
+                                    name="status"
+                                    color="primary"
+                                    checked={PendingFlag}
+                                    className="ml-1"
+                                    onChange={(e) => HandlePendingFlag(e)}
+                                    label="Pending List"
+                                />
+                            </Box>
+
                             <Box sx={{ flex: 1, px: 0.3 }} >
                                 <Select
                                     defaultValue={0}
@@ -276,6 +354,7 @@ const InductionAttendedStaffReport = () => {
                                     }
                                 </Select>
                             </Box>
+
                             <Box sx={{ width: '15%', px: 0.3 }}>
                                 <Select
                                     onChange={handleChangeEmployeeName}
@@ -310,6 +389,7 @@ const InductionAttendedStaffReport = () => {
                                     }
                                 </Select>
                             </Box>
+
                             <Box sx={{ px: 0.3 }}>
                                 <CssVarsProvider>
                                     <Tooltip title="Search Employees">
@@ -321,7 +401,6 @@ const InductionAttendedStaffReport = () => {
                                 </CssVarsProvider>
                             </Box>
                         </Box>
-
                     </Paper>
 
                     <Box sx={{ width: "100%" }}>
@@ -345,4 +424,4 @@ const InductionAttendedStaffReport = () => {
     )
 }
 
-export default memo(InductionAttendedStaffReport) 
+export default memo(DepmtlAttendPendingList) 

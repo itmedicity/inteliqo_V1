@@ -225,7 +225,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             //add the holiday details into the shift plan array
             const holidayFilterFun = (values) => {
                 const holiday = holidayFilterList.find((val) => val.hld_date === values.date)
-                if (holiday !== undefined || holiday !== null) {
+                if (holiday !== undefined) {
                     return {
                         date: values?.date,
                         emp_id: values?.emp_id,
@@ -251,7 +251,7 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
             //add the holiday details into the shift plan array
             const fullholidayFilterFun = (values) => {
                 const holiday = fullMonthHolidayList.find((val) => val.hld_date === values.date)
-                if (holiday !== undefined || holiday !== null) {
+                if (holiday !== undefined) {
                     return {
                         date: values?.date,
                         emp_id: values?.emp_id,

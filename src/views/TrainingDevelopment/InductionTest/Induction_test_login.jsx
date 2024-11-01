@@ -34,7 +34,7 @@ const Induction_test_login = () => {
             // topic_slno: parseInt(topic_slno),
             // slno: parseInt(slno)
         }
-    }, [EmpId, Mob, topic_slno, slno])
+    }, [EmpId, Mob])
     //api call
     const LogInData = useCallback(async () => {
         if (EmpId !== '' && Mob !== '' && topic_slno !== 0) {
@@ -94,7 +94,7 @@ const Induction_test_login = () => {
             warningNofity("Please Enter Valid Employee ID and Registered Mobile Number")
             reset();
         }
-    }, [postdata, setData, SetView, reset, Setcount, count, EmpId, Mob, topic_slno])
+    }, [postdata, setData, SetView, reset, Setcount, count, EmpId, Mob, topic_slno, slno])
 
     return (
         <Fragment>

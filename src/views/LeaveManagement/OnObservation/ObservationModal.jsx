@@ -1,14 +1,14 @@
 import { Avatar, Box, Button, ButtonGroup, CardActions, CardContent, CardOverflow, Modal, ModalClose, ModalDialog, Typography } from '@mui/joy'
-import { format, isValid } from 'date-fns';
+import { format, isValid, lastDayOfMonth, startOfMonth } from 'date-fns';
 import React, { memo, useMemo } from 'react'
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 
-const ObservationModal = ({ open, setOpen, empdata }) => {
+const ObservationModal = ({ open, setOpen, empdata, setShow }) => {
 
-    const { em_id, em_no, em_name, em_doj, sect_name } = empdata;
+    const { em_id, em_no, em_name, em_doj, sect_name, em_dept_section } = empdata;
     // const state = useSelector((state) => state?.getCommonSettings)
     // const commonStates = useMemo(() => state, [state])
     // const { onobservation_days } = commonStates;
@@ -25,23 +25,57 @@ const ObservationModal = ({ open, setOpen, empdata }) => {
     }, [setOpen])
 
     const submitData = useCallback(async () => {
-        const postData = {
+        const submitData = {
             duty_day: format(new Date(em_doj), 'yyyy-MM-dd'),
             emp_id: em_id,
             dateofjoining: format(new Date(em_doj), 'yyyy-MM-dd'),
             observation_day: format(new Date(em_doj), 'yyyy-MM-dd'),
             create_user: LoginEmpID
         }
-        const empData = await axioslogin.patch("/OnObservationRequest/punchMasterUpdate", postData);
-        const { success, message } = empData.data;
-        if (success === 1) {
-            succesNofity("Submitted Suuccessfully")
-            setOpen(false)
-        } else {
-            errorNofity(message)
-            setOpen(false)
+
+        const monthStartDate = format(startOfMonth(new Date(em_doj)), 'yyyy-MM-dd')
+        const postData = {
+            month: monthStartDate,
+            section: em_dept_section
         }
-    }, [em_id, em_doj, LoginEmpID, setOpen])
+
+        const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
+        const { success, data } = checkPunchMarkingHr.data
+        if (success === 0 || success === 1) {
+            const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(em_doj)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+            const lastDay_month = format(lastDayOfMonth(new Date(em_doj)), 'yyyy-MM-dd')
+            if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                warningNofity("Punch Marking Monthly Process Done !! Can't Cancel Miss Punch Request  ")
+                setOpen(false)
+            } else {
+                const check = {
+                    duty_day: format(new Date(em_doj), 'yyyy-MM-dd'),
+                    em_no: em_no,
+                }
+                const checkDutyPlan = await axioslogin.post('/plan/existornot', check);
+                const { success, } = checkDutyPlan.data;
+                if (success === 1) {
+                    const empData = await axioslogin.patch("/OnObservationRequest/punchMasterUpdate", submitData);
+                    const { success, message } = empData.data;
+                    if (success === 1) {
+                        succesNofity("Submitted Suuccessfully")
+                        setShow(1)
+                        setShow(2)
+                        setOpen(false)
+                    } else {
+                        errorNofity(message)
+                        setOpen(false)
+                    }
+                } else {
+                    setOpen(false)
+                    warningNofity("There is No DutyPlan For This Required date")
+                }
+            }
+        } else {
+            setOpen(false)
+            errorNofity("Error getting PunchMarkingHR ")
+        }
+    }, [em_id, em_doj, LoginEmpID, setOpen, em_dept_section, em_no])
 
     return (
         <Modal
