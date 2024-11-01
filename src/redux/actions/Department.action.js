@@ -14,4 +14,12 @@ export const setDepartment = () => async (dispatch) => {
 }
 
 
+export const getAllDeptList = async () => {
+    return await axioslogin.get('/common/getdept').then((res) => {
+        const { success, data } = res.data
+        if (success === 1) {
+            return data
+        } else return []
+    })
+}
 

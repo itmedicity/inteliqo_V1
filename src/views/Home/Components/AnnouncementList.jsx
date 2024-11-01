@@ -13,7 +13,6 @@ import { CircularProgress } from '@mui/material';
 
 const AnnouncementList = () => {
     const dispatch = useDispatch();
-    // const [flag, setflag] = useState(false)
 
     useEffect(() => {
         dispatch(setBirthdayAlert());
@@ -28,15 +27,7 @@ const AnnouncementList = () => {
     const empBirthday = useSelector((state) => {
         return state.getBirthdayList.empBirthdayList
     })
-
-    //Announcementlist.push(...empBirthday)
     const list = [...Announcementlist, ...empBirthday]
-    // const [List, setList] = useState(Announcementlist)
-    // useEffect(() => {
-    //     if (empBirthday.length !== 0) {
-    //         setList([...List, ...empBirthday])
-    //     }
-    // }, [empBirthday])
     const msg = "Happy Birthday!!"
 
     return (
@@ -74,6 +65,7 @@ const AnnouncementList = () => {
 
                                 const Announcementheading = val.Announcementheading && val.Announcementheading.toLowerCase();
                                 const empName = val.em_name && val.em_name.toLowerCase();
+                                const sectname = val?.sect_name?.toLowerCase()
 
                                 return <Box key={ind}>
                                     <ListItem variant='soft' sx={{ borderRadius: 4, backgroundColor: colorList[ind], }}   >
@@ -83,7 +75,9 @@ const AnnouncementList = () => {
                                             </Suspense>
                                         </ListItemDecorator>
                                         <ListItemContent>
-                                            <Typography sx={{ textTransform: 'capitalize' }} >{Announcementheading || empName}</Typography>
+                                            <Typography sx={{ textTransform: 'capitalize' }}>
+                                                {val.showStatus === 1 ? `${empName} (${sectname})` : Announcementheading}
+                                            </Typography>
                                             <Typography level="body2"
 
                                                 sx={{
@@ -95,7 +89,7 @@ const AnnouncementList = () => {
                                                     width: '100%', // Set this to the desired width
                                                     animation: 'marquee 10s linear infinite',
                                                 }} >
-                                                {val.Announcement || msg}
+                                                {val.showStatus === 1 ? msg : val.Announcement}
                                                 <style>
                                                     {`
                                                         @keyframes marquee {

@@ -61,6 +61,7 @@ export const py_setting_three = [
 ]
 
 export const userManagement_one = [
+    { to: '/Home/menuCreation', name: 'Menu Creation', slno: 311 },
     { to: '/Home/UserGroup', name: 'User Group Master', slno: 107 },
     { to: '/Home/ModuleGroupMaster', name: 'User Group To Module Master', slno: 105 },
     { to: '/Home/ModuleUserRights', name: 'Employee User Group Rights', slno: 106 },

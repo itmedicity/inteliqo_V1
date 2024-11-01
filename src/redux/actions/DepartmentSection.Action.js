@@ -13,3 +13,12 @@ export const setDeptWiseSection = (dept) => async (dispatch) => {
         dispatch({ type: FETCH_EMP_DEPTSECT, payload: [], loadingStatus: false })
     }
 }
+
+export const getAllDeptSectList = async () => {
+    return await axioslogin.post('/experienceReport/deptsectById/').then((res) => {
+        const { success, data } = res.data
+        if (success === 1) {
+            return data
+        } else return []
+    })
+}

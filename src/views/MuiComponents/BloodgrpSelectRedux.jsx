@@ -27,25 +27,6 @@ const BloodgrpSelectRedux = ({ value, setValue }) => {
                 })
             }
         </Select>
-        // <FormControl fullWidth
-        //     size='small'   >
-        //     <Select
-        //         value={value}
-        //         onChange={(e) => setValue(e.target.value)}
-        //         size="small"
-        //         fullWidth
-        //         variant='outlined'
-        //     >
-        //         <MenuItem value={0} >
-        //             Select Blood Group
-        //         </MenuItem>
-        //         {
-        //             bloodgrp && bloodgrp.map((val, index) => {
-        //                 return <MenuItem key={index} value={val.group_slno}>{val.group_name}</MenuItem>
-        //             })
-        //         }
-        //     </Select>
-        // </FormControl>
     )
 }
 

@@ -83,3 +83,44 @@ export const Exportfile = async (array, fileName) => {
     const data = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(data, fileName + fileExtension);
 }
+
+export const ExportAttendance = async (array, fileName) => {
+
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    const fileExtension = ".xlsx";
+
+    const ws = XLSX.utils.json_to_sheet(array);
+
+    XLSX.utils.sheet_add_aoa(ws, [[
+        "ID",
+        "Name",
+        "Branch",
+        "Department",
+        "Department Section",
+        "Category",
+        "Designation",
+        "Institution",
+        "Account Number",
+        "IFSC Number ",
+        "Total Days",
+        "Leave Count",
+        "Holiday Count",
+        'No Of Half Day LOP(HD)',
+        'No Of LC Count',
+        'Total LOP',
+        'Total Pay Day',
+        'LOP Amount ',
+        'NPS Amount',
+        'LWF Amount',
+        'Deduction Amount',
+        'Gross Salary ',
+        'Total Salary',
+        'Holiday Worked ',
+        'Holiday Amount',
+    ]], { origin: "A1" });
+    const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+}
+

@@ -285,7 +285,8 @@ const InductPendingList = React.lazy(() => import('./views/HrReports/TrainingDev
 const InductPassAndFailList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/CompletedAndPendingStaffList'))
 const InductionDetailsMainpage = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionPdfReport/InductionDetailsMainpage'))
 const InductionAttendedStaffReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/InductionTrainingReports/InductionAttendedStaffReport'))
-
+const menuCreation = React.lazy(() => import('./views/Master/MenuCreationMaster/MenuCreation'))
+const MonthlySalaryProcess = React.lazy(() => import('./views/Attendance/SalaryProcess/MonthlySalaryProcess'))
 
 const routes = [
 
@@ -567,7 +568,8 @@ const routes = [
   { path: '/Home/InductPassAndFailList', exact: true, name: 'Induction Pass and Fail Report', component: InductPassAndFailList },
   { path: '/Home/InductionDetailsMainpage', exact: true, name: 'Induction Details Report', component: InductionDetailsMainpage },
   { path: '/Home/InductionAttendedStaffReport', exact: true, name: 'Induction Attended Staff Report', component: InductionAttendedStaffReport },
-
+  { path: '/Home/menuCreation', exact: true, name: 'Menu Creation', component: menuCreation },
+  { path: '/Home/MonthlySalaryProcess', exact: true, name: 'Monthly Salary Process', component: MonthlySalaryProcess }
 
 ]
 
