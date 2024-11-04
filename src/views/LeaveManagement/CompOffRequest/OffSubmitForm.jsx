@@ -118,7 +118,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                         warningNofity('Selected Date Already Raised A COFF Request')
                         setDisableCheck(true)
                     }
-                    else if (holiday_slno !== 0 && gross_salary < salary_above) {
+                    else if (holiday_slno !== 0 && gross_salary <= salary_above) {
                         warningNofity('Cannot Apply for Compensatory Off, Salary must be greater than 25k!')
                         setDisableCheck(true)
                     }
