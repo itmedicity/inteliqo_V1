@@ -13,7 +13,7 @@ import { useCallback } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
-import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout'
 import { Paper } from '@mui/material'
 import SalaryReportAgGrid from 'src/views/Component/SalaryReportAgGrid'
@@ -23,7 +23,6 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { getHolidayList } from 'src/redux/actions/LeaveProcess.action'
 import { DeptWiseAttendanceViewFun } from '../AttendanceView/Functions'
 import { ExporttoExcel } from 'src/views/HrReports/DayWiseAttendence/ExportToExcel'
-import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 
 const SalaryProcessed = () => {
 
@@ -35,7 +34,7 @@ const SalaryProcessed = () => {
     const [all, setAll] = useState(false)
     const [mainArray, setArray] = useState([])
     const [processBtn, setProcessBtn] = useState(false)
-    const [openBkDrop, setOpenBkDrop] = useState(false);
+
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -59,7 +58,6 @@ const SalaryProcessed = () => {
     const onClickProcess = useCallback(async () => {
         setProcessBtn(true)
         if (all === true) {
-            setOpenBkDrop(true)
             const deptArray = allDept?.map(val => val.dept_id)
             const sectArray = allSection?.map(val => val.sect_id)
             const getEmpData = {
@@ -147,49 +145,25 @@ const SalaryProcessed = () => {
                             holidaySalary: Math.round(holidaysalary),
                             deductValue: deductValue,
                             totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary),
-                            branch_slno: val.branch_slno,
-                            category_slno: val.category_slno,
-                            dept_id: val.dept_id,
-                            desg_slno: val.desg_slno,
-                            em_id: val.em_id,
-                            inst_slno: val.inst_slno,
-                            sect_id: val.sect_id,
-                            processed_month: format(new Date(value), 'yyyy-MM-dd'),
                         }
                     })
-                    const result1 = await axioslogin.post("/payrollprocess/create/processedSalary", finalDataArry);
-                    const { success, message } = result1.data
-                    if (success === 1) {
-                        setArray(finalDataArry)
-                        setOpenBkDrop(false)
-                    } else {
-                        errorNofity(message)
-                        setOpenBkDrop(false)
-                    }
+                    setArray(finalDataArry)
                 }
                 else {
                     warningNofity("No Punch Details")
-                    setOpenBkDrop(false)
                 }
             } else {
                 warningNofity("Error While Fetching data!")
-                setOpenBkDrop(false)
             }
 
         } else {
-            setOpenBkDrop(true)
             const getEmpData = {
                 em_department: dept,
                 em_dept_section: deptSection,
             }
-            //to get department and section wise employee list
             const result1 = await axioslogin.post("/payrollprocess/getEmpNoDeptWise", getEmpData);
             const { succes, dataa: employeeData } = result1.data
             if (succes === 1 && isValid(value) && value !== null) {
-
-                console.log(employeeData);
-
-                //to get department and section wise employee earn deduction details
                 const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
                 const { data: deductData } = result1.data
                 const arr = employeeData?.map((val) => val.em_id)
@@ -198,52 +172,48 @@ const SalaryProcessed = () => {
                     from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
                     to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
                 }
-                //to get punch_master data by em_id and inbetween dates
+
                 const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
                 const { success, data } = result.data
                 if (success === 1) {
-                    console.log(data);
-
                     const finalDataArry = employeeData?.map((val) => {
                         const empwise = data.filter((value) => value.emp_id === val.em_id)
-                        //total holiday count
+
                         const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
-                        //total leave count
-                        const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL'
-                            || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
-                        //total halfday count
-                        const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD'
-                            || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
-                        //total late coming count
+                        //const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
+                        const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
+                        const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD'
+                            || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
                         const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
-                        //total deduction amount
+
                         const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
-                        //nps amount
+
                         const npsamount = val.nps === 1 ? val.npsamount : 0
-                        //lwf amount
                         const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
-                        //one salary
+
                         const onedaySalary = val.gross_salary / getDaysInMonth(new Date(value))
-                        //total workday
+
+                        // const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLOP + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLOP + (totalHD * 0.5)
+                        // const totallopCount = totalLOP + (totalHD * 0.5)
+
                         const workday =
                             (empwise?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
-                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' ||
-                                val.lvereq_desc === 'DOFF' || val.lvereq_desc === 'SL' ||
-                                val.lvereq_desc === 'HP' || val.lvereq_desc === 'CL' ||
-                                val.lvereq_desc === 'EL' || val.lvereq_desc === 'H' ||
-                                val.lvereq_desc === 'OHP' || val.lvereq_desc === 'ODP' ||
-                                val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length
-                        //Total holiday present count
-                        const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
-                        //totla month of selected days
-                        const totalDays = getDaysInMonth(new Date(value))
+                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
+                                val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
+                                val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
+                                val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
+                                val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length
 
+                        const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
+
+
+                        const totalDays = getDaysInMonth(new Date(value))
                         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
-                        //total paydays
                         const totalPayday = workday + (totalHD * 0.5)
-                        //total lop
                         const totallopCount = totalDays - totalPayday;
+                        // const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
                         const lopamount = totallopCount * (val.gross_salary / totalDays);
+                        //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
                         const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
 
                         return {
@@ -272,33 +242,14 @@ const SalaryProcessed = () => {
                             holidaySalary: Math.round(holidaysalary),
                             deductValue: deductValue,
                             totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary),
-                            branch_slno: val.branch_slno,
-                            category_slno: val.category_slno,
-                            dept_id: val.dept_id,
-                            desg_slno: val.desg_slno,
-                            em_id: val.em_id,
-                            inst_slno: val.inst_slno,
-                            sect_id: val.sect_id,
-                            processed_month: format(new Date(value), 'yyyy-MM-dd'),
                         }
                     })
-
-                    const result1 = await axioslogin.post("/payrollprocess/create/processedSalary", finalDataArry);
-                    const { success, message } = result1.data
-                    if (success === 1) {
-                        setArray(finalDataArry)
-                        setOpenBkDrop(false)
-                    } else {
-                        errorNofity(message)
-                        setOpenBkDrop(false)
-                    }
+                    setArray(finalDataArry)
                 } else {
                     warningNofity("No Punch Details or Not a Valid date")
-                    setOpenBkDrop(false)
                 }
             } else {
                 warningNofity("No Employee Under this Department || Department Section")
-                setOpenBkDrop(false)
             }
         }
     }, [value, all, dept, deptSection, commonSettings, allDept, allSection])
@@ -525,7 +476,6 @@ const SalaryProcessed = () => {
 
     return (
         <ReportLayout title="Salary Reports" data={mainArray} displayClose={true} >
-            <CustomBackDrop open={openBkDrop} text="!!! Please wait... !!!" />
             <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
                 <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
                     <Box sx={{ flex: 1, px: 0.5 }} >

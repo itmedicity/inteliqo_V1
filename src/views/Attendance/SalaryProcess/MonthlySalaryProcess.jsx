@@ -59,22 +59,27 @@ const MonthlySalaryProcess = () => {
         const result = await axioslogin.get('/payrollprocess/getAcriveDepartmentSection/');
         const { success, data } = result.data;
         const deptSectionData = data;
+        console.log(deptSectionData);
         if (success === 1) {
             //GET PUNCHMARKING DATA FROM table 
             const getPunchMarkingHr_table = await axioslogin.post('/payrollprocess/getmonthdeptlist/', getPunchMarkTablePostData);
             const { succ, data } = getPunchMarkingHr_table.data;
             if (succ === 1) {
                 const punchMarkingTableData = data;
+                console.log(punchMarkingTableData);
                 const findDept = [...new Set(deptSectionData?.map(e => e.dept_id))]?.map((dept) => {
                     return {
                         "dept_id": dept,
                         "dept_name": deptSectionData?.find(e => e.dept_id === dept)?.dept_name,
                         "section": deptSectionData?.filter((val) => val.dept_id === dept).map((v) => {
-                            return { ...v, "updated": punchMarkingTableData?.find((e) => v.sect_id === e.deptsec_slno)?.last_update_date ?? format(startOfMonth(new Date(value)), 'yyyy-MM-dd') }
+                            return {
+                                ...v, "updated": punchMarkingTableData?.find((e) => v.sect_id === e.sect_id)?.last_update_date ?? format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                                "status": punchMarkingTableData?.find((e) => v.sect_id === e.sect_id)?.salary_status ?? 0
+                            }
+
                         }),
                     }
                 })
-
 
                 const getData = {
                     month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
@@ -105,6 +110,7 @@ const MonthlySalaryProcess = () => {
                         }
                     })
                     setArray(array)
+                    console.log(findDept);
                     setDeptList(findDept)
 
                     setOpenBkDrop(false)
@@ -124,7 +130,8 @@ const MonthlySalaryProcess = () => {
                         e.sect_id,
                         1,
                         em_no,
-                        em_no
+                        em_no,
+                        format(endOfMonth(new Date(value)), 'yyyy-MM-dd')
                     ]
                 })
                 const insertPunchMarkTable = await axioslogin.post('/payrollprocess/insert/monthlyprocess', postData_PunchMarkHR)
@@ -274,7 +281,30 @@ const MonthlySalaryProcess = () => {
 
     const deleteAttendanceMarkingProcess = useCallback(async (dept, section, date) => {
         console.log(dept, section, date);
-    }, [])
+        const postDta = {
+            update_user: 4516,
+            dept_id: dept,
+            sect_id: section,
+            processed_month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
+        }
+
+        const result1 = await axioslogin.post("/payrollprocess/delete/processedSalary", postDta);
+        const { success, message } = result1.data
+        if (success === 1) {
+            const result1 = await axioslogin.post("/payrollprocess/cancel/process", postDta);
+            const { success, message } = result1.data
+            if (success === 1) {
+                //setDeptList(findDept)
+                setOpenBkDrop(false)
+            } else {
+                console.log("error");
+                errorNofity(message)
+                setOpenBkDrop(false)
+            }
+        } else {
+            errorNofity(message)
+        }
+    }, [value])
 
 
     const exportDataClick = useCallback(() => {
@@ -404,15 +434,15 @@ const MonthlySalaryProcess = () => {
                                                         {
                                                             monthStart === e.updated ?
                                                                 <Chip color='neutral' size="sm" variant="solid" startDecorator={<CalendarMonthIcon fontSize='inherit' />}>
-                                                                    {/* {e.updated} */}nn
+                                                                    {e.updated}
                                                                 </Chip> :
                                                                 actSelectDate <= e.updated ?
                                                                     <Chip color='success' size="sm" variant="solid" startDecorator={<CalendarMonthIcon fontSize='inherit' />}>
-                                                                        {/* {e.updated} */}nn
+                                                                        {e.updated}
                                                                     </Chip>
                                                                     :
                                                                     <Chip color="danger" size="sm" variant="solid" startDecorator={<CalendarMonthIcon fontSize='inherit' />}>
-                                                                        {/* {e.updated} */}nn
+                                                                        {e.updated}
                                                                     </Chip>
                                                         }
                                                     </td>
