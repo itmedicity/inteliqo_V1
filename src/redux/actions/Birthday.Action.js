@@ -6,7 +6,12 @@ export const setBirthdayAlert = () => async (dispatch) => {
     const result = await axioslogin.get('/hrmAnnouncement/birthday');
     const { success, data } = result.data;
     if (success === 1) {
-        dispatch({ type: FETCH_EMP_BIRTHDAY, payload: data, loadingStatus: true })
+        const arr = data?.map(val => {
+            return {
+                ...val, showStatus: 1
+            }
+        })
+        dispatch({ type: FETCH_EMP_BIRTHDAY, payload: arr, loadingStatus: true })
     } else {
         dispatch({ type: FETCH_EMP_BIRTHDAY, payload: [], loadingStatus: false })
     }

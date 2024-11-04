@@ -14,6 +14,7 @@ import ProfileExperience from './ProfileExperience';
 import VerifiedSharpIcon from '@mui/icons-material/VerifiedSharp';
 import ProfileVerificationModal from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/MyProfileCmp/ProfileVerificationModal';
 import { memo } from 'react';
+import { differenceInYears } from 'date-fns';
 
 const ProfileMenus = ({ slno, count, setCount, redirect }) => {
 
@@ -35,7 +36,9 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
         sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no,
         em_esi_no, em_pf_no, em_uan_no, second_level_required, second_level_verification, verification_required, em_id,
         contract_status
-    } = personalData
+    } = personalData;
+
+    const currentAge = differenceInYears(new Date(), new Date(em_dob))
 
     const emp = {
         name: em_name === '' ? false : em_name,
@@ -56,7 +59,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
         gender: em_gender === 2 ? 'Female' : 'Male',
         ismarried: em_maritalstatus === '2' ? 'Not Married' : em_maritalstatus === null ? false : 'Married',
         religion: relg_name === null ? false : relg_name,
-        age: em_age_year === null ? false : em_age_year,
+        age: currentAge === null ? false : currentAge,
         dob: em_dob === null ? false : em_dob,
         bloodgroup: group_name === null ? false : group_name,
         ifcscode: em_ifsc === null ? false : em_ifsc,

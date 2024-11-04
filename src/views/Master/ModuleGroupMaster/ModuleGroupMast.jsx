@@ -137,6 +137,8 @@ const ModuleGroupMast = () => {
         succesNofity(message)
         setFlag(1)
         setCount(count + 1)
+        setGroupslno(0)
+        setGroupName('')
         setSlno(1)
         setFormData(resetForm)
       } else {
@@ -149,6 +151,8 @@ const ModuleGroupMast = () => {
         succesNofity(message)
         setFormData(resetForm)
         setCount(count + 1)
+        setGroupslno(0)
+        setGroupName('')
       } else if (success === 0) {
         errorNofity(message)
       } else if (success === 2) {
@@ -186,6 +190,8 @@ const ModuleGroupMast = () => {
     setFlag(1)
     const { mdgrp_slno, module_group_name, module_slno } = params.data
     const module_status = JSON.parse(module_slno)
+    setGroupslno(mdgrp_slno)
+    setGroupName(module_group_name)
     const form_dis_data = {
       module_group_name: module_group_name,
       module_recruitment: module_status.module_recruitment === 0 ? false : true,

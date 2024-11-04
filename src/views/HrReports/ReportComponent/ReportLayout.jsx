@@ -8,6 +8,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useDispatch } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type'
+import { screenInnerHeight } from 'src/views/Constant/Constant';
 
 const ReportLayout = ({ children, title, displayClose, data }) => {
 
@@ -28,13 +29,13 @@ const ReportLayout = ({ children, title, displayClose, data }) => {
     }, [data, dispatch])
 
     return (
-        <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
-            <Paper sx={{ flex: 1, }} >
+        <Box sx={{ flex: 1 }} >
+            <Paper sx={{ flex: 1, height: screenInnerHeight - 90 }} >
                 <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", flex: 1, height: 30, }} >
                         <Paper square sx={{
                             display: "flex", flex: 1, height: 30,
-                            alignItems: 'center', backgroundColor: '#f0f3f5'
+                            alignItems: 'center'
                         }} >
                             <Box sx={{ display: "flex", flex: 1 }}>
                                 <DragIndicatorOutlinedIcon />

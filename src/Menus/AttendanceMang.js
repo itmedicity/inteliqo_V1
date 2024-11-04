@@ -68,6 +68,12 @@ const AttendanceManagement = [
         name: 'Dutyplan for Incharge',
         to: '/Home/DutyplanforIncharge',
     },
+    {
+        men_slno: 316,
+        component: CNavItem,
+        name: 'Monthly Payroll Process',
+        to: '/Home/MonthlySalaryProcess',
+    },
 
 ]
 
