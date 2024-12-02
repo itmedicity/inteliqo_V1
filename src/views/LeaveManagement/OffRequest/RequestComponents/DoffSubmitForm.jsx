@@ -71,7 +71,8 @@ const DoffSubmitForm = () => {
         week_off_day, // week off SHIFT ID
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
-        noff // night off SHIFT ID
+        noff,// night off SHIFT ID
+        halfday_time_count,
     } = commonStates;
 
     //to show table data
@@ -124,7 +125,7 @@ const DoffSubmitForm = () => {
                 setShiftId(shift_id)
                 setHolidayStatus(holiday)
 
-                const inTime = format(new Date(shft_chkin_time), 'hh:mm');
+                const inTime = format(new Date(shft_chkin_time), 'HH:mm');
                 const chekIn = `${format(new Date(date), 'yyyy-MM-dd')} ${inTime}`;
                 const chekOut = shft_cross_day === 0 ? `${format(new Date(date), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}` :
                     `${format(addDays(new Date(date), 1), 'yyyy-MM-dd')} ${format(new Date(shft_chkout_time), 'HH:mm')}`;
@@ -209,8 +210,11 @@ const DoffSubmitForm = () => {
             const salaryLimit = gross_salary > salary_above ? true : false;
 
             const getAttendance = await getAttendanceCalculation(
-                punch_In, shift_In, punch_out, shift_out, cmmn_grace_period, getLateInTime, holidayStatus, shiftId, default_shift, notapplicable_shift, noff, week_off_day, salaryLimit, cmmn_late_in
+                punch_In, shift_In, punch_out, shift_out, cmmn_grace_period, getLateInTime,
+                holidayStatus, shiftId, default_shift, notapplicable_shift, noff, week_off_day,
+                salaryLimit, cmmn_late_in, halfday_time_count
             )
+
             if (getAttendance?.lvereq_desc === 'P' || getAttendance?.lvereq_desc === 'LC') {
                 setDisableSave(false)
             } else {
@@ -222,7 +226,8 @@ const DoffSubmitForm = () => {
             infoNofity("Both Dates are not Valid!")
         }
 
-    }, [punchInTime, punchOutTime, shiftId, holiday_status, shiftIn, shiftOut, gross_salary, cmmn_grace_period,
+    }, [punchInTime, punchOutTime, shiftId, holiday_status, shiftIn, shiftOut, gross_salary,
+        cmmn_grace_period, halfday_time_count,
         cmmn_late_in, default_shift, noff, notapplicable_shift, salary_above, week_off_day])
 
     const SubmitDoffRequest = useCallback(async () => {
