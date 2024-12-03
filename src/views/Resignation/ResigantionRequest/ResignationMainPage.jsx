@@ -1,10 +1,10 @@
-import { Box, Paper } from '@mui/material'
+import { Paper } from '@mui/material'
 import React, { memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import _ from 'underscore'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { Button, CssVarsProvider, Input, LinearProgress, Option, Select, Textarea, Tooltip, Typography } from '@mui/joy'
+import { Box, Alert, Button, CssVarsProvider, Input, LinearProgress, Option, Select, Textarea, Tooltip, Typography } from '@mui/joy'
 import { useCallback } from 'react'
 import ResignationComponent from './ResignationComponent'
 import moment from 'moment'
@@ -17,6 +17,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Files from 'react-files'
 import BackupIcon from '@mui/icons-material/Backup';
+
 
 import png from '../../../assets/upload/png.png';
 import jpeg from '../../../assets/upload/jpeg.png';
@@ -34,6 +35,7 @@ const ResignationMainPage = () => {
     const [relvngDate, setRelivingdate] = useState(new Date())
     const [files, setFiles] = useState('')
     const [progress, setProgress] = useState(0);
+    const [message, setMessage] = useState('')
 
 
     const [authorization, setAuthorization] = useState({
@@ -63,6 +65,41 @@ const ResignationMainPage = () => {
             }
         }
         getAuthrization()
+
+        const getResignation = async (em_id) => {
+            const result = await axioslogin.get(`/Resignation/resignationbyemid/${em_id}`)
+            const { success, } = result.data;
+            if (success === 1) {
+                const { hod_required, hod_app_status, incharge_required, inch_app_status,
+                    hr_required, hr_app_status } = result?.data.data[0]
+                if (incharge_required === 1 && inch_app_status === "0") {
+                    setMessage("Incharge Approval Pending")
+                } else if (incharge_required === 1 && inch_app_status === "2") {
+                    setMessage("Incharge Approval Rejected")
+                } else if (incharge_required === 1 && inch_app_status === "1" && hod_required === 1 && hod_app_status === "0") {
+                    setMessage("HOD Approval Pending")
+                } else if (incharge_required === 0 && inch_app_status === "0" && hod_required === 1 && hod_app_status === "0") {
+                    setMessage("HOD Approval Pending")
+                } else if (incharge_required === 0 && inch_app_status === "0" && hod_required === 1 && hod_app_status === "2") {
+                    setMessage("HOD Approval Rejected")
+
+                } else if (incharge_required === 1 && inch_app_status === "1" && hod_required === 1 && hod_app_status === "2") {
+                    setMessage("HOD Approval Rejected")
+                }
+                else if (hr_required === 1 && hr_app_status === "0") {
+                    setMessage("HR Approval Pending")
+                } else if (hr_required === 1 && hr_app_status === "2") {
+                    setMessage("HR Approval Rejected")
+                } else if (hr_required === 1 && hr_app_status === "1") {
+                    setMessage("HR Approved")
+                }
+
+            } else {
+                setMessage("There Is No Resignation Request Exist")
+            }
+        }
+
+        getResignation(em_id)
     }, [em_id])
 
     useEffect(() => {
@@ -109,6 +146,11 @@ const ResignationMainPage = () => {
 
         if (resignation_reason === '' || resignation_reason === null) {
             warningNofity("Please Enter Resignation Reason")
+            return
+        }
+
+        if (resignation_reason.length < 250) {
+            warningNofity("Reason is too short")
             return
         }
 
@@ -469,20 +511,31 @@ const ResignationMainPage = () => {
                             sx={{ flex: 1 }}
                         />
                     </Box>
-                    <Box sx={{ pt: 1 }}>
-                        <CssVarsProvider>
-                            <Tooltip title="Save Request" variant="outlined" placement="top">
-                                <Button
-                                    variant="outlined"
-                                    component="label"
-                                    size="md"
-                                    color="danger"
-                                    onClick={submitFormData}
-                                >
-                                    Save Resignation Request
-                                </Button>
-                            </Tooltip>
-                        </CssVarsProvider>
+                    <Box sx={{ pt: 1, display: 'flex', flexDirection: 'row', }}>
+                        <Box sx={{ flex: 1, }} >
+                            <CssVarsProvider>
+                                <Tooltip title="Save Request" variant="outlined" placement="top">
+                                    <Button
+                                        variant="outlined"
+                                        component="label"
+                                        size="md"
+                                        color="danger"
+                                        onClick={submitFormData}
+                                    >
+                                        Save Resignation Request
+                                    </Button>
+                                </Tooltip>
+                            </CssVarsProvider>
+                        </Box>
+                        <Box sx={{ flex: 1, alignItems: 'center' }} >
+                            <Alert color="success" sx={{ alignItems: 'center', }}>
+                                <Box sx={{ flex: 1, px: 20 }}>
+                                    <Typography level="body-md" color='green'>
+                                        {message}
+                                    </Typography>
+                                </Box>
+                            </Alert>
+                        </Box>
                     </Box>
                 </Box>
             </Paper>

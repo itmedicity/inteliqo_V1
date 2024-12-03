@@ -1,8 +1,9 @@
 import { IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import React from 'react'
 import DataSaverOffIcon from '@mui/icons-material/DataSaverOff';
+import { format } from 'date-fns';
 
-const ListItemHoliday = ({ holidayName, holidayDesc }) => {
+const ListItemHoliday = ({ holidayName, holidayDesc, holiday }) => {
     // const avatarStyle = {
     //     width: 20,
     //     height: 20,
@@ -19,6 +20,8 @@ const ListItemHoliday = ({ holidayName, holidayDesc }) => {
                 </ListItemIcon>
                 <ListItemText primary={holidayName} sx={{ width: '40%' }} />
                 <ListItemText primary={holidayDesc} sx={{ width: '40%' }} />
+                <ListItemText primary={format
+                    (new Date(holiday), 'EEEE')} sx={{ width: '40%' }} />
             </ListItemButton>
         </ListItem>
     )

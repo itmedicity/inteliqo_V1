@@ -85,7 +85,7 @@ const HolidayList = () => {
                                 <List dense disablePadding sx={{ paddingY: 0, height: 190, overflowY: "auto" }} className="ListItemScrol" >
                                     {
                                         array && array.map((val, index) => {
-                                            return <ListItemsHoliday key={index} holidayName={val.hld_year} holidayDesc={val.hld_desc} />
+                                            return <ListItemsHoliday key={index} holidayName={val.hld_year} holidayDesc={val.hld_desc} holiday={val.hld_date} />
                                         })
                                     }
                                 </List>
