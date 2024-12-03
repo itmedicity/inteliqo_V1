@@ -13,7 +13,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useSelector } from 'react-redux';
 import UploadIcon from '@mui/icons-material/Upload';
 import { getAllDeptList } from 'src/redux/actions/Department.action';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { getAllDeptSectList } from 'src/redux/actions/DepartmentSection.Action';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import { getCommonsettingData } from 'src/redux/actions/Common.Action';
@@ -59,14 +59,12 @@ const MonthlySalaryProcess = () => {
         const result = await axioslogin.get('/payrollprocess/getAcriveDepartmentSection/');
         const { success, data } = result.data;
         const deptSectionData = data;
-        console.log(deptSectionData);
         if (success === 1) {
             //GET PUNCHMARKING DATA FROM table 
             const getPunchMarkingHr_table = await axioslogin.post('/payrollprocess/getmonthdeptlist/', getPunchMarkTablePostData);
             const { succ, data } = getPunchMarkingHr_table.data;
             if (succ === 1) {
                 const punchMarkingTableData = data;
-                console.log(punchMarkingTableData);
                 const findDept = [...new Set(deptSectionData?.map(e => e.dept_id))]?.map((dept) => {
                     return {
                         "dept_id": dept,
@@ -110,7 +108,6 @@ const MonthlySalaryProcess = () => {
                         }
                     })
                     setArray(array)
-                    console.log(findDept);
                     setDeptList(findDept)
 
                     setOpenBkDrop(false)
@@ -280,7 +277,6 @@ const MonthlySalaryProcess = () => {
     }, [value, em_no, deptartments, deptartmentSection, commonSettings])
 
     const deleteAttendanceMarkingProcess = useCallback(async (dept, section, date) => {
-        console.log(dept, section, date);
         const postDta = {
             update_user: 4516,
             dept_id: dept,
@@ -297,7 +293,6 @@ const MonthlySalaryProcess = () => {
                 //setDeptList(findDept)
                 setOpenBkDrop(false)
             } else {
-                console.log("error");
                 errorNofity(message)
                 setOpenBkDrop(false)
             }
