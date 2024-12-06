@@ -383,6 +383,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                             <DatePicker
                                 views={['day']}
                                 inputFormat="dd-MM-yyyy"
+                                minDate={fromDate}
                                 maxDate={endOfMonth(new Date(fromDate))}
                                 value={toDate}
                                 size="small"

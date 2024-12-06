@@ -185,7 +185,7 @@ const YearlyLeaveCalendarMast = () => {
                                 <DatePicker
                                     views={["day", "month", "year"]}
                                     minDate={startOfYear(new Date())}
-                                    maxDate={lastDayOfYear(new Date())}
+                                    // maxDate={lastDayOfYear(new Date())}
                                     inputFormat='dd-MM-yyyy'
                                     value={holidaydate}
                                     size="small"

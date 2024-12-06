@@ -64,7 +64,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
         em_id: 0,
         resignation_type: ''
     })
-    const { dept_name, em_no, em_name, desg_name, gross_salary, em_id } = empdata;
+    const { dept_name, em_no, em_name, desg_name, gross_salary, em_id, resignation_type } = empdata;
 
     // const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
 
@@ -195,7 +195,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
     const calculateProceeAttendence = useCallback(async () => {
         setAttendnaceProcess(1)
         const today = format(new Date(), 'yyyy-MM-dd');
-        const lastWorkingDay = format(new Date(details?.relieving_date), 'yyyy-MM-dd');
+        const lastWorkingDay = resignation_type === '2' ? format(subDays(new Date(details?.relieving_date), 1), 'yyyy-MM-dd 00:00:00') : format(new Date(details?.relieving_date), 'yyyy-MM-dd');
         const startOfMonths = format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd')
 
         if (today <= lastWorkingDay) {
@@ -320,7 +320,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
             }
         }
     }, [details, em_no, empSalary, commonSetting, holidayList, shiftInformation, gross_salary,
-        default_shift, noff, notapplicable_shift, week_off_day])
+        default_shift, noff, notapplicable_shift, week_off_day, resignation_type])
 
     //HANDLE SUBMIT THE RESIGNATION PROCESS 
     const handleSave = useCallback(async () => {
@@ -422,6 +422,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Employee ID :'} >{em_no}</Typography>
                             <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Department :'}>{dept_name}</Typography>
                             <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Designation :'}>{desg_name}</Typography>
+                            <Typography level='body-md' color='danger' fontFamily="monospace" lineHeight={1.2} startDecorator={'Resignation Type:'} >{resignation_type === '2' ? '24 Hour Resignation' : 'Normal Resignation'}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', flexBasis: '30%' }} >
                             <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Date Of Joining :'}>{dateOfJoinDate}</Typography>
@@ -436,7 +437,10 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                         color="neutral"
                         level="body-xs"
                         noWrap
-                        sx={{ flex: 1, textAlign: 'left', color: '#8EADCD', mt: 0.5, ml: 0.5, textDecoration: 'underline' }}
+                        sx={{
+                            flex: 1, textAlign: 'left', color: '#8EADCD', mt: 0.5, ml: 0.5, textDecoration: 'underline',
+                            fontFamily: 'monospace'
+                        }}
                     >
                         Upload Due Clearence Documents
                     </Typography>
@@ -462,7 +466,10 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                                     level="body-xs"
                                     textColor="var(--joy-palette-success-plainColor)"
                                     noWrap
-                                    sx={{ display: "flex", flex: 1, textAlign: 'center', mx: 1.5, opacity: 0.7 }}
+                                    sx={{
+                                        display: "flex", flex: 1, textAlign: 'center', mx: 1.5, opacity: 0.7,
+                                        fontFamily: 'monospace'
+                                    }}
                                 >
                                     Upload files
                                 </Typography>
@@ -501,7 +508,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                                 label="exclusion for due clearence"
                                 size="md"
                                 variant="outlined"
-                                sx={{ px: 2 }}
+                                sx={{ px: 2, fontFamily: 'monospace' }}
                                 onChange={(e) => setExclusions(e.target.checked)}
                             />
                             <Textarea
@@ -526,7 +533,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             fontFamily="inherit"
                             startDecorator={<CalendarMonthOutlinedIcon fontSize='small' />}
                             variant='outlined'
-                            sx={{ borderRadius: 5, pr: 2, py: 0.5 }}
+                            sx={{ borderRadius: 5, pr: 2, py: 0.5, fontFamily: 'monospace' }}
                         >Start of Month</Typography>
                         <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'}  > {format(startOfMonth(new Date(details?.relieving_date)), 'dd-MM-yyyy')}</Typography>
                         <Typography
@@ -534,7 +541,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             color='neutral'
                             startDecorator={<CalendarMonthOutlinedIcon fontSize='small' />}
                             variant='outlined'
-                            sx={{ borderRadius: 5, pr: 2, py: 0.5 }}
+                            sx={{ borderRadius: 5, pr: 2, py: 0.5, fontFamily: 'monospace' }}
                         >Resignation Date</Typography>
                         <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'} >{format(new Date(details?.relieving_date), 'dd-MM-yyyy')}</Typography>
                         <Button
@@ -542,6 +549,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             onClick={calculateProceeAttendence}
                             size="sm"
                             variant="outlined"
+                            sx={{ fontFamily: 'monospace' }}
                         >
                             Process Attendance Information
                         </Button>
@@ -569,12 +577,12 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                                         setEarnName(event.target.innerText)
                                     }}
                                     size='md'
-                                    sx={{ width: '100%' }}
+                                    sx={{ width: '100%', fontFamily: 'monospace' }}
                                     variant='outlined'
                                 >
-                                    <Option disabled value={0}>Select Earn Type </Option>
-                                    <Option value={2}>Earnings </Option>
-                                    <Option value={3}>Desduction </Option>
+                                    <Option disabled value={0} sx={{ fontFamily: 'monospace' }}>Select Earn Type </Option>
+                                    <Option value={2} sx={{ fontFamily: 'monospace' }}>Earnings </Option>
+                                    <Option value={3} sx={{ fontFamily: 'monospace' }}>Desduction </Option>
                                 </Select>
                             </Box>
                             <Box sx={{ flex: 1, px: 0.5 }}>
@@ -600,18 +608,18 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             >
                                 <thead>
                                     <tr>
-                                        <th style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Earn / Deduction</th>
-                                        <th style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>Amount</th>
-                                        <th style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>remarks</th>
+                                        <th style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', fontFamily: 'monospace' }}>Earn / Deduction</th>
+                                        <th style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', fontFamily: 'monospace' }}>Amount</th>
+                                        <th style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', fontFamily: 'monospace' }}>remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         earnArray?.map((val, index) => {
                                             return <tr key={index}>
-                                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>{val.earnName}</td>
-                                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>{val.earnAmount}</td>
-                                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }}>{val.earnRemark}</td>
+                                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', fontFamily: 'monospace' }}>{val.earnName}</td>
+                                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', fontFamily: 'monospace' }}>{val.earnAmount}</td>
+                                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', fontFamily: 'monospace' }}>{val.earnRemark}</td>
                                             </tr>
                                         })
                                     }
@@ -631,60 +639,60 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                     >
                         <tbody>
                             <tr>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%' }} >Total Days</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#D5FBDD' }} >{totalDays}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', }} >LOP Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lopamount}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, width: '40%', backgroundColor: '#E4E5E6' }} ></td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, width: '15%' }} >Total Days</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#D5FBDD' }} >{totalDays}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, width: '15%', }} >LOP Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, width: '15%', textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lopamount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, width: '40%', backgroundColor: '#E4E5E6' }} ></td>
                             </tr>
                             <tr>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Leave count</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{leaveCount}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >NPS Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{npsamount}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Gross Salary</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Leave count</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{leaveCount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >NPS Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{npsamount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center' }} >Gross Salary</td>
                             </tr>
                             <tr >
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday count</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayCount}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >LWF Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lwfamount}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{gross_salary}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Holiday count</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayCount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >LWF Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lwfamount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{gross_salary}</td>
                             </tr>
                             <tr>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >No of HD LOP</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{hdLop}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Deduction Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{deductionAmount}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Net Salary</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >No of HD LOP</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{hdLop}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Deduction Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{deductionAmount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center' }} >Net Salary</td>
                             </tr>
                             <tr  >
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >No of LC count</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lcCount}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday Amount</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayamount}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{netSalary}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >No of LC count</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lcCount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Holiday Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayamount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{netSalary}</td>
                             </tr>
                             <tr>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Total LOP</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lopCount}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Extra Earnings</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{extraEarn}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center' }} >Total Payable Amount</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Total LOP</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{lopCount}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Extra Earnings</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{extraEarn}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center' }} >Total Payable Amount</td>
                             </tr>
                             <tr >
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Total Pay Days</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{payDays}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Extra Deduction</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{extraDeduct}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{netSalary}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Total Pay Days</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{payDays}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Extra Deduction</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#FFE1E1' }} >{extraDeduct}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#E4E5E6', color: '#060A0F' }} >{netSalary}</td>
                             </tr>
                             <tr>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} >Holiday worked</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayWorked}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, lineHeight: 1 }} ></td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Holiday worked</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayWorked}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} ></td>
                             </tr>
                         </tbody>
                     </Table>
@@ -698,7 +706,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             color='danger'
                             variant="outlined"
                             fullWidth
-                            sx={{ display: "flex", flex: 1 }}
+                            sx={{ display: "flex", flex: 1, fontFamily: 'monospace' }}
                         >
                             Resignation Final Process
                         </Button>
