@@ -297,6 +297,9 @@ const DeptYearlyCalender = React.lazy(() => import('./views/HrReports/TrainingDe
 const HODAttendanceReport = React.lazy(() => import('./views/HrReports/AttendenceReport/HODAttendnaceReport'))
 const WeekOffReport = React.lazy(() => import('./views/HrReports/WeekOffReport/WeekOffReport'))
 const AbsentDayReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsentDayReport'))
+const AbsenteeismReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsenteeismReport'))
+const AbsenteeismDeptReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsenteeismDepartment'))
+const IndividualAttendance = React.lazy(() => import('./views/HrReports/AttendenceReport/IndividualAttendance'))
 
 
 const routes = [
@@ -592,7 +595,10 @@ const routes = [
   { path: '/Home/DeptYearlyCalender', exact: true, name: 'Yearly Departmental Training Reports', component: DeptYearlyCalender },
   { path: '/Home/HODAttendanceReport', exact: true, name: 'HOD Attendance Report', component: HODAttendanceReport },
   { path: '/Home/WeekOffReport', exact: true, name: 'Week Off Report', component: WeekOffReport },
-  { path: '/Home/AbsentDayReport', exact: true, name: 'Absent Day Report', component: AbsentDayReport }
+  { path: '/Home/AbsentDayReport', exact: true, name: 'Absent Day Report', component: AbsentDayReport },
+  { path: '/Home/AbsenteeismReport', eaxct: true, name: 'Absenteeism Report', component: AbsenteeismReport },
+  { path: '/Home/AbsenteeismDeptReport', exact: true, name: 'Absenteeism Deptartment Report', component: AbsenteeismDeptReport },
+  { path: '/Home/IndividualAttendance', exact: true, name: 'Individual Attendance Report', component: IndividualAttendance }
 ]
 
 export default routes

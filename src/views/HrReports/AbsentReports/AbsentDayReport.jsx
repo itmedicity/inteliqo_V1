@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux'
 import SearchIcon from '@mui/icons-material/Search';
 import { axioslogin } from 'src/views/Axios/Axios'
 import { endOfMonth, format, isValid, startOfMonth } from 'date-fns'
+import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 
 const AbsentDayReport = () => {
 
@@ -31,9 +32,8 @@ const AbsentDayReport = () => {
 
     const getEmpdata = useCallback(async () => {
         if (all === true && deptartment === 0 && section === 0) {
-            console.log("gh");
+
         } else {
-            console.log("vcbvv");
             const getEmpData = {
                 em_department: deptartment,
                 em_dept_section: section,
@@ -49,23 +49,23 @@ const AbsentDayReport = () => {
                 }
                 const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", getPunchMast_PostData); //GET PUNCH MASTER DATA
                 const { success, planData: punchMasterData } = punch_master_data.data;
-                console.log(punch_master_data.data);
+
                 if (success === 1) {
                     const newArr = employeeData?.map((val) => {
                         return {
                             emno: val.em_no,
-                            arr: punchMasterData?.filter((i) => i.em_no === val.em_no && (i.duty_desc === 'COFF' || i.duty_desc === 'CL' && i.duty_desc === 'EL' || i.duty_desc === 'SL'))
+                            desg_name: val.desg_name,
+                            arr: punchMasterData?.filter((i) => i.em_no === val.em_no && (i.duty_desc === 'COFF'
+                                || i.duty_desc === 'CL' && i.duty_desc === 'EL' || i.duty_desc === 'SL'
+                                || i.duty_desc === 'ML' || i.duty_desc === 'LWP' || i.duty_desc === 'ESI'))
 
                         }
                     })
-                    console.log(newArr);
                 } else {
 
                 }
-
-
             } else {
-
+                warningNofity("No Employee Under This Department!")
             }
         }
     }, [all, deptartment, section, value])
