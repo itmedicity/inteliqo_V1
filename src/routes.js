@@ -294,7 +294,7 @@ const MonthlyDepartmentalTrainingReports = React.lazy(() => import('./views/HrRe
 const DepmtlAttendPendingList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DepmtlAttendPendingList'))
 const DeptStaffExamReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptStaffExamReport'))
 const DeptYearlyCalender = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptYearlyCalender'))
-
+const SalaryIncrementSetting = React.lazy(() => import('./views/EmployeeRecord/SalaryIncrementSetting/IncrementSettingPage'))
 
 const routes = [
 
@@ -587,6 +587,7 @@ const routes = [
   { path: '/Home/DepmtlAttendPendingList', exact: true, name: 'Departmental Attend & Pending List', component: DepmtlAttendPendingList },
   { path: '/Home/DeptStaffExamReport', exact: true, name: 'Departmental StafExam Reports', component: DeptStaffExamReport },
   { path: '/Home/DeptYearlyCalender', exact: true, name: 'Yearly Departmental Training Reports', component: DeptYearlyCalender },
+  { path: '/Home/SalaryIncrementSetting', exact: true, name: 'Salary Increment Updation Setting', component: SalaryIncrementSetting }
 
 ]
 
