@@ -12,18 +12,6 @@ export const setCommonSetting = () => async (dispatch) => {
     }
 }
 
-
-export const getCommonsettingData = async () => {
-    return await axioslogin.get('/commonsettings').then((res) => {
-        const { success, data } = res.data
-        if (success === 1) {
-            return data[0]
-        } else return []
-    })
-}
-
-
-
 export const getDepartmentSection = (id) => async (dispatch) => {
     const result = await axioslogin.get(`/section/sect/${id}`);
     const { success, data } = await result.data;

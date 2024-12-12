@@ -16,8 +16,8 @@ import { getAllDeptList } from 'src/redux/actions/Department.action';
 import { useQuery } from 'react-query';
 import { getAllDeptSectList } from 'src/redux/actions/DepartmentSection.Action';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import { getCommonsettingData } from 'src/redux/actions/Common.Action';
 import { ExportAttendance } from 'src/views/Payroll/AttendanceUpdation/ExportToExcel';
+import { getCommonsettingData } from 'src/views/CommonCode/CommonReactQueries';
 
 const MonthlySalaryProcess = () => {
     const [value, setValue] = useState(moment(new Date()));

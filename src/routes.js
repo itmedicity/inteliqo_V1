@@ -295,6 +295,12 @@ const DepmtlAttendPendingList = React.lazy(() => import('./views/HrReports/Train
 const DeptStaffExamReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptStaffExamReport'))
 const DeptYearlyCalender = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptYearlyCalender'))
 const SalaryIncrementSetting = React.lazy(() => import('./views/EmployeeRecord/SalaryIncrementSetting/IncrementSettingPage'))
+const HODAttendanceReport = React.lazy(() => import('./views/HrReports/AttendenceReport/HODAttendnaceReport'))
+const WeekOffReport = React.lazy(() => import('./views/HrReports/WeekOffReport/WeekOffReport'))
+const AbsentDayReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsentDayReport'))
+const AbsenteeismReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsenteeismReport'))
+const AbsenteeismDeptReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsenteeismDepartment'))
+const IndividualAttendance = React.lazy(() => import('./views/HrReports/AttendenceReport/IndividualAttendance'))
 
 const routes = [
 
@@ -587,7 +593,13 @@ const routes = [
   { path: '/Home/DepmtlAttendPendingList', exact: true, name: 'Departmental Attend & Pending List', component: DepmtlAttendPendingList },
   { path: '/Home/DeptStaffExamReport', exact: true, name: 'Departmental StafExam Reports', component: DeptStaffExamReport },
   { path: '/Home/DeptYearlyCalender', exact: true, name: 'Yearly Departmental Training Reports', component: DeptYearlyCalender },
-  { path: '/Home/SalaryIncrementSetting', exact: true, name: 'Salary Increment Updation Setting', component: SalaryIncrementSetting }
+  { path: '/Home/SalaryIncrementSetting', exact: true, name: 'Salary Increment Updation Setting', component: SalaryIncrementSetting },
+  { path: '/Home/HODAttendanceReport', exact: true, name: 'HOD Attendance Report', component: HODAttendanceReport },
+  { path: '/Home/WeekOffReport', exact: true, name: 'Week Off Report', component: WeekOffReport },
+  { path: '/Home/AbsentDayReport', exact: true, name: 'Absent Day Report', component: AbsentDayReport },
+  { path: '/Home/AbsenteeismReport', eaxct: true, name: 'Absenteeism Report', component: AbsenteeismReport },
+  { path: '/Home/AbsenteeismDeptReport', exact: true, name: 'Absenteeism Deptartment Report', component: AbsenteeismDeptReport },
+  { path: '/Home/IndividualAttendance', exact: true, name: 'Individual Attendance Report', component: IndividualAttendance }
 
 ]
 

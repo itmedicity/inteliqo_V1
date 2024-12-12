@@ -34,15 +34,21 @@ export const empRecord_three = [
 export const attednane_one = [
     { to: '/Home/DayWiseAttendence', name: 'All Employee Attendence Report', slno: 284 },
     { to: '/Home/DutyplanReport', name: 'Dutyplan Report ', slno: 297 },
+    { to: '/Home/HODAttendanceReport', name: 'HOD`s Attendnace Report ', slno: 322 },
+    { to: '/Home/AbsenteeismReport', name: 'Absenteeism Report(Month) ', slno: 327 },
 ]
 
 export const attednane_two = [
     { to: '/Home/EmpPunchReport', name: 'Employee Punch Data Report', slno: 271 },
     { to: '/Home/DeptPunchReport', name: 'Employee Processed Punch Report', slno: 257 },
+    { to: '/Home/WeekOffReport', name: 'Week Off Report', slno: 323 },
+    { to: '/Home/AbsenteeismDeptReport', name: 'Absenteeism Report(Department) ', slno: 328 },
 ]
 export const attednane_three = [
     { to: '/Home/AttendenceReports', name: 'Employee Wise Attendence Report', slno: 283 },
     { to: '/Home/ManualRequestReport', name: 'Manual Attendance Report ', slno: 29 },
+    { to: '/Home/AbsentDayReport', name: 'Absent Day Report', slno: 324 },
+    { to: '/Home/IndividualAttendance', name: 'Individual Attendance Report', slno: 329 }
 ]
 export const leave_One = [
     { to: '/Home/LeaveReports', name: 'Employee Leave Report', slno: 270 },
