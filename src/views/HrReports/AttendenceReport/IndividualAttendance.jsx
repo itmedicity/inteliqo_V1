@@ -2,18 +2,14 @@ import { Box, Button, Input, Tooltip, Typography } from '@mui/joy'
 import { Paper } from '@mui/material'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
-import { setDepartment } from 'src/redux/actions/Department.action'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { eachMonthOfInterval, format, isSameMonth, } from 'date-fns'
 import ReportLayout from '../ReportComponent/ReportLayout'
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
-import { useDispatch } from 'react-redux'
-import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
-import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 
 const IndividualAttendance = () => {

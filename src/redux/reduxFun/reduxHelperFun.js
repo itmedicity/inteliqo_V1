@@ -130,7 +130,7 @@ export const allLeavesConvertAnArray = (state) => {
                     name: 'Sick Leave',
                     leavetype: 7,
                     slno: index + 1,
-                    month: format(subMonths(endOfYear(new Date()), index + 1), 'MMMM') + ' ' + e,
+                    month: format(subMonths(endOfYear(new Date()), index), 'MMMM') + ' ' + e,
                     count: e,
                     taken: 0,
                     common_slno: findSickLeave?.hrm_lv_cmn,
