@@ -35,13 +35,13 @@ const AnnualLeaveProcess = () => {
     const gettable = async () => {
         const postdata = {
             dp_sec: selectDeptSection,
-            startdate: moment(startOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
-            endate: moment(lastDayOfYear(sub(new Date(year), { years: 1 }))).format('YYYY-MM-DD'),
+            startdate: moment(startOfYear(sub(new Date(), { years: 1 }))).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(sub(new Date(), { years: 1 }))).format('YYYY-MM-DD'),
         }
         const postdata2 = {
             dp_sec: selectDeptSection,
-            startdate: moment(startOfYear(new Date(year))).format('YYYY-MM-DD'),
-            endate: moment(lastDayOfYear(new Date(year))).format('YYYY-MM-DD'),
+            startdate: moment(startOfYear(new Date())).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
         }
         //holdys of the year
         const result2 = await axioslogin.post('/yearleaveprocess/holidaylistyear', postdata2)
