@@ -55,6 +55,7 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
     });
     const { lv_process_slno } = leaveprocessid
     const getempldata = async (namee) => {
+        console.log(namee);
         setname(namee)
         setemnoid({
             no: namee.em_no,
@@ -67,8 +68,8 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
         // data based on the calculation of earn leave
         const datatoselect = {
             emp_no: namee.em_id,
-            startdate: moment(startOfYear(new Date(year))).format('YYYY-MM-DD'),
-            endate: moment(lastDayOfYear(new Date(year))).format('YYYY-MM-DD'),
+            startdate: moment(startOfYear(new Date())).format('YYYY-MM-DD'),
+            endate: moment(lastDayOfYear(new Date())).format('YYYY-MM-DD'),
         }
         const result = await axioslogin.get(`/common/getannprocess/${namee.em_id}`)
         const { data, success } = result.data
@@ -78,6 +79,7 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
                 em_category
             } = data[0]
             const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
+            console.log(resultselect);
             if (resultselect.data.success === 2) {
                 const postFormdata =
                 {
@@ -87,6 +89,7 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
                 // check the table where data present if present get the details process table
                 const result = await axioslogin.post('/yearleaveprocess', postFormdata)
                 const { success, message } = result.data;
+                console.log(result.data);
                 const { category_slno, hrm_calcu, hrm_clv, hrm_cmn, hrm_ern_lv, hrm_hld,
                     lv_process_slno, next_updatedate } = message[0]
                 const dataprvleave = {
@@ -130,6 +133,7 @@ const Leavprccompnt = ({ name, holidaycount, year }) => {
                     }
                 }
             } else if (resultselect.data.success === 1) {
+                console.log("gh");
                 const yearlyleavedata = {
                     em_no: namee.em_no,
                     em_id: namee.em_id,

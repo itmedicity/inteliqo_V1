@@ -12,6 +12,7 @@ export const getEmployeeCurrentCategoryInfom = async (em_id) => {
 
 //Employee Current Leave process Table
 export const getEmployeeCurrentLeaveProcessInfom = async (em_id) => {
+  console.log("HG");
   return await axioslogin.post('/yearleaveprocess/', em_id)
 }
 
@@ -720,14 +721,19 @@ export const casualLeaveInsertFun = async (value, lv_process_slno) => {
 //update holiday based on saved Holiday
 
 export const updateHolidayLeaves = async (calulatedProcessDate, lv_process_slno, em_id, em_no, em_doj) => {
+  console.log(lv_process_slno, em_id, em_no, em_doj);
   // const { startDate, endDate } = calulatedProcessDate;
   let messages = { status: 0, data: [] }
+  console.log("jch");
   const holidayList = await axioslogin.get('/yearleaveprocess/year/holiday');
   const { success, data } = holidayList.data;
   if (success === 2) {
+    console.log(data);
     return { ...messages, status: 0 }
   } else {
+    console.log("ghjf");
     let holidayList = data.map((val) => {
+      console.log(data);
       const today = moment().format('YYYY-MM-DD');
       const holidayDate = moment(val.hld_date).format('YYYY-MM-DD');
 
@@ -744,6 +750,7 @@ export const updateHolidayLeaves = async (calulatedProcessDate, lv_process_slno,
         em_id: em_id
       } : null;
     }).filter((val) => val !== null)
+    console.log(holidayList);
 
     return { ...messages, status: 1, data: holidayList }
   }
