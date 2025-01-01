@@ -50,12 +50,17 @@ export const allLeavesConvertAnArray = (state) => {
     const compansatoryOff = state?.getEmpCoffData?.coffData;
     const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
 
+    console.log(casualLeaves);
+    console.log(earnLeaves);
+    console.log(compansatoryOff);
+    console.log(commonLeaves);
 
 
     // Push casual leaves to the array if available
     if (casualLeaves?.length > 0) {
         const newCasualLeavesAttay = casualLeaves?.map((e) => {
             let leveCount = e.cl_lv_taken === 0 ? 1 : e.cl_lv_taken;
+            console.log(getMonth(new Date(e.leaveMonth)) <= getMonth(new Date()));
             return {
                 type: 'CL',
                 name: 'Casual Leave',
@@ -68,7 +73,8 @@ export const allLeavesConvertAnArray = (state) => {
                 cmn: 0,
                 leaveMonth: e.cl_lv_year
             }
-        })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+        })?.filter((e) => e.lveRequest === 0)
+        // })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
         creditedLeavesArray.data.push(...newCasualLeavesAttay)
     }
 
