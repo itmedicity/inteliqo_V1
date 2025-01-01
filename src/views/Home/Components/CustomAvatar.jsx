@@ -11,7 +11,7 @@ const CustomAvatar = ({ id }) => {
     useEffect(() => {
         const getEmpIdforProfilePic = async (id) => {
             if (id > 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + id}/profilePic.jpg`);
+                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER}/${id}/profilePic.jpeg`);
                 urlExist(profilePic, (status) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)

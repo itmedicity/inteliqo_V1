@@ -28,7 +28,7 @@ const ProfileCard = () => {
     useEffect(() => {
         const getEmpIdforProfilePic = async () => {
             if (no > 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`);
+                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER}/${no}/profilePic.jpeg`);
                 urlExist(profilePic, (status) => {
                     if (status === true) {
                         const picUrl = JSON.parse(profilePic)
@@ -48,7 +48,7 @@ const ProfileCard = () => {
     return (
         <>
             <Box sx={{ justifyContent: 'center', display: 'flex', width: '100%', flexDirection: 'column' }} >
-                <Box sx={{ width: 200, borderRadius: 'sm', ml: 3 }}>
+                <Box sx={{ width: 200, borderRadius: 'sm', ml: 3, bgcolor: 'yellow' }}>
                     <AspectRatio objectFit="contain">
                         <img
                             src={src}

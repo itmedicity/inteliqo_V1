@@ -420,7 +420,11 @@ const DayWiseAttendence = () => {
 
                                 let emName = empArray?.find(e => e.em_no === el).name;
                                 let deptName = empArray?.find(e => e.em_no === el).dept;
+
+                                // let emNo = empArray?.find(e => e.em_no === el).em_no;
+
                                 //let emNo = empArray?.find(e => e.em_no === el).em_no;
+
                                 let sect_name = empArray?.find(e => e.em_no === el).sect;
 
                                 return {
@@ -610,7 +614,11 @@ const DayWiseAttendence = () => {
                                 const empArray = mainarray?.filter(e => e.em_no === el)
                                 let emName = empArray?.find(e => e.em_no === el).name;
                                 let deptName = empArray?.find(e => e.em_no === el).dept;
+
+                                // let emNo = empArray?.find(e => e.em_no === el).em_no;
+
                                 //let emNo = empArray?.find(e => e.em_no === el).em_no;
+
                                 let sect_name = empArray?.find(e => e.em_no === el).sect;
 
                                 return {
