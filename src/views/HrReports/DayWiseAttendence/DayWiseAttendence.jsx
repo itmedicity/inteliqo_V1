@@ -21,7 +21,7 @@ import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { addDays, addHours, differenceInHours, format, endOfMonth, isValid, max, min, subHours, formatDuration, intervalToDuration, eachDayOfInterval } from "date-fns";
 import { axioslogin } from 'src/views/Axios/Axios';
 import Table from '@mui/joy/Table';
-import _ from 'underscore';
+
 import { getHolidayList } from 'src/redux/actions/LeaveProcess.action';
 import DownloadIcon from '@mui/icons-material/Download';
 import { ExporttoExcel } from './ExportToExcel';
@@ -420,7 +420,11 @@ const DayWiseAttendence = () => {
 
                                 let emName = empArray?.find(e => e.em_no === el).name;
                                 let deptName = empArray?.find(e => e.em_no === el).dept;
+<<<<<<< HEAD
                                 // let emNo = empArray?.find(e => e.em_no === el).em_no;
+=======
+                                //let emNo = empArray?.find(e => e.em_no === el).em_no;
+>>>>>>> 955f39eb88f058976729bf585d013a428f4be785
                                 let sect_name = empArray?.find(e => e.em_no === el).sect;
 
                                 return {
@@ -610,7 +614,11 @@ const DayWiseAttendence = () => {
                                 const empArray = mainarray?.filter(e => e.em_no === el)
                                 let emName = empArray?.find(e => e.em_no === el).name;
                                 let deptName = empArray?.find(e => e.em_no === el).dept;
+
                                 // let emNo = empArray?.find(e => e.em_no === el).em_no;
+
+                                //let emNo = empArray?.find(e => e.em_no === el).em_no;
+
                                 let sect_name = empArray?.find(e => e.em_no === el).sect;
 
                                 return {

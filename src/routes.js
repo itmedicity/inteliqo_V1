@@ -68,11 +68,9 @@ const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMas
 const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMasterEdit'))
 const FineDeductionTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/FineAndDeductionTableEdit'))
 const AllowanceDeducation = React.lazy(() => import('./views/EmployeeRecord/AllowanceDeducation/BulkWageUpdation'))
-// const Dutyplanning = React.lazy(() => import('./views/Attendance/DutyPlanning/DutyPlanning'))
 const Dutyplan = React.lazy(() => import('./views/Attendance/DutyPlan/DutyPlanMainCard'))
 const ApprovalIncharge = React.lazy(() => import('./views/LeaveManagement/ApprovalIncharge/ApprovalIncharge'))
 const ApprovalHR = React.lazy(() => import('./views/LeaveManagement/ApprovalHR/LeaveApprovalHR'))
-// const CancelEmployee = React.lazy(() => import('./views/LeaveManagement/LeaveCancelEmployee/LeaveCancelEmploye'))
 const CancelHR = React.lazy(() => import('./views/LeaveManagement/LeaveCancelHR/HrLeaveCancel'))
 const OTRequest = React.lazy(() => import('./views/LeaveManagement/OverTimeRequest/OtReqestMainPage'))
 const OTApprovalIncharge = React.lazy(() => import('./views/LeaveManagement/OTApprovalIncharge/OtInchargeApproval'))
@@ -170,7 +168,7 @@ const EmpEarnDeduction = React.lazy(() => import('./views/EmployeeRecord/EarnDed
 const ApprovalHOD = React.lazy(() => import('./views/LeaveManagement/ApprovalHOD/HodApproval'))
 const OTUpdatedList = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OTUpdatedList'))
 const AttendanceAutomatic = React.lazy(() => import('./views/Payroll/AttendanceAutomatic/AttendanceGenerateAuto'))
-const PunchTransfer = React.lazy(() => import('./views/Master/PunchTransfer/PunchTransfer'))
+const PunchTransfer = React.lazy(() => import('./views/Master/PunchTransfer/PunchTransferManual'))
 const PaySlipprint = React.lazy(() => import('./views/Payroll/PaySlipPrint/Payslipprint'))
 const WageRegister = React.lazy(() => import('./views/Payroll/WageRegister/WageRegisterPage'))
 const AttandanceRegister = React.lazy(() => import('./views/Payroll/AttendanceRegister/AttandaceRegisterPage'))
@@ -296,6 +294,12 @@ const MonthlyDepartmentalTrainingReports = React.lazy(() => import('./views/HrRe
 const DepmtlAttendPendingList = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DepmtlAttendPendingList'))
 const DeptStaffExamReport = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptStaffExamReport'))
 const DeptYearlyCalender = React.lazy(() => import('./views/HrReports/TrainingDevelopmentReports/DepartmentalTrainingReports/DeptYearlyCalender'))
+const HODAttendanceReport = React.lazy(() => import('./views/HrReports/AttendenceReport/HODAttendnaceReport'))
+const WeekOffReport = React.lazy(() => import('./views/HrReports/WeekOffReport/WeekOffReport'))
+const AbsentDayReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsentDayReport'))
+const AbsenteeismReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsenteeismReport'))
+const AbsenteeismDeptReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsenteeismDepartment'))
+const IndividualAttendance = React.lazy(() => import('./views/HrReports/AttendenceReport/IndividualAttendance'))
 
 
 const routes = [
@@ -589,7 +593,12 @@ const routes = [
   { path: '/Home/DepmtlAttendPendingList', exact: true, name: 'Departmental Attend & Pending List', component: DepmtlAttendPendingList },
   { path: '/Home/DeptStaffExamReport', exact: true, name: 'Departmental StafExam Reports', component: DeptStaffExamReport },
   { path: '/Home/DeptYearlyCalender', exact: true, name: 'Yearly Departmental Training Reports', component: DeptYearlyCalender },
-
+  { path: '/Home/HODAttendanceReport', exact: true, name: 'HOD Attendance Report', component: HODAttendanceReport },
+  { path: '/Home/WeekOffReport', exact: true, name: 'Week Off Report', component: WeekOffReport },
+  { path: '/Home/AbsentDayReport', exact: true, name: 'Absent Day Report', component: AbsentDayReport },
+  { path: '/Home/AbsenteeismReport', eaxct: true, name: 'Absenteeism Report', component: AbsenteeismReport },
+  { path: '/Home/AbsenteeismDeptReport', exact: true, name: 'Absenteeism Deptartment Report', component: AbsenteeismDeptReport },
+  { path: '/Home/IndividualAttendance', exact: true, name: 'Individual Attendance Report', component: IndividualAttendance }
 ]
 
 export default routes

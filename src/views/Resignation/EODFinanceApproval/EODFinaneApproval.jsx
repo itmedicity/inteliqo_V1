@@ -11,6 +11,8 @@ import { CssVarsProvider, Typography, IconButton, } from '@mui/joy'
 import { useHistory } from 'react-router-dom'
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton as OpenIcon } from '@mui/material';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import { pdfdownlod } from '../EndOfService/FullFinalPdf';
 
 const EODFinaneApproval = () => {
 
@@ -62,7 +64,25 @@ const EODFinaneApproval = () => {
                 }
             }
         },
+        {
+            headerName: 'PDF',
+            cellRenderer: params => {
+                return <Tooltip title="View" followCursor placement='top' arrow >
+                    <OpenIcon onClick={() => toDownload(params)}>
+                        <ArrowCircleDownIcon color='primary' />
+                    </OpenIcon>
+                </Tooltip>
+            }
+
+        },
     ])
+
+    const toDownload = useCallback((params) => {
+
+        const details = params.data
+        console.log("Fhfghmkn");
+        pdfdownlod(details)
+    }, [])
 
     const handleClickIcon = async (params) => {
         setOpen(true)

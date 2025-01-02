@@ -13,13 +13,20 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useSelector } from 'react-redux';
 import UploadIcon from '@mui/icons-material/Upload';
 import { getAllDeptList } from 'src/redux/actions/Department.action';
+<<<<<<< HEAD
 import { useQuery, } from 'react-query';
+=======
+import { useQuery } from 'react-query';
+>>>>>>> 955f39eb88f058976729bf585d013a428f4be785
 import { getAllDeptSectList } from 'src/redux/actions/DepartmentSection.Action';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import { getCommonsettingData } from 'src/redux/actions/Common.Action';
 import { ExportAttendance } from 'src/views/Payroll/AttendanceUpdation/ExportToExcel';
+<<<<<<< HEAD
 import { ToastContainer } from 'react-toastify';
 import { attendnaceCountCalculationFunc, employeeEarnDeduction, getAllPunchmastData } from './SalaryProcessFunctions';
+=======
+import { getCommonsettingData } from 'src/views/CommonCode/CommonReactQueries';
+>>>>>>> 955f39eb88f058976729bf585d013a428f4be785
 
 const MonthlySalaryProcess = () => {
     const [value, setValue] = useState(moment(new Date()));
@@ -383,9 +390,11 @@ const MonthlySalaryProcess = () => {
     //  const loginem_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
 
     const deleteAttendanceMarkingProcess = useCallback(async (dept, section, date) => {
+
         const getPunchMarkTablePostData = {
             month: format(startOfMonth(new Date(date)), 'yyyy-MM-dd')
         }
+
         const postDta = {
             update_user: em_no,
             dept_id: dept,

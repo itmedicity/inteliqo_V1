@@ -90,6 +90,7 @@ const MenuCreation = () => {
                 succesNofity(message)
                 setFormData(defaultState)
                 setModuleName(0)
+                setslno(0)
                 queryClient.invalidateQueries('menuNameList')
             } else if (success === 1) {
                 errorNofity(message);

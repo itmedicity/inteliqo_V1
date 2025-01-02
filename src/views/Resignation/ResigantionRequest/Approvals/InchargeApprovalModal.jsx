@@ -1,4 +1,4 @@
-import { Button, Checkbox, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
+import { Button, Checkbox, Link, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
 import { Box, FormControlLabel, Paper } from '@mui/material'
 import React, { memo, useEffect, useMemo, useState } from 'react'
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
@@ -10,6 +10,8 @@ import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/C
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import ImageViewer from 'src/views/Component/ImageViewer';
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+import Files from 'react-files'
+import { format } from 'date-fns';
 
 const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }) => {
 
@@ -29,21 +31,24 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         relieving_date: '',
         inch_coment: '',
         em_id: 0,
-        resignation_type: 0
+        resignation_type: 0,
+        hod_coment: ''
     })
     const { em_name, em_no, request_date, resig_slno,
         sect_name, status, resign_reason, relieving_date, inch_coment,
-        dept_id, sect_id, em_id, resignation_type, attachment, attachment_type, } = details;
+        dept_id, sect_id, em_id, resignation_type, attachment, attachment_type, hod_coment } = details;
     const [remark, setRemark] = useState('')
     const [replacement, setreplacement] = useState(false)
     const [dueDept, SetDueDept] = useState({})
-    const [salaryPenalty, setSalarypenalty] = useState(false)
+    //const [salaryPenalty, setSalarypenalty] = useState(false)
+    const [files, setFiles] = useState('')
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
             const { dept_id, dept_name, em_name, em_no, request_date, resig_slno, sect_id,
                 sect_name, resign_reason, relieving_date, status, inch_coment, em_id, resignation_type,
-                attachment, attachment_type, replacement_required_incharge, replacement_required_hod } = data
+                attachment, attachment_type, replacement_required_incharge, replacement_required_hod,
+                hod_coment } = data
 
             const details = {
                 dept_id: dept_id,
@@ -63,7 +68,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 attachment: attachment,
                 attachment_type: attachment_type,
                 replacement_required_incharge: replacement_required_incharge,
-                replacement_required_hod: replacement_required_hod
+                replacement_required_hod: replacement_required_hod,
+                hod_coment: hod_coment
             }
 
             setDetails(details)
@@ -99,7 +105,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         if (slno === 1) {
             const approveData = {
                 inch_id: loginId,
-                inch_app_date: moment(new Date()).format('YYYY-MM-DD'),
+                inch_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 inch_app_status: 2,
                 inch_coment: remark,
                 resig_slno: resig_slno,
@@ -125,7 +131,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         } else if (slno === 2) {
             const approveData = {
                 hod_id: loginId,
-                hod_app_date: moment(new Date()).format('YYYY-MM-DD'),
+                hod_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 hod_app_status: 2,
                 hod_coment: remark,
                 resig_slno: resig_slno,
@@ -151,7 +157,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         } else if (slno === 3) {
             const approveData = {
                 ceo_id: loginId,
-                ceo_appr_date: moment(new Date()).format('YYYY-MM-DD'),
+                ceo_appr_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 ceo_appr_status: 2,
                 ceo_comment: remark,
                 resig_slno: resig_slno,
@@ -174,10 +180,9 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 setOpen(false)
             }
         } else {
-            // console.log("error")
             const approveData = {
                 hr_id: loginId,
-                hr_app_date: moment(new Date()).format('YYYY-MM-DD'),
+                hr_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 hr_app_status: 2,
                 hr_coment: remark,
                 resign_status: 'R',
@@ -207,7 +212,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         if (slno === 1) {
             const approveData = {
                 inch_id: loginId,
-                inch_app_date: moment(new Date()).format('YYYY-MM-DD'),
+                inch_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 inch_app_status: 1,
                 inch_coment: remark,
                 resig_slno: resig_slno,
@@ -233,7 +238,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         } else if (slno === 2) {
             const approveData = {
                 hod_id: loginId,
-                hod_app_date: moment(new Date()).format('YYYY-MM-DD'),
+                hod_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 hod_app_status: 1,
                 hod_coment: remark,
                 resig_slno: resig_slno,
@@ -260,7 +265,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         } else if (slno === 3) {
             const approveData = {
                 ceo_id: loginId,
-                ceo_appr_date: moment(new Date()).format('YYYY-MM-DD'),
+                ceo_appr_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 ceo_appr_status: 1,
                 ceo_comment: remark,
                 resig_slno: resig_slno,
@@ -286,14 +291,19 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
 
             const approveData = {
                 hr_id: loginId,
-                hr_app_date: moment(new Date()).format('YYYY-MM-DD'),
+                hr_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                 hr_app_status: 1,
                 hr_coment: remark,
                 resign_status: 'A',
                 resig_slno: resig_slno,
             }
 
-            const result = await axioslogin.patch('/Resignation/resignapproval', approveData)
+            const formData = new FormData()
+
+            formData.append('file', files[0]);
+            formData.append('postData', JSON.stringify(approveData));
+
+            const result = await axioslogin.patch('/Resignation/resignapproval', formData)
             const { success, message } = result.data
             if (success === 1) {
 
@@ -321,9 +331,26 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
             }
         }
     }, [remark, replacement, resig_slno, loginId, slno, dueDept,
-        setOpen, setCount])
+        setOpen, setCount, files])
 
     const [open1, setOpen1] = useState(false);
+
+    const handleChange = (files) => {
+        setFiles(files)
+    }
+
+    const handleError = (error, file) => {
+        const { code } = error
+        if (code === 1) {
+            warningNofity('Upload failed. Invalid file type')
+        } else if (code === 2) {
+            warningNofity('Upload failed. File too large')
+        } else if (code === 3) {
+            warningNofity('Upload failed. File too small')
+        } else {
+            warningNofity('Upload failed. Maximum file count reached')
+        }
+    }
 
     return (
         <Modal
@@ -445,9 +472,29 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                                     <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
                                         {inch_coment}
                                     </Typography>
-                                </Box> : null
+                                </Box> :
+                                    slno === 4 ? <Box>
+                                        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
+                                            <Typography fontSize="sm" fontWeight="lg"  >
+                                                Incharge Comment:
+                                            </Typography>
+                                            <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                                {inch_coment}
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
+                                            <Typography fontSize="sm" fontWeight="lg"  >
+                                                Hod Comment:
+                                            </Typography>
+                                            <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
+                                                {hod_coment}
+                                            </Typography>
+                                        </Box>
+                                    </Box> :
+                                        null
                             }
                         </Box>
+
                         <Box
                             sx={{
                                 display: attachment === null ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '10%', py: 1,
@@ -469,8 +516,28 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                             />
                         </Box>
                     </Paper>
-                </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1, mt: 0.5 }}>
 
+                        <Files
+                            className='files-dropzone'
+                            onChange={handleChange}
+                            onError={handleError}
+                            accepts={['image/png', '.pdf', 'image/jpeg', 'image/jpg']}
+                            //multiple={false}
+                            maxFileSize={2000000}
+                            minFileSize={0}
+                            clickable
+                        >
+                            <Typography fontSize="sm" level="title-md"  >
+                                If file not uploaded, click
+                                <Link href="#levels" level="title-sm" underline='always' sx={{ px: 0.5 }}>
+                                    here
+                                </Link>
+                                to upload.
+                            </Typography>
+                        </Files>
+                    </Box>
+                </Box>
                 <Box sx={{}} >
                     <Textarea
                         name="Outlined"
@@ -479,8 +546,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                         minRows={3}
                         onChange={(e) => setRemark(e.target.value)}
                     />
-                    <Box sx={{ display: 'none', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', flex: 1, px: 2, py: 0.5 }}>
-                        <Box sx={{ display: 'flex' }}>
+                    {/* <Box sx={{ display: 'none', flexDirection: 'row', justifyContent: 'left', alignItems: 'center', flex: 1, px: 2, py: 0.5 }}> */}
+                    {/* <Box sx={{ display: 'flex' }}>
                             <FormControlLabel
                                 control={<Checkbox sx={{ paddingX: 1, display: 'none' }} />}
                                 label="  Replacement Required"
@@ -489,8 +556,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                                 sx={{ display: 'flex', alignItems: 'center' }}
                                 onChange={(e) => setreplacement(e.target.checked)}
                             />
-                        </Box>
-                        {
+                        </Box> */}
+                    {/* {
                             slno === 4 ? <Box sx={{ display: 'none', px: 2 }}>
                                 <FormControlLabel
                                     control={<Checkbox />}
@@ -500,8 +567,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                                     onChange={(e) => setSalarypenalty(e.target.checked)}
                                 />
                             </Box> : null
-                        }
-                    </Box>
+                        } */}
+                    {/* </Box> */}
                     <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', alignItems: 'center', pt: 2 }}>
                         <Button variant="solid" color="success" onClick={submitFormdata}>
                             Resignation Request Approve
