@@ -73,8 +73,8 @@ export const allLeavesConvertAnArray = (state) => {
                 cmn: 0,
                 leaveMonth: e.cl_lv_year
             }
-        })?.filter((e) => e.lveRequest === 0)
-        // })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+            // })?.filter((e) => e.lveRequest === 0)
+        })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
         creditedLeavesArray.data.push(...newCasualLeavesAttay)
     }
 
@@ -230,8 +230,8 @@ export const getCaualLeaveDetl = (state) => {
             status: e.hl_lv_tkn_status,
             leaveMonth: e.cl_lv_year
         }
-    })?.filter(e => e.status === 0)
-    //})?.filter(e => e.status === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date()))
+        //})?.filter(e => e.status === 0)
+    })?.filter(e => e.status === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date()))
 }
 
 
