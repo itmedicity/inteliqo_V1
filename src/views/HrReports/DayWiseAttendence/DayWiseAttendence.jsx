@@ -420,11 +420,11 @@ const DayWiseAttendence = () => {
 
                                 let emName = empArray?.find(e => e.em_no === el).name;
                                 let deptName = empArray?.find(e => e.em_no === el).dept;
-<<<<<<< HEAD
+
                                 // let emNo = empArray?.find(e => e.em_no === el).em_no;
-=======
+
                                 //let emNo = empArray?.find(e => e.em_no === el).em_no;
->>>>>>> 955f39eb88f058976729bf585d013a428f4be785
+
                                 let sect_name = empArray?.find(e => e.em_no === el).sect;
 
                                 return {

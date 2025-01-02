@@ -13,20 +13,19 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useSelector } from 'react-redux';
 import UploadIcon from '@mui/icons-material/Upload';
 import { getAllDeptList } from 'src/redux/actions/Department.action';
-<<<<<<< HEAD
+
 import { useQuery, } from 'react-query';
-=======
-import { useQuery } from 'react-query';
->>>>>>> 955f39eb88f058976729bf585d013a428f4be785
+
+
 import { getAllDeptSectList } from 'src/redux/actions/DepartmentSection.Action';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import { ExportAttendance } from 'src/views/Payroll/AttendanceUpdation/ExportToExcel';
-<<<<<<< HEAD
+
 import { ToastContainer } from 'react-toastify';
 import { attendnaceCountCalculationFunc, employeeEarnDeduction, getAllPunchmastData } from './SalaryProcessFunctions';
-=======
+
 import { getCommonsettingData } from 'src/views/CommonCode/CommonReactQueries';
->>>>>>> 955f39eb88f058976729bf585d013a428f4be785
+
 
 const MonthlySalaryProcess = () => {
     const [value, setValue] = useState(moment(new Date()));
