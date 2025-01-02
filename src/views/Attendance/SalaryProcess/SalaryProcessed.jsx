@@ -74,7 +74,8 @@ const SalaryProcessed = () => {
 
                 employeeEarnDeduction(getEmpData).then((values) => {
                     const { status, data: deductData } = values;
-                    if (status === 1) {
+
+                    if (status === 1 || status === 2) {
                         const arr = employeeData && employeeData.map((val) => val.em_id)
                         const postdata = {
                             emp_id: arr,
