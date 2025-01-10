@@ -52,6 +52,7 @@ export const attednane_three = [
 ]
 export const leave_One = [
     { to: '/Home/LeaveReports', name: 'Employee Leave Report', slno: 270 },
+    { to: '/Home/YearlyLeaveCountReport', name: 'Previous Year Leave Count Report', slno: 332 }
 ]
 export const leave_two = [
     { to: '/Home/OndutyReport', name: 'Employee On Duty Report', slno: 298 },
