@@ -22,7 +22,7 @@ import { getAttendanceCalculation, getLateInTimeIntervel, } from 'src/views/Atte
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { addDays, addHours, differenceInHours, format, endOfMonth, isValid, max, min, subHours, formatDuration, intervalToDuration, lastDayOfMonth, startOfMonth } from "date-fns";
-
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const AttendenceReport = () => {
     const [deptName, setDepartmentName] = useState(0)
@@ -32,6 +32,7 @@ const AttendenceReport = () => {
     const [fromdate, Setfromdate] = useState(moment(new Date()));
     const [todate, Settodate] = useState(moment(new Date()));
     const [tableData, setTableData] = useState([])
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     const commonSettings = useSelector((state) => state?.getCommonSettings)
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
@@ -65,9 +66,9 @@ const AttendenceReport = () => {
 
     const getData = useCallback(async (e) => {
         //GET ALL SHIFT INFORMATION 
-
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         if (deptName !== 0 && fromdate !== '' && todate !== '' && deptSecName !== 0) {
-
+            setOpenBkDrop(true)
             const postDataForAttendaceMark = {
                 month: format(startOfMonth(new Date(fromdate)), 'yyyy-MM-dd'),
                 section: deptSecName
@@ -120,8 +121,10 @@ const AttendenceReport = () => {
 
                         })
                         setTableData(arr)
+                        setOpenBkDrop(false)
                     } else {
                         setTableData([])
+                        setOpenBkDrop(false)
                     }
                 } else {
                     dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
@@ -229,31 +232,41 @@ const AttendenceReport = () => {
                                         if (element?.length > 0) {
                                             const extractedValues = element?.map(item => item.value);
                                             return { status: 1, data: extractedValues }
+                                            setOpenBkDrop(false)
                                             // setTableData(extractedValues)
                                         } else {
                                             return { status: 0, message: "something went wrong", errorMessage: '' }
+                                            setOpenBkDrop(false)
                                         }
                                     })
 
                                 } else {
                                     return { status: 0, message: "something went wrong", errorMessage: '' }
+                                    setOpenBkDrop(false)
                                 }
                             })
                             if (maindata?.status === 1) {
                                 setTableData(maindata?.data.slice(0, -1))
+                                setOpenBkDrop(false)
                             } else {
                                 setTableData([])
+                                setOpenBkDrop(false)
                             }
                         } else {
                             return { status: 0, message: "something went wrong", errorMessage: '' }
+                            setOpenBkDrop(false)
                         }
+                    } else {
+                        setOpenBkDrop(false)
                     }
                 }
             } else {
                 errorNofity("Error getting PunchMarkingHR ")
+                setOpenBkDrop(false)
             }
         } else {
             warningNofity("Please Select All Fields")
+
         }
     }, [fromdate, todate, postData, shiftInformation, cmmn_early_out, deptSecName, deptName,
         cmmn_grace_period, Empno,
@@ -334,6 +347,7 @@ const AttendenceReport = () => {
     return (
         <Box sx={{ display: "flex", flexGrow: 1, width: "100%", }} >
             <ToastContainer />
+            <CustomBackDrop open={openBkDrop} text="Please wait !.. Processing Data... " />
             <ReportLayout title="Attendence Report" displayClose={true} data={tableData} >
                 <Paper sx={{ display: 'flex', flex: 1, flexDirection: 'column', }}>
                     <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
@@ -346,7 +360,6 @@ const AttendenceReport = () => {
                         <Box sx={{ flex: 1, px: 0.5 }}>
                             <SectionBsdEmployee getEmploy={setEmpNo} />
                         </Box>
-
                         <Box sx={{ flex: 1, px: 0.5, display: "flex", flexDirection: "row", }} >
                             <Typography sx={{ p: 1 }}>From:</Typography>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -370,19 +383,16 @@ const AttendenceReport = () => {
                                     )}
                                 />
                             </LocalizationProvider>
-
-
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5, display: "flex", flexDirection: "row", }} >
                             <Typography sx={{ p: 1 }}>To:</Typography>
-
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 < DatePicker
                                     // disableFuture={true}
                                     views={['day']}
                                     value={todate}
                                     inputFormat='dd-MM-yyyy'
-                                    maxDate={endOfMonth(new Date(fromdate))}
+                                    maxDate={new Date()}
                                     size="small"
                                     onChange={(e) => {
                                         Settodate(moment(e).format("YYYY-MM-DD"));
@@ -397,10 +407,8 @@ const AttendenceReport = () => {
                                     )}
                                 />
                             </LocalizationProvider>
-
                         </Box>
                         <Box sx={{ px: 0.5, mr: 1, mt: .5 }}>
-
                             <IconButton variant="outlined" size='sm' color="primary"
                                 onClick={getData}
                             >
@@ -408,14 +416,12 @@ const AttendenceReport = () => {
                             </IconButton>
                         </Box>
                     </Box>
-
                     <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", width: "100%" }} >
                         <CustomAgGridRptFormatOne
                             tableDataMain={tableData}
                             columnDefMain={columnDef}
                         />
                     </Paper>
-
                 </Paper>
             </ReportLayout>
         </Box >
