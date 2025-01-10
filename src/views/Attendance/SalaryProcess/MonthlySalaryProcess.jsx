@@ -444,7 +444,7 @@ const MonthlySalaryProcess = () => {
         } else {
             errorNofity(message)
         }
-    }, [em_no])
+    }, [em_no, value])
 
 
     const exportDataClick = useCallback(() => {

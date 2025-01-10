@@ -301,7 +301,7 @@ const AbsenteeismReport = React.lazy(() => import('./views/HrReports/AbsentRepor
 const AbsenteeismDeptReport = React.lazy(() => import('./views/HrReports/AbsentReports/AbsenteeismDepartment'))
 const IndividualAttendance = React.lazy(() => import('./views/HrReports/AttendenceReport/IndividualAttendance'))
 const EmployeeAnnualLeave = React.lazy(() => import('./views/Attendance/AnnualLeaveProcess/EmployeeAnnualLeaveProcess'))
-
+const YearlyLeaveCountReport = React.lazy(() => import('./views/HrReports/LeaveCountReport/YearlyLeaveCount'))
 
 const routes = [
 
@@ -600,7 +600,9 @@ const routes = [
   { path: '/Home/AbsenteeismReport', eaxct: true, name: 'Absenteeism Report', component: AbsenteeismReport },
   { path: '/Home/AbsenteeismDeptReport', exact: true, name: 'Absenteeism Deptartment Report', component: AbsenteeismDeptReport },
   { path: '/Home/IndividualAttendance', exact: true, name: 'Individual Attendance Report', component: IndividualAttendance },
-  { path: '/Home/EmployeeAnnualLeave', exact: true, name: 'Annual Leave Process', component: EmployeeAnnualLeave }
+  { path: '/Home/EmployeeAnnualLeave', exact: true, name: 'Annual Leave Process', component: EmployeeAnnualLeave },
+  { path: '/Home/YearlyLeaveCountReport', exact: true, name: 'Yearly Leave Count Report', component: YearlyLeaveCountReport },
+
 ]
 
 export default routes
