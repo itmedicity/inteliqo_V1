@@ -636,7 +636,7 @@ const weekOffStatus = async (e, idx, array, weekoff_policy_max_count, weekoff_po
         const toIndex = idx - 1;
         const fromIndex = idx - weekoff_policy_max_count;
         const FilterArray = sortedArray.filter((val, index) => fromIndex <= index && index <= toIndex)?.map((e) => e.duty_desc)
-        const filterBasedOnDutyDesc = FilterArray?.filter((dutydesc) => dutydesc === 'LWP' || dutydesc === 'A' || dutydesc === 'ESI' || dutydesc === 'LOP' || dutydesc === 'WOFF').length
+        const filterBasedOnDutyDesc = FilterArray?.filter((dutydesc) => dutydesc === 'LWP' || dutydesc === 'A' || dutydesc === 'ESI' || dutydesc === 'LOP' || dutydesc === 'WOFF' || dutydesc === 'ML').length
         return await filterBasedOnDutyDesc > policyLimit ? 'A' : 'WOFF'
     } else {
         return e.duty_desc
