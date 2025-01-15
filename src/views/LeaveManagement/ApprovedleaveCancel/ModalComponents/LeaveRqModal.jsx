@@ -136,7 +136,7 @@ const LeaveRqModal = ({ open, setOpen, empData, setCount }) => {
                 //UPDATE COMMON LEAVE TABLE
                 const commonLeavePromise = new Promise(async (resolve, reject) => {
                     if (commonLeaves?.length > 0) {
-                        const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCasualyLeave`, commonLeaves);
+                        const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCommonLeave`, commonLeaves);
                         const { success, message } = resultcl.data;
                         if (success === 1) {
                             resolve('Casual Leave Request Updated')

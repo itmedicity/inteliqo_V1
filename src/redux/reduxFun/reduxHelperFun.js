@@ -50,10 +50,10 @@ export const allLeavesConvertAnArray = (state) => {
     const compansatoryOff = state?.getEmpCoffData?.coffData;
     const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
 
-    console.log(casualLeaves);
-    console.log(earnLeaves);
-    console.log(compansatoryOff);
-    console.log(commonLeaves);
+    // console.log(casualLeaves);
+    // console.log(earnLeaves);
+    // console.log(compansatoryOff);
+    // console.log(commonLeaves);
 
 
     // Push casual leaves to the array if available
