@@ -1,5 +1,5 @@
-import { Button, Checkbox, Link, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
-import { Box, FormControlLabel, Paper } from '@mui/material'
+import { Button, Link, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
+import { Box, Paper } from '@mui/material'
 import React, { memo, useEffect, useMemo, useState } from 'react'
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import moment from 'moment';
@@ -101,7 +101,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
         getDueDepartment(postDeptData)
     }, [dept_id, sect_id, em_id])
 
-    const handleRejectRequest = async () => {
+    const handleRejectRequest = useCallback(async () => {
         if (slno === 1) {
             const approveData = {
                 inch_id: loginId,
@@ -180,6 +180,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 setOpen(false)
             }
         } else {
+
             const approveData = {
                 hr_id: loginId,
                 hr_app_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
@@ -188,7 +189,8 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 resign_status: 'R',
                 resig_slno: resig_slno,
             }
-            const result = await axioslogin.patch('/Resignation/resignapproval', approveData)
+
+            const result = await axioslogin.patch('/Resignation/resign/hrreject', approveData)
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity("Resignation Request Rejected")
@@ -206,7 +208,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                 setOpen(false)
             }
         }
-    }
+    }, [loginId, remark, resig_slno, setCount, setOpen, slno])
 
     const submitFormdata = useCallback(async (e) => {
         if (slno === 1) {
