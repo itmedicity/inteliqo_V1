@@ -21,7 +21,7 @@ import { Actiontypes } from 'src/redux/constants/action.type'
 import { getAttendanceCalculation, getLateInTimeIntervel, } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc';
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
-import { addDays, addHours, differenceInHours, format, endOfMonth, isValid, max, min, subHours, formatDuration, intervalToDuration, lastDayOfMonth, startOfMonth } from "date-fns";
+import { addDays, addHours, differenceInHours, format, isValid, max, min, subHours, formatDuration, intervalToDuration, lastDayOfMonth, startOfMonth } from "date-fns";
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const AttendenceReport = () => {
@@ -468,18 +468,21 @@ const AttendenceReport = () => {
 
                                         if (element?.length > 0) {
                                             const extractedValues = element?.map(item => item.value);
-                                            return { status: 1, data: extractedValues }
                                             setOpenBkDrop(false)
+                                            return { status: 1, data: extractedValues }
+                                            // setOpenBkDrop(false)
                                             // setTableData(extractedValues)
                                         } else {
-                                            return { status: 0, message: "something went wrong", errorMessage: '' }
                                             setOpenBkDrop(false)
+                                            return { status: 0, message: "something went wrong", errorMessage: '' }
+                                            // setOpenBkDrop(false)
                                         }
                                     })
 
                                 } else {
-                                    return { status: 0, message: "something went wrong", errorMessage: '' }
                                     setOpenBkDrop(false)
+                                    return { status: 0, message: "something went wrong", errorMessage: '' }
+                                    //setOpenBkDrop(false)
                                 }
                             })
                             if (maindata?.status === 1) {
@@ -490,8 +493,9 @@ const AttendenceReport = () => {
                                 setOpenBkDrop(false)
                             }
                         } else {
-                            return { status: 0, message: "something went wrong", errorMessage: '' }
                             setOpenBkDrop(false)
+                            return { status: 0, message: "something went wrong", errorMessage: '' }
+                            // 
                         }
                     } else {
                         setOpenBkDrop(false)
