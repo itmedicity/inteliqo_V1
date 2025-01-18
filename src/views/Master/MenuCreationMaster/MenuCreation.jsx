@@ -115,8 +115,8 @@ const MenuCreation = () => {
 
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'menu_slno' },
-        { headerName: 'Menu Name ', field: 'menu_name' },
-        { headerName: 'Module Name', field: 'module_name' },
+        { headerName: 'Menu Name ', field: 'menu_name', filter: true },
+        { headerName: 'Module Name', field: 'module_name', filter: true },
         { headerName: 'Status ', field: 'showStatus' },
         {
             headerName: 'Action', cellRenderer: params =>

@@ -12,7 +12,6 @@ export const getEmployeeCurrentCategoryInfom = async (em_id) => {
 
 //Employee Current Leave process Table
 export const getEmployeeCurrentLeaveProcessInfom = async (em_id) => {
-  console.log("HG");
   return await axioslogin.post('/yearleaveprocess/', em_id)
 }
 

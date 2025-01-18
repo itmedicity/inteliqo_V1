@@ -1,4 +1,4 @@
-import { endOfYear, format, getMonth, subMonths } from "date-fns";
+import { add, addYears, endOfYear, format, getMonth, subMonths, subYears } from "date-fns";
 import moment from "moment";
 import { getDepartmentSectionBasedHod } from "src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction";
 
@@ -50,23 +50,23 @@ export const allLeavesConvertAnArray = (state) => {
     const compansatoryOff = state?.getEmpCoffData?.coffData;
     const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
 
-    console.log(casualLeaves);
-    console.log(earnLeaves);
-    console.log(compansatoryOff);
-    console.log(commonLeaves);
+    //console.log(casualLeaves);
+    //console.log(earnLeaves);
+    // console.log(compansatoryOff);
+    // console.log(commonLeaves);
 
 
     // Push casual leaves to the array if available
     if (casualLeaves?.length > 0) {
         const newCasualLeavesAttay = casualLeaves?.map((e) => {
             let leveCount = e.cl_lv_taken === 0 ? 1 : e.cl_lv_taken;
-            console.log(getMonth(new Date(e.leaveMonth)) <= getMonth(new Date()));
+            const leaveYear = format(new Date(e.cl_lv_year), 'yyyy');
             return {
                 type: 'CL',
                 name: 'Casual Leave',
                 leavetype: 1,
                 slno: e.hrm_cl_slno,
-                month: e.cl_lv_mnth + '-' + leveCount,
+                month: e.cl_lv_mnth + '-' + leveCount + '-' + leaveYear,
                 count: leveCount,
                 lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
                 common_slno: 0,
@@ -82,12 +82,13 @@ export const allLeavesConvertAnArray = (state) => {
     if (earnLeaves?.length > 0) {
         const newErnLeaves = earnLeaves?.map((e) => {
             let leveCount = e.ernlv_taken === 0 ? 1 : e.ernlv_taken;
+            const leaveYear = format(new Date(addYears(new Date(e.ernlv_year), 1)), 'yyyy');
             return {
                 type: 'EL',
                 name: 'Earn Leave',
                 leavetype: 8,
                 slno: e.hrm_ernlv_slno,
-                month: e.ernlv_mnth + '-' + leveCount,
+                month: e.ernlv_mnth + '-' + leveCount + '-' + leaveYear,
                 count: leveCount,
                 lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
                 common_slno: 0,
@@ -311,8 +312,6 @@ export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprova
                     hod_apr_time: null,
                     usCode_hod: null
                 }
-
-    //console.log(deptLevelApprove);
 
     return (masterGroupStatus === true) ?
         {

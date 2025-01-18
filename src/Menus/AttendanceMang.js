@@ -31,12 +31,6 @@ const AttendanceManagement = [
         name: 'Leave Carry Forwad',
         to: '/Home/LeaveCarryForwad',
     },
-    // {
-    //     men_slno: 151,
-    //     component: CNavItem,
-    //     name: 'Annual Leave Process',
-    //     to: '/Home/AnnualLeaveProcess',
-    // },
 
     {
         men_slno: 237,
