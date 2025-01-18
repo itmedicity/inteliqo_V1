@@ -207,7 +207,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
         //UPDATE COMMON LEAVE TABLE
         const commonLeavePromise = new Promise(async (resolve, reject) => {
             if (commonLeaves?.length > 0) {
-                const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCasualyLeave`, commonLeaves);
+                const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCommonLeave`, commonLeaves);
                 const { success, message } = resultcl.data;
                 if (success === 1) {
                     resolve('Casual Leave Request Updated')
@@ -236,10 +236,19 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                         const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprv', LeaveRejectdata)
                         const { success } = result.data;
                         if (success === 1) {
-                            setOpenBkDrop(false)
-                            setcount(Math.random())
-                            succesNofity('Leave Request Approved')
-                            setOpen(false)
+                            const result = await axioslogin.post('/LeaveRequestApproval/cancel/lvReqDetail', LeaveRejectdata)
+                            const { success } = result.data;
+                            if (success === 1) {
+                                setOpenBkDrop(false)
+                                setcount(Math.random())
+                                succesNofity('Leave Request Approved')
+                                setOpen(false)
+                            } else {
+                                setOpenBkDrop(false)
+                                setOpen(false)
+                                setcount(Math.random())
+                                errorNofity('Error Updating Leave Request')
+                            }
                         } else {
                             setOpenBkDrop(false)
                             setOpen(false)
@@ -282,12 +291,22 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                                 coffLeavePromise,
                                 commonLeavePromise
 
-                            ]).then(result => {
+                            ]).then(async (result) => {
+                                //  console.log(result);
                                 if (result) {
-                                    setOpenBkDrop(false)
-                                    setcount(Math.random())
-                                    succesNofity('Leave Request Approved')
-                                    setOpen(false)
+                                    const result = await axioslogin.post('/LeaveRequestApproval/cancel/lvReqDetail', LeaveRejectdata)
+                                    const { success } = result.data;
+                                    if (success === 1) {
+                                        setOpenBkDrop(false)
+                                        setcount(Math.random())
+                                        succesNofity('Leave Request Approved')
+                                        setOpen(false)
+                                    } else {
+                                        setOpenBkDrop(false)
+                                        setOpen(false)
+                                        setcount(Math.random())
+                                        errorNofity('Error Updating Leave Request')
+                                    }
                                 }
                             }).catch(error => {
                                 setcount(Math.random())
@@ -320,12 +339,21 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                             coffLeavePromise,
                             commonLeavePromise
 
-                        ]).then(result => {
+                        ]).then(async (result) => {
                             if (result) {
-                                setOpenBkDrop(false)
-                                setcount(Math.random())
-                                succesNofity('Leave Request Approved')
-                                setOpen(false)
+                                const result = await axioslogin.post('/LeaveRequestApproval/cancel/lvReqDetail', LeaveRejectdata)
+                                const { success } = result.data;
+                                if (success === 1) {
+                                    setOpenBkDrop(false)
+                                    setcount(Math.random())
+                                    succesNofity('Leave Request Approved')
+                                    setOpen(false)
+                                } else {
+                                    setOpenBkDrop(false)
+                                    setOpen(false)
+                                    setcount(Math.random())
+                                    errorNofity('Error Updating Leave Request')
+                                }
                             }
                         }).catch(error => {
                             setcount(Math.random())

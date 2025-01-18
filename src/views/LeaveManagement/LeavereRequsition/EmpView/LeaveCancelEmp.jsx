@@ -16,6 +16,8 @@ import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDro
 
 const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
 
+    console.log(data);
+
     const [reqDetl, setReqDetl] = useState([]);
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
@@ -46,9 +48,10 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
             comment: reason,
             apprvdate: moment(new Date()).format('YYYY-MM-DD HH:mm'),
             us_code: emno,
-            slno: slno
+            slno: slno,
+            lve_uniq_no: leaveid
         }
-    }, [emno, reason, slno])
+    }, [emno, reason, slno, leaveid])
 
     const Cancelrequest = useCallback(async () => {
         //CASUAL LEAVE 
@@ -160,6 +163,7 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
             setOpenBkDrop(false)
             warningNofity("Please Add Reason! ")
         } else {
+
             //handle function for cancel the leave
             const result = await axioslogin.patch('/LeaveRequestApproval/lveReqCancel', Canceldata);
             const { success } = result.data
