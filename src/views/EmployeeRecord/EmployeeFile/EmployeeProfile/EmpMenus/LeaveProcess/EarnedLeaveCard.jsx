@@ -10,6 +10,7 @@ import { useState } from 'react';
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useEffect } from 'react';
+import { addYears, format } from 'date-fns';
 
 const EarnedLeaveCard = ({ title, id, processStat }) => {
     const [elData, setelData] = useState([])
@@ -33,6 +34,7 @@ const EarnedLeaveCard = ({ title, id, processStat }) => {
         return (() => setelData([]))
     }, [id, processStat])
 
+
     return (
         <Paper square sx={{ flex: 1, }}>
             {/* <CustmTypog title={title} /> */}
@@ -51,7 +53,7 @@ const EarnedLeaveCard = ({ title, id, processStat }) => {
                         <TableBody>
                             {elData && elData.map((row, index) => (
                                 <TableRow hover key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                    <TableCell component="th" scope="row">{row.ernlv_mnth + ` - ` + row.year}</TableCell>
+                                    <TableCell component="th" scope="row">{row.ernlv_mnth + ` - ` + format(new Date(addYears(new Date(row.ernlv_year), 1)), 'yyyy')}</TableCell>
                                     <TableCell align="right">{row.ernlv_credit}</TableCell>
                                     <TableCell align="right">{row.ernlv_taken}</TableCell>
                                     <TableCell align="right">{row.ernlv_credit - row.ernlv_taken}</TableCell>
