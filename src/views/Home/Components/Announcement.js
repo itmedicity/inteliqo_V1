@@ -2,7 +2,7 @@ import React, { Fragment, memo, Suspense } from 'react'
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
-import newYear from '../../../assets/images/newYear.jpg'
+import kmcfront from '../../../assets/images/kmcfront.jpg'
 import { CircularProgress, Paper } from '@mui/material';
 import { CssVarsProvider } from '@mui/joy';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
@@ -32,7 +32,7 @@ const Announcement = () => {
                     </CssVarsProvider>
                     <CardMedia
                         component="img"
-                        image={newYear}
+                        image={kmcfront}
                         alt="Paella dish"
                         // className='img-fluid rounded'
                         sx={{
