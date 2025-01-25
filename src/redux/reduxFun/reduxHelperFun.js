@@ -77,7 +77,18 @@ export const allLeavesConvertAnArray = (state) => {
             }
             // })?.filter((e) => e.lveRequest === 0)
         })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
-        creditedLeavesArray.data.push(...newCasualLeavesAttay)
+
+        // Sort the array by year in ascending order
+        const sortedLeavesByYear = newCasualLeavesAttay.sort((a, b) => {
+            // Extract year from the month string
+            const yearA = parseInt(a.month.split('-')[2]);
+            const yearB = parseInt(b.month.split('-')[2]);
+
+            // Compare the years
+            return yearA - yearB;
+        });
+        //console.log(sortedLeaves);
+        creditedLeavesArray.data.push(...sortedLeavesByYear)
     }
 
     // Push earned leaves to the array if available
@@ -97,7 +108,17 @@ export const allLeavesConvertAnArray = (state) => {
                 cmn: 0
             }
         })?.filter((e) => e.lveRequest === 0) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
-        creditedLeavesArray.data.push(...newErnLeaves)
+        //console.log(newErnLeaves);
+        // Sort the array by year in ascending order
+        const sortedLeavesByYear = newErnLeaves.sort((a, b) => {
+            // Extract year from the month string
+            const yearA = parseInt(a.month.split('-')[2]);
+            const yearB = parseInt(b.month.split('-')[2]);
+
+            // Compare the years
+            return yearA - yearB;
+        });
+        creditedLeavesArray.data.push(...sortedLeavesByYear)
     }
 
     // Push compensatory off leaves to the array if available

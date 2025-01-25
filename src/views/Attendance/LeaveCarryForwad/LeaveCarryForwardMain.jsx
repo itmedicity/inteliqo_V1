@@ -51,7 +51,12 @@ const LeaveCarryForwardMain = () => {
                             }
                             return null;
                         }).filter(Boolean); // Remove any undefined values (in case empdata is empty)
-                        setMainArray(filteredArray)
+                        // setMainArray(filteredArray)
+                        if (filteredArray?.length === 0) {
+                            warningNofity("There Is No Data To Display")
+                        } else {
+                            setMainArray(filteredArray)
+                        }
                     } else {
                         warningNofity("There Is No Data To Display")
                     }
@@ -71,7 +76,12 @@ const LeaveCarryForwardMain = () => {
                             }
                         })
 
-                        setMainArray(sickLeaveArray)
+
+                        if (sickLeaveArray?.length === 0) {
+                            warningNofity("There Is No Data To Display")
+                        } else {
+                            setMainArray(sickLeaveArray)
+                        }
                     } else {
                         //setTableData([])
                         warningNofity("There Is No Data To Display")
@@ -79,6 +89,7 @@ const LeaveCarryForwardMain = () => {
                 } else if (leaveType === 8) {
                     const result = await axioslogin.post('/yearleaveprocess/getYearlyEarnLeaveCount', postData);
                     const { success, data } = result.data
+                    // console.log(result.data);
                     if (success === 1) {
                         const empEarnLeave = data?.map((i) => {
                             return { ...i, checkStatus: 0 }
@@ -94,7 +105,13 @@ const LeaveCarryForwardMain = () => {
                             }
                             return null;
                         }).filter(Boolean); // Remove any undefined values (in case empdata is empty)
-                        setMainArray(filteredArray)
+
+
+                        if (filteredArray?.length === 0) {
+                            warningNofity("There Is No Data To Display")
+                        } else {
+                            setMainArray(filteredArray)
+                        }
                     } else {
                         warningNofity("There Is No Data To Display")
                     }
