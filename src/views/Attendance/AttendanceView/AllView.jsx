@@ -170,7 +170,7 @@ const AllView = ({ em_id }) => {
         { lvename: 'DOFF', color: 'primary', desc: "Duty Off" },
     ]
 
-    console.log(tableArray);
+    // console.log(tableArray);
 
     return (
         <CustomLayout title="Attendance View" displayClose={true} >

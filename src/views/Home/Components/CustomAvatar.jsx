@@ -37,10 +37,10 @@ const CustomAvatar = ({ id }) => {
                     height: 40, // Adjust the size of the avatar itself
                     '& img': {
                         objectFit: 'contain', // Ensures image doesn't stretch or overflow
-                        width: '60%',  // You can adjust the size of the image within the Avatar
-                        height: '60%', // You can adjust the size of the image within the Avatar
+                        width: '100%',  // You can adjust the size of the image within the Avatar
+                        height: '100%', // You can adjust the size of the image within the Avatar
                     },
-                }} src={image1}><CircularProgress /></Avatar> : <Avatar src={src} />
+                }} src={`${PUBLIC_NAS_FOLDER}/Logo/logo.png`}><CircularProgress /></Avatar> : <Avatar src={src} />
             }
         </>
     )
