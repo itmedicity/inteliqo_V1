@@ -1,6 +1,6 @@
 import { CircularProgress } from '@mui/material'
 
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import ProfilePicDefault from 'src/assets/images/default.png'
 import image1 from '../../../assets/images/kmcpalalogo.jpg';
 import { urlExist } from 'src/views/Constant/Constant'
@@ -11,6 +11,7 @@ const CustomAvatar = ({ id }) => {
 
     const [src, setSrc] = useState(ProfilePicDefault)
     const [val, setVal] = useState(false)
+
     useEffect(() => {
         const getEmpIdforProfilePic = async (id) => {
             if (id > 0) {
@@ -45,4 +46,4 @@ const CustomAvatar = ({ id }) => {
     )
 }
 
-export default CustomAvatar
+export default memo(CustomAvatar) 
