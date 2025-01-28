@@ -87,7 +87,7 @@ const LeaveCarryForwad = () => {
             const result = await axioslogin.get(`/common/getENameLeaveCarry/${emply?.em_id}`)
             const { success, data } = result.data;
             if (success === 1) {
-                console.log(data);
+                //  console.log(data);
                 setname(data)
                 //setTableFlag(1)
             }

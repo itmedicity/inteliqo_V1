@@ -2,12 +2,12 @@ import React, { Fragment, memo, Suspense } from 'react'
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
-import newYear from '../../../assets/images/newYear.jpg'
 import { CircularProgress, Paper } from '@mui/material';
 import { CssVarsProvider } from '@mui/joy';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import Box from '@mui/joy/Box';
 import Chip from '@mui/joy/Chip';
+import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
 
 const AnnList = React.lazy(() => import('./AnnouncementList'))
 
@@ -32,7 +32,8 @@ const Announcement = () => {
                     </CssVarsProvider>
                     <CardMedia
                         component="img"
-                        image={newYear}
+                        // fileURL={`${PUBLIC_NAS_FOLDER}/ResignationReq/${attachment}`}
+                        image={`${PUBLIC_NAS_FOLDER}/Logo/image.jpg`}
                         alt="Paella dish"
                         // className='img-fluid rounded'
                         sx={{
