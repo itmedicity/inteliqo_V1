@@ -2,7 +2,6 @@ import { CircularProgress } from '@mui/material'
 
 import React, { memo, useEffect, useState } from 'react'
 import ProfilePicDefault from 'src/assets/images/default.png'
-import image1 from '../../../assets/images/kmcpalalogo.jpg';
 import { urlExist } from 'src/views/Constant/Constant'
 import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
 import { Avatar } from '@mui/joy';
