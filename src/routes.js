@@ -302,6 +302,8 @@ const AbsenteeismDeptReport = React.lazy(() => import('./views/HrReports/AbsentR
 const IndividualAttendance = React.lazy(() => import('./views/HrReports/AttendenceReport/IndividualAttendance'))
 const EmployeeAnnualLeave = React.lazy(() => import('./views/Attendance/AnnualLeaveProcess/EmployeeAnnualLeaveProcess'))
 const YearlyLeaveCountReport = React.lazy(() => import('./views/HrReports/LeaveCountReport/YearlyLeaveCount'))
+const InactiveEmplyeeAttendnaceReport = React.lazy(() => import('./views/HrReports/AttendenceReport/InactiveEmployeeAttendnaceReport'))
+
 
 const routes = [
 
@@ -602,6 +604,7 @@ const routes = [
   { path: '/Home/IndividualAttendance', exact: true, name: 'Individual Attendance Report', component: IndividualAttendance },
   { path: '/Home/EmployeeAnnualLeave', exact: true, name: 'Annual Leave Process', component: EmployeeAnnualLeave },
   { path: '/Home/YearlyLeaveCountReport', exact: true, name: 'Yearly Leave Count Report', component: YearlyLeaveCountReport },
+  { path: '/Home/InactiveEmplyeeAttendnaceReport', exact: true, name: 'Inactive Emplyee Attendnace Report', component: InactiveEmplyeeAttendnaceReport }
 
 ]
 
