@@ -224,7 +224,7 @@ const LeaveCancelByHR = () => {
                         </Tooltip>
                     </IconButton>
                 }
-            }
+            }, minWidth: 200
         },
     ])
 

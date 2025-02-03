@@ -118,7 +118,7 @@ const ManualRequestMain = () => {
                     return
                 }
             } else {
-                warningNofity('Duty Plan Not planned ')
+                warningNofity('Selected Date Has No Duty Plan ')
                 return
             }
         } else {
@@ -439,8 +439,6 @@ const ManualRequestMain = () => {
                                         <th style={{ textAlign: 'center', }}>Duty Desc</th>
                                         <th style={{ textAlign: 'center', }}>Action</th>
                                         <th style={{ textAlign: 'center', }}></th>
-
-
                                     </tr>
                                 </thead>
                                 <tbody>

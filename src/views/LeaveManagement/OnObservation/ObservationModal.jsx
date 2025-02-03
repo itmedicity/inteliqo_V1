@@ -75,7 +75,7 @@ const ObservationModal = ({ open, setOpen, empdata, setShow }) => {
             setOpen(false)
             errorNofity("Error getting PunchMarkingHR ")
         }
-    }, [em_id, em_doj, LoginEmpID, setOpen, em_dept_section, em_no])
+    }, [em_id, em_doj, LoginEmpID, setOpen, em_dept_section, em_no, setShow])
 
     return (
         <Modal

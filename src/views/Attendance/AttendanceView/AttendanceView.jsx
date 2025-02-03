@@ -6,13 +6,17 @@ import _ from 'underscore';
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import { axioslogin } from 'src/views/Axios/Axios';
 import AllView from './AllView';
+import { setShiftDetails } from 'src/redux/actions/Shift.Action';
+import { setDepartment } from 'src/redux/actions/Department.action';
+import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action'
+import { setDept } from 'src/redux/actions/Dept.Action'
 
 const EmployeeCmpnt = React.lazy(() => import('./EmployeeCompnt'));
 const AttendanceView = () => {
 
     const [empFlag, setEmpFlag] = useState(0)
     const [rights, setRights] = useState(0)
-
+    const [empSalary, setEmpSalary] = useState([]);
 
     const reduxDispatch = useDispatch()
 
@@ -20,12 +24,16 @@ const AttendanceView = () => {
         //get holiday current
         reduxDispatch(getHolidayList());
         reduxDispatch(setCommonSetting())
+        reduxDispatch(setShiftDetails())
+        reduxDispatch(setDepartment());
+        reduxDispatch(setDeptWiseSection());
+        reduxDispatch(setDept())
     }, [reduxDispatch])
 
 
     //login employee details
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0], _.isEqual)
-    const { hod, incharge, em_id, em_no, em_department } = empData
+    const { hod, incharge, em_id, em_no, em_dept_section } = empData
 
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
     const { group_slno } = state;
@@ -55,6 +63,10 @@ const AttendanceView = () => {
             } else {
                 setRights(0)
             }
+
+            const getGrossSalaryEmpWise = await axioslogin.get(`/common/getgrossSalaryByEmployeeNo/${em_dept_section}`);
+            const { su, dataa } = getGrossSalaryEmpWise.data;
+            if (su === 1) setEmpSalary(dataa)
         }
 
         const postData = {
@@ -62,16 +74,17 @@ const AttendanceView = () => {
         }
         getEmployeeRight(postData)
 
-    }, [em_id, group_slno])
+
+    }, [em_id, group_slno, em_dept_section])
 
     return (
         <Fragment>
             {
                 empFlag === 1 && rights === 0 ?
-                    <EmployeeCmpnt em_no={em_no} /> :
+                    <EmployeeCmpnt em_no={em_no} empSalary={empSalary} em_dept_section={em_dept_section} /> :
                     rights === 1 ?
                         <AllView em_id={em_id} /> :
-                        <InchargeHodCompnt em_id={em_id} em_department={em_department} em_no={em_no} />
+                        <InchargeHodCompnt em_id={em_id} em_no={em_no} empSalary={empSalary} em_dept_section={em_dept_section} />
             }
         </Fragment>
     )

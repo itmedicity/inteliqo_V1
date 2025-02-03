@@ -3,9 +3,9 @@ import Table from '@mui/joy/Table';
 import { Box, Paper, } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { addMonths, eachDayOfInterval, endOfMonth, format, startOfMonth } from 'date-fns';
+import { addDays, addMonths, eachDayOfInterval, endOfMonth, format, lastDayOfMonth, startOfMonth, subDays } from 'date-fns';
 import moment from 'moment';
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-toastify';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
@@ -18,6 +18,10 @@ import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import LeaveDescription from './LeaveDescription';
 import { Fragment } from 'react';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
+import { useCallback } from 'react';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import { attendanceViewPunchFunc } from '../PunchMarkingHR/punchMarkingHrFunc';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const isOdd = (number) => number % 2 !== 0
 
@@ -38,41 +42,46 @@ const AllView = ({ em_id }) => {
     const [tableArray, settableArray] = useState([])
     const [daysNum, setdaysNum] = useState([])
     const [daysStr, setdaysStr] = useState([])
+    const [all, setall] = useState(false)
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     const state = useSelector((state) => state?.getCommonSettings)
     const { salary_above } = state;
+    const deptSect = useSelector((state) => state?.getDeptSectList?.deptSectionList)
+    const departments = useSelector((state) => state?.getdept?.departmentlist)
+    const allDept = useMemo(() => departments, [departments])
+    const allSection = useMemo(() => deptSect, [deptSect])
+    const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
+    const commonSetting = useMemo(() => state, [state])
 
-    const getData = async () => {
-        if (deptSection === 0) {
-            warningNofity("Please Select Any Department Section")
-        } else {
+
+    const getData = useCallback(async () => {
+
+        setOpenBkDrop(true)
+        if (all === true) {
+            //code for all employees
+            const deptArray = allDept?.map(val => val.dept_id)
+            const sectArray = allSection?.map(val => val.sect_id)
             const getEmpData = {
-                dept_id: dept,
-                sect_id: deptSection,
+                em_department: deptArray,
+                em_dept_section: sectArray,
             }
-            const result = await axioslogin.post('/empmast/getEmpDet', getEmpData)
-            const { success, data, } = result.data
-            // console.log(result.data)
-            if (success === 1 && data?.length > 0) {
-                const arr = data && data?.map(val => val.em_no)
+            const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
+            const { succes, dataa: employeeData } = result1.data
+            if (succes === 1) {
+                const arr = employeeData?.map((val) => val.em_no)
                 const postdata = {
                     em_no: arr,
                     from: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD'),
                     to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
                 }
-                // let empData = data;
                 const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
-                // console.log(result.data)
                 const { success, data: punchMasteData } = result.data
                 if (success === 1) {
                     const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) })
                         ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
 
-                    // console.log(dateRange)
-                    // console.log(punchMasteData)
-
                     const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
-                        // console.log(el);
                         const empArray = punchMasteData?.filter(e => e.em_no === el)
                         let emName = empArray?.find(e => e.em_no === el).em_name;
                         let emNo = empArray?.find(e => e.em_no === el).em_no;
@@ -80,15 +89,12 @@ const AllView = ({ em_id }) => {
                         let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
                         let unauthorized = empArray?.find(e => e.em_no === el).unauthorized_absent_status;
 
-                        // console.log(dateRange)
-                        // console.log(grossSalary)
                         return {
                             em_no: el,
                             emName: emName,
                             dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
                             daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
                             punchMaster: dateRange?.map((e) => {
-                                // console.log(e)
                                 return {
                                     attDate: e,
                                     duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
@@ -125,15 +131,233 @@ const AllView = ({ em_id }) => {
                     settableArray(resultss)
                     setdaysStr(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
                     setdaysNum(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
+                    setOpenBkDrop(false)
                 } else {
                     infoNofity("No Punch Details")
+                    setOpenBkDrop(false)
                 }
             } else {
-                infoNofity("No employee Under given Condition")
+                warningNofity("Error While Getting Employees")
+                setOpenBkDrop(false)
+            }
+
+        } else {
+
+            //code for selected department and department section
+            if (deptSection === 0) {
+                warningNofity("Please Select Any Department Section")
+            } else {
+
+                //CHECK PUNCHMARKING HR COMPLETED WITH THE SELECTED DATE
+                const monthStartDate = format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
+                const postData = {
+                    month: monthStartDate,
+                    section: deptSection
+                }
+                const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
+                const { success, data } = checkPunchMarkingHr.data
+                if (success === 0 || success === 1) {
+                    const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
+                    const lastDay_month = format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd')
+                    if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
+                        const getEmpData = {
+                            em_dept_section: deptSection,
+                        }
+                        const result1 = await axioslogin.post("/attendCal/emplist/show", getEmpData);
+                        const { success, data } = result1.data
+                        if (success === 1) {
+                            const arr = data?.map((val) => val.em_no)
+                            const postdata = {
+                                em_no: arr,
+                                from: moment(startOfMonth(new Date(value))).format('YYYY-MM-DD'),
+                                to: moment(endOfMonth(new Date(value))).format('YYYY-MM-DD')
+                            }
+                            const result = await axioslogin.post("/payrollprocess/getPunchmastData", postdata);
+                            const { success, data: punchMasteData } = result.data
+                            if (success === 1) {
+                                const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) })
+                                    ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
+                                const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
+                                    const empArray = punchMasteData?.filter(e => e.em_no === el)
+                                    let emName = empArray?.find(e => e.em_no === el).em_name;
+                                    let emNo = empArray?.find(e => e.em_no === el).em_no;
+                                    let emId = empArray?.find(e => e.em_no === el).emp_id;
+                                    let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
+                                    let unauthorized = empArray?.find(e => e.em_no === el).unauthorized_absent_status;
+
+                                    return {
+                                        em_no: el,
+                                        emName: emName,
+                                        dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
+                                        daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
+                                        punchMaster: dateRange?.map((e) => {
+                                            return {
+                                                attDate: e,
+                                                duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
+                                                duty_status: empArray?.find(em => em.duty_day === e)?.duty_status ?? 0,
+                                                em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
+                                                em_no: empArray?.find(em => em.duty_day === e)?.em_no ?? emNo,
+                                                emp_id: empArray?.find(em => em.duty_day === e)?.emp_id ?? emId,
+                                                hld_desc: empArray?.find(em => em.duty_day === e)?.hld_desc ?? null,
+                                                holiday_slno: empArray?.find(em => em.duty_day === e)?.holiday_slno ?? 0,
+                                                holiday_status: empArray?.find(em => em.duty_day === e)?.holiday_status ?? 0,
+                                                leave_status: empArray?.find(em => em.duty_day === e)?.leave_status ?? 0,
+                                                duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
+                                                lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+                                                manual_request_flag: empArray?.find(em => em.duty_day === e)?.manual_request_flag ?? 0,
+                                            }
+                                        }),
+                                        totalDays: dateRange?.length,
+                                        totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC" || el.lvereq_desc === "OBS").length ?? 0,
+                                        totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
+                                        totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF" || el.lvereq_desc === "DOFF").length ?? 0,
+                                        totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
+                                        totalHD: empArray?.filter(el => el.lvereq_desc === "CHD" || el.lvereq_desc === "HD" || el.lvereq_desc === "EGHD"
+                                            || el.lvereq_desc === 'HDSL' || el.lvereq_desc === 'HDCL').length ?? 0,
+                                        totalA: empArray?.filter(el => el.lvereq_desc === "A").length ?? 0,
+                                        totalLV: empArray?.filter(el => el.lvereq_desc === "COFF" || el.lvereq_desc === "CL" || el.lvereq_desc === "EL" || el.lvereq_desc === "SL").length ?? 0,
+                                        totalHDL: (empArray?.filter(el => el.lvereq_desc === "HCL").length ?? 0) * 1,
+                                        totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
+                                        totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
+                                        totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
+                                        totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "HP").length ?? 0),
+                                        unauthorized: unauthorized
+                                    }
+                                })
+                                settableArray(resultss)
+                                setdaysStr(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
+                                setdaysNum(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
+                                setOpenBkDrop(false)
+                            } else {
+                                warningNofity("No Punch Details")
+                                setOpenBkDrop(false)
+                            }
+                        } else {
+                            warningNofity("No employee Under given Condition")
+                            setOpenBkDrop(false)
+                        }
+                    } else {
+
+                        const getEmpData = {
+                            em_dept_section: deptSection,
+                        }
+                        const result1 = await axioslogin.post("/attendCal/emplist/show", getEmpData);
+                        const { success, data: employeeSalary } = result1.data
+                        if (success === 1) {
+                            const arr = employeeSalary?.map((val, index) => val.em_no)
+                            const today = format(new Date(), 'yyyy-MM-dd');
+                            const selectedDate = format(new Date(value), 'yyyy-MM-dd');
+                            const todayStatus = selectedDate <= today ? true : false; // selected date less than today date
+                            const postData_getPunchData = {
+                                preFromDate: format(subDays(new Date(lastUpdateDate), 2), 'yyyy-MM-dd 00:00:00'),
+                                preToDate: todayStatus === true ? format(addDays(lastDayOfMonth(new Date(value)), 1), 'yyyy-MM-dd 23:59:59') : format(addDays(new Date(value), 1), 'yyyy-MM-dd 23:59:59'),
+                                fromDate: format(new Date(lastUpdateDate), 'yyyy-MM-dd'),
+                                toDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                                fromDate_dutyPlan: format(new Date(lastUpdateDate), 'yyyy-MM-dd'),
+                                toDate_dutyPlan: todayStatus === true ? format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(value), 'yyyy-MM-dd'),
+                                fromDate_punchMaster: format(subDays(new Date(lastUpdateDate), 0), 'yyyy-MM-dd'),
+                                toDate_punchMaster: todayStatus === true ? format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(value), 'yyyy-MM-dd'),
+                                section: deptSection,
+                                empList: arr,
+                                loggedEmp: em_id,
+                                frDate: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                                trDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                            }
+                            const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
+                            const { su, result_data } = punch_data.data;
+                            if (su === 1) {
+                                const punchaData = result_data;
+                                const empList = arr;
+                                const result = await attendanceViewPunchFunc(
+                                    postData_getPunchData,
+                                    punchaData,
+                                    empList,
+                                    shiftInformation,
+                                    commonSetting,
+                                    employeeSalary
+                                )
+                                const { status, message, errorMessage, punchMastData } = result;
+
+                                if (status === 1) {
+                                    const dateRange = eachDayOfInterval({ start: new Date(startOfMonth(new Date(value))), end: new Date(endOfMonth(new Date(value))) })
+                                        ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
+
+                                    const resultss = [...new Set(punchMastData?.map(e => e.em_no))]?.map((el) => {
+                                        const empArray = punchMastData?.filter(e => e.em_no === el)
+                                        let emName = empArray?.find(e => e.em_no === el).em_name;
+                                        let emNo = empArray?.find(e => e.em_no === el).em_no;
+                                        let emId = empArray?.find(e => e.em_no === el).emp_id;
+                                        let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
+                                        let unauthorized = empArray?.find(e => e.em_no === el).unauthorized_absent_status;
+
+                                        return {
+                                            em_no: el,
+                                            emName: emName,
+                                            dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
+                                            daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
+                                            punchMaster: dateRange?.map((e) => {
+                                                return {
+                                                    attDate: e,
+                                                    duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
+                                                    duty_status: empArray?.find(em => em.duty_day === e)?.duty_status ?? 0,
+                                                    em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
+                                                    em_no: empArray?.find(em => em.duty_day === e)?.em_no ?? emNo,
+                                                    emp_id: empArray?.find(em => em.duty_day === e)?.emp_id ?? emId,
+                                                    hld_desc: empArray?.find(em => em.duty_day === e)?.hld_desc ?? null,
+                                                    holiday_slno: empArray?.find(em => em.duty_day === e)?.holiday_slno ?? 0,
+                                                    holiday_status: empArray?.find(em => em.duty_day === e)?.holiday_status ?? 0,
+                                                    leave_status: empArray?.find(em => em.duty_day === e)?.leave_status ?? 0,
+                                                    duty_desc: empArray?.find(em => em.duty_day === e)?.duty_desc ?? 'A',
+                                                    lvereq_desc: empArray?.find(em => em.duty_day === e)?.lvereq_desc ?? 'A',
+                                                    manual_request_flag: empArray?.find(em => em.duty_day === e)?.manual_request_flag ?? 0,
+                                                }
+                                            }),
+                                            totalDays: dateRange?.length,
+                                            totalP: empArray?.filter(el => el.lvereq_desc === "P" || el.lvereq_desc === "OHP" || el.lvereq_desc === "ODP" || el.lvereq_desc === "LC" || el.lvereq_desc === "OBS").length ?? 0,
+                                            totalWOFF: empArray?.filter(el => el.lvereq_desc === "WOFF").length ?? 0,
+                                            totalNOFF: empArray?.filter(el => el.lvereq_desc === "NOFF" || el.lvereq_desc === "DOFF").length ?? 0,
+                                            totalLC: empArray?.filter(el => el.lvereq_desc === "LC").length ?? 0,
+                                            totalHD: empArray?.filter(el => el.lvereq_desc === "CHD" || el.lvereq_desc === "HD" || el.lvereq_desc === "EGHD"
+                                                || el.lvereq_desc === 'HDSL' || el.lvereq_desc === 'HDCL').length ?? 0,
+                                            totalA: empArray?.filter(el => el.lvereq_desc === "A").length ?? 0,
+                                            totalLV: empArray?.filter(el => el.lvereq_desc === "COFF" || el.lvereq_desc === "CL" || el.lvereq_desc === "EL" || el.lvereq_desc === "SL").length ?? 0,
+                                            totalHDL: (empArray?.filter(el => el.lvereq_desc === "HCL").length ?? 0) * 1,
+                                            totaESI: empArray?.filter(el => el.lvereq_desc === "ESI").length ?? 0,
+                                            totaLWP: empArray?.filter(el => el.lvereq_desc === "LWP").length ?? 0,
+                                            totaH: empArray?.filter(el => el.lvereq_desc === "H").length ?? 0,
+                                            totaHP: grossSalary <= salary_above ? (empArray?.filter(el => el.lvereq_desc === "HP").length ?? 0) * 2 : (empArray?.filter(el => el.duty_desc === "HP").length ?? 0),
+                                            unauthorized: unauthorized
+                                            // totalCalcDay:
+                                        }
+                                    })
+
+                                    settableArray(resultss)
+                                    setdaysStr(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
+                                    setdaysNum(resultss?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
+                                    setOpenBkDrop(false)
+
+                                } else {
+                                    warningNofity(message, errorMessage)
+                                    setOpenBkDrop(false)
+                                }
+                            } else {
+                                warningNofity("Error getting punch Data From DB")
+                                setOpenBkDrop(false)
+                            }
+
+                        } else {
+                            warningNofity("No employee Under given Condition")
+                        }
+                    }
+                } else {
+                    warningNofity("Error getting PunchMarkingHR ")
+                    setOpenBkDrop(false)
+                }
             }
         }
-    }
 
+    }, [all, allDept, allSection, deptSection, commonSetting, em_id, shiftInformation, value,
+        salary_above])
 
 
     const getColor = (val) => val === 'A' ? '#ff5630' : val === 'ESI' ? '#ff5630' : val === 'LWP' ? '#ff5630' : val === 'LC' ? '#00b8d9' : val === 'EG' ? '#00b8d9' : val === 'HD' ? '#bf7d19' : '#344767'
@@ -170,10 +394,9 @@ const AllView = ({ em_id }) => {
         { lvename: 'DOFF', color: 'primary', desc: "Duty Off" },
     ]
 
-    // console.log(tableArray);
-
     return (
         <CustomLayout title="Attendance View" displayClose={true} >
+            <CustomBackDrop open={openBkDrop} text="Please wait !. " />
             <ToastContainer />
             <Paper sx={{ display: 'flex', height: screenInnerHeight * 83 / 100, flexDirection: 'column', width: '100%' }}>
                 <Paper variant='outlined' sx={{ display: "flex", alignItems: "center", border: 0, py: 0.5 }}  >
@@ -206,14 +429,22 @@ const AllView = ({ em_id }) => {
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, px: 0.5 }, flexDirection: 'row' }} >
                         <DepartmentSectionRedx getSection={setDeptSection} />
                     </Box>
+                    <Box sx={{ flex: 1, px: 1, py: 0.5 }} >
+                        <JoyCheckbox
+                            label='ALL'
+                            name="all"
+                            checked={all}
+                            onchange={(e) => setall(e.target.checked)}
+                        />
+                    </Box>
                     <Box sx={{ display: 'flex', flex: { xs: 0, sm: 0, md: 0, lg: 0, xl: 1, }, pl: 0.5 }} >
-                        {/* <CssVarsProvider> */}
+
                         {/* <Tooltip title="Process" followCursor placement='top' arrow > */}
                         <Button aria-label="Like" variant="outlined" color='success' onClick={getData} >
                             <PublishedWithChangesIcon />
                         </Button>
                         {/* </Tooltip> */}
-                        {/* </CssVarsProvider> */}
+
                     </Box>
                     <Box sx={{ flex: 1, px: 0.5 }} >
                     </Box>

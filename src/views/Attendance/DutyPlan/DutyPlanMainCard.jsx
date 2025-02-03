@@ -138,7 +138,7 @@ const DutyPlanMainCard = () => {
                 <DutyPlanTopCard />
                 <Paper square variant="outlined" sx={{ display: 'flex', p: 0.5, flex: 1 }}>
                     {/* employee Name Section */}
-                    <Box sx={{ minWidth: 200 }}>
+                    <Box sx={{ minWidth: 400 }}>
                         <TableContainer>
                             <Table size="small">
                                 <TableHead>
@@ -186,7 +186,8 @@ const DutyPlanMainCard = () => {
                                                         p: 0.2,
                                                         fontWeight: 'normal',
                                                         textOverflow: 'ellipsis',
-                                                        width: 100,
+                                                        width: '100%',
+                                                        // bgcolor: 'lightcoral'
                                                     }}
                                                 >
                                                     <Typography variant="body2" gutterBottom noWrap={true}>

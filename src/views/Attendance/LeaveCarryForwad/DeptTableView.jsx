@@ -162,9 +162,9 @@ const DeptTableView = ({ row, initialOpen, handleChange, selectedYear, leaveType
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </td>
-                <td scope="row">{row.sect_name}</td>
-                <td scope="row">{row.dept_name}</td>
-                <td scope="row"> <Box sx={{ display: 'flex' }} >
+                <th scope="row">{row.sect_name}</th>
+                <th scope="row">{row.dept_name}</th>
+                <th scope="row"> <Box sx={{ display: 'flex' }} >
                     <Chip
                         color="success"
                         onClick={(e) => insertLeave(e, row)}
@@ -172,7 +172,7 @@ const DeptTableView = ({ row, initialOpen, handleChange, selectedYear, leaveType
                         variant="outlined"
                     >Insert Leave</Chip>
                 </Box>
-                </td>
+                </th>
             </tr>
             <tr>
                 <td style={{ height: 0, padding: 0 }} colSpan={6}>
