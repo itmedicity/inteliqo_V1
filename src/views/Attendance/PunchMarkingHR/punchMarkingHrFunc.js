@@ -694,3 +694,195 @@ export const punchInOutChecking = async (shiftMergedPunchMaster, employeeBasedPu
         shiftOutEnd: checkOutEndTime
     }
 }
+
+export const attendanceViewPunchFunc = async (
+    postData_getPunchData,
+    punchaData, //PUNCH DATA
+    empList, // EMPLOYEE LIST SECTION WISE
+    shiftInformation, // SHIFT INFORMATION
+    commonSettings, // COMMON SETTINGS
+    holidayList, // HOLIDAY LIST
+    empSalary // EMPLOYEE_SALARY
+) => {
+    const {
+        cmmn_early_out, // Early going time interval
+        cmmn_grace_period, // common grace period for late in time
+        cmmn_late_in, //Maximum Late in Time for punch in after that direct HALF DAY 
+        salary_above, //Salary limit for calculating the holiday double wages
+        week_off_day, // week off SHIFT ID
+        notapplicable_shift, //not applicable SHIFT ID
+        default_shift, //default SHIFT ID
+        noff, // night off SHIFT ID,
+        max_late_day_count,
+        halfday_time_count
+    } = commonSettings; //COMMON SETTING
+    //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
+    const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
+    const { succes, shiftdetail } = getDutyPlan.data;
+    if (succes === 1 && shiftdetail?.length > 0) {
+        const dutyplanInfo = shiftdetail; //DUTY PLAN
+        const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
+        const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
+        const { success, planData } = punch_master_data.data;
+        if (success === 1 && planData?.length > 0) {
+            const punchMasterData = planData; //PUNCHMSTER DATA
+            return Promise.allSettled(
+                punchMasterData?.map(async (data, index) => {
+                    const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
+                    const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+                    const shiftMergedPunchMaster = {
+                        ...data,
+                        shft_chkin_start: sortedShiftData?.shft_chkin_start,
+                        shft_chkin_end: sortedShiftData?.shft_chkin_end,
+                        shft_chkout_start: sortedShiftData?.shft_chkout_start,
+                        shft_chkout_end: sortedShiftData?.shft_chkout_end,
+                        shft_cross_day: sortedShiftData?.shft_cross_day,
+                        gross_salary: sortedSalaryData?.gross_salary,
+                        earlyGoingMaxIntervl: cmmn_early_out,
+                        gracePeriodInTime: cmmn_grace_period,
+                        maximumLateInTime: cmmn_late_in,
+                        salaryLimit: salary_above,
+                        woff: week_off_day,
+                        naShift: notapplicable_shift,
+                        defaultShift: default_shift,
+                        noff: noff,
+                        holidayStatus: sortedShiftData?.holiday_status
+                    }
+                    const employeeBasedPunchData = punchaData?.filter((e) => e.emp_code == data.em_no)
+                    //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
+                    return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
+                })
+            ).then((data) => {
+                const punchMasterMappedData = data?.map((e) => e.value)
+                return Promise.allSettled(
+                    punchMasterMappedData?.map(async (val) => {
+                        const holidayStatus = val.holiday_status;
+                        const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
+                        const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
+
+                        const shift_in = new Date(val.shift_in);
+                        const shift_out = new Date(val.shift_out);
+
+                        //SALARY LINMIT
+                        const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
+
+                        const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+
+                        const getAttendanceStatus = await getAttendanceCalculation(
+                            punch_In,
+                            shift_in,
+                            punch_out,
+                            shift_out,
+                            cmmn_grace_period,
+                            getLateInTime,
+                            holidayStatus,
+                            val.shift_id,
+                            val.defaultShift,
+                            val.naShift,
+                            val.noff,
+                            val.woff,
+                            salaryLimit,
+                            val.maximumLateInTime,
+                            halfday_time_count
+                        )
+                        return {
+                            punch_slno: val.punch_slno,
+                            punch_in: val.punch_in,
+                            punch_out: val.punch_out,
+                            hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                            late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                            early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
+                            duty_status: getAttendanceStatus?.duty_status,
+                            holiday_status: val.holiday_status,
+                            leave_status: val.leave_status,
+                            lvereq_desc: getAttendanceStatus?.lvereq_desc,
+                            duty_desc: getAttendanceStatus?.duty_desc,
+                            lve_tble_updation_flag: val.lve_tble_updation_flag
+                        }
+                    })
+                ).then(async (element) => {
+                    // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
+                    const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
+
+                    const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedData);
+                    const { success, message } = updatePunchMaster.data;
+                    if (success === 1) {
+
+                        const punch_data = await axioslogin.post("/attendCal/getPunchReportLCCount/", postData_getPunchData); // added on 27/06/2024 10:00 PM (Ajith)
+                        const { success: lcSuccess, data: lcData } = punch_data.data;
+
+                        if (lcSuccess === 1 && lcData !== null && lcData !== undefined && lcData.length > 0) {
+
+                            const filterEMNO = [...new Set(lcData?.map((e) => e.em_no))]
+                            // calculate and update the calculated LOP count 
+                            let lcCount = 0;
+                            const filterLcData = filterEMNO
+                                ?.map((el) => {
+                                    return {
+                                        emNo: el,
+                                        lcArray: lcData?.filter((e) => e.em_no === el)
+                                    }
+                                })
+                                ?.filter((e) => e.lcArray?.length > 3)
+                                ?.map((val) => {
+                                    const newArray = {
+                                        emno: val.emNo,
+                                        punMasterArray: val.lcArray?.map(item => {
+                                            if (item.duty_desc === "LC" && lcCount < max_late_day_count) {
+                                                lcCount++;
+                                                return item;
+                                            } else if (item.duty_desc === "LC" && lcCount >= max_late_day_count) {
+                                                return { ...item, lvereq_desc: "HD" };
+                                            } else {
+                                                return item;
+                                            }
+                                        })
+                                    }
+                                    lcCount = 0
+                                    return newArray
+                                })
+                                ?.map((e) => e.punMasterArray)
+                                ?.flat()
+                                ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
+                                ?.map((e) => e.punch_slno)
+
+                            //console.log(filterLcData)
+                            //UPDATE IN TO PUNCH MASTER TABLE 
+                            if (filterLcData !== null && filterLcData !== undefined && filterLcData?.length > 0) {
+                                const result = await axioslogin.post("/attendCal/updateLCPunchMaster/", filterLcData); // added on 27/06/2024 10:00 PM (Ajith)
+                                const { success } = result.data;
+                                if (success === 1) {
+                                    const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
+                                    const { success, planData } = punch_master_data.data;
+                                    if (success === 1) {
+                                        return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', punchMastData: planData }
+                                    } else {
+                                        return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message, punchMastData: [] }
+                                    }
+                                } else {
+                                    return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
+                                }
+                            }
+
+                        } else {
+                            const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
+                            const { success, planData } = punch_master_data.data;
+                            if (success === 1) {
+                                return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', punchMastData: planData }
+                            } else {
+                                return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message, punchMastData: [] }
+                            }
+                        }
+                    } else {
+                        return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
+                    }
+                })
+                // return { status: 1, message: "result", data: e }
+            })
+        } else {
+            return { status: 0, message: "Punch Master Data Not Found ! contact IT", errorMessage: '', punchMastData: [] }
+        }
+    } else {
+        return { status: 0, message: "Duty Plan Not Done! contact IT", errorMessage: '', punchMastData: [] }
+    }
+}

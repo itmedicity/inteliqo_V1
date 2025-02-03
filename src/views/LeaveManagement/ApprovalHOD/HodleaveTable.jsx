@@ -150,7 +150,7 @@ const HodleaveTable = ({ levtpevalue, deptSect, setcount }) => {
                         </Tooltip>
                     </IconButton>
                 }
-            }
+            }, minWidth: 200,
 
         },
     ])

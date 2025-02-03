@@ -1,7 +1,7 @@
 import { Box, Paper } from '@mui/material'
 import React, { Fragment, useMemo, useState, memo, useCallback } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { succesNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { succesNofity, infoNofity } from 'src/views/CommonCode/Commonfunc'
 import moment from 'moment'
 import { format } from 'date-fns'
 import { Button, CssVarsProvider, Input } from '@mui/joy'

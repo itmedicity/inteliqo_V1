@@ -289,8 +289,8 @@ const EmployeeRecordEdit = () => {
             em_doc_type: doctortype === true ? doct : null,
             em_category: category,
             em_prob_end_date: moment(endOfMonth(new Date(probationendDate))).format('YYYY-MM-DD'),
-            em_conf_end_date: moment(cont_gracedate).format('YYYY-MM-DD'),
-            em_retirement_date: moment(retirementyear).format('YYYY-MM-DD'),
+            em_conf_end_date: moment(endOfMonth(new Date(cont_gracedate))).format('YYYY-MM-DD'),
+            em_retirement_date: moment(endOfMonth(new Date(retirementyear))).format('YYYY-MM-DD'),
             em_contract_end_date: moment(endOfMonth(new Date(cont_perioddate))).format('YYYY-MM-DD'),
             em_status: empstatus === true ? 1 : 0,
             edit_user: employeeNumber(),
@@ -314,13 +314,14 @@ const EmployeeRecordEdit = () => {
             doctor_status: doctor === true ? 1 : 0,
             em_no: parseInt(empno),
             holiday_type: leaveprocesstype,
+            actual_doj: oldDoj === dateofjoining ? oldDoj : dateofjoining
         }
 
     }, [empno, salutation, empname, gender, dateofbirth, branch, dept, deptSect, institute, doct, region2,
         cont_gracedate, dateofjoining, category, retirementyear, cont_perioddate, permantPin, region1,
         yearage, mobileno, landphone, email, designation, bloodgrp, presentPin, mnthage, dayge, religion,
         Salary, empstatus, addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, doctortype,
-        probationendDate, prob_status, contractflag, clinictype, doctor, leaveprocesstype])
+        probationendDate, prob_status, contractflag, clinictype, doctor, leaveprocesstype, oldDoj])
 
     const clearForm = useCallback(() => {
         setEmpno('')

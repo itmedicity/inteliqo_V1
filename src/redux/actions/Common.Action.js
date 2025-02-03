@@ -22,6 +22,27 @@ export const getDepartmentSection = (id) => async (dispatch) => {
     }
 }
 
+
+//export const getDeptWiseSectionList = (id) => async (dispatch) => {
+//     const result = await axioslogin.get(`/section/sect/${id}`);
+//     const { success, data } = await result.data;
+//     if (success === 1) {
+//         dispatch({ type: FETCH_DEPT_SECTION_DETL, payload: data })
+//     } else {
+//         dispatch({ type: FETCH_DEPT_SECTION_DETL, payload: [] })
+//     }
+// }
+export const getDeptWiseSectionList = async (id) => {
+    return await axioslogin.get(`/section/sect/${id}`).then((res) => {
+        const { success, data } = res.data
+        if (success === 1) {
+            return data
+        } else {
+            return []
+        }
+    })
+}
+
 export const getEmployeeBasedSection = (postData) => async (dispatch) => {
     const result = await axioslogin.post('/empmast/getempName', postData)
     const { data, success } = await result.data;

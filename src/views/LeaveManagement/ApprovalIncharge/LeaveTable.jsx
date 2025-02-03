@@ -142,7 +142,7 @@ const LeaveTable = ({ levtpevalue, deptSect, setcount }) => {
                         </Tooltip>
                     </IconButton>
                 }
-            }
+            }, minWidth: 200
 
         },
     ])
