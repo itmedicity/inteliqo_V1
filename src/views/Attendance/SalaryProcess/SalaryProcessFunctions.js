@@ -5,7 +5,7 @@ export const employeeEarnDeduction = async (getEmpData) => {
     let dataObj = { status: 0, data: [] }
     const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
     const { data, success } = result1.data
-    if (success === 1) {
+    if (success === 1 || success === 2) {
         return { ...dataObj, status: 1, data: data }
     } else {
         return { ...dataObj, status: 0, data: [] }
