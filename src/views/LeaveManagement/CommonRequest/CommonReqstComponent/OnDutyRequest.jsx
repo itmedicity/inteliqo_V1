@@ -103,29 +103,6 @@ const OnDutyRequest = () => {
 
     }, [em_id, count])
 
-    // useEffect(() => {
-    //     const getdepartmentShift = async () => {
-    //         if (em_department !== 0 && em_dept_section !== 0) {
-    //             const postData = {
-    //                 dept_id: em_department,
-    //                 sect_id: em_dept_section
-    //             }
-    //             const result = await axioslogin.post('/departmentshift/shift', postData)
-    //             const { success, data, message } = await result.data;
-    //             if (success === 1) {
-    //                 const { shft_code } = data[0];
-    //                 const obj = JSON.parse(shft_code)
-    //                 setDeptShift(obj);
-    //             } else if (success === 0) {
-    //                 warningNofity(message);
-    //             } else {
-    //                 errorNofity(message)
-    //             }
-    //         }
-    //     }
-    //     getdepartmentShift();
-    // }, [em_department, em_dept_section])
-
     const Displaydata = useCallback(async () => {
 
         //dataes difference count for checking the the duyt plan is done or not
@@ -165,8 +142,6 @@ const OnDutyRequest = () => {
                     punch_out: shiftOut,
                 }
             })
-
-            console.log(arr);
             setDates(arr)
         }
         else {
@@ -175,10 +150,10 @@ const OnDutyRequest = () => {
         }
     }, [fromDate, toDate, em_no])
 
-    const getoutvalue = async (e, val) => {
-        let arr = dates.map((item) => item.date === val.date ? { ...item, selected: e } : item)
+    const getoutvalue = useCallback(async (e, val) => {
+        let arr = dates.map((item) => item.duty_day === val.duty_day ? { ...item, selected: e } : item)
         setDates(arr)
-    }
+    }, [dates])
 
     const Submitrequest = useCallback(async () => {
 
@@ -459,7 +434,10 @@ const OnDutyRequest = () => {
                                         <td style={{ textAlign: 'center', }}>
                                             <Box>
                                                 <Checkbox
-                                                    checked={val?.selected || false}
+                                                    disabled={val?.leave_status === 1 ? true : val?.lvereq_desc === 'H' ? true
+                                                        : val?.lvereq_desc === 'P' ? true : val?.lvereq_desc === 'HP' ? true
+                                                            : val?.lvereq_desc === 'WOFF' ? true : false}
+                                                    checked={val?.selected === false ? false : true}
                                                     onChange={(e) => {
                                                         getoutvalue(e.target.checked, val)
                                                     }}
