@@ -863,6 +863,15 @@ export const attendanceViewPunchFunc = async (
                                     return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
                                 }
                             }
+                            else {
+                                const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
+                                const { success, planData } = punch_master_data.data;
+                                if (success === 1) {
+                                    return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', punchMastData: planData }
+                                } else {
+                                    return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message, punchMastData: [] }
+                                }
+                            }
 
                         } else {
                             const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
