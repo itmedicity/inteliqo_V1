@@ -153,3 +153,10 @@ export const colorList = ["#63B598", "#CE7D78", "#EA9E70", "#A48A9E", "#C6E1E8",
 
 
 export const screenInnerHeight = window.innerHeight
+
+export const employeeIdNumber = () => {
+
+    const userinfo = sessionStorage.getItem('userDetl');
+    const employeNumber = userinfo ? JSON.parse(sessionStorage.getItem('userDetl')).empid : 0;
+    return employeNumber;
+};

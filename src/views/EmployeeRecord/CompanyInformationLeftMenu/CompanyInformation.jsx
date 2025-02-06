@@ -11,6 +11,7 @@ import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/Department
 import { useDispatch } from 'react-redux';
 import { setDepartment } from 'src/redux/actions/Department.action';
 import { useCallback } from 'react';
+import { setCommonSetting } from 'src/redux/actions/Common.Action';
 
 const CompanyPage = React.lazy(() => import('./CompanyInfoPage'))
 
@@ -19,6 +20,7 @@ const CompanyInformation = () => {
 
     useEffect(() => {
         dispatch(setDepartment());
+        dispatch(setCommonSetting())
     }, [dispatch])
 
     const [dept, setDept] = useState(0)

@@ -73,7 +73,7 @@ const StaffAttendedMainpage = () => {
         setMasterGroupStatus(groupStatus)
         dispatch(setCommonSetting());
         dispatch(setShiftDetails())
-    }, [groupStatus])
+    }, [groupStatus, dispatch])
 
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
@@ -173,6 +173,7 @@ const StaffAttendedMainpage = () => {
     }, []);
 
     const SearchingProcess = useCallback(async () => {
+        setDropOpen(true)
         if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && topic !== 0 && selectedMonth !== '' && AllEmpList === false) {
             const obj = {
                 deptID: requestUser?.deptID,
@@ -212,17 +213,21 @@ const StaffAttendedMainpage = () => {
 
                     // Set the mapped data to the state
                     SetEmployeeData(mappedData);
+                    setDropOpen(false)
                     if (employeeID !== 0) {
                         const filterWithEmNo = mappedData?.filter((val) => val.em_no === employeeID)
                         SetEmployeeData(filterWithEmNo);
+                        setDropOpen(false)
                     }
                 } else {
                     warningNofity("No Records Found");
                     SetEmployeeData([]); // Clear data when no records are found
+                    setDropOpen(false)
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 SetEmployeeData([]); // Clear data on error
+                setDropOpen(false)
             }
         }
         else if (requestUser?.deptID === 0 && requestUser?.sectionID === 0 && topic !== 0 && selectedMonth !== '' && AllEmpList === true) {
@@ -262,13 +267,16 @@ const StaffAttendedMainpage = () => {
 
                     // Set the mapped data to the state
                     SetEmployeeData(mappedData);
+                    setDropOpen(false)
                 } else {
                     warningNofity("No Records Found");
                     SetEmployeeData([]); // Clear data when no records are found
+                    setDropOpen(false)
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 SetEmployeeData([]); // Clear data on error
+                setDropOpen(false)
             }
         }
         else {

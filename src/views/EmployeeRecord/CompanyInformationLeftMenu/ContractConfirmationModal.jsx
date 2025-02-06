@@ -1,6 +1,7 @@
 import { Box, Button, Modal, ModalClose, ModalDialog, Typography } from '@mui/joy'
 import { addDays, format } from 'date-fns';
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
@@ -9,17 +10,22 @@ const ContractConfirmationModal = ({ open, setOpen, data, count, setCount }) => 
 
     const history = useHistory()
 
+    const state = useSelector((state) => state?.getCommonSettings,)
+    const commonSetting = useMemo(() => state, [state])
+    const { external_trainee } = commonSetting;
+
     const submitRequest = useCallback(async () => {
 
         const postData = {
             em_id: data?.em_id,
             em_no: data?.em_no,
-            em_cont_start: data?.category_ineffect_date,
-            em_cont_end: format(addDays(new Date(data?.category_ineffect_date), 365), 'yyyy-MM-dd'),
+            em_cont_start: (external_trainee === data?.com_category) && (data?.com_category !== data?.com_category_new) ? data?.category_ineffect_date : data?.em_doj,
+            em_cont_end: (external_trainee === data?.com_category) && (data?.com_category !== data?.com_category_new) ? format(addDays(new Date(data?.category_ineffect_date), 365), 'yyyy-MM-dd') : format(addDays(new Date(data?.em_doj), 365), 'yyyy-MM-dd'),
             em_prob_end_date: '2000-01-31',
             em_conf_end_date: data?.category_ineffect_date,
             status: 0
         }
+
         const result = await axioslogin.post('/empmast/newContract/cateChange', data)
         const { message, success } = result.data;
         if (success === 1) {
@@ -38,7 +44,7 @@ const ContractConfirmationModal = ({ open, setOpen, data, count, setCount }) => 
         } else {
             infoNofity(message)
         }
-    }, [data, count, setCount, setOpen, history])
+    }, [data, count, setCount, setOpen, history, external_trainee])
 
 
     const closeRequest = useCallback(() => {

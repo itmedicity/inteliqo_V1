@@ -40,6 +40,7 @@ const JoyCategorySelect = ({ value, setValue }) => {
             }}
             size='md'
             variant='outlined'
+            sx={{ width: '100%' }}
         >
             <Option disabled value={0}> Select Category</Option>
             {

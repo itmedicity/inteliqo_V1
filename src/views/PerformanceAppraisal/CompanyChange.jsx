@@ -19,7 +19,7 @@ import JoyDepartmentSection from '../MuiComponents/JoyComponent/JoyDepartmentSec
 import JoyInstitutionSelect from '../MuiComponents/JoyComponent/JoyInstitutionSelect'
 import JoyDesignationSelect from '../MuiComponents/JoyComponent/JoyDesignationSelect'
 import moment from 'moment'
-import JoyCategorySelect from '../MuiComponents/JoyComponent/JoyCategorySelect'
+//import JoyCategorySelect from '../MuiComponents/JoyComponent/JoyCategorySelect'
 import SaveIcon from '@mui/icons-material/Save';
 import { setDepartment } from 'src/redux/actions/Department.action'
 import PermannetCategorySelect from '../MuiComponents/PermannetCategorySelect'

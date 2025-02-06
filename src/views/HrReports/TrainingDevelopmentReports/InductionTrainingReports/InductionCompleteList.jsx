@@ -14,7 +14,7 @@ import JoyTrainingSubtype from 'src/views/MuiComponents/JoyTrainingSubtype';
 
 const InductionCompleteList = () => {
 
-    const [flag, SetFlag] = useState(0);
+    // const [flag, SetFlag] = useState(0);
 
     //new
     const [subtype, SetSubType] = useState(0);
@@ -89,7 +89,7 @@ const InductionCompleteList = () => {
                 //     val.offline_mode === 1
                 // );
                 setCompletedList(obj);
-                SetFlag(1);
+                // SetFlag(1);
             } else {
                 warningNofity("No Employee Records Found For The Selected Period");
                 setCompletedList([]);
@@ -100,7 +100,7 @@ const InductionCompleteList = () => {
             setTodate('');
             warningNofity("Enter both 'From' and 'To' dates to initiate the search");
         }
-    }, [Fromdate, Todate, SetFlag, subtype]);
+    }, [Fromdate, Todate, subtype]);
 
     const [columnDef] = useState([
         { headerName: 'Sl.No', field: 'serialno', filter: true, width: 150 },
