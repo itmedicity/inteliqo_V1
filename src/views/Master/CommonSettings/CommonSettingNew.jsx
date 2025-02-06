@@ -18,6 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import GroupMultiSelect from './GroupMultiSelect'
+import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategorySelect'
 
 const CommonSettingNew = () => {
 
@@ -87,6 +88,7 @@ const CommonSettingNew = () => {
     const [areartype, setAreartype] = useState(0)
     const [earntype, setEarnType] = useState([])
     const [holidayLeave, setHolidayLeave] = useState(false)
+    const [category, setCategory] = useState(0)
 
     useEffect(() => {
         const getemptypedata = async () => {
@@ -119,7 +121,7 @@ const CommonSettingNew = () => {
                     areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno, doff, comp_day_count,
                     comp_hour_count, training_mastergroup, holiday_policy_count, weekoff_policy_max_count,
                     weekoff_policy_min_count, coff_min_working_hour, onobservation_days, hod_leave_day_count,
-                    holiday_leave_request, halfday_time_count, punch_taken_hour_count } = data[0]
+                    holiday_leave_request, halfday_time_count, punch_taken_hour_count, external_trainee } = data[0]
 
                 const frmData = {
                     slno: setting_slno,
@@ -177,6 +179,7 @@ const CommonSettingNew = () => {
                 setNoff(noff)
                 setDoff(doff)
                 setHolidayLeave(holiday_leave_request === 0 ? false : true)
+                setCategory(external_trainee === null ? 0 : external_trainee)
             }
             else if (success === 0) {
                 setValue(0)
@@ -237,7 +240,8 @@ const CommonSettingNew = () => {
             hod_leave_day_count: hod_leave_day_count,
             holiday_leave_request: holidayLeave === true ? 1 : 0,
             halfday_time_count: halfday_time_count,
-            punch_taken_hour_count: punch_taken_hour_count
+            punch_taken_hour_count: punch_taken_hour_count,
+            external_trainee: category
         }
     }, [commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -246,7 +250,7 @@ const CommonSettingNew = () => {
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
-        holidayLeave, halfday_time_count, punch_taken_hour_count])
+        holidayLeave, halfday_time_count, punch_taken_hour_count, category])
 
     //data to edit
     const postDataEdit = useMemo(() => {
@@ -298,7 +302,8 @@ const CommonSettingNew = () => {
             hod_leave_day_count: hod_leave_day_count,
             holiday_leave_request: holidayLeave === true ? 1 : 0,
             halfday_time_count: halfday_time_count,
-            punch_taken_hour_count: punch_taken_hour_count
+            punch_taken_hour_count: punch_taken_hour_count,
+            external_trainee: category
         }
     }, [slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -307,7 +312,7 @@ const CommonSettingNew = () => {
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
-        holidayLeave, halfday_time_count, punch_taken_hour_count])
+        holidayLeave, halfday_time_count, punch_taken_hour_count, category])
 
     //save
     const submitFormData = useCallback(async (e) => {
@@ -532,6 +537,7 @@ const CommonSettingNew = () => {
                                         <Typography level="body1">In Rupees</Typography>
                                     </Box>
                                 </Box>
+
                             </Paper>
                         </Box>
                         <Box sx={{ width: '50%', pl: 1 }}>
@@ -627,6 +633,7 @@ const CommonSettingNew = () => {
                                     </Box>
                                 </Box>
                             </Paper>
+
                         </Box>
                     </Box>
                     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
@@ -783,6 +790,14 @@ const CommonSettingNew = () => {
                                                 })
                                             }
                                         </Select>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">External Trainee</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <JoyCategorySelect value={category} setValue={setCategory} />
                                     </Box>
                                 </Box>
                             </Paper>

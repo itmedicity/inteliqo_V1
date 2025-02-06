@@ -108,7 +108,7 @@ const AnnualLeaveProcess = React.lazy(() => import('./views/Attendance/AnnualLea
 const OtUser = React.lazy(() => import('./views/LeaveManagement/OTUser/OTUser'))
 const Hrm_Announcement = React.lazy(() => import('./views/EmployeeRecord/Hrm_Announcement/Hrm_Announcement'))
 const LeaveUser = React.lazy(() => import('./views/LeaveManagement/LeaveUser/LeaveUser'))
-const Autocompletetest = React.lazy(() => import('./views/CommonCode/Autocompletetest'))
+// const Autocompletetest = React.lazy(() => import('./views/CommonCode/Autocompletetest'))
 const proTax = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMast'))
 const proffessionalTax = React.lazy(() => import('./views/Payroll/ProffessionalTax/ProffessionalTax'))
 const DeptSecChange = React.lazy(() => import('./views/Attendance/DepartmentSecChange/DepartmentSecChange'))
@@ -132,7 +132,7 @@ const KRA = React.lazy(() => import('./views/Master/KRA/KRA'))
 const EmpProfile = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeProfile/Profile'))
 const ContractRenewalProcess = React.lazy(() => import('./views/EmployeeRecord/ContractRenewalProcess/ContractRenewalProcess'))
 const Direct_Contract_Close = React.lazy(() => import('./views/EmployeeRecord/ContractRenewalProcess/Direct_Contract_Close'))
-const ProbationEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ProbationEnd')))
+const ProbationEnd = React.lazy(() => (import('./views/EmployeeRecord/ProbaionEnd/ProbationEndDetails')))
 const AnnualAppraisalList = React.lazy(() => (import('./views/PerformanceAppraisal/AnnualAppraisalList')))
 const ContractEnd = React.lazy(() => (import('./views/PerformanceAppraisal/ContractEnd')))
 const TrainingEnd = React.lazy(() => import('./views/PerformanceAppraisal/TrainingEnd'))
@@ -417,7 +417,7 @@ const routes = [
   { path: '/Home/OtUser', exact: true, name: 'OT User View', component: OtUser },
   { path: '/Home/Hrm_Announcement', exact: true, name: 'Hrm Announcement', component: Hrm_Announcement },
   { path: '/Home/LeaveUser', exact: true, name: 'Leave User View', component: LeaveUser },
-  { path: '/Home/Autocompletetest', exact: true, name: 'Autocomplete test', component: Autocompletetest },
+  // { path: '/Home/Autocompletetest', exact: true, name: 'Autocomplete test', component: Autocompletetest },
   { path: '/Home/ProTax', exact: true, name: 'Proffessional Tax master', component: proTax },
   { path: '/Home/ProffessionalTax', exact: true, name: 'Proffessional Tax', component: proffessionalTax },
   { path: '/Home/DeptSecChange', exact: true, name: 'Department Section Change', component: DeptSecChange },

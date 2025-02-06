@@ -86,7 +86,7 @@ const InductionDetailsMainpage = () => {
         else {
             warningNofity("Provide Basic Information to Search")
         }
-    }, [type, Emp_ID, dept, deptSec])
+    }, [type, Emp_ID, dept, deptSec, count])
 
     //click to open modal
     const handleClick = useCallback((params) => {

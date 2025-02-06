@@ -66,7 +66,7 @@ const DepmtlAttendPendingList = () => {
         setMasterGroupStatus(groupStatus)
         dispatch(setCommonSetting());
         dispatch(setShiftDetails())
-    }, [groupStatus])
+    }, [groupStatus, dispatch])
 
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
@@ -157,6 +157,7 @@ const DepmtlAttendPendingList = () => {
 
 
     const SearchingProcess = useCallback(async () => {
+        setDropOpen(true)
         if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && requestUser?.emID !== 0 && PendingFlag === false) {
             const obj = {
                 deptID: requestUser?.deptID,
@@ -195,14 +196,17 @@ const DepmtlAttendPendingList = () => {
 
                     // Set the mapped data to the state
                     SetEmployeeData(mappedData);
+                    setDropOpen(false)
 
                 } else {
                     warningNofity("No Records Found");
                     SetEmployeeData([]); // Clear data when no records are found
+                    setDropOpen(false)
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 SetEmployeeData([]); // Clear data on error
+                setDropOpen(false)
             }
         }
         else if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && PendingFlag === true) {
@@ -213,7 +217,6 @@ const DepmtlAttendPendingList = () => {
             try {
                 const result = await axioslogin.post(`/TrainingInductionReport/getDeptPendingList`, obj);
                 const { success, data } = result.data;
-                console.log(data);
 
                 if (success === 2 && data?.length !== 0) {
                     const mappedData = data.map((val) => ({
@@ -244,19 +247,23 @@ const DepmtlAttendPendingList = () => {
 
                     // Set the mapped data to the state
                     SetEmployeeData(mappedData);
+                    setDropOpen(false)
                 } else {
                     warningNofity("No Records Found");
                     SetEmployeeData([]); // Clear data when no records are found
+                    setDropOpen(false)
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 SetEmployeeData([]); // Clear data on error
+                setDropOpen(false)
             }
         }
         else {
             // warningNofity("Enter Basic Information To Search");
+            setDropOpen(false)
         }
-    }, [employeeID, requestUser, PendingFlag]);
+    }, [requestUser, PendingFlag]);
 
 
 
