@@ -327,6 +327,7 @@ const LeaveApprovalHR = () => {
             setMisspunchOpen(true)
             setmisspunchData(params.data)
         } else if (code === 5) {
+            console.log(params.data);
             setOneHourOpen(true)
             setOneHourData(params.data)
         } else if (code === 6) {

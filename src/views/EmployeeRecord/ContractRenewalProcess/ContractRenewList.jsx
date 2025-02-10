@@ -217,6 +217,7 @@ const ContractRenewList = () => {
         { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 150 },
         { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 200 },
         { headerName: 'Designation', field: 'desg_name', minWidth: 150 },
+        { headerName: 'Category', field: 'ecat_name', minWidth: 150, filter: true },
         { headerName: 'DOJ', field: 'em_doj', minWidth: 150 },
         { headerName: 'Contract Start', field: 'em_cont_start', minWidth: 150 },
         { headerName: 'Contract End', field: 'em_cont_end', minWidth: 150 },
