@@ -259,7 +259,6 @@ const ContractRenewalProcess = () => {
 
         const result = await axioslogin.patch('/empcontract/contractrenewapprove', updateempMast)
         const { success, message } = result.data
-
         if (success === 2) {
           const result = await axioslogin.patch('/empcontract/update/contract', updateempMast)
           const { success, message } = result.data
@@ -275,12 +274,9 @@ const ContractRenewalProcess = () => {
           } else {
             warningNofity(message)
           }
-
         } else {
           warningNofity(message)
         }
-
-
       }
     }
   }, [contractTpPermanent, newCatgeory, permanentEmpNo, updateempMast, attendancedetls,
