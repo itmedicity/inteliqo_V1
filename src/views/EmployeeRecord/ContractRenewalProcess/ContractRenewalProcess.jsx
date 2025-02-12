@@ -257,21 +257,28 @@ const ContractRenewalProcess = () => {
 
         const newEmno = contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo;
 
-
-        const result = await axioslogin.patch('/empcontract/update/contract', updateempMast)
+        const result = await axioslogin.patch('/empcontract/contractrenewapprove', updateempMast)
         const { success, message } = result.data
-        if (success === 1) {
-          const updateContractLogTable = await axioslogin.post('/empcontract/createcontractlog', oldPersonalData.personalData)
-          if (updateContractLogTable.data.success === 1) {
-            succesNofity("Contract Renewal Completed Successfully!")
-            history.push(`/Home/Prfle/${newEmno}/${no}/${0}`)
-          }
-          else {
+        if (success === 2) {
+          const result = await axioslogin.patch('/empcontract/update/contract', updateempMast)
+          const { success, message } = result.data
+          if (success === 1) {
+            const updateContractLogTable = await axioslogin.post('/empcontract/createcontractlog', oldPersonalData.personalData)
+            if (updateContractLogTable.data.success === 1) {
+              succesNofity("Contract Renewal Completed Successfully!")
+              history.push(`/Home/Prfle/${newEmno}/${no}/${0}`)
+            }
+            else {
+              warningNofity(message)
+            }
+          } else {
             warningNofity(message)
           }
+
         } else {
           warningNofity(message)
         }
+
 
       }
     }
