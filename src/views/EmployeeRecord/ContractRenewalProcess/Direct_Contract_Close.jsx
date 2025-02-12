@@ -73,7 +73,7 @@ const Direct_Contract_Close = () => {
     //update hrm_emp_contract_detl table
     const contractclose = useMemo(() => {
         return {
-            status: 1,
+            status: 0,
             em_cont_close: 'C',
             em_cont_compl_status: 'C',
             em_cont_renew: 'R',
