@@ -15,7 +15,7 @@ import { DatePicker, LocalizationProvider } from '@mui/lab'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import { TextField } from '@mui/material'
 import moment from 'moment';
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 
 const EmployeeAllowance = () => {
@@ -114,7 +114,7 @@ const EmployeeAllowance = () => {
         em_amount: em_amount,
         em_start_date: month_start,
         em_end_date: month_end,
-        create_user: employeeNumber(),
+        create_user: employeeIdNumber(),
     }
     //Form reset
     const resetForm = {
@@ -150,7 +150,7 @@ const EmployeeAllowance = () => {
                     em_no: id,
                     em_id: no,
                     gross_salary: sum,
-                    updated_user: employeeNumber(),
+                    updated_user: employeeIdNumber(),
                 }
                 const result2 = await axioslogin.post('/hrmgrosssalary', postData2)
                 const { success, message } = result2.data

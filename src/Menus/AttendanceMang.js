@@ -14,41 +14,22 @@ const AttendanceManagement = [
         to: '/Home/ShiftUpdation',
     },
     {
-        men_slno: 235,
-        component: CNavItem,
-        name: 'Monthly Punch Marking',
-        to: '/Home/PunchMarkingHR',
-    },
-    {
-        men_slno: 125,
-        component: CNavItem,
-        name: 'Attendance Process',
-        to: '/Home/AttendanceMarking',
-    },
-    {
-        men_slno: 127,
-        component: CNavItem,
-        name: 'Leave Carry Forwad',
-        to: '/Home/LeaveCarryForwad',
-    },
-
-    {
         men_slno: 237,
         component: CNavItem,
         name: 'Attendance View',
         to: '/Home/AttendanceView',
     },
     {
-        men_slno: 286,
-        component: CNavItem,
-        name: 'Salary Process',
-        to: '/Home/SalaryProcess',
-    },
-    {
         men_slno: 277,
         component: CNavItem,
-        name: 'Attendance Report',
+        name: 'Attendnace Punch View',
         to: '/Home/EmpPreviouspunchreport',
+    },
+    {
+        men_slno: 235,
+        component: CNavItem,
+        name: 'Monthly Punch Marking',
+        to: '/Home/PunchMarkingHR',
     },
     {
         men_slno: 132,
@@ -57,10 +38,10 @@ const AttendanceManagement = [
         to: '/Home/DutyplanforIncharge',
     },
     {
-        men_slno: 316,
+        men_slno: 127,
         component: CNavItem,
-        name: 'Monthly Payroll Process',
-        to: '/Home/MonthlySalaryProcess',
+        name: 'Leave Carry Forwad',
+        to: '/Home/LeaveCarryForwad',
     },
     {
         men_slno: 151,
@@ -68,6 +49,32 @@ const AttendanceManagement = [
         name: 'Annual Leave Process',
         to: '/Home/EmployeeAnnualLeave',
     },
+
+    {
+        men_slno: 125,
+        component: CNavItem,
+        name: 'Attendance Process',
+        to: '/Home/AttendanceMarking',
+    },
+    {
+        men_slno: 286,
+        component: CNavItem,
+        name: 'Salary Process',
+        to: '/Home/SalaryProcess',
+    },
+    {
+        men_slno: 316,
+        component: CNavItem,
+        name: 'Monthly Payroll Process',
+        to: '/Home/MonthlySalaryProcess',
+    }, {
+        men_slno: 337,
+        component: CNavItem,
+        name: 'Processed Salary Report',
+        to: '/Home/ProcessedSalaryReport',
+    },
+
+
 
 ]
 

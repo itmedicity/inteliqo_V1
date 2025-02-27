@@ -4,7 +4,7 @@ import moment from 'moment'
 import React, { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { axioslogin } from '../Axios/Axios'
-import { employeeNumber } from '../Constant/Constant'
+import { employeeIdNumber } from '../Constant/Constant'
 import { infoNofity, succesNofity, warningNofity } from './Commonfunc'
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import _ from 'underscore'
@@ -290,7 +290,7 @@ const AnnualProcessComponent = ({
                     cl_lv_credit: 0,
                     cl_lv_taken: 0,
                     lv_process_slno: lv_process_slnocurrent,
-                    update_user: employeeNumber()
+                    update_user: employeeIdNumber()
                 }
                 return datacasualleave
             })
@@ -335,7 +335,7 @@ const AnnualProcessComponent = ({
                         hl_lv_taken: 0,
                         hl_lv_allowed: 1,
                         lv_process_slno: lv_process_slnocurrent,
-                        update_user: employeeNumber(),
+                        update_user: employeeIdNumber(),
                         em_id: em_id
                     }
                     return datasaveholiday
@@ -388,7 +388,7 @@ const AnnualProcessComponent = ({
                             cmn_lv_taken: 0,
                             cmn_lv_balance: 0,
                             Iv_process_slno: lv_process_slnocurrent,
-                            update_user: employeeNumber(),
+                            update_user: employeeIdNumber(),
                             em_id: em_id,
                             cmn_lv_year: moment().format('YYYY-MM-DD')
                         }
@@ -444,7 +444,7 @@ const AnnualProcessComponent = ({
                         ernlv_credit: number > 0 ? 1 : 0,
                         ernlv_taken: 0,
                         lv_process_slno: lv_process_slnocurrent,
-                        update_user: employeeNumber(),
+                        update_user: employeeIdNumber(),
                         em_id: em_id,
                     }
                     number = number - 1

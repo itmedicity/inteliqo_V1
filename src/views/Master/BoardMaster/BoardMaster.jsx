@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import { Box, Button, CssVarsProvider } from '@mui/joy'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
@@ -44,7 +44,7 @@ const BoardMaster = () => {
             board_name,
             education_slno: education,
             board_status: board_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [board_name, board_status, education])
 
@@ -53,7 +53,7 @@ const BoardMaster = () => {
             board_name,
             education_slno: education,
             board_status: board_status === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             board_slno: slno
         }
     }, [board_name, board_status, slno, education])
@@ -117,7 +117,7 @@ const BoardMaster = () => {
 
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'board_slno' },
-        { headerName: 'Board Name', field: 'board_name', filter: true, width: 150 },
+        { headerName: 'Board Name', field: 'board_name', filter: true, width: 250 },
         { headerName: 'Education Name', field: 'edu_desc', filter: true, width: 150 },
         { headerName: 'Status ', field: 'status', width: 100 },
         {

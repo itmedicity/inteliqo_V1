@@ -13,7 +13,7 @@ import { MdDeleteSweep, MdOutlineAddCircleOutline } from 'react-icons/md'
 import { axioslogin } from 'src/views/Axios/Axios'
 import RegionSelect2 from 'src/views/CommonCode/RegionSelect2'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import BankNameSelect from 'src/views/CommonCode/BankNameSelect'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ProfilePic from '../../../assets/images/default.png'
@@ -263,7 +263,7 @@ const PersonalInformation = () => {
             emp_yeargae: age,
             em_region: getregion,
             hrm_region2: getregion2,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
         const resetdata = {
             addressPermnt1: '',

@@ -6,7 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 
 const YearlyLeaveCountMast = () => {
     const classes = useStyles()
@@ -88,7 +88,7 @@ const YearlyLeaveCountMast = () => {
         lvetype_slno_previlage: leave_type6,
         max_allowed_count_previlage: count6,
         month_year_previlage: day_month_year6,
-        create_user: employeeNumber()
+        create_user: employeeIdNumber()
 
     }
 

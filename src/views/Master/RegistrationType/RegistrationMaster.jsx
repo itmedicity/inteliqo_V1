@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import { Box, Button, CssVarsProvider } from '@mui/joy'
 import { Grid, IconButton } from '@mui/material'
@@ -38,7 +38,7 @@ const RegistrationMaster = () => {
         return {
             registration_name,
             registration_status: registration_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [registration_name, registration_status])
 
@@ -54,7 +54,7 @@ const RegistrationMaster = () => {
             registration_name,
             registration_status: registration_status === true ? 1 : 0,
             reg_id: slno,
-            edit_user: employeeNumber()
+            edit_user: employeeIdNumber()
         }
     }, [registration_name, registration_status, slno])
 

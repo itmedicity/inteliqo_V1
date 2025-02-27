@@ -215,7 +215,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                 empList: [em_no],
                 loggedEmp: em_no,
                 frDate: format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
-                trDate: format(lastDayOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
+                trDate: format(new Date(details?.relieving_date), 'yyyy-MM-dd'),
             }
 
             // // GET PUNCH DATA FROM TABLE START
@@ -276,6 +276,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             leave_status: e.leave_status
                         }
                     })
+
                     const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
                     setdisplayArray(array);
 

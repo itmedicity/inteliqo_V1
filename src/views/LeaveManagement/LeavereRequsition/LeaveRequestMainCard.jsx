@@ -47,9 +47,6 @@ const LeaveRequestMainCard = () => {
     const employeeInform = useMemo(() => empInform, [empInform])
     const { hod, incharge, em_id, } = employeeInform;
 
-    // console.log(empInform)
-
-
     /***************************************************************** */
     // const state = useSelector((state) => state.getLeaveRequestInfom.empDetl);
     // const { requestType } = state;

@@ -104,7 +104,6 @@ const LeaveCarryForwad = React.lazy(() => import('./views/Attendance/LeaveCarryF
 const Hrm_Alert = React.lazy(() => import('./views/EmployeeRecord/Hrm_Alert/Hrm_Alert'))
 const Hrm_message = React.lazy(() => import('./views/EmployeeRecord/Hrm_message/Hrm_message'))
 const NightOffRequest = React.lazy(() => import('./views/LeaveManagement/NightOff/NightOffRequest'))
-const AnnualLeaveProcess = React.lazy(() => import('./views/Attendance/AnnualLeaveProcess/AnnualLeaveProcess'))
 const OtUser = React.lazy(() => import('./views/LeaveManagement/OTUser/OTUser'))
 const Hrm_Announcement = React.lazy(() => import('./views/EmployeeRecord/Hrm_Announcement/Hrm_Announcement'))
 const LeaveUser = React.lazy(() => import('./views/LeaveManagement/LeaveUser/LeaveUser'))
@@ -303,7 +302,7 @@ const IndividualAttendance = React.lazy(() => import('./views/HrReports/Attenden
 const EmployeeAnnualLeave = React.lazy(() => import('./views/Attendance/AnnualLeaveProcess/EmployeeAnnualLeaveProcess'))
 const YearlyLeaveCountReport = React.lazy(() => import('./views/HrReports/LeaveCountReport/YearlyLeaveCount'))
 const InactiveEmplyeeAttendnaceReport = React.lazy(() => import('./views/HrReports/AttendenceReport/InactiveEmployeeAttendnaceReport'))
-
+const ProcessedSalaryReport = React.lazy(() => import('./views/Attendance/SalaryProcess/ProcessedSalaryReport'))
 
 const routes = [
 
@@ -413,7 +412,6 @@ const routes = [
   { path: '/Home/Hrm_message', exact: true, name: 'Hrm message', component: Hrm_message },
   { path: '/Home/Contract_end_details', exact: true, name: 'Contract End Details', component: Contract_end_details },
   { path: '/Home/NightOffRequest', exact: true, name: 'Night Off Request', component: NightOffRequest },
-  { path: '/Home/AnnualLeaveProcess', exact: true, name: 'Annual Leave Process', component: AnnualLeaveProcess },
   { path: '/Home/OtUser', exact: true, name: 'OT User View', component: OtUser },
   { path: '/Home/Hrm_Announcement', exact: true, name: 'Hrm Announcement', component: Hrm_Announcement },
   { path: '/Home/LeaveUser', exact: true, name: 'Leave User View', component: LeaveUser },
@@ -604,7 +602,8 @@ const routes = [
   { path: '/Home/IndividualAttendance', exact: true, name: 'Individual Attendance Report', component: IndividualAttendance },
   { path: '/Home/EmployeeAnnualLeave', exact: true, name: 'Annual Leave Process', component: EmployeeAnnualLeave },
   { path: '/Home/YearlyLeaveCountReport', exact: true, name: 'Yearly Leave Count Report', component: YearlyLeaveCountReport },
-  { path: '/Home/InactiveEmplyeeAttendnaceReport', exact: true, name: 'Inactive Emplyee Attendnace Report', component: InactiveEmplyeeAttendnaceReport }
+  { path: '/Home/InactiveEmplyeeAttendnaceReport', exact: true, name: 'Inactive Emplyee Attendnace Report', component: InactiveEmplyeeAttendnaceReport },
+  { path: '/Home/ProcessedSalaryReport', exact: true, name: 'Processed Salary Report', component: ProcessedSalaryReport }
 
 ]
 

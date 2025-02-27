@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Slide from '@mui/material/Slide';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
 });
@@ -26,7 +26,7 @@ const ModelAddFineMaster = ({ open, handleClose, upfineCount, setUpdateFine }) =
 
     const postData = {
         fine_desc: fine_desc,
-        create_user: employeeNumber()
+        create_user: employeeIdNumber()
     }
 
     const resetForm = {

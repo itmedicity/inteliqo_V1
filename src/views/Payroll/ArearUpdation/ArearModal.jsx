@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
@@ -61,7 +61,7 @@ const ArearModal = ({ open, setOpen, data }) => {
             em_no: emno,
             arrear_amount: amount,
             arrear_month: moment(startOfMonth(startOfMonth(new Date(arearMonth)))).format('YYYY-MM-DD'),
-            create_user: employeeNumber(),
+            create_user: employeeIdNumber(),
             arear_remark: remark,
             department: dept_id,
             department_sect: sect_id

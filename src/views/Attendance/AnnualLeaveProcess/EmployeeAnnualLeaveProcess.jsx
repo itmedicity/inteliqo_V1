@@ -402,10 +402,10 @@ const EmployeeAnnualLeaveProcess = () => {
 
                                                     <Chip
                                                         color={row.hrm_process_status === 'N' ? 'neutral' : getYear(new Date(row.next_updatedate)) === getYear(new Date()) ? 'neutral' : 'danger'}
-                                                        onClick={row.hrm_process_status === 'N' ? null : (e) => handleFunction(e, row)}
+                                                        onClick={row.hrm_process_status === 'N' ? null : getYear(new Date(row.next_updatedate)) === getYear(new Date()) ? null : (e) => handleFunction(e, row)}
                                                         size="sm"
                                                         variant="outlined"
-                                                    >Inactive Exixsting Leave</Chip>
+                                                    >Inactive Existing Leave</Chip>
                                                     <Chip
                                                         color="success"
                                                         onClick={(e) => activeNewLeave(e, row)}

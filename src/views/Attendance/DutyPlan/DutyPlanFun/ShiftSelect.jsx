@@ -5,6 +5,7 @@ import { memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import { Actiontypes } from 'src/redux/constants/action.type';
+import { employeeIdNumber } from "src/views/Constant/Constant";
 
 const ShiftSelect = ({ data, authStatus }) => {
     const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const ShiftSelect = ({ data, authStatus }) => {
     const { notapplicable_shift, default_shift, week_off_day, doff } = commonSettings;
 
     const [shift, setShift] = useState(default_shift);
-    // console.log(shiftData)
+
     const { plan_slno,
         emp_id,
         shift_id,
@@ -40,7 +41,10 @@ const ShiftSelect = ({ data, authStatus }) => {
         let offDay = e.target.value === week_off_day.toString() ? 1 : 0;
         setShift(changedShiftId);
         setBgColor(1)
-        const newShiftObj = { plan_slno: plan_slno, shift_id: changedShiftId, em_id: emp_id, offday: offDay };
+        const newShiftObj = {
+            plan_slno: plan_slno, shift_id: changedShiftId, em_id: emp_id,
+            offday: offDay, edit_user: employeeIdNumber()
+        };
         dispatch({ type: FETCH_UPDATED_SHIFT_ID, payload: newShiftObj })
     }
     // setShift(shift_id)

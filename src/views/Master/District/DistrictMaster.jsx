@@ -4,7 +4,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import StateSelect from 'src/views/CommonCode/StateSelect'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import { Box, Button, CssVarsProvider } from '@mui/joy'
 import { Grid, IconButton } from '@mui/material'
@@ -42,7 +42,7 @@ const DistrictMaster = () => {
             dist_name,
             dist_state_slno: state,
             dist_status: dist_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [dist_name, state, dist_status])
 
@@ -52,7 +52,7 @@ const DistrictMaster = () => {
             dist_state_slno: state,
             dist_status: dist_status === true ? 1 : 0,
             dist_slno: slno,
-            edit_user: employeeNumber()
+            edit_user: employeeIdNumber()
         }
     }, [dist_name, state, slno, dist_status])
 

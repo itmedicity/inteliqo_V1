@@ -292,7 +292,7 @@ const InchargeHodCompnt = ({ em_id, em_no, empSalary, em_dept_section }) => {
                         ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
 
                     const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
-                        // console.log(el);
+
                         const empArray = punchMasteData?.filter(e => e.em_no === el)
                         let emName = empArray?.find(e => e.em_no === el).em_name;
                         let emNo = empArray?.find(e => e.em_no === el).em_no;

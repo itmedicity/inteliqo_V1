@@ -8,7 +8,7 @@ import moment from 'moment';
 import { useHistory, useParams } from 'react-router-dom';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CloseIcon from '@mui/icons-material/Close';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 
 const Direct_Contract_Close = () => {
     const { id, no } = useParams()
@@ -80,7 +80,7 @@ const Direct_Contract_Close = () => {
             em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
             em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
             em_no: id,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             em_id: no,
             em_status: 0
         }

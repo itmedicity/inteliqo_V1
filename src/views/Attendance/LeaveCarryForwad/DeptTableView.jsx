@@ -7,7 +7,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Box, Checkbox, Chip } from '@mui/joy';
 import { axioslogin } from '../../Axios/Axios';
 import { addMonths, eachMonthOfInterval, format, startOfYear, subYears } from 'date-fns';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 
 const DeptTableView = ({ row, initialOpen, handleChange, selectedYear, leaveType, onProcessClick }) => {
@@ -48,7 +48,7 @@ const DeptTableView = ({ row, initialOpen, handleChange, selectedYear, leaveType
                         cl_lv_credit: 1,
                         cl_lv_taken: 0,
                         lv_process_slno: val.lv_process_slno,
-                        update_user: employeeNumber(),
+                        update_user: employeeIdNumber(),
                         special_remark: 'CF'
                     }
                 })
@@ -120,7 +120,7 @@ const DeptTableView = ({ row, initialOpen, handleChange, selectedYear, leaveType
                         ernlv_credit: 1,
                         ernlv_taken: 0,
                         lv_process_slno: val.lv_process_slno,
-                        update_user: employeeNumber(),
+                        update_user: employeeIdNumber(),
                         em_id: val.em_id,
                         credit_status: 1,
                         credit_year: format(new Date(), 'yyyy'),

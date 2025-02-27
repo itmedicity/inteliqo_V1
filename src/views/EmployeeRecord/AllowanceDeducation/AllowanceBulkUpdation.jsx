@@ -3,7 +3,7 @@ import React, { Fragment, useState } from 'react'
 import TextInput from 'src/views/Component/TextInput'
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import moment from 'moment';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import ModelSalaryIncrement from '../EmployeeFile/EmpFileComponent/ModelSalaryIncrement';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
@@ -38,7 +38,7 @@ const AllowanceBulkUpdation = ({ value }) => {
         incr_start_date: moment(start_date).format('YYYY-MM-DD'),
         incre_type: 1,
         incre_amount: changedAmount,
-        create_user: employeeNumber()
+        create_user: employeeIdNumber()
     }
     //calculating the changed allowance
     const updateChangeAmount = async (e) => {

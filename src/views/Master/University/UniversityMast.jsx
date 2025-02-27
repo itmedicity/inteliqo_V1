@@ -6,7 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import MasterLayout from '../MasterComponents/MasterLayout'
@@ -39,7 +39,7 @@ const UniversityMast = () => {
             unver_name,
             unver_alias,
             unver_status: unver_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [unver_name, unver_alias, unver_status])
 
@@ -57,7 +57,7 @@ const UniversityMast = () => {
             unver_status: unver_status === true ? 1 : 0,
             unver_alias,
             unver_slno: slno,
-            edit_user: employeeNumber()
+            edit_user: employeeIdNumber()
         }
     }, [unver_name, unver_alias, unver_status, slno])
 
@@ -111,7 +111,7 @@ const UniversityMast = () => {
 
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'unver_slno' },
-        { headerName: 'University Name', field: 'unver_name', filter: true, width: 150 },
+        { headerName: 'University Name', field: 'unver_name', filter: true, width: 300 },
         { headerName: 'Alias', field: 'unver_alias', filter: true, width: 150 },
         { headerName: 'Status ', field: 'status', width: 100 },
         {

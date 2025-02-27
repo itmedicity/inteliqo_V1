@@ -72,7 +72,7 @@ const EmpTrainingRecords = () => {
             SetInductionFlag(false);
         }
     }, [SetDeprtmtl_flag, SetInductionFlag, SetDeptdata, em_id])
-    console.log(deptdata);
+
     return (
         <Paper elevation={0}>
             <Box sx={{ width: "100%" }}>

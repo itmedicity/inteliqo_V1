@@ -25,6 +25,7 @@ import {
   updateOldLeaveProcessedData,
   insertNewLeaveProcessData,
   incativeExistLeave,
+  getEarnLvCategory,
 } from './Functions/LeaveProcessFun'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { getProcessserialnum } from 'src/views/Constant/Constant'
@@ -38,7 +39,7 @@ import { setPersonalData } from 'src/redux/actions/Profile.action'
 import { getStatutoryInfo } from 'src/redux/actions/LeaveProcess.action'
 import AccordionGroup from '@mui/joy/AccordionGroup';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/joy'
-
+import { setCommonSetting } from 'src/redux/actions/Common.Action'
 
 // const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'))
@@ -81,6 +82,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       setEmployeeIDs(empDetl)
     }
     dispatch(getStatutoryInfo(id));
+    dispatch(setCommonSetting());
   }, [id, no, dispatch, formStatus, empInfo])
 
   const updateStatus = useMemo(() => updateStat, [updateStat])
@@ -145,17 +147,11 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       setEmpLeaveProcess({})
       // dispatch(setEmployeeProcessDetail(0))
     }
-    // return () => {
-    //   setEmpCategory({})
-    //   setEmpLeaveProcess({})
-    //   // dispatch(setEmployeeProcessDetail(0))
-    // }
   }, [employeeIDs, dispatch, updateStatus, leaveUpdateStat])
 
   const category = useMemo(() => empCategory, [empCategory])
   const leaveProcess = useMemo(() => empLeaveProcess, [empLeaveProcess])
   const processedLeaveDetl = useMemo(() => processedLveDetl, [processedLveDetl])
-
 
   useEffect(() => {
     //procedded Leave List
@@ -196,10 +192,13 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
     }
   }, [processedLeaveDetl])
 
+  const getcommonSettings = useSelector((state) => getEarnLvCategory(state, category))
+  const cateStatus = useMemo(() => getcommonSettings, [getcommonSettings])
+
   //For new employee new process data for table
   useEffect(() => {
     //for new employee primary data for inserting the the "hrm_emp_processs" table
-    newProcessedEmployeeData(category, processSlno, employeeIDs)
+    newProcessedEmployeeData(category, processSlno, employeeIDs, cateStatus)
       .then((newEmployeeObj) => {
         setNewEmployeeProcesedData(newEmployeeObj)
       })
@@ -208,7 +207,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
           `error ! ${error} , LeaveProcessMainCard line # 143, Contact Information Technology`,
         ),
       )
-  }, [category, processSlno, employeeIDs])
+  }, [category, processSlno, employeeIDs, cateStatus])
 
   //const { leaveData } = processedLeaveDetl
 
@@ -229,13 +228,13 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
      */
 
     // 1 ->
-    const contractStatus = await checkContractStatus(em_cont_end, contract_status,
+    const categoryStatus = await checkContractStatus(em_cont_end, contract_status,
       em_prob_end_date, ecat_prob, ecat_training, probation_status)
 
-    if (contractStatus.status === true) {
-
+    if (categoryStatus.status === true) {
       //   // 4->
       if (processedLveDetl.newProcess === true) {
+
         //NEW PROCESS --> No data in 'hrm_process_table' || No active data in 'hrm_process_table';
         // new employee data for insert to DB
         insertNewLeaveProcessData(newEmployeeProcesedData)
@@ -248,13 +247,13 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
               setUpdateStat(updateStat + 1)
             } else {
               warningNofity(
-                `error ! ${message} , LeaveProcessMainCard line # 182, Contact Information Technology`,
+                `error ! ${message} , LeaveProcessMainCard line # 250, Contact Information Technology`,
               )
             }
           })
           .catch((error) =>
             warningNofity(
-              `error ! ${error} , LeaveProcessMainCard line # 184, Contact Information Technology`,
+              `error ! ${error} , LeaveProcessMainCard line # 256, Contact Information Technology`,
             ),
           )
       }
@@ -295,13 +294,13 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
                           // setProcessSpinner(false)
                         } else {
                           warningNofity(
-                            `error ! ${message} , LeaveProcessMainCard line # 221, Contact Information Technology`,
+                            `error ! ${message} , LeaveProcessMainCard line # 297, Contact Information Technology`,
                           )
                         }
                       })
                       .catch((error) =>
                         warningNofity(
-                          `error ! ${error} , LeaveProcessMainCard line # 222, Contact Information Technology`,
+                          `error ! ${error} , LeaveProcessMainCard line # 303, Contact Information Technology`,
                         ),
                       )
                   } else {
@@ -310,7 +309,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
                 })
                 .catch((error) =>
                   warningNofity(
-                    `error ! ${error} , LeaveProcessMainCard line # 228, Contact Information Technology`,
+                    `error ! ${error} , LeaveProcessMainCard line # 312, Contact Information Technology`,
                   ),
                 )
             } else {
@@ -322,7 +321,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
           })
           .catch((error) =>
             warningNofity(
-              `error ! ${error} , LeaveProcessMainCard line # 235, Contact Information Technology`,
+              `error ! ${error} , LeaveProcessMainCard line # 324, Contact Information Technology`,
             ),
             setOpen(false)
           )
@@ -334,7 +333,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       }
     } else {
       setOpen(false)
-      warningNofity(contractStatus.message)
+      warningNofity(categoryStatus.message)
     }
   }, [ecat_prob, leaveProcess, contract_status, em_cont_end, em_prob_end_date, probation_status,
     updateStat, newEmployeeProcesedData, processedLveDetl, category, ecat_training,])
@@ -423,22 +422,6 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
                           </Suspense>
                         </AccordionDetails>
                       </Accordion>
-                      {/* <Accordion
-                        expanded={index === 2}
-                        onChange={(event, expanded) => {
-                          setIndex(expanded ? 2 : null);
-                        }}>
-                        <AccordionSummary>Carry Forward Leave</AccordionSummary>
-                        <AccordionDetails>
-                          <Suspense fallback={<CircularProgress color="secondary" size={30} />}>
-                            <CarryForwardLeaveTable
-                              title={'Carry Forward Leave'}
-                              id={employeeIDs.em_no}
-                              processStat={processBtn}
-                            />
-                          </Suspense>
-                        </AccordionDetails>
-                      </Accordion> */}
                       <Accordion
                         expanded={index === 3}
                         onChange={(event, expanded) => {

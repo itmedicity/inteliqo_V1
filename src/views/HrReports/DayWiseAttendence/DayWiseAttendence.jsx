@@ -436,7 +436,6 @@ const DayWiseAttendence = () => {
                                     dept_name: deptName,
                                     sect_name: sect_name,
                                     punchMaster: dateRange?.map((e) => {
-                                        // console.log(e)
                                         return {
                                             attDate: e,
                                             em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
@@ -630,7 +629,6 @@ const DayWiseAttendence = () => {
                                     dept_name: deptName,
                                     sect_name: sect_name,
                                     punchMaster: dateRange?.map((e) => {
-                                        // console.log(e)
                                         return {
                                             attDate: e,
                                             em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,

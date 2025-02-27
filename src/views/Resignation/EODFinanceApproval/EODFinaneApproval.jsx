@@ -44,6 +44,7 @@ const EODFinaneApproval = () => {
         { headerName: 'Department', field: 'dept_name', filter: true },
         { headerName: 'Department Section', field: 'sect_name', filter: true },
         { headerName: 'Request Date', field: 'request_date', wrapText: true, minWidth: 250, },
+        { headerName: 'Relieving Date', field: 'request_date', wrapText: true, minWidth: 250, },
         { headerName: 'Status', field: 'appstatus', filter: true },
         {
             headerName: 'Action',
@@ -80,7 +81,6 @@ const EODFinaneApproval = () => {
     const toDownload = useCallback((params) => {
 
         const details = params.data
-        console.log("Fhfghmkn");
         pdfdownlod(details)
     }, [])
 

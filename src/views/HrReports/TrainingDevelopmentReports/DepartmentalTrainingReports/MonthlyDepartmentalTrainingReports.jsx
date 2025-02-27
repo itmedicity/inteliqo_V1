@@ -79,8 +79,6 @@ const MonthlyDepartmentalTrainingReports = () => {
                             (val) => val.dept_id !== mappedData.department &&
                                 val.sect_id !== mappedData.deparment_sect
                         );
-                        console.log(filteredWithDept);
-
                         // Assuming you want to update the training details with the filtered data.
                         setTrainigDetails(filteredWithDept);
                     }

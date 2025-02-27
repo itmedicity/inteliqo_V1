@@ -3,7 +3,7 @@ import { useHistory } from 'react-router'
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import {
   errorNofity,
   infoNofity,
@@ -192,7 +192,7 @@ const EmployeeRecord = () => {
       em_retirement_date: moment(endOfMonth(new Date(retirementyear))).format('YYYY-MM-DD'),
       em_contract_end_date: moment(endOfMonth(new Date(cont_perioddate))).format('YYYY-MM-DD'),
       em_status: empstatus === true ? 1 : 0,
-      create_user: employeeNumber(),
+      create_user: employeeIdNumber(),
       addressPermnt1: addressPermnt1,
       addressPermnt2: addressPermnt2,
       perPincode: permantPin,
@@ -280,7 +280,7 @@ const EmployeeRecord = () => {
               emp_email: email,
               emp_username: empno,
               emp_password: empno,
-              create_user: employeeNumber(),
+              create_user: employeeIdNumber(),
             }
             // update hrm_employee table
             const resultemployee = await axioslogin.post('/employee', submitemployee)
@@ -315,7 +315,7 @@ const EmployeeRecord = () => {
                       em_no: empno,
                       joining_date: dateofjoining,
                       assign_status: 0,
-                      create_user: employeeNumber()
+                      create_user: employeeIdNumber()
                     }
                     const result2 = await axioslogin.post('/TrainingAfterJoining/insertTrainingMaster', TrainingEntry)
                     const { success, message } = result2.data
@@ -368,7 +368,7 @@ const EmployeeRecord = () => {
               emp_email: email,
               emp_username: empno,
               emp_password: empno,
-              create_user: employeeNumber(),
+              create_user: employeeIdNumber(),
             }
             // update hrm_employee table
             const resultemployee = await axioslogin.post('/employee', submitemployee)
@@ -390,7 +390,7 @@ const EmployeeRecord = () => {
                     em_no: empno,
                     joining_date: dateofjoining,
                     assign_status: 0,
-                    create_user: employeeNumber()
+                    create_user: employeeIdNumber()
                   }
                   const result2 = await axioslogin.post('/TrainingAfterJoining/insertTrainingMaster', TrainingEntry)
                   const { success, message } = result2.data

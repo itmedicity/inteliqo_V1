@@ -234,8 +234,6 @@ const DepartmentalTrainingReport = () => {
         }
     }, [dept, dept_sec, topic, postData, dispatch])
 
-
-    // console.log(TableData);
     useEffect(() => {
         const displayData = TableData?.map((val) => {
             const object = {

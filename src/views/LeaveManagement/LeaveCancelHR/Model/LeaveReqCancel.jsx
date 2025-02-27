@@ -11,7 +11,7 @@ import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useEffect } from 'react';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
@@ -70,7 +70,7 @@ const LeaveReqCancel = ({ open, setOpen, data, setCount }) => {
         const LeaveCanceldata = {
             lv_cancel_cmnt: reason,
             lv_cancel_date: moment().format('YYYY-MM-DD HH:mm'),
-            lv_cancel_us_code: employeeNumber(),
+            lv_cancel_us_code: employeeIdNumber(),
             lve_uniq_no: slno
         }
 

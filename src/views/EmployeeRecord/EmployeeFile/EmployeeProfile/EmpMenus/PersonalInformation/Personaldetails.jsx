@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import { axiosellider, axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import DetailsModel from './DetailsModel';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { memo } from 'react';
 import RegionSelectRedux from 'src/views/MuiComponents/RegionSelectRedux';
 import { useDispatch } from 'react-redux';
@@ -338,7 +338,7 @@ const Personaldetails = () => {
             em_bank_branch: bankBranch,
             relation: relation,
             relative_name: relativeName,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
 
         const submitempmast = {
@@ -368,7 +368,7 @@ const Personaldetails = () => {
             em_region: region1,
             hrm_region2: region2,
             em_gender: gender,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
 
 

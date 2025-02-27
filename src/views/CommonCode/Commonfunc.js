@@ -93,7 +93,6 @@ export const getleaverequest = async () => {
 
 // for get leave requesst details
 export const getleaverequestget = async (getDeptSection) => {
-    // console.log(getDeptSection)
     const result = await axioslogin.post('/LeaveRequestApproval/getleaverequestdep', getDeptSection)
     const { success, data } = result.data;
     if (success === 1) {
@@ -125,8 +124,6 @@ export const getleaverequestget = async (getDeptSection) => {
         return leavereqst
 
     } else {
-
-        // console.log('asdh')
         return []
     }
 }
@@ -160,18 +157,15 @@ export const getnopunchrequst = async (getDeptSection) => {
             }
             return data2
         })
-        // setnopunch(nopunchreq)
         return nopunchreq
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
 
 // get halfdayrequest
 export const halfdayrequest = async (getDeptSection) => {
-    // console.log(getDeptSection)
     const result = await axioslogin.post('/LeaveRequestApproval/halfrequst', getDeptSection)
     const { success, data } = result.data;
     if (success === 1) {
@@ -202,13 +196,11 @@ export const halfdayrequest = async (getDeptSection) => {
         return halfdayreq
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
 // get compensatory off  request 
 export const compensatory = async (getDeptSection) => {
-    // console.log(getDeptSection)
     const result = await axioslogin.post('/LeaveRequestApproval/getcompenoff', getDeptSection)
     const { success, data } = result.data;
     if (success === 1) {
@@ -239,7 +231,6 @@ export const compensatory = async (getDeptSection) => {
         return compensatory
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
@@ -312,7 +303,6 @@ export const HrLeave = async () => {
         return HrLeave
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
@@ -347,7 +337,6 @@ export const CEohalfdayrequest = async () => {
         return halfdayreq
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
@@ -382,7 +371,6 @@ export const Hrhalfdayrequest = async () => {
         return halfdayreq
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
@@ -419,7 +407,6 @@ export const getCEOnopunchrequst = async () => {
         return nopunchreq
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
@@ -456,13 +443,11 @@ export const getHRnopunchrequst = async () => {
         return nopunchreq
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
 // get compensatory off  request 
 export const compensatoryCeo = async (getDeptSection) => {
-    // console.log(getDeptSection)
     const result = await axioslogin.get('/LeaveRequestApproval/ceoCoff/Coff')
     const { success, data } = result.data;
     if (success === 1) {
@@ -493,13 +478,11 @@ export const compensatoryCeo = async (getDeptSection) => {
         return compensatory
     }
     else {
-        // console.log('dasds')
         return []
     }
 }
 // get compensatory off  request 
 export const compensatoryHr = async () => {
-    // console.log(getDeptSection)
     const result = await axioslogin.get('/LeaveRequestApproval/HrCoff/coff')
     const { success, data } = result.data;
     if (success === 1) {
@@ -530,7 +513,6 @@ export const compensatoryHr = async () => {
         return compensatory
     }
     else {
-        // console.log('dasds')
         return []
     }
 }

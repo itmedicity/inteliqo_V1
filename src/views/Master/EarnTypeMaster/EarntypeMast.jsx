@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import MasterLayout from '../MasterComponents/MasterLayout'
@@ -43,7 +43,7 @@ const EarntypeMast = () => {
             earn_type: earn_type,
             deduction_status: deduction_status === true ? 1 : 0,
             earntype_status: earntype_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [earn_type, deduction_status, earntype_status])
 

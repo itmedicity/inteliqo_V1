@@ -10,7 +10,7 @@ import { getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthori
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 
 const MissPunchRequest = ({ setRequestType, setCount }) => {
 
@@ -142,7 +142,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                 attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
                 plan_slno: planSlno,
                 shift_id: shiftId,
-                crted_user: employeeNumber(),
+                crted_user: employeeIdNumber(),
                 em_id: em_id,
                 em_no: em_no,
                 em_department: em_department,

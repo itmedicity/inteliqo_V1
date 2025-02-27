@@ -7,7 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import Slide from '@mui/material/Slide';
 import ModelAvailLeavelist from './ModelAvailLeavelist';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { lastDayOfYear } from 'date-fns';
 import moment from 'moment';
@@ -62,7 +62,7 @@ const ModelLeaveProcess = ({
                 lv_process_slno: processslno,
                 em_no: id,
                 category_slno: em_category,
-                process_user: employeeNumber(),
+                process_user: employeeIdNumber(),
                 em_id: no,
                 hrm_clv: ((hrm_clv === 1) && (ecat_cl === 1)) ? 1 : ((hrm_clv === 0) && (ecat_cl === 1)) ? 0 : ((hrm_clv === 2) && (ecat_cl === 1)) ? 0 : 2,
                 hrm_ern_lv: ((hrm_ern_lv === 1) && (ecat_el === 1)) ? 1 : ((hrm_ern_lv === 0) && (ecat_el === 1)) ? 0 : ((hrm_ern_lv === 2) && (ecat_el === 1)) ? 0 : 2,
@@ -81,7 +81,7 @@ const ModelLeaveProcess = ({
                 lv_process_slno: processslno,
                 em_no: id,
                 category_slno: em_category,
-                process_user: employeeNumber(),
+                process_user: employeeIdNumber(),
                 em_id: no,
                 hrm_clv: hrm_clv,
                 hrm_ern_lv: hrm_ern_lv,
@@ -102,7 +102,7 @@ const ModelLeaveProcess = ({
         lv_process_slno: processslno,
         em_no: id,
         category_slno: em_category,
-        process_user: employeeNumber(),
+        process_user: employeeIdNumber(),
         em_id: no,
         hrm_clv: ecat_cl === 1 ? 0 : 2,
         hrm_ern_lv: ecat_el === 1 ? 0 : 2,

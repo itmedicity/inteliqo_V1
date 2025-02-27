@@ -61,12 +61,15 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
     }, [groupStatus])
 
 
-    const [reson, setReason] = useState('')
-    const allLeavesArray = useSelector((state) => allLeavesConvertAnArray(state))
-    const filterdArray = useMemo(() => allLeavesArray, [allLeavesArray]);
 
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
-    const { em_no, em_dept_section } = selectedEmpInform ?? {};
+    //console.log(selectedEmpInform);
+    const { em_no, em_dept_section, actual_doj } = selectedEmpInform ?? {};
+
+
+    const [reson, setReason] = useState('')
+    const allLeavesArray = useSelector((state) => allLeavesConvertAnArray(state, actual_doj))
+    const filterdArray = useMemo(() => allLeavesArray, [allLeavesArray]);
 
 
     const handleRefreshButton = useCallback(() => {

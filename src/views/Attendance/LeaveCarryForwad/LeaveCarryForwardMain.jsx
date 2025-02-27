@@ -3,9 +3,8 @@ import React, { memo, useState } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { addMonths, endOfYear, format, isValid, startOfYear, subMonths, } from 'date-fns';
+import { endOfYear, format, isValid, startOfYear, } from 'date-fns';
 import { Box, Button, Input, Sheet, Table, Tooltip } from '@mui/joy'
-// import InputComponent from '../../MuiComponents/JoyComponent/InputComponent';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { useCallback } from 'react';
 import { axioslogin } from '../../Axios/Axios';
@@ -89,7 +88,6 @@ const LeaveCarryForwardMain = () => {
                 } else if (leaveType === 8) {
                     const result = await axioslogin.post('/yearleaveprocess/getYearlyEarnLeaveCount', postData);
                     const { success, data } = result.data
-                    // console.log(result.data);
                     if (success === 1) {
                         const empEarnLeave = data?.map((i) => {
                             return { ...i, checkStatus: 0 }
@@ -156,8 +154,6 @@ const LeaveCarryForwardMain = () => {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['year']}
-                                minDate={subMonths(new Date(), 1)}
-                                maxDate={addMonths(new Date(), 1)}
                                 value={selectedYear}
                                 size="small"
                                 onChange={(newValue) => {
@@ -176,18 +172,6 @@ const LeaveCarryForwardMain = () => {
                     <Box sx={{ flex: 1, px: 0.5, }}>
                         <JoyLeaveType value={leaveType} setValue={setLeaveType} />
                     </Box>
-                    {/* <Tooltip title="Count" followCursor placement='top' arrow>
-                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
-                            <InputComponent
-                                type="text"
-                                size="sm"
-                                placeholder="Count"
-                                name="count"
-                                value={count}
-                                onchange={(e) => setCount(e.target.value)}
-                            />
-                        </Box>
-                    </Tooltip> */}
                     <Box sx={{ flex: 0, px: 1, }}>
                         <Tooltip title="Save" followCursor placement='top' arrow >
                             <Button

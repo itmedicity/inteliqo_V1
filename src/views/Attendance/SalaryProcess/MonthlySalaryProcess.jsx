@@ -5,34 +5,24 @@ import moment from 'moment';
 import { Button, Chip, Input, Sheet, Table, Typography } from '@mui/joy';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { addMonths, endOfMonth, format, isValid, startOfMonth, subMonths } from 'date-fns';
+import { addMonths, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
 import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useSelector } from 'react-redux';
-import UploadIcon from '@mui/icons-material/Upload';
 import { getAllDeptList } from 'src/redux/actions/Department.action';
-
 import { useQuery, } from 'react-query';
-
-
 import { getAllDeptSectList } from 'src/redux/actions/DepartmentSection.Action';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import { ExportAttendance } from 'src/views/Payroll/AttendanceUpdation/ExportToExcel';
-
 import { ToastContainer } from 'react-toastify';
 import { attendnaceCountCalculationFunc, employeeEarnDeduction, getAllPunchmastData } from './SalaryProcessFunctions';
-
 import { getCommonsettingData } from 'src/views/CommonCode/CommonReactQueries';
-
 
 const MonthlySalaryProcess = () => {
     const [value, setValue] = useState(moment(new Date()));
     const [openBkDrop, setOpenBkDrop] = useState(false);
     const [deptList, setDeptList] = useState([]);
-    const [process, setProcess] = useState(0)
-    const [mainArray, setArray] = useState([])
 
     // get login empid 
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0])
@@ -62,7 +52,6 @@ const MonthlySalaryProcess = () => {
 
     const onProcessClick = useCallback(async () => {
         setOpenBkDrop(true)
-        setProcess(1)
         const getPunchMarkTablePostData = {
             month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
         }
@@ -90,42 +79,21 @@ const MonthlySalaryProcess = () => {
                     }
                 })
 
-                const getData = {
-                    month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
-                }
-                const result = await axioslogin.post('/payrollprocess/processed/empdata', getData);
-                const { success, data: allList } = result.data;
-                if (success === 1) {
-                    const array = allList?.map((val) => {
-                        return {
-                            ...val,
-                            em_account_no: val.account_number,
-                            em_ifsc: val.ifsc_number,
-                            totalDays: val.total_days,
-                            totalLeaves: val.leave_count,
-                            totalHoliday: val.holiday_count,
-                            totalHD: val.halfday_lop_count,
-                            totalLC: val.lc_count,
-                            totallopCount: val.total_lop_count,
-                            paydays: val.total_pay_days,
-                            lopAmount: val.lop_amount,
-                            npsamount: val.nps_amount,
-                            lwfamount: val.lwf_amount,
-                            deductValue: val.deduction_amount,
-                            empSalary: val.gross_salary,
-                            totalSalary: val.total_salary,
-                            holidayworked: val.holidayworked,
-                            holidaySalary: val.holiday_amount
-                        }
-                    })
-                    setArray(array)
-                    setDeptList(findDept)
+                // const getData = {
+                //     month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
+                // }
+                // const result = await axioslogin.post('/payrollprocess/processed/empdata', getData);
+                // const { success, data: allList } = result.data;
+                // if (success === 1) {
 
-                    setOpenBkDrop(false)
-                } else {
-                    warningNofity("No Such data Exist")
-                    setOpenBkDrop(false)
-                }
+
+                //     setDeptList(findDept)
+
+                //     setOpenBkDrop(false)
+                // } else {
+                //     warningNofity("No Such data Exist")
+                //     setOpenBkDrop(false)
+                // }
                 setDeptList(findDept)
                 setOpenBkDrop(false)
             } else if (succ === 2) {
@@ -136,15 +104,9 @@ const MonthlySalaryProcess = () => {
                     em_dept_section: sectArray,
                 }
 
-                // const getEmpData = {
-                //     em_department: [15, 1],
-                //     em_dept_section: [13],
-                // }
-
-
                 const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
                 const { succes, dataa: employeeData } = result1.data
-                if (succes === 1 && isValid(value) && value !== null) {
+                if (succes === 1 && value !== null) {
 
                     employeeEarnDeduction(getEmpData).then((values) => {
                         const { status, data: deductData } = values;
@@ -162,8 +124,7 @@ const MonthlySalaryProcess = () => {
                                     attendnaceCountCalculationFunc(employeeData, deductData, data, value, commonSettings).then(async (allData) => {
                                         const { status, data } = allData
                                         if (status === 1 && data?.length !== 0) {
-                                            //console.log(data)
-                                            setArray(data)
+                                            //setArray(data)
                                             setOpenBkDrop(false)
 
                                             const result1 = await axioslogin.post("/payrollprocess/create/processedSalary", data);
@@ -197,7 +158,7 @@ const MonthlySalaryProcess = () => {
                                                             }),
                                                         }
                                                     })
-                                                    setArray(data)
+                                                    // setArray(data)
                                                     setDeptList(findDept)
                                                     setOpenBkDrop(false)
 
@@ -229,152 +190,6 @@ const MonthlySalaryProcess = () => {
                     warningNofity("Error While Fetching Employee data!")
                     setOpenBkDrop(false)
                 }
-
-                // // IF NO DATA -> INSERT IN TO payroll_processed_salary table
-                // const postData_PunchMarkHR = deptSectionData?.map((e) => {
-                //     return [
-                //         format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                //         e.dept_id,
-                //         e.sect_id,
-                //         1,
-                //         em_no,
-                //         em_no,
-                //         format(endOfMonth(new Date(value)), 'yyyy-MM-dd')
-                //     ]
-                // })
-                // // if condition for check null and undefined 
-                // const insertPunchMarkTable = await axioslogin.post('/payrollprocess/insert/monthlyprocess', postData_PunchMarkHR)
-                // const { success } = insertPunchMarkTable.data
-                // if (success === 1) {
-                //     const findDept = [...new Set(deptSectionData?.map(e => e.dept_id))]?.map((dept) => {
-                //         return {
-                //             "dept_id": dept,
-                //             "dept_name": deptSectionData?.find(e => e.dept_id === dept)?.dept_name,
-                //             "section": deptSectionData?.filter((val) => val.dept_id === dept).map((v) => {
-                //                 return { ...v, "updated": format(startOfMonth(new Date(value)), 'yyyy-MM-dd') }
-                //             }),
-                //         }
-                //     })
-
-                //     // check department and department section > 0
-                //     const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
-
-                //     //  getEmpData.length > 0 and null and undefined 
-                //     const { succes, dataa: employeeData } = result1.data
-                //     if (succes === 1 || isValid(value) || value !== null) {
-
-                //         const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
-                //         const { data: deductData } = result1.data
-
-                //         const arr = employeeData && employeeData.map((val) => val.em_id)
-                //         const postdata = {
-                //             emp_id: arr,
-                //             // emp_id: [168],
-                //             from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                //             to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                //         }
-                //         const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-                //         const { success, data } = result.data
-                //         if (success === 1) {
-                //             const finalDataArry = employeeData?.map((val) => {
-                //                 const empwise = data.filter((value) => value.emp_id === val.em_id)
-
-                //                 const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
-                //                 //  const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
-                //                 const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
-                //                 const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
-                //                 const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
-
-                //                 const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
-
-                //                 const npsamount = val.nps === 1 ? val.npsamount : 0
-                //                 const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
-
-                //                 const onedaySalary = val.gross_salary / getDaysInMonth(new Date(value))
-
-                //                 // const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLOP + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLOP + (totalHD * 0.5)
-                //                 // const totallopCount = totalLOP + (totalHD * 0.5)
-
-                //                 const workday =
-                //                     (empwise?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
-                //                         val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
-                //                         val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
-                //                         val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
-                //                         val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
-                //                         val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length
-
-                //                 const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
-
-                //                 const totalDays = getDaysInMonth(new Date(value))
-                //                 const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
-                //                 const totalPayday = workday + (totalHD * 0.5)
-                //                 const totallopCount = totalDays - totalPayday;
-                //                 // const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
-                //                 const lopamount = totallopCount * (val.gross_salary / totalDays);
-                //                 //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
-                //                 const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
-
-                //                 return {
-                //                     em_no: val.em_no,
-                //                     em_name: val.em_name,
-                //                     branch_name: val.branch_name,
-                //                     dept_name: val.dept_name,
-                //                     sect_name: val.sect_name,
-                //                     ecat_name: val.ecat_name,
-                //                     desg_name: val.desg_name,
-                //                     inst_emp_type: val.inst_emp_type,
-                //                     empSalary: val.gross_salary,
-                //                     em_account_no: val.em_account_no,
-                //                     em_ifsc: val.em_ifsc,
-                //                     totalDays: getDaysInMonth(new Date(value)),
-                //                     totalLeaves: totalLV,
-                //                     totalHoliday: totalH,
-                //                     totallopCount: totalPayday === 0 ? getDaysInMonth(new Date(value)) : totallopCount,
-                //                     holidayworked: totalHP,
-                //                     totalHD: totalHD,
-                //                     totalLC: totalLC,
-                //                     paydays: totalPayday,
-                //                     lopAmount: Math.round(onedaySalary * totallopCount),
-                //                     npsamount: npsamount,
-                //                     lwfamount: lwfamount,
-                //                     holidaySalary: Math.round(holidaysalary),
-                //                     deductValue: deductValue,
-                //                     totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary),
-                //                     branch_slno: val.branch_slno,
-                //                     category_slno: val.category_slno,
-                //                     dept_id: val.dept_id,
-                //                     desg_slno: val.desg_slno,
-                //                     em_id: val.em_id,
-                //                     inst_slno: val.inst_slno,
-                //                     sect_id: val.sect_id,
-                //                     processed_month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                //                 }
-                //             })
-                //             const result1 = await axioslogin.post("/payrollprocess/create/processedSalary", finalDataArry);
-                //             const { success, message } = result1.data
-                //             if (success === 1) {
-                //                 setArray(finalDataArry)
-                //                 setDeptList(findDept)
-
-                //                 setOpenBkDrop(false)
-                //             } else {
-                //                 errorNofity(message)
-                //                 setOpenBkDrop(false)
-                //             }
-                //         }
-                //         else {
-                //             warningNofity("No Punch Details")
-                //             setOpenBkDrop(false)
-                //         }
-                //     } else {
-                //         warningNofity("Error While Fetching data!")
-                //         setOpenBkDrop(false)
-                //     }
-                //     // setOpenBkDrop(false)
-                // } else {
-                //     warningNofity("Error Updating the Punchmarking HR Data ! contact IT")
-                //     //setOpenBkDrop(false)
-                // }
             } else {
                 // IF ERROR
                 warningNofity('----error getting punchmarking table data ! contact IT Department')
@@ -407,10 +222,6 @@ const MonthlySalaryProcess = () => {
             const result1 = await axioslogin.post("/payrollprocess/cancel/process", postDta);
             const { success, message } = result1.data
             if (success === 1) {
-                // setDeptList([])
-                // //setDeptList(findDept)
-                // setOpenBkDrop(false)
-                // succesNofity(message)
                 const result = await axioslogin.get('/payrollprocess/getAcriveDepartmentSection/');
                 const { success, data } = result.data;
                 const deptSectionData = data;
@@ -447,45 +258,146 @@ const MonthlySalaryProcess = () => {
     }, [em_no, value])
 
 
-    const exportDataClick = useCallback(() => {
-        if (process === 0) {
-            warningNofity("Click The Process Button First!")
-        } else {
-            const fileName = format(new Date(value), 'MMMM');
-            const array = mainArray?.map((val) => {
-                return {
-                    'ID': val.em_no,
-                    'Name ': val.em_name,
-                    'Branch': val.branch_name,
-                    'Department': val.dept_name,
-                    'Department Section ': val.sect_name,
-                    'Category ': val.ecat_name,
-                    'Designation ': val.desg_name,
-                    'Institution ': val.inst_emp_type,
-                    'Account Number': val.em_account_no,
-                    'IFSC Number': val.em_ifsc,
-                    'Total Days ': val.totalDays,
-                    "Leave Count": val.totalLeaves,
-                    "Holiday Count": val.totalHoliday,
-                    'No Of Half Day LOP(HD)': val.totalHD,
-                    'No Of LC Count': val.totalLC,
-                    'Total LOP': val.totallopCount,
-                    'Total Pay Day': val.paydays,
-                    'LOP Amount ': val.lopAmount,
-                    'NPS Amount': val.npsamount,
-                    'LWF Amount': val.lwfamount,
-                    'Deduction Amount': val.deductValue,
-                    'Gross Salary ': val.empSalary,
-                    'Total Salary': val.totalSalary,
-                    'Holiday Worked ': val.holidayworked,
-                    'Holiday Amount': val.holidaySalary,
-                }
+    // const exportDataClick = useCallback(() => {
+    //     if (process === 0) {
+    //         warningNofity("Click The Process Button First!")
+    //     } else {
+    //         const fileName = format(new Date(value), 'MMMM');
+    //         const array = mainArray?.map((val) => {
+    //             return {
+    //                 'ID': val.em_no,
+    //                 'Name ': val.em_name,
+    //                 'Branch': val.branch_name,
+    //                 'Department': val.dept_name,
+    //                 'Department Section ': val.sect_name,
+    //                 'Category ': val.ecat_name,
+    //                 'Designation ': val.desg_name,
+    //                 'Institution ': val.inst_emp_type,
+    //                 'Account Number': val.em_account_no,
+    //                 'IFSC Number': val.em_ifsc,
+    //                 'Total Days ': val.totalDays,
+    //                 "Leave Count": val.totalLeaves,
+    //                 "Holiday Count": val.totalHoliday,
+    //                 'No Of Half Day LOP(HD)': val.totalHD,
+    //                 'No Of LC Count': val.totalLC,
+    //                 'Total LOP': val.totallopCount,
+    //                 'Total Pay Day': val.paydays,
+    //                 'LOP Amount ': val.lopAmount,
+    //                 'NPS Amount': val.npsamount,
+    //                 'LWF Amount': val.lwfamount,
+    //                 'Deduction Amount': val.deductValue,
+    //                 'Gross Salary ': val.empSalary,
+    //                 'Total Salary': val.totalSalary,
+    //                 'Holiday Worked ': val.holidayworked,
+    //                 'Holiday Amount': val.holidaySalary,
+    //             }
 
-            })
-            ExportAttendance(array, fileName)
-            setProcess(0)
+    //         })
+    //         ExportAttendance(array, fileName)
+    //         setProcess(0)
+    //     }
+    // }, [process, value, mainArray])
+
+    const insertSectionAttendance = useCallback(async (dept, section, date) => {
+        setOpenBkDrop(true)
+
+        const getEmpData = {
+            em_department: [dept],
+            em_dept_section: [section],
         }
-    }, [process, value, mainArray])
+
+        const postDta = {
+            update_user: em_no,
+            dept_id: dept,
+            sect_id: section,
+            processed_month: format(startOfMonth(new Date(date)), 'yyyy-MM-dd')
+        }
+
+
+        const getPunchMarkTablePostData = {
+            month: format(startOfMonth(new Date(date)), 'yyyy-MM-dd')
+        }
+
+        const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
+        const { succes, dataa: employeeData } = result1.data
+        if (succes === 1 && value !== null) {
+            employeeEarnDeduction(getEmpData).then((values) => {
+                const { status, data: deductData } = values;
+                if (status === 1) {
+                    const arr = employeeData && employeeData.map((val) => val.em_id)
+                    const postdata = {
+                        emp_id: arr,
+                        from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                        to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                    }
+                    getAllPunchmastData(postdata).then((punchmastdata) => {
+                        const { status, data } = punchmastdata;
+                        if (status === 1 && data.length !== 0) {
+
+                            attendnaceCountCalculationFunc(employeeData, deductData, data, value, commonSettings).then(async (allData) => {
+                                const { status, data } = allData
+                                if (status === 1 && data?.length !== 0) {
+                                    setOpenBkDrop(false)
+                                    const result1 = await axioslogin.post("/payrollprocess/create/processedSalary", data);
+                                    const { success, message } = result1.data
+                                    if (success === 1) {
+                                        const result1 = await axioslogin.post("/payrollprocess/activate/processedSalary", postDta);
+                                        const { success, message } = result1.data
+                                        if (success === 1) {
+                                            const result = await axioslogin.get('/payrollprocess/getAcriveDepartmentSection/');
+                                            const { success, data } = result.data;
+                                            const deptSectionData = data;
+                                            if (success === 1) {
+                                                const getPunchMarkingHr_table = await axioslogin.post('/payrollprocess/getmonthdeptlist/', getPunchMarkTablePostData);
+                                                const { succ, data } = getPunchMarkingHr_table.data;
+                                                if (succ === 1) {
+                                                    const punchMarkingTableData = data;
+                                                    const findDept = [...new Set(deptSectionData?.map(e => e.dept_id))]?.map((dept) => {
+                                                        return {
+                                                            "dept_id": dept,
+                                                            "dept_name": deptSectionData?.find(e => e.dept_id === dept)?.dept_name,
+                                                            "section": deptSectionData?.filter((val) => val.dept_id === dept).map((v) => {
+                                                                return {
+                                                                    ...v, "updated": punchMarkingTableData?.find((e) => v.sect_id === e.sect_id)?.last_update_date ?? format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                                                                    "status": punchMarkingTableData?.find((e) => v.sect_id === e.sect_id)?.salary_status ?? 0
+                                                                }
+
+                                                            }),
+                                                        }
+                                                    })
+                                                    setDeptList(findDept)
+                                                    setOpenBkDrop(false)
+                                                    succesNofity(message)
+                                                }
+                                            }
+                                        } else {
+                                            errorNofity(message)
+                                            setOpenBkDrop(false)
+                                        }
+                                    } else {
+                                        errorNofity(message)
+                                        setOpenBkDrop(false)
+                                    }
+                                } else {
+                                    errorNofity("Error While Attendance Calculation")
+                                    setOpenBkDrop(false)
+                                }
+                            })
+                        } else {
+                            errorNofity("Error While Geting All Employee PunchMast Data")
+                            setOpenBkDrop(false)
+                        }
+                    })
+                } else {
+                    errorNofity("Error While Getting Deduction Details!")
+                    setOpenBkDrop(false)
+                }
+            })
+        } else {
+            warningNofity("Error While Fetching Employee data!")
+            setOpenBkDrop(false)
+        }
+    }, [value, em_no, commonSettings])
 
     return (
         <CustomLayout title="Monthly Salary Process" displayClose={true} >
@@ -498,8 +410,8 @@ const MonthlySalaryProcess = () => {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['year', 'month']}
-                                minDate={subMonths(new Date(), 2)}
-                                maxDate={addMonths(new Date(), 1)}
+                                // minDate={subMonths(new Date(), 2)}
+                                // maxDate={addMonths(new Date(), 1)}
                                 value={value}
                                 size="small"
                                 onChange={(newValue) => {
@@ -526,19 +438,6 @@ const MonthlySalaryProcess = () => {
                             sx={{ mx: 0.5 }}
                         >
                             Process
-                        </Button>
-                    </Box>
-                    <Box sx={{ display: 'flex', px: 0.5, width: '15%' }}>
-                        <Button
-                            aria-label="Like"
-                            variant="outlined"
-                            color="primary"
-                            onClick={exportDataClick}
-                            fullWidth
-                            startDecorator={<UploadIcon />}
-                            sx={{ mx: 0.5 }}
-                        >
-                            Export Data
                         </Button>
                     </Box>
                 </Box>
@@ -573,11 +472,11 @@ const MonthlySalaryProcess = () => {
                                                     {/* <td>{e.updated}</td> */}
                                                     <td>
                                                         {
-                                                            monthStart === e.updated ?
+                                                            (monthStart === e.updated) ?
                                                                 <Chip color='neutral' size="sm" variant="solid" startDecorator={<CalendarMonthIcon fontSize='inherit' />}>
                                                                     {e.updated}
                                                                 </Chip> :
-                                                                actSelectDate <= e.updated ?
+                                                                (actSelectDate <= e.updated) && e.status === 1 ?
                                                                     <Chip color='success' size="sm" variant="solid" startDecorator={<CalendarMonthIcon fontSize='inherit' />}>
                                                                         {e.updated}
                                                                     </Chip>
@@ -589,12 +488,19 @@ const MonthlySalaryProcess = () => {
                                                     </td>
                                                     <td>
                                                         <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }} >
-                                                            {/* <Chip
-                                                                    color="success"
-                                                                    onClick={(c) => updateAttendanceProcesss(row.dept_id, e.sect_id, e.updated)}
+                                                            {
+                                                                e.status === 1 ? <Chip
+                                                                    color="neutral"
                                                                     size="sm"
                                                                     variant="outlined"
-                                                                >Update Attendance</Chip> */}
+                                                                >Insert Process</Chip> :
+                                                                    <Chip
+                                                                        color="success"
+                                                                        onClick={(c) => insertSectionAttendance(row.dept_id, e.sect_id, e.updated)}
+                                                                        size="sm"
+                                                                        variant="outlined"
+                                                                    >Insert Process</Chip>
+                                                            }
                                                             {
                                                                 e.status === 1 ? <Chip
                                                                     color="danger"
@@ -603,17 +509,10 @@ const MonthlySalaryProcess = () => {
                                                                     variant="outlined"
                                                                 >Delete Process</Chip> : <Chip
                                                                     color="neutral"
-                                                                    // onClick={() => deleteAttendanceMarkingProcess(row.dept_id, e.sect_id, e.updated)}
                                                                     size="sm"
                                                                     variant="outlined"
                                                                 >Delete Process</Chip>
                                                             }
-                                                            {/* <Chip
-                                                                color="danger"
-                                                                onClick={() => deleteAttendanceMarkingProcess(row.dept_id, e.sect_id, e.updated)}
-                                                                size="sm"
-                                                                variant="outlined"
-                                                            >Delete Process</Chip> */}
                                                         </Box>
                                                     </td>
                                                 </tr>

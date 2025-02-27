@@ -11,7 +11,7 @@ import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
@@ -67,7 +67,7 @@ const NoPunchCancel = ({ open, setOpen, data, setCount }) => {
         const formData = {
             lv_cancel_cmnt: reason,
             lv_cancel_date: moment().format('YYYY-MM-DD HH:mm'),
-            lv_cancel_us_code: employeeNumber(),
+            lv_cancel_us_code: employeeIdNumber(),
             nopunch_slno: slno,
             hrstatus: np_hr_apprv_status,
             punch_in: null,
