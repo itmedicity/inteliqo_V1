@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import { Grid, IconButton } from '@mui/material'
@@ -39,7 +39,7 @@ const ReligionMast = () => {
         return {
             relg_name: relg_name,
             relg_status: relg_status === false ? 0 : 1,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [relg_name, relg_status])
 
@@ -55,7 +55,7 @@ const ReligionMast = () => {
         return {
             relg_name: relg_name,
             relg_status: relg_status === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             relg_slno: slno
         }
     }, [relg_name, relg_status, slno])

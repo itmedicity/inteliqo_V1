@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import SaveIcon from '@mui/icons-material/Save';
@@ -47,7 +47,7 @@ const BranchMast = () => {
         return {
             ...branchData,
             branch_status: branch_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [branchData, branch_status])
 
@@ -55,7 +55,7 @@ const BranchMast = () => {
         return {
             ...branchData,
             branch_status: branch_status === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             branch_slno: slno
         }
     }, [branchData, branch_status, slno])

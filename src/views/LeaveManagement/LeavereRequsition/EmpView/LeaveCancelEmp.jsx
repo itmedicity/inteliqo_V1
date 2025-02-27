@@ -16,8 +16,6 @@ import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDro
 
 const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
 
-    console.log(data);
-
     const [reqDetl, setReqDetl] = useState([]);
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)

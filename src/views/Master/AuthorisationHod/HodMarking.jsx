@@ -1,6 +1,6 @@
 import { IconButton, Paper } from '@mui/material'
 import React, { useState, memo, useCallback, useEffect } from 'react'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import MasterLayout from '../MasterComponents/MasterLayout'
@@ -62,7 +62,7 @@ const HodMarking = () => {
             auth_post: authorization,
             dept_section_post: selectDepSect,
             emp_id: selectEmp,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [deptSection, authorization, selectDepSect, selectEmp])
 

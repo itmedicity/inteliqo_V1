@@ -94,7 +94,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
 
                         return Promise.allSettled(
                             data?.map(async (row, index) => {
-                                // console.log(data)
+
                                 //const sortedShiftData = shiftData?.find((e) => e.shft_slno === shift_id)// SHIFT DATA
                                 //const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
                                 const shiftMergedPunchMaster = {

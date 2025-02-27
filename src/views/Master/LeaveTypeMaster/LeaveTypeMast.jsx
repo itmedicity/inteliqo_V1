@@ -8,7 +8,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import EditIcon from '@mui/icons-material/Edit';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
@@ -64,7 +64,7 @@ const LeaveTypeMast = () => {
             leave_credit_policy_count: leave_policy_count,
             status: status === false ? 0 : 1,
             common_leave: common === true ? 1 : 0,
-            create_user: employeeNumber(),
+            create_user: employeeIdNumber(),
         }
     }, [leave_type, leave_type_code, Leave_Carry_Forwad, half_day, lop, holiday, Leave_avail_training,
         Leave, select_leave_policy, Leave_avail_after_training, leave_policy_count, status, common])
@@ -102,7 +102,7 @@ const LeaveTypeMast = () => {
             is_holiday: holiday === true ? 1 : 0,
             is_leave: Leave === true ? 1 : 0,
             common_leave: common === true ? 1 : 0,
-            edit_user: employeeNumber()
+            edit_user: employeeIdNumber()
         }
     }, [leave_type, leave_type_code, Leave_Carry_Forwad, half_day, lop, holiday, Leave_avail_training,
         Leave, select_leave_policy, leave_policy_count, status, slno, Leave_avail_after_training, common])

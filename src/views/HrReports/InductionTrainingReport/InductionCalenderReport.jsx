@@ -45,7 +45,6 @@ const InductionCalenderReport = () => {
             const SelectDatas = async (postdata) => {
                 const result = await axioslogin.post(`/TrainingInductionReport/SelectInductCalenderReport`, postdata)
                 const { data, success } = result.data
-                console.log(data);
                 if (success === 2) {
                     const viewData = data?.map((val) => {
                         const object = {

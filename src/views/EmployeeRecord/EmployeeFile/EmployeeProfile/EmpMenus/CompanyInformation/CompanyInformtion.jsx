@@ -8,7 +8,7 @@ import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/
 import DepartmentSectionSelect from 'src/views/CommonCode/DepartmentSectionSelect'
 import EmployeeCategory from 'src/views/CommonCode/EmployeeCategory'
 import EmployeeInstitutiontype from 'src/views/CommonCode/EmployeeInstitutiontype'
-import { employeeNumber, getProcessserialnum, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
+import { employeeIdNumber, getProcessserialnum, SELECT_CMP_STYLE } from 'src/views/Constant/Constant'
 import ModelLeaveProcess from 'src/views/EmployeeRecord/EmployeeFile/EmpFileComponent/ModelLeaveProcess'
 //import { format } from 'date-fns'
 import { CssVarsProvider } from '@mui/joy'
@@ -189,8 +189,8 @@ const CompanyInformtion = () => {
             em_prob_end_date: moment(probationperiod).format('YYYY-MM-DD'),
             contract_status: empstatus === 1 ? 1 : 0,
             probation_status: probsataus === 1 ? 1 : 0,
-            create_user: employeeNumber(),
-            edit_user: employeeNumber(),
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
             em_id: no,
             em_no: id,
             com_designation: designation,

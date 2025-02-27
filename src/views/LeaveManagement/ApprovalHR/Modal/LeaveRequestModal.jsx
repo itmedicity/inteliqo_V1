@@ -41,21 +41,6 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount, previousLeave }) => 
         if (lve_uniq_no !== null && lve_uniq_no !== undefined) {
             getLeaveReqDetl(lve_uniq_no)
         }
-
-        // const getleaveMonthData = async () => {
-        //     const postdata = {
-        //         emp_id: [em_id],
-        //         // emp_id: [168],
-        //         from: format(startOfMonth(new Date(data?.fromDate)), 'yyyy-MM-dd'),
-        //         to: format(endOfMonth(new Date(data?.fromDate)), 'yyyy-MM-dd'),
-        //     }
-        //     const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-        //     const { success, data: punchmast } = result.data
-        //     console.log(punchmast);
-        // }
-
-
-        // getleaveMonthData()
     }, [lve_uniq_no, data, em_id])
 
     //UPDATE LEAVE FUNCTION 

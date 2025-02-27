@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import { Box, Button, CssVarsProvider } from '@mui/joy'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
@@ -64,7 +64,7 @@ const EarnDectmast = () => {
             include_protax: inclu_protx === true ? 1 : 0,
             erning_type_id: earn,
             earnded_status: earndec_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [ern_deducttype, earn, incl_esi, inc_lwf, inclu_pf, inclu_protx, earndec_status])
 
@@ -77,7 +77,7 @@ const EarnDectmast = () => {
             include_protax: inclu_protx === true ? 1 : 0,
             erning_type_id: earn,
             earnded_status: earndec_status === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             earnded_id: slno
         }
     }, [ern_deducttype, earn, incl_esi, inc_lwf, inclu_pf, inclu_protx, slno, earndec_status])

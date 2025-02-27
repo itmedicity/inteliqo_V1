@@ -4,7 +4,7 @@ import SessionCheck from 'src/views/Axios/SessionCheck'
 import NationSlnoSelection from 'src/views/CommonCode/NationSlnoSelection'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import { Button, Box, CssVarsProvider } from '@mui/joy'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
@@ -43,7 +43,7 @@ const StateMaster = () => {
             state_name,
             state_nat_slno: nation,
             state_status: state_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [state_name, nation, state_status])
 
@@ -61,7 +61,7 @@ const StateMaster = () => {
             state_name,
             state_nat_slno: nation,
             state_status: state_status === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             state_slno: slno
         }
     }, [state_name, nation, state_status, slno])

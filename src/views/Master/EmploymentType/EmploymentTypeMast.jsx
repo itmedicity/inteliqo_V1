@@ -4,7 +4,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { useHistory } from 'react-router-dom'
 import { memo } from 'react'
 import { errorNofity, infoNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import { Box, Button, CssVarsProvider, Grid, Tooltip, Typography } from '@mui/joy'
 import JoyEmployeeTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyEmployeeTypeSelect'
@@ -129,7 +129,7 @@ const EmploymentTypeMast = () => {
             ecate_pf: pf === true ? 1 : 0,
             ecat_wwf: wwf === true ? 1 : 0,
             ecat_lwf: lwf === true ? 1 : 0,
-            create_users: employeeNumber()
+            create_users: employeeIdNumber()
         }
         const result = await axioslogin.post('/empcat', postData);
         const { success, message } = result.data;

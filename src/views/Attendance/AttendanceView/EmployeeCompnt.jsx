@@ -76,15 +76,13 @@ const EmployeeCompnt = ({ em_no, empSalary, em_dept_section }) => {
                         let grossSalary = empArray?.find(e => e.em_no === el).gross_salary;
                         let unauthorized = empArray?.find(e => e.em_no === el).unauthorized_absent_status;
 
-                        // console.log(dateRange)
-                        // console.log(empArray)
                         return {
                             em_no: el,
                             emName: emName,
                             dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
                             daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
                             punchMaster: dateRange?.map((e) => {
-                                // console.log(e)
+
                                 return {
                                     attDate: e,
                                     duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
@@ -128,7 +126,7 @@ const EmployeeCompnt = ({ em_no, empSalary, em_dept_section }) => {
                     setOpenBkDrop(false)
                 }
             } else {
-                // console.log(lastUpdateDate)
+
                 const today = format(new Date(), 'yyyy-MM-dd');
                 const selectedDate = format(new Date(value), 'yyyy-MM-dd');
                 const todayStatus = selectedDate <= today ? true : false; // selected date less than today date

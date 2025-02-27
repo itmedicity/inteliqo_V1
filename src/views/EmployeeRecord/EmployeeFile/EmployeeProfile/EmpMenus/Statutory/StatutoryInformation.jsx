@@ -3,7 +3,7 @@ import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import { Button, CssVarsProvider, Tooltip, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
@@ -161,8 +161,8 @@ const StatutoryInformation = () => {
             em_esi_status: esi === false ? 0 : 1,
             em_esi_no: esino,
             em_grade: selectGrade,
-            create_user: employeeNumber(),
-            edit_user: employeeNumber(),
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
             nps: nps === false ? 0 : 1,
             npsnumber: npsnumber,
             npsamount: npsamount,
@@ -183,7 +183,7 @@ const StatutoryInformation = () => {
             em_esi_no: esino,
             em_grade: selectGrade,
             esi_slno: value,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             nps: nps === false ? 0 : 1,
             npsnumber: npsnumber,
             npsamount: npsamount,
@@ -205,15 +205,15 @@ const StatutoryInformation = () => {
             lwf_status: lwf === false ? 0 : 1,
             lwfnumber: lwfnumber,
             lwfamount: lwfamount,
-            create_user: employeeNumber(),
-            edit_user: employeeNumber(),
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
         }
     }, [id, no, nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
 
     const postNpsEdit = useMemo(() => {
         return {
             em_id: no,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             nps: nps === false ? 0 : 1,
             npsnumber: npsnumber,
             npsamount: npsamount,
@@ -235,7 +235,7 @@ const StatutoryInformation = () => {
             em_esi_no: esino,
             em_grade: selectGrade,
             esi_slno: value,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             nps: nps === false ? 0 : 1,
             npsnumber: npsnumber,
             npsamount: npsamount,

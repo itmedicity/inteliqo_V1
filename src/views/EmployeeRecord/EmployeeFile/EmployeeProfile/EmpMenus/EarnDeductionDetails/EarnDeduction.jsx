@@ -5,7 +5,7 @@ import ModalOne from 'src/views/CommonCode/ModalOne'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { Box, IconButton, Paper } from '@mui/material'
 import moment from 'moment';
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { Button, CssVarsProvider, Tooltip, Typography } from '@mui/joy'
 import CommonCheckBox from 'src/views/Component/CommonCheckBox'
@@ -119,7 +119,7 @@ const EarnDeduction = () => {
             em_amount: em_amount,
             em_start_date: month_start,
             em_end_date: month_end,
-            create_user: employeeNumber(),
+            create_user: employeeIdNumber(),
         }
     }, [id, no, wage, em_earning_type, em_amount, month_start, month_end])
 
@@ -148,7 +148,7 @@ const EarnDeduction = () => {
             em_amount: em_amount,
             em_start_date: month_start,
             em_end_date: month_end,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             last_wage: LastWage,
             ernded_slno: slno,
         }

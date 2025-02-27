@@ -1,4 +1,4 @@
-import { add, addYears, endOfYear, format, getMonth, subMonths, subYears } from "date-fns";
+import { add, addYears, differenceInDays, endOfYear, format, getMonth, subMonths, subYears } from "date-fns";
 import moment from "moment";
 import { getDepartmentSectionBasedHod } from "src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction";
 
@@ -39,7 +39,7 @@ export const findBalanceCommonLeveCount = (state) => {
 
 
 //GET AND FILTER ALL LEAVE AND CONVERT TO AN ARRAY
-export const allLeavesConvertAnArray = (state) => {
+export const allLeavesConvertAnArray = (state, actual_doj) => {
     let creditedLeavesArray = {
         status: false,
         data: []
@@ -56,6 +56,9 @@ export const allLeavesConvertAnArray = (state) => {
 
     // console.log(compansatoryOff);
     // console.log(commonLeaves);
+    //console.log(actual_doj);
+
+    const result = differenceInDays(new Date(), new Date(actual_doj))
 
 
     // Push casual leaves to the array if available
@@ -107,7 +110,7 @@ export const allLeavesConvertAnArray = (state) => {
                 common_slno: 0,
                 cmn: 0
             }
-        })?.filter((e) => e.lveRequest === 0) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+        })?.filter((e) => e.lveRequest === 0 && result > 365) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
         //console.log(newErnLeaves);
         // Sort the array by year in ascending order
         const sortedLeavesByYear = newErnLeaves.sort((a, b) => {

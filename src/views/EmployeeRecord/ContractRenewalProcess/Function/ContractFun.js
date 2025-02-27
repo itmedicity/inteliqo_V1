@@ -1,6 +1,6 @@
 import { axioslogin } from "src/views/Axios/Axios"
 import { warningNofity } from "src/views/CommonCode/Commonfunc"
-import { employeeNumber } from "src/views/Constant/Constant"
+import { employeeIdNumber } from "src/views/Constant/Constant"
 
 export const employeeRecordUpdationMandatory = async (oldPersonalData) => {
 
@@ -96,7 +96,7 @@ export const updateEmployeeMasterTable = async (updateempMast, no, updateSlno) =
                     emp_username: updateempMast.em_no,
                     emp_password: updateempMast.em_no,
                     emp_email: em_email,
-                    create_user: employeeNumber()
+                    create_user: employeeIdNumber()
                 }
                 // update hrm_employee table
                 const resultemployee = await axioslogin.post('/employee', submitemployee);

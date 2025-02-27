@@ -16,6 +16,7 @@ import _ from 'underscore';
 import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { employeeIdNumber } from "src/views/Constant/Constant";
 
 const BuilShiftUpdationModal = ({ open, handleChange, emNo, updation }) => {
 
@@ -49,6 +50,7 @@ const BuilShiftUpdationModal = ({ open, handleChange, emNo, updation }) => {
             return {
                 ...val,
                 shift_id: checked === true && sunday === '0' ? week_off_day : shift,
+                edit_user: employeeIdNumber()
             }
         })
 

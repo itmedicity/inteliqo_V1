@@ -3,7 +3,7 @@ import { ToastContainer } from 'react-toastify'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import { useCallback } from 'react'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import { Box, Button, CssVarsProvider } from '@mui/joy'
@@ -43,7 +43,7 @@ const SpecializationMaster = () => {
             spec_desc,
             cour_slno: course,
             spec_status: spec_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [spec_desc, course, spec_status])
 
@@ -61,7 +61,7 @@ const SpecializationMaster = () => {
             spec_desc,
             cour_slno: course,
             spec_status: spec_status === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             spec_slno: slno
         }
     }, [spec_desc, course, slno, spec_status])
@@ -116,7 +116,7 @@ const SpecializationMaster = () => {
 
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'spec_slno', width: 100 },
-        { headerName: 'Specialization', field: 'spec_desc', filter: true, width: 150 },
+        { headerName: 'Specialization', field: 'spec_desc', filter: true, width: 250 },
         { headerName: 'Course', field: 'cour_desc', filter: true, width: 150 },
         { headerName: 'Status ', field: 'status', width: 100 },
         {

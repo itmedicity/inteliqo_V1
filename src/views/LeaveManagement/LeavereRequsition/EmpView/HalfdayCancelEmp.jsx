@@ -13,7 +13,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
@@ -52,7 +52,7 @@ const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
         return {
             lv_cancel_cmnt: reason,
             lv_cancel_date: moment().format('YYYY-MM-DD HH:mm'),
-            lv_cancel_us_code: employeeNumber(),
+            lv_cancel_us_code: employeeIdNumber(),
             half_slno: slno,
             hrm_cl_slno: planSlno,
             hrstatus: hrStatus,

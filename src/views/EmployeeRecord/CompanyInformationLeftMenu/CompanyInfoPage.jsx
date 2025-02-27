@@ -9,7 +9,7 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import LibraryAddCheckOutlinedIcon from '@mui/icons-material/LibraryAddCheckOutlined';
 import { ToastContainer } from 'react-toastify'
 import moment from 'moment'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import CloseIcon from '@mui/icons-material/Close';
 import JoyBranchSelect from 'src/views/MuiComponents/JoyComponent/JoyBranchSelect'
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment'
@@ -189,8 +189,8 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
             em_prob_end_date: probsataus === 1 ? moment(probationperiod).format('YYYY-MM-DD') : '2000-01-31',
             contract_status: empstatus === 1 ? 1 : 0,
             probation_status: probsataus === 1 ? 1 : 0,
-            create_user: employeeNumber(),
-            edit_user: employeeNumber(),
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
             em_id: empId,
             em_no: empNo,
             com_designation: oldDesg,
@@ -204,7 +204,7 @@ const CompanyInfoPage = ({ emno, empid, setOpen }) => {
             em_conf_end_date: cateineffectdate,
             // status: 0
         }
-    }, [branch, dept, institute, category, oldCate,
+    }, [branch, dept, institute, category, oldCate, external_trainee, doj,
         probationperiod, empstatus, probsataus, empNo, empId, designation, oldDesg,
         ineffectdate, deptSection, cateineffectdate])
 

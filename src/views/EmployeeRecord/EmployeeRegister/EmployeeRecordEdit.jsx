@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router'
 import moment from 'moment'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import {
     errorNofity,
     infoNofity,
@@ -293,7 +293,7 @@ const EmployeeRecordEdit = () => {
             em_retirement_date: moment(endOfMonth(new Date(retirementyear))).format('YYYY-MM-DD'),
             em_contract_end_date: moment(endOfMonth(new Date(cont_perioddate))).format('YYYY-MM-DD'),
             em_status: empstatus === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             addressPermnt1: addressPermnt1,
             addressPermnt2: addressPermnt2,
             perPincode: permantPin,

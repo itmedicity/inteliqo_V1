@@ -5,7 +5,7 @@ import SessionCheck from "src/views/Axios/SessionCheck"
 import { ToastContainer } from "react-toastify"
 import { succesNofity, warningNofity } from "src/views/CommonCode/Commonfunc"
 import { axioslogin } from "src/views/Axios/Axios"
-import { employeeNumber } from "src/views/Constant/Constant"
+import { employeeIdNumber } from "src/views/Constant/Constant"
 import { format, isAfter, startOfYear } from "date-fns"
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -59,7 +59,7 @@ const YearlyLeaveCalendarMast = () => {
             hld_year: format(new Date(holidaydate), "yyyy"),
             hld_status: status === false ? 0 : 1,
             special_type: gtype,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [leavetype, calendar_leave, status, holidaydate, gtype])
 
@@ -70,7 +70,7 @@ const YearlyLeaveCalendarMast = () => {
             hld_status: status === true ? 1 : 0,
             hld_date: format(new Date(holidaydate), "yyyy-MM-dd"),
             lvetype_slno: leavetype,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             special_type: gtype,
             hld_slno: slno
         }

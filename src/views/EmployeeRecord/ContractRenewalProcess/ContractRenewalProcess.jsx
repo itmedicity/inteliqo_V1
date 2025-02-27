@@ -11,7 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { getContractClosedata } from 'src/redux/reduxFun/reduxHelperFun';
 
 const EXistContractDetl = React.lazy(() => import('./EXistContractDetl'))
@@ -214,7 +214,7 @@ const ContractRenewalProcess = () => {
       emp_username: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo,
       emp_password: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo,
       emp_email: email,
-      create_user: employeeNumber(),
+      create_user: employeeIdNumber(),
       dutyplanData: dutyplanData,
       punchmast: punchmast,
       punchslno: punchslno,
@@ -274,12 +274,9 @@ const ContractRenewalProcess = () => {
           } else {
             warningNofity(message)
           }
-
         } else {
           warningNofity(message)
         }
-
-
       }
     }
   }, [contractTpPermanent, newCatgeory, permanentEmpNo, updateempMast, attendancedetls,

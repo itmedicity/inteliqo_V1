@@ -292,7 +292,6 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                                 commonLeavePromise
 
                             ]).then(async (result) => {
-                                //  console.log(result);
                                 if (result) {
                                     const result = await axioslogin.post('/LeaveRequestApproval/cancel/lvReqDetail', LeaveRejectdata)
                                     const { success } = result.data;

@@ -70,32 +70,6 @@ const EXistContractDetl = ({ id, no, fine, setFine, setgraceperiod }) => {
         }
         getFinedetl()
     }, [no, setFine])
-
-    //function for Closing first contract
-    // const ContractClose = useCallback(() => {
-    //     if ((em_cont_end !== '' && grace_period !== '') && (addDays(new Date(em_cont_end), grace_period) < new Date())) {
-    //         dispatch({
-    //             type: Actiontypes.FETCH_CONTRACT_CLOSE_DATA, payload: {
-    //                 status: 1,
-    //                 em_cont_close: 'C',
-    //                 em_cont_compl_status: 'C',
-    //                 em_cont_renew: 'R',
-    //                 em_cont_close_date: moment(new Date()).format('YYYY-MM-DD'),
-    //                 em_cont_renew_date: moment(new Date()).format('YYYY-MM-DD'),
-    //                 em_no: id,
-    //                 edit_user: employeeNumber()
-    //             }
-    //         })
-    //         succesNofity("Contract Closed Successfully")
-    //         setView(1)
-    //     }
-    //     else {
-    //         warningNofity("Grace Period Not Completed")
-    //         setView(0)
-    //     }
-    // }, [em_cont_end, grace_period, id, dispatch])
-
-    // const { em_cont_start, em_cont_end, em_no, em_name, ecat_name, grace_period, desg_name, sect_name } = formData
     return (
         <Card
             variant="outlined"

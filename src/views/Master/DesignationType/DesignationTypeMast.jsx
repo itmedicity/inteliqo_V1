@@ -6,7 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { errorNofity, infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import DesignationTypeTable from './DesignationTypeTable';
 
 const DesignationTypeMast = () => {
@@ -34,7 +34,7 @@ const DesignationTypeMast = () => {
     const postData = {
         empstat_name,
         desigstatus: desigstatus === true ? 1 : 0,
-        create_user: employeeNumber()
+        create_user: employeeIdNumber()
     }
 
     const submitDesigTypeUpdate = async (e) => {

@@ -3,7 +3,7 @@ import TextInput from 'src/views/Component/TextInput';
 import { Switch, Typography, Stack, IconButton } from '@mui/material'
 import '../EmpStyle.css'
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc';
 import moment from 'moment';
@@ -36,7 +36,7 @@ const FixedWagesSalaryIncre = ({ value, emno, emid }) => {
         incr_start_date: moment(start_date).format('YYYY-MM-DD'),
         incre_type: increment_type === false ? 0 : 1,
         incre_amount: increment_type === false ? parseInt(em_amount) - parseInt(increment_amount) : parseInt(em_amount) + parseInt(increment_amount),
-        create_user: employeeNumber()
+        create_user: employeeIdNumber()
     }
 
     //saving salary increment setting

@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import ShiftSelect from 'src/views/CommonCode/ShiftSelect';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'underscore';
 import MasterLayout from '../MasterComponents/MasterLayout';
-import { Box, Button, CssVarsProvider, Table } from '@mui/joy';
+import { Box, Button, CssVarsProvider, Table, Tooltip } from '@mui/joy';
 import { IconButton, Paper, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
@@ -105,13 +105,13 @@ const DepartmentShiftMast = () => {
             dept_id: dept,
             sect_id: deptSect,
             shft_code: newdatas,
-            updated_user: employeeNumber()
+            updated_user: employeeIdNumber()
         }
         const patchdata = {
             dept_id: dept,
             sect_id: deptSect,
             shft_code: newdatas,
-            updated_user: employeeNumber(),
+            updated_user: employeeIdNumber(),
             dept_shift_Slno: slno,
         }
 
@@ -214,25 +214,29 @@ const DepartmentShiftMast = () => {
                                 <ShiftSelect value={shift} setValue={setShift} setShiftName={setShiftName} />
                             </Box>
                             <CssVarsProvider>
-                                <Button aria-label="Like" variant="outlined" color="primary" onClick={getShiftData} sx={{
-                                    color: '#90caf9'
-                                }} >
-                                    <AddCircleOutlineIcon />
-                                </Button>
+                                <Tooltip title="Add" followCursor placement='top' arrow >
+                                    <Button aria-label="Like" variant="outlined" color="primary" onClick={getShiftData} sx={{
+                                        color: '#90caf9'
+                                    }} >
+                                        <AddCircleOutlineIcon />
+                                    </Button>
+                                </Tooltip>
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ px: 0.5, mt: 0.9 }}>
-                            <CssVarsProvider>
-                                <Button
-                                    variant="outlined"
-                                    component="label"
-                                    size="md"
-                                    color="primary"
-                                    onClick={submitFormData}
-                                >
-                                    <SaveIcon />
-                                </Button>
-                            </CssVarsProvider>
+                            <Tooltip title="Save" followCursor placement='top' arrow >
+                                <CssVarsProvider>
+                                    <Button
+                                        variant="outlined"
+                                        component="label"
+                                        size="md"
+                                        color="primary"
+                                        onClick={submitFormData}
+                                    >
+                                        <SaveIcon />
+                                    </Button>
+                                </CssVarsProvider>
+                            </Tooltip>
                         </Box>
                         <Box sx={{ flex: 1, mt: 0.5 }}></Box>
                         <Box sx={{ flex: 1, mt: 0.5 }}></Box>

@@ -4,7 +4,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import MasterLayout from '../MasterComponents/MasterLayout'
@@ -34,7 +34,7 @@ const QualificationMast = () => {
         return {
             qual_name,
             qual_status: qual_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [qual_status, qual_name])
 
@@ -51,7 +51,7 @@ const QualificationMast = () => {
             qual_name,
             qual_status: qual_status === true ? 1 : 0,
             qual_slno: slno,
-            edit_user: employeeNumber()
+            edit_user: employeeIdNumber()
         }
     }, [qual_status, qual_name, slno])
 

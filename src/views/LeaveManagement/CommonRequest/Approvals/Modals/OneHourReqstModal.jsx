@@ -13,8 +13,6 @@ import { useSelector } from 'react-redux';
 
 const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
 
-    console.log(data);
-
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [remark, setRemark] = useState('');
     const [details, setDetails] = useState(
@@ -41,18 +39,14 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
             shift_id: 0
         }
     )
-    const { slno, emno, name, section, reqDate, dutyDate, reason, shft_desc, checkIn, checkOut,
+    const { slno, emno, name, section, reqDate, dutyDate, reason, shft_desc,
         inchargeComment, hodComment, checkInFlag, checkOutFlag, dept_sect_id,
         one_hour_day, shift_id
     } = details;
 
-    console.log(details);
-
     const loginem_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
     const shiftData = useSelector((state) => state?.getShiftList?.shiftDetails)
     const commonSettings = useSelector((state) => state?.getCommonSettings)
-
-    console.log(commonSettings);
 
     const {
         cmmn_early_out, // Early going time interval
@@ -116,22 +110,22 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
         }
     }, [remark, slno, loginem_id])
 
-    const hrApprove = useMemo(() => {
-        return {
-            checkintime: checkIn,
-            checkouttime: checkOut,
-            checkinflag: checkInFlag,
-            checkoutflag: checkOutFlag,
-            emno: emno,
-            dutyDay: moment(dutyDate).format('YYYY-MM-DD HH:mm'),
-            hr_approval_status: 1,
-            hr_approval_comment: remark,
-            hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            hr_empId: loginem_id,
-            request_slno: slno
-        }
-    }, [remark, slno, checkIn, checkOut, checkInFlag, checkOutFlag,
-        dutyDate, emno, loginem_id])
+    // const hrApprove = useMemo(() => {
+    //     return {
+    //         checkintime: checkIn,
+    //         checkouttime: checkOut,
+    //         checkinflag: checkInFlag,
+    //         checkoutflag: checkOutFlag,
+    //         emno: emno,
+    //         dutyDay: moment(dutyDate).format('YYYY-MM-DD HH:mm'),
+    //         hr_approval_status: 1,
+    //         hr_approval_comment: remark,
+    //         hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
+    //         hr_empId: loginem_id,
+    //         request_slno: slno
+    //     }
+    // }, [remark, slno, checkIn, checkOut, checkInFlag, checkOutFlag,
+    //     dutyDate, emno, loginem_id])
 
 
     const handleRejectRequest = useCallback(async () => {
@@ -188,11 +182,9 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                     const { su, result_data } = punch_data.data;
                     if (su === 1) {
                         const punchaData = result_data;
-                        console.log(punchaData);
                         const punch_master_data = await axioslogin.post("/attendCal/attendanceshiftdetl/", punchmastData); //GET PUNCH MASTER DATA
                         const { success, data } = punch_master_data.data;
                         if (success === 1) {
-                            console.log(data);
                             let shiftIn = `${format(new Date(dutyDate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkInTime), 'HH:mm:ss')}`;
                             let shiftOut = crossDayStat === 0 ? `${format(new Date(dutyDate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}` :
                                 `${format(addDays(new Date(dutyDate), 1), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}`;
@@ -308,7 +300,10 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                 errorNofity("Error getting PunchMarkingHR ")
             }
         }
-    }, [remark, dutyDate, dept_sect_id, hrApprove, setCount, setOpen, emno])
+    }, [remark, dutyDate, dept_sect_id, setCount, setOpen, emno, checkInFlag, checkOutFlag,
+        cmmn_early_out, cmmn_grace_period, cmmn_late_in, comp_hour_count, crossDay, crossDayStat,
+        default_shift, halfday_time_count, loginem_id, noff, notapplicable_shift, salary_above,
+        slno, week_off_day])
 
 
     return (

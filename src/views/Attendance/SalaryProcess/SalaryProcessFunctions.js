@@ -18,7 +18,10 @@ export const getAllPunchmastData = async (postdata) => {
     const { data, success } = result.data
     if (success === 1) {
         return { ...dataObj, status: 1, data: data }
-    } else {
+    } else if (success === 0) {
+        return { ...dataObj, status: 0, data: [] }
+    }
+    else {
         return { ...dataObj, status: 0, data: [] }
     }
 }

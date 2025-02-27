@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import { axioslogin } from 'src/views/Axios/Axios'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import SessionCheck from 'src/views/Axios/SessionCheck'
@@ -44,7 +44,7 @@ const CarryforwardMast = () => {
             carry_cl: carry_cl === true ? 1 : 0,
             carry_el: carry_el === true ? 1 : 0,
             carry_sl: carry_sl === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [deptSect, emptype, carry_hl, carry_cl, carry_el, carry_sl])
 
@@ -67,7 +67,7 @@ const CarryforwardMast = () => {
             carry_cl: carry_cl === true ? 1 : 0,
             carry_el: carry_el === true ? 1 : 0,
             carry_sl: carry_sl === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             carry_slno: slno
         }
     }, [slno, deptSect, emptype, carry_hl, carry_cl, carry_el, carry_sl])

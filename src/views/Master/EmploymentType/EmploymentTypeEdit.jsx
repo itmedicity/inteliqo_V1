@@ -3,7 +3,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { useHistory, useParams } from 'react-router-dom'
 import { memo } from 'react'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import { Box, Button, CssVarsProvider, Grid, Tooltip, Typography } from '@mui/joy'
 import JoyEmployeeTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyEmployeeTypeSelect'
@@ -145,7 +145,7 @@ const EmploymentTypeEdit = () => {
             ecat_prob: probation === true ? 1 : 0,
             ecat_prob_period: probation_day_count,
             ecat_holiday: holiday === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             cont_grace: contract_grace_period,
             ecate_pf: pf === true ? 1 : 0,
             ecat_wwf: wwf === true ? 1 : 0,

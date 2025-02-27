@@ -5,7 +5,12 @@ import { useSelector } from 'react-redux'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import CustomTypoTwo from 'src/views/Component/MuiCustomComponent/CustomTypoTwo'
-import { casualLeaveInsertFun, getEmployeeProcessStartAndEndDate, insertCommonLeaves, insertEarnLeaves, insertHolidayFun, updateCasualLeave, updateCommonLeaves, updateEarnLeaves, updateHolidayLeaves } from 'src/views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/Functions/LeaveProcessFun'
+import {
+    casualLeaveInsertFun, getEmployeeProcessStartAndEndDate,
+    insertAnnualEarnLeaves, insertCommonLeaves, insertHolidayFun,
+    updateCasualLeave, updateCommonLeaves, updateEarnLeavesAfterRenewal,
+    updateHolidayLeaves
+} from 'src/views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/LeaveProcess/Functions/LeaveProcessFun'
 
 
 const LeaveProcessModal = ({ open, setOpen, empdata, empCategory, newLeaveData }) => {
@@ -50,10 +55,6 @@ const LeaveProcessModal = ({ open, setOpen, empdata, empCategory, newLeaveData }
     }, [category, update])
 
 
-
-
-
-
     const handleColse = useCallback(async () => {
         setOpen(false)
     }, [setOpen])
@@ -66,7 +67,7 @@ const LeaveProcessModal = ({ open, setOpen, empdata, empCategory, newLeaveData }
         const esiStatus = em_esi_status === null ? 0 : em_esi_status
 
         getEmployeeProcessStartAndEndDate(empCategoryProcessDetl).then((calulatedProcessDate) => {
-            const { em_gender, date_of_join } = empCategoryProcessDetl;
+            const { em_gender, date_of_join, actual_doj } = empCategoryProcessDetl;
             const { status } = calulatedProcessDate;
 
             if (status === 0) {
@@ -112,9 +113,9 @@ const LeaveProcessModal = ({ open, setOpen, empdata, empCategory, newLeaveData }
                 }
                 else if (leave === 3) {
                     // Earn Leave Process and Leave Crediting
-                    updateEarnLeaves(calulatedProcessDate, lv_process_slno, em_id, em_no).then((dateRange) => {
+                    updateEarnLeavesAfterRenewal(calulatedProcessDate, lv_process_slno, em_id, em_no).then((dateRange) => {
                         //insert privilege leaves
-                        insertEarnLeaves(dateRange, lv_process_slno, date_of_join, em_no).then((msage) => {
+                        insertAnnualEarnLeaves(dateRange, lv_process_slno, actual_doj, em_no).then((msage) => {
                             let { status, message } = msage;
                             if (status === 1) {
                                 infoNofity(message)
@@ -123,9 +124,9 @@ const LeaveProcessModal = ({ open, setOpen, empdata, empCategory, newLeaveData }
                             } else {
                                 warningNofity(message)
                             }
-                        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -152' + err) })
+                        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -127' + err) })
 
-                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 154' + err) })
+                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 129' + err) })
 
                 }
                 else if (leave === 4) {
@@ -148,9 +149,9 @@ const LeaveProcessModal = ({ open, setOpen, empdata, empCategory, newLeaveData }
                                 } else {
                                     warningNofity(message)
                                 }
-                            }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -174 ' + err) })
+                            }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -152 ' + err) })
                         }
-                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!line 177' + err) })
+                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!line 154' + err) })
 
                 }
             }

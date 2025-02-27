@@ -8,7 +8,7 @@ import EarnDeductionSelection from 'src/views/MuiComponents/EarnDeductionSelecti
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import Close from '@mui/icons-material/Close';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import EditIcon from '@mui/icons-material/Edit';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
@@ -105,7 +105,7 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
             em_amount: em_amount,
             em_start_date: month_start,
             em_end_date: month_end,
-            create_user: employeeNumber(),
+            create_user: employeeIdNumber(),
         }
     }, [wage, em_earning_type, em_amount, empId, Empno, month_start, month_end])
 
@@ -177,11 +177,10 @@ const EarnDeductionModel = ({ open, setOpen, Empno, empId, recomendeSalary, setM
             em_amount: em_amount,
             em_start_date: month_start,
             em_end_date: month_end,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             last_wage: LastWage,
             ernded_slno: slno,
         }
-
     }, [empId, Empno, wage, em_amount, LastWage, slno, month_start, month_end])
 
     const submitAllowance = useCallback(() => {

@@ -15,7 +15,7 @@ import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyDesignationSelect from 'src/views/MuiComponents/JoyComponent/JoyDesignationSelect'
 import { setPersonalData } from 'src/redux/actions/Profile.action'
 import _ from 'underscore'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput'
 import moment from 'moment'
 import DepartmentSelect from 'src/views/MuiComponents/JoyComponent/DepartmentSelect'
@@ -61,8 +61,8 @@ const DepartmentSecChange = () => {
             em_designation: designation !== 0 ? designation : em_designation,
             saturday_weekoff: weekoff === true ? 1 : 0,
             em_id: emply.em_id,
-            create_user: employeeNumber(),
-            edit_user: employeeNumber(),
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
             em_no: em_no,
             com_designation: em_designation,
             com_designation_new: designation !== 0 ? designation : em_designation,
