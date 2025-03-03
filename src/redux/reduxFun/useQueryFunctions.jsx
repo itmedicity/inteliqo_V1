@@ -10,3 +10,15 @@ export const getEmployeeSalary = async (deptSection) => {
         }
     })
 }
+
+
+export const getLeaveRequestType = async () => {
+    return await axioslogin.get('/leaveRequestType/select').then((res) => {
+        const { success, data } = res.data
+        if (success === 1) {
+            return data
+        } else {
+            return []
+        }
+    })
+}

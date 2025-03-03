@@ -70,7 +70,7 @@ const AttendanceManagement = [
     }, {
         men_slno: 337,
         component: CNavItem,
-        name: 'Processed Salary Report',
+        name: 'Monthly Payroll Report',
         to: '/Home/ProcessedSalaryReport',
     },
 

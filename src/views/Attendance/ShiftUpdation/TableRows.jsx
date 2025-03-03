@@ -14,13 +14,13 @@ const ShiftModal = lazy(() => import('./ShiftModal'))
 
 const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray, empSalary }) => {
 
-    // console.log(disable)
+
     const state = useSelector((state) => state?.getCommonSettings)
     const commonSetting = useMemo(() => state, [state])
 
     const { cmmn_grace_period } = commonSetting;
 
-    // console.log(data)
+
     const { isNOff, isWeekOff } = data;
     const hideStatus = data?.hideStatus;
     //MODAL OPEN STATE

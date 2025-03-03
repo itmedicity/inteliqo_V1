@@ -126,8 +126,6 @@ const CommonSettingNew = () => {
                     holiday_leave_request, halfday_time_count, punch_taken_hour_count, external_trainee,
                     earnlvCategory } = data[0]
 
-                console.log(earnlvCategory);
-
                 const frmData = {
                     slno: setting_slno,
                     commn_grace: cmmn_grace_period,
@@ -355,8 +353,6 @@ const CommonSettingNew = () => {
     const RedirectToprofilePage = useCallback(() => {
         history.push(`/Home/Settings`)
     }, [history])
-
-    console.log(earnlvCategory);
 
     return (
         <Fragment>
