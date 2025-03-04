@@ -55,7 +55,6 @@ const ManualRequestMain = () => {
 
     // const state = useSelector((state) => state?.getCommonSettings)
     // const commonSetting = useMemo(() => state, [state])
-    // // console.log(commonSetting)
     // const { default_shift } = commonSetting;
 
     const getEmpdata = useCallback(async () => {
@@ -196,8 +195,9 @@ const ManualRequestMain = () => {
                                 filename: filenames[0]
                             }
                         })
+
                         const result = await axioslogin.post("/attendCal/updateManualRequest", filterArray);
-                        const { success, message } = result.data;
+                        const { success } = result.data;
                         if (success === 1) {
                             setCount(Math.random())
                             setTable([])
@@ -205,10 +205,7 @@ const ManualRequestMain = () => {
                             setSelectFile([])
                             succesNofity("Data saved successfully")
 
-                        } else if (success === 2) {
-                            warningNofity(message)
-                        }
-                        else {
+                        } else {
                             setTable([])
                             setRemark('')
                             warningNofity("Error while saving data, Please contact IT")

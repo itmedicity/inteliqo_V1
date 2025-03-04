@@ -35,7 +35,7 @@ const ArearModal = ({ open, setOpen, data }) => {
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
-            console.log(data);
+
             const { sect_name, em_name, em_no, em_id, dept_name, em_department, em_dept_section } = data;
             const details = {
                 emno: em_no,
@@ -54,8 +54,6 @@ const ArearModal = ({ open, setOpen, data }) => {
     }, [data])
 
     const submitAllowance = useCallback(async () => {
-        console.log(moment(arearMonth).format('YYYY-MM-DD'));
-        console.log(moment(startOfMonth(startOfMonth(new Date(arearMonth)))).format('YYYY-MM-DD'));
         const postData = {
             em_id: emid,
             em_no: emno,

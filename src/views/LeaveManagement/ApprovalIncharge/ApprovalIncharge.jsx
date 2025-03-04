@@ -48,12 +48,7 @@ const ApprovalIncharge = () => {
     useEffect(() => {
         dispatch(getHodBasedDeptSectionName(em_id));
         getleaverequest().then((val) => {
-            const array = [
-                { lrequest_slno: 5, lrequest_type: "ONE HOUR REQUEST" },
-                { lrequest_slno: 6, lrequest_type: "ON DUTY REQUEST" }
-            ]
-            const arr = [...val, ...array]
-            setleaverequesttype(arr)
+            setleaverequesttype(val)
         })
     }, [dispatch, em_id])
 

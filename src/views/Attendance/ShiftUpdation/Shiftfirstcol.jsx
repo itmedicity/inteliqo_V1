@@ -2,9 +2,9 @@ import React, { Fragment } from 'react'
 import { deepOrange, deepPurple, green, blueGrey, pink } from '@mui/material/colors';
 import { Avatar } from '@mui/material';
 const Shiftfirstcol = ({ datapunch }) => {
-    console.log(datapunch)
+
     const { duty_status, lvreq_type, punch_in, punch_out, holiday_flag, duty_worked, offday_falg } = datapunch;
-    console.log(datapunch)
+
     return (
         <Fragment>
             {/* <Avatar sx={{

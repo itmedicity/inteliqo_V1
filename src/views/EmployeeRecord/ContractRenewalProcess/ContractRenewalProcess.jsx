@@ -343,7 +343,6 @@ const ContractRenewalProcess = () => {
   //     })
   //     /** 1 -> next category contain contract*/
   //   } else if (modelStatus === 1 && contstatus === 1) {
-  //     console.log(newcontractdetl);
   //     employeeNewContractEntry(newcontractdetl).then((values) => {
   //       const { status } = values
   //       if (status === 1) {

@@ -13,7 +13,7 @@ import { useCallback } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
-import { errorNofity, infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout'
 import { Paper } from '@mui/material'
 import SalaryReportAgGrid from 'src/views/Component/SalaryReportAgGrid'
@@ -23,7 +23,6 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { getHolidayList } from 'src/redux/actions/LeaveProcess.action'
 import { DeptWiseAttendanceViewFun } from '../AttendanceView/Functions'
 import { ExporttoExcel } from 'src/views/HrReports/DayWiseAttendence/ExportToExcel'
-import { attendnaceCountCalculationFunc, employeeEarnDeduction, getAllPunchmastData } from './SalaryProcessFunctions'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 
 const ProcessedSalaryReport = () => {
@@ -46,8 +45,8 @@ const ProcessedSalaryReport = () => {
     }, [dispatch])
 
     //Common settings
-    const commonState = useSelector((state) => state.getCommonSettings);
-    const commonSettings = useMemo(() => commonState, [commonState]);
+    // const commonState = useSelector((state) => state.getCommonSettings);
+    // const commonSettings = useMemo(() => commonState, [commonState]);
     const deptSect = useSelector((state) => state?.getDeptSectList?.deptSectionList)
     const departments = useSelector((state) => state?.getdept?.departmentlist)
     const allDept = useMemo(() => departments, [departments])

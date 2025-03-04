@@ -3,20 +3,19 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { CssVarsProvider, Typography } from '@mui/joy'
 import { Box, Grid, LinearProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 const FixedWage = ({ empno }) => {
-  console.log("gjh");
+
   const [fixed, setFixed] = useState([])
 
   // const postData = {
   //   em_no: empno
   // }
-  console.log(fixed);
+
   useEffect(() => {
     const getFixed = async () => {
 
-      // console.log(postData);empno
       const result = await axioslogin.get(`/payrollprocess/empFixedDetl/${empno}`)
       const { success, data } = result.data;
-      // console.log(result);
+
       if (success === 1) {
         setFixed(data)
       }

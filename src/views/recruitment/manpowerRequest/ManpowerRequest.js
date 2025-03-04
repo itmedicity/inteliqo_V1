@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { axioslogin } from 'src/views/Axios/Axios';
+//import { axioslogin } from 'src/views/Axios/Axios';
 
 function ManpowerRequest() {
 
@@ -12,11 +12,10 @@ function ManpowerRequest() {
         const data = new FormData();
         data.append("em_id", name)
         data.append("file", file)
-        console.log(data)
 
-        const result = await axioslogin.post('/upload/upload', data)
 
-        console.log(result);
+        //const result = await axioslogin.post('/upload/upload', data)
+
     }
 
     return (
