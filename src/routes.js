@@ -303,6 +303,7 @@ const YearlyLeaveCountReport = React.lazy(() => import('./views/HrReports/LeaveC
 const InactiveEmplyeeAttendnaceReport = React.lazy(() => import('./views/HrReports/AttendenceReport/InactiveEmployeeAttendnaceReport'))
 const ProcessedSalaryReport = React.lazy(() => import('./views/Attendance/SalaryProcess/ProcessedSalaryReport'))
 const LeaveReportEmployee = React.lazy(() => import('./views/LeaveManagement/LeaveReports/LeaveReportMain'))
+const DutyplanChangeReport = React.lazy(() => import('./views/HrReports/DutyplanReport/DutyplanChangeReport'))
 
 const routes = [
 
@@ -603,7 +604,8 @@ const routes = [
   { path: '/Home/YearlyLeaveCountReport', exact: true, name: 'Yearly Leave Count Report', component: YearlyLeaveCountReport },
   { path: '/Home/InactiveEmplyeeAttendnaceReport', exact: true, name: 'Inactive Emplyee Attendnace Report', component: InactiveEmplyeeAttendnaceReport },
   { path: '/Home/ProcessedSalaryReport', exact: true, name: 'Processed Salary Report', component: ProcessedSalaryReport },
-  { path: '/Home/LeaveReportEmployee', exact: true, name: 'Leave Report Employee', component: LeaveReportEmployee }
+  { path: '/Home/LeaveReportEmployee', exact: true, name: 'Leave Report Employee', component: LeaveReportEmployee },
+  { path: '/Home/DutyplanChangeReport', exact: true, name: 'Dutyplan Change Report', component: DutyplanChangeReport }
 
 ]
 

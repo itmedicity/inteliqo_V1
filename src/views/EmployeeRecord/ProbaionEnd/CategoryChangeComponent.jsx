@@ -8,7 +8,6 @@ import DepartmentSectionSelect from 'src/views/MuiComponents/JoyComponent/Depart
 import InputComponent from '../../MuiComponents/JoyComponent/InputComponent'
 import InstitutionSelect from '../../MuiComponents/InstitutionSelect'
 import { format } from 'date-fns'
-import moment from 'moment'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import DesignationSelectComp from '../../MuiComponents/JoyComponent/DesignationSelectComp'
@@ -103,7 +102,7 @@ const CategoryChangeComponent = ({ empno }) => {
         }
     }, [branch, dept, institute, oldCate, empcategory, empid, emp_no, prob_extendDate, empDesignation,
         oldDesg, ineffectdate, deptSection, cateineffectdate, probationconfDate, prob_extendDate,
-        extended_checkbox, p_enddate])
+        extended_checkbox])
 
 
     const submitCompany = useCallback(async () => {

@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import LeaveCancelEmp from '../EmpView/LeaveCancelEmp';
 import HalfdayCancelEmp from '../EmpView/HalfdayCancelEmp';
 import NopunchCancelEmp from '../EmpView/NopunchCancelEmp';
-// import CompOffCancelEmp from '../EmpView/CompOffCancelEmp';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import { getCommonSettings, getEmployeeInformationLimited, getEmployeeLeaveRs } from 'src/redux/reduxFun/reduxHelperFun';
@@ -142,10 +141,7 @@ const RequestedLeaveTable = ({ setCount }) => {
                 <LeaveCancelEmp open={leaveReqModal} setOpen={setleaveReqModal} data={lveData} setCount={setCount} />
                 <HalfdayCancelEmp open={halfDayReqModal} setOpen={sethalfDayReqModal} data={halfData} setCount={setCount} />
                 <NopunchCancelEmp open={noPunchReqModal} setOpen={setnoPunchReqModal} data={noPunchData} setCount={setCount} />
-                {/* <CompOffCancelEmp open={coffReqModal} setOpen={setcoffReqModal} data={coffData} setCount={setCount} /> */}
             </Suspense>
-            {/* {
-                flag === 1 ? <DeptSectionBasedEmpTable leavecanceldetl={tableData} setCount={setCount} /> : */}
             <Paper square elevation={0} sx={{
                 p: 1, mt: 0.5, display: 'flex', flexDirection: "column",
                 width: "100%"

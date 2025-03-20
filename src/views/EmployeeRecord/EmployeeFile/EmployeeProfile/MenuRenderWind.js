@@ -17,7 +17,6 @@ const FineorDeduction = React.lazy(() => import('./EmpMenus/FineorDeduction/Fine
 //const EarnDeductionDetails = React.lazy(() => import('./EmpMenus/EarnDeductionDetails/EarnDeductionDetails'))
 //const ContractInformation = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/ContractInformation'))
 const SalaryInformation = React.lazy(() => import('./EmpMenus/SalaryInformation/SalaryInformationDetail'))
-// const AnnualLeave = React.lazy(() => import('./EmpMenus/AnnualLeaveInformation/AnnualLeaveInformation'))
 const SalaryIncrement = React.lazy(() => import('./EmpMenus/SalaryIncrementProcess/SalaryIncrementProcess'))
 //const JobDescription = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
 //const ContrtInfrmtion = React.lazy(() => import('./EmpMenus/ContractInformation/ContractInformation'))

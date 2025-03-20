@@ -44,6 +44,7 @@ export const attednane_two = [
     { to: '/Home/DeptPunchReport', name: 'Employee Processed Punch Report', slno: 257 },
     { to: '/Home/WeekOffReport', name: 'Week Off Report', slno: 323 },
     { to: '/Home/AbsenteeismDeptReport', name: 'Absenteeism Report(Department) ', slno: 328 },
+    { to: '/Home/DutyplanChangeReport', name: 'Dutyplan Change Report', slno: 339 }
 ]
 export const attednane_three = [
     { to: '/Home/AttendenceReports', name: 'Employee Wise Attendence Report', slno: 283 },

@@ -81,7 +81,6 @@ const ShiftUpdation = () => {
     // const updatedDataPunchInOut = useMemo(() => punchMasterDataUpdateData, [punchMasterDataUpdateData])
     const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
     const commonSetting = useMemo(() => state, [state])
-    // console.log(commonSetting)
     const { group_slno, week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
 
     useEffect(() => {
@@ -325,7 +324,6 @@ const ShiftUpdation = () => {
         e.preventDefault()
 
         const holidayList = [];
-        // console.log(emply, dept, section, value)
         setOpenBkDrop(true)
         if (Object.keys(emply).length === 0 && dept === 0 && section === 0) {
             warningNofity('Select The basic information for Process')
@@ -337,11 +335,9 @@ const ShiftUpdation = () => {
                 month: monthStartDate,
                 section: section
             }
-            //console.log(postData)
             const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postData);
             const { success, data } = checkPunchMarkingHr.data
             if (success === 0 || success === 1) {
-                // console.log(data)
                 const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(value)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
                 const lastDay_month = format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd')
 
@@ -357,7 +353,6 @@ const ShiftUpdation = () => {
                     }
                     const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", getPunchMast_PostData); //GET PUNCH MASTER DATA
                     const { success, planData } = punch_master_data.data;
-                    // console.log(success, planData)
                     if (success === 1) {
                         const tb = planData?.map((e) => {
 
@@ -405,7 +400,6 @@ const ShiftUpdation = () => {
                     }
                     setOpenBkDrop(false)
                 } else {
-                    // console.log(lastUpdateDate)
                     const today = format(new Date(), 'yyyy-MM-dd');
                     const selectedDate = format(new Date(value), 'yyyy-MM-dd');
                     const todayStatus = selectedDate <= today ? true : false; // selected date less than today date
@@ -425,11 +419,10 @@ const ShiftUpdation = () => {
                         trDate: format(lastDayOfMonth(new Date(value)), 'yyyy-MM-dd'),
                     }
 
-                    // console.log(postData_getPunchData)
                     // GET PUNCH DATA FROM TABLE START
                     const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
                     const { su, result_data } = punch_data.data;
-                    // console.log(su, result_data)
+
                     if (su === 1) {
                         const punchaData = result_data;
                         setPunchData(punchaData)
@@ -446,11 +439,8 @@ const ShiftUpdation = () => {
                         )
                         const { status, message, errorMessage, punchMastData } = result;
                         if (status === 1) {
-
-                            // console.log(punchMastData);
-
                             const tb = punchMastData?.map((e) => {
-                                // console.log(e)
+
                                 const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
                                 const crossDayStat = crossDay?.shft_cross_day ?? 0;
 
@@ -498,7 +488,6 @@ const ShiftUpdation = () => {
                             setOpenBkDrop(false)
                             warningNofity(message, errorMessage)
                         }
-                        // console.log(result)
                     } else {
                         warningNofity("Error getting punch Data From DB")
                         setOpenBkDrop(false)
@@ -514,7 +503,7 @@ const ShiftUpdation = () => {
 
     }, [emply, dept, section, value, shiftInformation, commonSetting, empSalary, default_shift, em_no,
         noff, notapplicable_shift, week_off_day])
-    // console.log(tableArray)
+
     return (
         <Fragment>
 

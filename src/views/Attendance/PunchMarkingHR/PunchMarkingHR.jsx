@@ -220,9 +220,7 @@ const PunchMarkingHR = () => {
                 const { su, result_data } = punch_data.data;
                 if (su === 1) {
                     const punchaData = result_data;
-                    // console.log(punchaData?.filter((e) => e.emp_code === '1812'))
                     const empList = data?.map((e) => e.em_no)
-                    // console.log(empList)
                     // PUNCH MARKING HR PROCESS START
                     const result = await processPunchMarkingHrFunc(
                         postData_getPunchData,
@@ -234,14 +232,11 @@ const PunchMarkingHR = () => {
                         empSalary
                     )
                     const { status, message, errorMessage, dta } = result;
-                    // console.log(result)
                     if (status === 1) {
-                        // console.log(dta.section)
                         // CALCULATE THE LATE COMMING BASED ON LATES  START HERE
                         const punch_data = await axioslogin.post("/attendCal/getPunchReportLCCount/", postData_getPunchData); // added on 27/06/2024 10:00 PM (Ajith)
                         const { success: lcSuccess, data: lcData } = punch_data.data;
                         if (lcSuccess === 1 && lcData !== null && lcData !== undefined && lcData.length > 0) {
-                            // console.log(lcData)
                             const filterEMNO = [...new Set(lcData?.map((e) => e.em_no))]
                             // calculate and update the calculated LOP count 
                             let lcCount = 0;
@@ -275,11 +270,10 @@ const PunchMarkingHR = () => {
                                 ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
                                 ?.map((e) => e.punch_slno)
 
-                            // console.log(filterLcData)
                             //UPDATE IN TO PUNCH MASTER TABLE 
                             if (filterLcData !== null && filterLcData !== undefined && filterLcData?.length > 0) {
                                 await axioslogin.post("/attendCal/updateLCPunchMaster/", filterLcData); // added on 27/06/2024 10:00 PM (Ajith)
-                                // console.log(updateLcInPunchMaster)
+
                             }
                         }
                         // CALCULATE THE LATE COMMING BASED ON LATES  END HERE
@@ -327,7 +321,6 @@ const PunchMarkingHR = () => {
         setOpenBkDrop(true)
         const monthStart = format(startOfMonth(new Date(value)), 'yyyy-MM-dd');
         const monthEnd = format(endOfMonth(new Date(value)), 'yyyy-MM-dd');
-        // console.log(dept, section, date, monthStart, monthEnd)
 
         const postDataUpdatePunchMarkHR = {
             loggedEmp: em_no,
@@ -353,7 +346,7 @@ const PunchMarkingHR = () => {
                 const dutyPlanSlno = shiftdetail?.map((e) => e.plan_slno)
                 const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDelStatDutyPlanTable/", dutyPlanSlno);
                 const { susc } = updateDutyPlanTable.data;
-                // console.log(susc, message)
+
                 if (susc === 1) {
                     // UPDATE PUNCH_MARKING_HR TABLE
                     const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postDataUpdatePunchMarkHR);
@@ -370,12 +363,10 @@ const PunchMarkingHR = () => {
                     setOpenBkDrop(false)
                     warningNofity('Error Updating Delete Status in Duty Plan')
                 }
-                // console.log(dutyPlanSlno)
             } else {
                 setOpenBkDrop(false)
                 warningNofity('Duty Not planned for selected dates')
             }
-            // console.log(succes, shiftdetail)
         } else {
             setOpenBkDrop(false)
             warningNofity('No Employees Found in Selected Department Section')

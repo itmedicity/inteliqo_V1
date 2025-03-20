@@ -62,7 +62,7 @@ const ApprovalIncharge = () => {
             const result = await getDepartmentSectionBasedHod(em_id);
             const section = await result?.map((e) => e.dept_section)
             const postData = {
-                sectIds: section
+                sectIds: section?.length === 0 ? [0] : section
             }
             if ((value === 1 || value === "1") && deptSect === 0) {
                 const result = await axioslogin.post('/LeaveRequestApproval/inchargeHod/leaveData/', postData);
