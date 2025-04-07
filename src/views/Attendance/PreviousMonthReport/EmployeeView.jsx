@@ -13,11 +13,15 @@ import moment from 'moment';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { axioslogin } from 'src/views/Axios/Axios';
 import TableRows from './TableRows';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const EmployeeView = () => {
 
     const [selectDate, setSelectDate] = useState(moment(new Date()))
     const [tableData, setTableData] = useState([])
+    const [openBkDrop, setOpenBkDrop] = useState(false)
+
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0], _.isEqual)
     const { em_name, em_no, sect_name } = empData;
     const postData = useMemo(() => {
@@ -29,6 +33,7 @@ const EmployeeView = () => {
     }, [em_no, selectDate])
 
     const getData = useCallback(async () => {
+        setOpenBkDrop(true)
         const result = await axioslogin.post(`/ReligionReport/punchReport`, postData)
         const { data: firstApiData, success } = result.data
         if (success === 1) {
@@ -67,13 +72,22 @@ const EmployeeView = () => {
                     };
                 });
                 setTableData(updatedSecondApiData.slice(0, -1))
+                setOpenBkDrop(false)
                 // setTableData(updatedSecondApiData)
             }
-
+            else {
+                warningNofity("Dutypaln Not Done")
+                setOpenBkDrop(false)
+            }
+        }
+        else {
+            warningNofity("No Employee Punch Data")
+            setOpenBkDrop(false)
         }
     }, [postData])
     return (
         <CustomLayout title="Employee Punch View" displayClose={true} >
+            <CustomBackDrop open={openBkDrop} text="Please wait !. " />
             <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column' }}>
                 <Paper square elevation={0} sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'row', py: 0.3 }}>
                     <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
