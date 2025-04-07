@@ -36,7 +36,7 @@ export const attednane_one = [
     { to: '/Home/DutyplanReport', name: 'Dutyplan Report ', slno: 297 },
     { to: '/Home/HODAttendanceReport', name: 'HOD`s Attendnace Report ', slno: 322 },
     { to: '/Home/AbsenteeismReport', name: 'Absenteeism Report(Month) ', slno: 327 },
-    { to: "/Home/InactiveEmplyeeAttendnaceReport", name: 'Inactive Emplyee Attendnace Report', slno: 333 }
+    { to: "/Home/InactiveEmplyeeAttendnaceReport", name: 'Inactive Emplyee Attendnace Report', slno: 339 }
 ]
 
 export const attednane_two = [

@@ -2,10 +2,10 @@ import { Box, Paper } from '@mui/material';
 import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { format, lastDayOfMonth, eachDayOfInterval, isValid } from 'date-fns'
+import { format, lastDayOfMonth, isValid } from 'date-fns'
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { Button, Input, Sheet, Tooltip } from '@mui/joy';
+import { Button, Input, Sheet, Tooltip, Table, } from '@mui/joy';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
@@ -18,6 +18,8 @@ import { useQuery } from 'react-query';
 import { getAllDeptSectList } from 'src/redux/actions/DepartmentSection.Action';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { exportToWOFFExcel } from '../DayWiseAttendence/ExportToExcel';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const DutyplanChangeReport = () => {
     const dispatch = useDispatch();
@@ -30,12 +32,9 @@ const DutyplanChangeReport = () => {
     const [toDate, setToDate] = useState(new Date())
     const [deptartment, setDepart] = useState(0)
     const [section, setDepartSection] = useState(0)
-    const [daysNum, setdaysNum] = useState([])
-    const [daysStr, setdaysStr] = useState([])
-    const [clickFlag, setClickFlag] = useState(0)
     const [all, setAll] = useState(false)
     const [openBkDrop, setOpenBkDrop] = useState(false)
-
+    const [click, setClick] = useState(0)
     const [tableArray, settableArray] = useState([])
 
     const { data: deptartments } = useQuery({
@@ -51,6 +50,7 @@ const DutyplanChangeReport = () => {
     })
 
     const getDutyplanData = useCallback(async () => {
+        setClick(1)
         if (all === true && deptartment === 0 && section === 0) {
             //setOpenBkDrop(true)
             const deptArray = deptartments?.map(val => val.dept_id)
@@ -68,30 +68,26 @@ const DutyplanChangeReport = () => {
                     end_date: format(new Date(toDate), 'yyyy-MM-dd'),
                     empData: arr
                 }
-                // const result1 = await axioslogin.post("/plan/employeeplan", getData);
-                // const { success, data } = result1.data
-                // if (success === 1) {
-                //     const mainArray = employeeData?.map((val) => {
-                //         const empwise = data.filter((value) => value.emp_id === val.em_id)
-                //         return {
-                //             dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
-                //             daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
-                //             em_no: val.em_no,
-                //             em_name: val.em_name,
-                //             dept_name: val.dept_name,
-                //             sect_name: val.sect_name,
-                //             arr: empwise
-                //         }
-                //     })
-                //     settableArray(mainArray);
-                //     setdaysStr(mainArray?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
-                //     setdaysNum(mainArray?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
-                //     setOpenBkDrop(false)
+                const result1 = await axioslogin.post("/plan/dutyplan/employeelog", getData);
+                const { success, data } = result1.data
+                if (success === 1) {
+                    const mainArray = employeeData?.map((val) => {
+                        const empwise = data?.filter((value) => value?.emp_id === val?.em_id)
+                        return {
+                            em_no: val.em_no,
+                            em_name: val.em_name,
+                            dept_name: val.dept_name,
+                            sect_name: val.sect_name,
+                            arr: empwise
+                        }
+                    })
+                    settableArray(mainArray);
+                    setOpenBkDrop(false)
 
-                // } else {
-                //     warningNofity("No Dutyplan Updated")
-                //     setOpenBkDrop(false)
-                // }
+                } else {
+                    warningNofity("No Dutyplan Updated")
+                    setOpenBkDrop(false)
+                }
             } else {
                 warningNofity("Employee Doesn't Exist!")
                 setOpenBkDrop(false)
@@ -114,24 +110,19 @@ const DutyplanChangeReport = () => {
                 }
                 const result1 = await axioslogin.post("/plan/dutyplan/employeelog", getData);
                 const { success, data } = result1.data
-                console.log(result1.data);
                 if (success === 1) {
-                    // const mainArray = employeeData?.map((val) => {
-                    //     const empwise = data.filter((value) => value.emp_id === val.em_id)
-                    //     return {
-                    //         dateAray: dateRange?.map(e => format(new Date(e), 'dd')),
-                    //         daysAry: dateRange?.map(e => format(new Date(e), 'eee')),
-                    //         em_no: val.em_no,
-                    //         em_name: val.em_name,
-                    //         dept_name: val.dept_name,
-                    //         sect_name: val.sect_name,
-                    //         arr: empwise
-                    //     }
-                    // })
-                    // settableArray(mainArray);
-                    // setdaysStr(mainArray?.filter(e => e.dateAray)?.find(e => e.dateAray)?.daysAry)
-                    // setdaysNum(mainArray?.filter(e => e.dateAray)?.find(e => e.dateAray)?.dateAray)
-                    // setOpenBkDrop(false)
+                    const mainArray = employeeData?.map((val) => {
+                        const empwise = data?.filter((value) => value?.emp_id === val?.em_id)
+                        return {
+                            em_no: val.em_no,
+                            em_name: val.em_name,
+                            dept_name: val.dept_name,
+                            sect_name: val.sect_name,
+                            arr: empwise
+                        }
+                    })
+                    settableArray(mainArray);
+                    setOpenBkDrop(false)
                 } else {
                     warningNofity("No Dutyplan Updated")
                     setOpenBkDrop(false)
@@ -144,11 +135,39 @@ const DutyplanChangeReport = () => {
     }, [deptartment, section, value, toDate, all, deptartments, deptartmentSection])
 
     const toDownload = useCallback(async () => {
+        if (click === 0) {
+            warningNofity("Please Click Search Button")
+        } else {
+            const fileName = "Weekoff_Report";
+            const headers = ["Name", "Emp Id", "Department", " Section", "No of Week Off", "Dates"];
+            const sheetName = "Duty Plan Change Report"
 
-    }, [])
+            // Rows for Excel file
+            const rows = tableArray?.map(row => {
+                //const length = row?.arr?.length
+                const rowData = [
+                    row.em_name,
+                    row.em_no,
+                    row.dept_name,
+                    row.sect_name,
+                    //length,
+                    ...row.arr.map(val => format(new Date(val.duty_day), 'dd-MM-yyyy'))
+                ];
+                return rowData;
+            });
+
+            // Prepare data for Excel export
+            const excelData = [headers, ...rows];
+
+            // Call ExporttoExcel function
+            exportToWOFFExcel(excelData, fileName, sheetName);
+            setClick(0)
+        }
+    }, [click, tableArray])
 
     return (
         <CustomLayout title="Dutyplan Change Report" displayClose={true} >
+            <CustomBackDrop open={openBkDrop} text="Please wait !.. Processing Data... " />
             <Paper sx={{ display: 'flex', height: screenInnerHeight * 83 / 100, flexDirection: 'column', width: '100%' }}>
                 <Paper variant='outlined' sx={{ display: "flex", alignItems: "center", border: 0, py: 0.5 }}  >
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
@@ -224,7 +243,80 @@ const DutyplanChangeReport = () => {
                     </Box>
                 </Paper>
 
-
+                <Box sx={{
+                    display: 'flex', width: '100%', flexDirection: 'column', p: 0.5,
+                    height: screenInnerHeight * 75 / 100,
+                    overflow: 'auto',
+                    '::-webkit-scrollbar': { display: "none", backgroundColor: 'lightgoldenrodyellow' }
+                }}>
+                    <Sheet
+                        variant="outlined"
+                        invertedColors
+                        sx={{
+                            '--TableRow-stripeBackground': 'rgba(0 0 0 / 0.04)',
+                            '--TableRow-hoverBackground': 'rgba(0 0 0 / 0.08)',
+                            overflow: 'auto',
+                            borderRadius: 5,
+                            width: '100%'
+                        }}
+                    >
+                        <Table
+                            borderAxis="bothBetween"
+                            stripe="odd"
+                            hoverRow
+                            stickyHeader
+                            size='sm'
+                            sx={{
+                                '& tr > *:first-of-type': {
+                                    position: 'sticky',
+                                    left: 0,
+                                    boxShadow: '1px 0 var(--TableCell-borderColor)',
+                                    bgcolor: 'background.surface',
+                                    zIndex: 4,
+                                    width: '100%'
+                                },
+                            }}
+                        >
+                            <thead>
+                                <tr style={{ backgroundColor: '#f9fafb' }} >
+                                    <th style={{ width: 200, zIndex: 5, backgroundColor: '#f9fafb' }}>Name</th>
+                                    <th style={{ width: 100, zIndex: 2, backgroundColor: '#f9fafb' }} >ID#</th>
+                                    <th style={{ width: 150, zIndex: 2, backgroundColor: '#f9fafb' }} >Department</th>
+                                    <th style={{ width: 150, zIndex: 2, backgroundColor: '#f9fafb' }} >Section</th>
+                                    {/* <th style={{ width: 100, zIndex: 2, backgroundColor: '#f9fafb' }} >No of week Off</th> */}
+                                    <th style={{ width: 100, zIndex: 2, backgroundColor: '#f9fafb' }} >Dates</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tableArray && tableArray.map((row, index) => (
+                                    <Fragment key={index}>
+                                        <tr >
+                                            <td style={{ zIndex: 4, backgroundColor: '#f4f6f8' }} >
+                                                <Box sx={{ width: 200 }}> {row?.em_name}</Box>
+                                            </td>
+                                            <td style={{ textAlign: 'center', zIndex: 0, backgroundColor: '#f4f6f8' }} >
+                                                <Box sx={{ width: 60 }}> {row?.em_no}</Box>
+                                            </td>
+                                            <td style={{ textAlign: 'center', zIndex: 0, backgroundColor: '#f4f6f8' }} >
+                                                <Box sx={{ flex: 1 }}> {row?.dept_name}</Box>
+                                            </td>
+                                            <td style={{ textAlign: 'center', zIndex: 0, backgroundColor: '#f4f6f8' }} >
+                                                <Box sx={{ flex: 1 }}> {row?.sect_name}</Box>
+                                            </td>
+                                            <td style={{ textAlign: 'center', zIndex: 0, backgroundColor: '#f4f6f8' }} >
+                                                {row.arr.map((val, ind) => (
+                                                    <Box key={ind}>
+                                                        {format(new Date(val?.duty_day), 'dd-MM-yyyy')}
+                                                    </Box>
+                                                ))}
+                                            </td>
+                                        </tr>
+                                    </Fragment>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </Sheet>
+                </Box>
             </Paper>
         </CustomLayout>
     )

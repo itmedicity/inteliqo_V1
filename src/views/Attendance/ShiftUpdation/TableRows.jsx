@@ -14,14 +14,13 @@ const ShiftModal = lazy(() => import('./ShiftModal'))
 
 const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray, empSalary }) => {
 
-
     const state = useSelector((state) => state?.getCommonSettings)
     const commonSetting = useMemo(() => state, [state])
 
     const { cmmn_grace_period } = commonSetting;
 
 
-    const { isNOff, isWeekOff } = data;
+    const { isNOff, isWeekOff, isDoff } = data;
     const hideStatus = data?.hideStatus;
     //MODAL OPEN STATE
     const [open, setOpen] = useState(false);
@@ -38,7 +37,7 @@ const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray, e
                                 disable === true ?
                                     <IconButton aria-label="delete" size="small" sx={{ p: 0 }} disabled><ArticleOutlinedIcon /></IconButton>
                                     :
-                                    (isNOff === true || isWeekOff === true) ?
+                                    (isNOff === true || isWeekOff === true || isDoff === true) ?
                                         <IconButton aria-label="delete" size="small" sx={{ p: 0 }} disabled  ><ArticleOutlinedIcon color='disabled' /></IconButton>
                                         :
                                         <IconButton aria-label="delete" size="small" sx={{ p: 0 }} onClick={() => setOpen(true)} ><ArticleOutlinedIcon color='secondary' /></IconButton>
@@ -47,20 +46,20 @@ const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray, e
                         <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{no + 1}</TableCell>
                 }
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
-                    {moment(data.duty_day).format('DD-MM-YYYY')}
+                    {moment(data?.duty_day).format('DD-MM-YYYY')}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >
-                    {data.em_no}
+                    {data?.em_no}
                 </TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >{data.shift_in}</TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >{data.shift_out}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >{data?.shift_in}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >{data?.shift_out}</TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >
-                    {isValid(new Date(data.punch_in)) && data.punch_in !== null ? format(new Date(data.punch_in), 'dd/MM/yyyy HH:mm') : data.punch_in}
+                    {isValid(new Date(data?.punch_in)) && data?.punch_in !== null ? format(new Date(data.punch_in), 'dd/MM/yyyy HH:mm') : data?.punch_in}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550, textTransform: 'lowercase' }} >
-                    {isValid(new Date(data.punch_out)) && data.punch_out !== null ? format(new Date(data.punch_out), 'dd/MM/yyyy HH:mm') : data.punch_out}
+                    {isValid(new Date(data?.punch_out)) && data?.punch_out !== null ? format(new Date(data?.punch_out), 'dd/MM/yyyy HH:mm') : data?.punch_out}
                 </TableCell>
-                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data.hrs_worked}</TableCell>
+                <TableCell size='small' padding='none' align="center" sx={{ color: '#003A75', fontWeight: 550 }} >{data?.hrs_worked}</TableCell>
                 <TableCell size='small' padding='none' align="center"
                     sx={{
                         color: data?.late_in > 0 ? 'white' : '#003A75',
@@ -68,7 +67,7 @@ const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray, e
                         backgroundColor: (data?.late_in === 0 || cmmn_grace_period >= data?.late_in) ? 'green' : '#FB5C5C'
                     }}
                 >
-                    {data.late_in !== null ? data.late_in : 0}
+                    {data?.late_in !== null ? data?.late_in : 0}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center"
                     sx={{
@@ -76,13 +75,13 @@ const TableRows = ({ data, disable, no, punchData, punchMaster, setTableArray, e
                         fontWeight: 550, backgroundColor: data?.early_out > 0 && '#F8698D'
                     }}
                 >
-                    {data.early_out !== null ? data.early_out : 0}
+                    {data?.early_out !== null ? data?.early_out : 0}
                 </TableCell>
                 <TableCell size='small' padding='none' align="center" sx={{ color: '#860707', fontWeight: 200 }} >
-                    <Chip size="sm" variant="outlined" sx={{ fontSize: 10, fontWeight: 700, m: 0 }} >{data.duty_desc}</Chip>
+                    <Chip size="sm" variant="outlined" sx={{ fontSize: 10, fontWeight: 700, m: 0 }} >{data?.duty_desc}</Chip>
                 </TableCell>
                 {/* <TableCell size='small' padding='none' align="center" sx={{ color: '#860707', fontWeight: 200 }} >
-                    <Chip size="sm" variant="outlined" sx={{ fontSize: 10, fontWeight: 700, m: 0 }} >{data.lvereq_desc}</Chip>
+                    <Chip size="sm" variant="outlined" sx={{ fontSize: 10, fontWeight: 700, m: 0 }} >{data?.lvereq_desc}</Chip>
                 </TableCell> */}
             </TableRow>
         </>

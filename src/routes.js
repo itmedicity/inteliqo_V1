@@ -77,7 +77,7 @@ const OTApprovalHOD = React.lazy(() => import('./views/LeaveManagement/OTApprova
 const OTApprovalHR = React.lazy(() => import('./views/LeaveManagement/OTApprovalHR/OtHrApproval'))
 const OTUpdation = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OtUpdtnCalculation'))
 const LeaveRequestType = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestTypeMast'))
-const ShiftUpdation = React.lazy(() => import('./views/Attendance/ShiftUpdation/ShiftUpdation'))
+const ShiftUpdation = React.lazy(() => import('./views/Attendance/ShiftUpdation/DailyPunchMarking'))
 const ResignationRequest = React.lazy(() => import('./views/Resignation/ResigantionRequest/ResignationMainPage'))
 const ResignationApprovalIncharge = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/Inchargeapproval'))
 const ResignationApprovalHod = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/Hodapproval'))
@@ -174,7 +174,7 @@ const SalaryStatement = React.lazy(() => import('./views/Payroll/SalaryStatement
 const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceView/AttendanceView'))
 const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkingHR'))
 const CompanyInfo = React.lazy(() => import('./views/EmployeeRecord/CompanyInformationLeftMenu/CompanyInformation'))
-const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkDoneList'))
+// const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkDoneList'))
 const TrainingType = React.lazy(() => import('./views/Master/TrainingTypeMaster/TrainingType'))
 const TrainingCategory = React.lazy(() => import('./views/Master/TrainingCategoryMaster/TrainingCategory'))
 const TrainingName = React.lazy(() => import('./views/Master/TrainingNameMaster/TrainingName'))
@@ -304,6 +304,7 @@ const InactiveEmplyeeAttendnaceReport = React.lazy(() => import('./views/HrRepor
 const ProcessedSalaryReport = React.lazy(() => import('./views/Attendance/SalaryProcess/ProcessedSalaryReport'))
 const LeaveReportEmployee = React.lazy(() => import('./views/LeaveManagement/LeaveReports/LeaveReportMain'))
 const DutyplanChangeReport = React.lazy(() => import('./views/HrReports/DutyplanReport/DutyplanChangeReport'))
+const MonthlyPunchMarking = React.lazy(() => import('./views/Attendance/PunchMarkingHR/MonthlyPunchMarking'))
 
 const routes = [
 
@@ -482,7 +483,7 @@ const routes = [
   { path: '/Home/AttendanceView', exact: true, name: 'Attandance View', component: AttendanceView },
   { path: '/Home/PunchMarkingHR', exact: true, name: 'Punch Marking HR ', component: PunchMarkingHR },
   { path: '/Home/CompanyInfo', exact: true, name: 'Punch Marking HR ', component: CompanyInfo },
-  { path: '/Home/PunchDoneList', exact: true, name: 'Punch Marking Done List ', component: PunchDoneList },
+  //{ path: '/Home/PunchDoneList', exact: true, name: 'Punch Marking Done List ', component: PunchDoneList },
   //training
   { path: '/Home/TrainingType', exact: true, name: 'Training Type Master', component: TrainingType },
   { path: '/Home/TrainingCategory', exact: true, name: 'Training Category Master', component: TrainingCategory },
@@ -605,7 +606,8 @@ const routes = [
   { path: '/Home/InactiveEmplyeeAttendnaceReport', exact: true, name: 'Inactive Emplyee Attendnace Report', component: InactiveEmplyeeAttendnaceReport },
   { path: '/Home/ProcessedSalaryReport', exact: true, name: 'Processed Salary Report', component: ProcessedSalaryReport },
   { path: '/Home/LeaveReportEmployee', exact: true, name: 'Leave Report Employee', component: LeaveReportEmployee },
-  { path: '/Home/DutyplanChangeReport', exact: true, name: 'Dutyplan Change Report', component: DutyplanChangeReport }
+  { path: '/Home/DutyplanChangeReport', exact: true, name: 'Dutyplan Change Report', component: DutyplanChangeReport },
+  { path: '/Home/MonthlyPunchMarking', exact: true, name: 'Monthly Punch Marking', component: MonthlyPunchMarking },
 
 ]
 
