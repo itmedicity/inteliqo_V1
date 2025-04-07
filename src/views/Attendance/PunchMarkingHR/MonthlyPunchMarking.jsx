@@ -13,8 +13,6 @@ import { addDays, addMonths, endOfMonth, format, getMonth, getYear, lastDayOfMon
 import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
-// import { useHistory } from 'react-router-dom'
-// import _ from 'underscore'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import Table from '@mui/joy/Table';
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
@@ -22,8 +20,7 @@ import { setShiftDetails } from 'src/redux/actions/Shift.Action';
 import { processPunchMarkingHrFunc } from './punchMarkingHrFunc';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
-const PunchMarkingHR = () => {
-
+const MonthlyPunchMarking = () => {
     const dispatch = useDispatch();
     //const history = useHistory()
 
@@ -37,10 +34,12 @@ const PunchMarkingHR = () => {
 
     //GET REDUX stored information using useSelector
     const commonSettings = useSelector((state) => state?.getCommonSettings)
+
     const {
         holiday_policy_count, //HOLIDAY PRESENT AND ABSENT CHECKING COUNT 
         weekoff_policy_max_count, // WEEK OFF ELIGIBLE MAX DAY COUNT,
-        max_late_day_count
+        max_late_day_count,
+        second_plicy
     } = commonSettings;
 
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
@@ -233,68 +232,89 @@ const PunchMarkingHR = () => {
                     )
                     const { status, message, errorMessage, dta } = result;
                     if (status === 1) {
-                        // CALCULATE THE LATE COMMING BASED ON LATES  START HERE
-                        const punch_data = await axioslogin.post("/attendCal/getPunchReportLCCount/", postData_getPunchData); // added on 27/06/2024 10:00 PM (Ajith)
-                        const { success: lcSuccess, data: lcData } = punch_data.data;
-                        if (lcSuccess === 1 && lcData !== null && lcData !== undefined && lcData.length > 0) {
-                            const filterEMNO = [...new Set(lcData?.map((e) => e.em_no))]
-                            // calculate and update the calculated LOP count 
-                            let lcCount = 0;
-                            const filterLcData = filterEMNO
-                                ?.map((el) => {
-                                    return {
-                                        emNo: el,
-                                        lcArray: lcData?.filter((e) => e.em_no === el)
-                                    }
-                                })
-                                ?.filter((e) => e.lcArray?.length > 3)
-                                ?.map((val) => {
-                                    const newArray = {
-                                        emno: val.emNo,
-                                        punMasterArray: val.lcArray?.map(item => {
-                                            if (item.duty_desc === "LC" && lcCount < max_late_day_count) {
-                                                lcCount++;
-                                                return item;
-                                            } else if (item.duty_desc === "LC" && lcCount >= max_late_day_count) {
-                                                return { ...item, lvereq_desc: "HD" };
-                                            } else {
-                                                return item;
-                                            }
-                                        })
-                                    }
-                                    lcCount = 0
-                                    return newArray
-                                })
-                                ?.map((e) => e.punMasterArray)
-                                ?.flat()
-                                ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
-                                ?.map((e) => e.punch_slno)
-
-                            //UPDATE IN TO PUNCH MASTER TABLE 
-                            if (filterLcData !== null && filterLcData !== undefined && filterLcData?.length > 0) {
-                                await axioslogin.post("/attendCal/updateLCPunchMaster/", filterLcData); // added on 27/06/2024 10:00 PM (Ajith)
-
+                        if (second_plicy === 1) {
+                            const filterDeptAndSection = deptList?.map((e) => {
+                                return {
+                                    "dept_id": e.dept_id,
+                                    "dept_name": e.dept_name,
+                                    "section": e.section?.map((el) => {
+                                        return dta.section === el.sect_id ? { ...el, updated: dta?.toDayeForUpdatePunchMast } : { ...el }
+                                    }),
+                                }
+                            })
+                            if (filterDeptAndSection?.length > 0) {
+                                setDeptList(filterDeptAndSection)
+                                setOpenBkDrop(false)
+                                succesNofity('Punch Master Updated Successfully')
+                            } else {
+                                succesNofity('Error Contact IT')
+                                setOpenBkDrop(false)
                             }
-                        }
-                        // CALCULATE THE LATE COMMING BASED ON LATES  END HERE
-
-                        const filterDeptAndSection = deptList?.map((e) => {
-                            return {
-                                "dept_id": e.dept_id,
-                                "dept_name": e.dept_name,
-                                "section": e.section?.map((el) => {
-                                    return dta.section === el.sect_id ? { ...el, updated: dta?.toDayeForUpdatePunchMast } : { ...el }
-                                }),
-                            }
-                        })
-                        if (filterDeptAndSection?.length > 0) {
-                            setDeptList(filterDeptAndSection)
-                            setOpenBkDrop(false)
-                            succesNofity('Punch Master Updated Successfully')
                         } else {
-                            succesNofity('Error Contact IT')
-                            setOpenBkDrop(false)
+                            // CALCULATE THE LATE COMMING BASED ON LATES  START HERE
+                            const punch_data = await axioslogin.post("/attendCal/getPunchReportLCCount/", postData_getPunchData); // added on 27/06/2024 10:00 PM (Ajith)
+                            const { success: lcSuccess, data: lcData } = punch_data.data;
+                            if (lcSuccess === 1 && lcData !== null && lcData !== undefined && lcData.length > 0) {
+                                const filterEMNO = [...new Set(lcData?.map((e) => e.em_no))]
+                                // calculate and update the calculated LOP count 
+                                let lcCount = 0;
+                                const filterLcData = filterEMNO
+                                    ?.map((el) => {
+                                        return {
+                                            emNo: el,
+                                            lcArray: lcData?.filter((e) => e.em_no === el)
+                                        }
+                                    })
+                                    ?.filter((e) => e.lcArray?.length > 3)
+                                    ?.map((val) => {
+                                        const newArray = {
+                                            emno: val.emNo,
+                                            punMasterArray: val.lcArray?.map(item => {
+                                                if (item.duty_desc === "LC" && lcCount < max_late_day_count) {
+                                                    lcCount++;
+                                                    return item;
+                                                } else if (item.duty_desc === "LC" && lcCount >= max_late_day_count) {
+                                                    return { ...item, lvereq_desc: "HD" };
+                                                } else {
+                                                    return item;
+                                                }
+                                            })
+                                        }
+                                        lcCount = 0
+                                        return newArray
+                                    })
+                                    ?.map((e) => e.punMasterArray)
+                                    ?.flat()
+                                    ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
+                                    ?.map((e) => e.punch_slno)
+
+                                //UPDATE IN TO PUNCH MASTER TABLE 
+                                if (filterLcData !== null && filterLcData !== undefined && filterLcData?.length > 0) {
+                                    await axioslogin.post("/attendCal/updateLCPunchMaster/", filterLcData); // added on 27/06/2024 10:00 PM (Ajith)
+
+                                }
+                            }
+                            // CALCULATE THE LATE COMMING BASED ON LATES  END HERE
+
+                            const filterDeptAndSection = deptList?.map((e) => {
+                                return {
+                                    "dept_id": e.dept_id,
+                                    "dept_name": e.dept_name,
+                                    "section": e.section?.map((el) => {
+                                        return dta.section === el.sect_id ? { ...el, updated: dta?.toDayeForUpdatePunchMast } : { ...el }
+                                    }),
+                                }
+                            })
+                            if (filterDeptAndSection?.length > 0) {
+                                setDeptList(filterDeptAndSection)
+                                setOpenBkDrop(false)
+                                succesNofity('Punch Master Updated Successfully')
+                            } else {
+                                succesNofity('Error Contact IT')
+                                setOpenBkDrop(false)
+                            }
                         }
+
                         // onProcessClick()
                     } else {
                         setOpenBkDrop(false)
@@ -373,11 +393,6 @@ const PunchMarkingHR = () => {
         }
     }
 
-    // const handleView = useCallback(() => {
-    //     history.push('/Home/PunchDoneList');
-    // }, [history])
-
-
     return (
         <Fragment>
             <CustomBackDrop open={openBkDrop} text="!!! Please wait...Monthly Attendance Processing.... Do not Refesh or Reload the Browser !!!" />
@@ -448,17 +463,6 @@ const PunchMarkingHR = () => {
                                 >
                                     Process
                                 </Button>
-                                {/* <Button
-                                    aria-label="Like"
-                                    variant="outlined"
-                                    color="primary"
-                                    fullWidth
-                                    onClick={handleView}
-                                    startDecorator={<RemoveRedEyeOutlinedIcon />}
-                                    sx={{ mx: 0.5 }}
-                                >
-                                    View
-                                </Button> */}
                             </CssVarsProvider>
                         </Box>
                     </Box>
@@ -538,4 +542,4 @@ const PunchMarkingHR = () => {
     )
 }
 
-export default memo(PunchMarkingHR)
+export default memo(MonthlyPunchMarking) 

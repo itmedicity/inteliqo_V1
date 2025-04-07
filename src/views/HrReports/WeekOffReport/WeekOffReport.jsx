@@ -152,6 +152,7 @@ const WeekOffReport = () => {
         } else {
             const fileName = "Weekoff_Report";
             const headers = ["Name", "Emp Id", "Department", " Section", "No of Week Off", "Dates"];
+            const sheetName = "Week Off Report"
 
             // Rows for Excel file
             const rows = tableData?.map(row => {
@@ -171,7 +172,7 @@ const WeekOffReport = () => {
             const excelData = [headers, ...rows];
 
             // Call ExporttoExcel function
-            exportToWOFFExcel(excelData, fileName);
+            exportToWOFFExcel(excelData, fileName, sheetName);
         }
     }
 

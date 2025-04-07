@@ -59,7 +59,7 @@ export const processPunchMarkingHrFunc = async (
                         noff: noff,
                         holidayStatus: sortedShiftData?.holiday_status
                     }
-                    const employeeBasedPunchData = punchaData?.filter((e) => e.emp_code == data.em_no)
+                    const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e.emp_code) === parseInt(data.em_no))
                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
                     return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
                 })
@@ -501,8 +501,8 @@ export const processShiftPunchMarkingHrFunc = async (
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
     const { succes, shiftdetail } = getDutyPlan.data;
     if (succes === 1 && shiftdetail?.length > 0) {
-        const dutyplanInfo = shiftdetail; //DUTY PLAN
-        const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
+        // const dutyplanInfo = shiftdetail; //DUTY PLAN
+        // const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
         const { success, planData } = punch_master_data.data;
         if (success === 1 && planData?.length > 0) {
@@ -529,7 +529,7 @@ export const processShiftPunchMarkingHrFunc = async (
                         noff: noff,
                         holidayStatus: sortedShiftData?.holiday_status
                     }
-                    const employeeBasedPunchData = punchaData?.filter((e) => e.emp_code == data.em_no)
+                    const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e.emp_code) === parseInt(data.em_no))
                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
                     return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
                 })
@@ -698,11 +698,8 @@ export const punchInOutChecking = async (shiftMergedPunchMaster, employeeBasedPu
 export const attendanceViewPunchFunc = async (
     postData_getPunchData,
     punchaData, //PUNCH DATA
-    empList, // EMPLOYEE LIST SECTION WISE
     shiftInformation, // SHIFT INFORMATION
     commonSettings, // COMMON SETTINGS
-    holidayList, // HOLIDAY LIST
-    empSalary // EMPLOYEE_SALARY
 ) => {
     const {
         cmmn_early_out, // Early going time interval
@@ -720,16 +717,16 @@ export const attendanceViewPunchFunc = async (
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
     const { succes, shiftdetail } = getDutyPlan.data;
     if (succes === 1 && shiftdetail?.length > 0) {
-        const dutyplanInfo = shiftdetail; //DUTY PLAN
-        const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
+        // const dutyplanInfo = shiftdetail; //DUTY PLAN
+        //  const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
         const { success, planData } = punch_master_data.data;
         if (success === 1 && planData?.length > 0) {
             const punchMasterData = planData; //PUNCHMSTER DATA
             return Promise.allSettled(
                 punchMasterData?.map(async (data, index) => {
-                    const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
-                    const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+                    const sortedShiftData = shiftInformation?.find((e) => e?.shft_slno === data?.shift_id)// SHIFT DATA
+                    //const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
                     const shiftMergedPunchMaster = {
                         ...data,
                         shft_chkin_start: sortedShiftData?.shft_chkin_start,
@@ -737,7 +734,7 @@ export const attendanceViewPunchFunc = async (
                         shft_chkout_start: sortedShiftData?.shft_chkout_start,
                         shft_chkout_end: sortedShiftData?.shft_chkout_end,
                         shft_cross_day: sortedShiftData?.shft_cross_day,
-                        gross_salary: sortedSalaryData?.gross_salary,
+                        gross_salary: data?.gross_salary,
                         earlyGoingMaxIntervl: cmmn_early_out,
                         gracePeriodInTime: cmmn_grace_period,
                         maximumLateInTime: cmmn_late_in,
@@ -748,7 +745,7 @@ export const attendanceViewPunchFunc = async (
                         noff: noff,
                         holidayStatus: sortedShiftData?.holiday_status
                     }
-                    const employeeBasedPunchData = punchaData?.filter((e) => e.emp_code == data.em_no)
+                    const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e.emp_code) === parseInt(data.em_no))
                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
                     return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
                 })
@@ -756,15 +753,15 @@ export const attendanceViewPunchFunc = async (
                 const punchMasterMappedData = data?.map((e) => e.value)
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
-                        const holidayStatus = val.holiday_status;
-                        const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
-                        const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
+                        const holidayStatus = val?.holiday_status;
+                        const punch_In = val?.punch_in === null ? null : new Date(val?.punch_in);
+                        const punch_out = val?.punch_out === null ? null : new Date(val?.punch_out);
 
-                        const shift_in = new Date(val.shift_in);
-                        const shift_out = new Date(val.shift_out);
+                        const shift_in = new Date(val?.shift_in);
+                        const shift_out = new Date(val?.shift_out);
 
                         //SALARY LINMIT
-                        const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
+                        const salaryLimit = val?.gross_salary > val?.salaryLimit ? true : false;
 
                         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
 
@@ -797,7 +794,7 @@ export const attendanceViewPunchFunc = async (
                             leave_status: val.leave_status,
                             lvereq_desc: getAttendanceStatus?.lvereq_desc,
                             duty_desc: getAttendanceStatus?.duty_desc,
-                            lve_tble_updation_flag: val.lve_tble_updation_flag
+                            lve_tble_updation_flag: val?.lve_tble_updation_flag
                         }
                     })
                 ).then(async (element) => {
