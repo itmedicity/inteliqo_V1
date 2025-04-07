@@ -52,8 +52,8 @@ const AttendanceView = () => {
     return (
         <Fragment>
             {
-                ((hod === 1 || incharge === 1) && groupStatus === true) ? <AllView /> :
-                    ((hod === 1 || incharge === 1) && groupStatus === false) ? <InchargeHodCompnt /> : <EmployeeCmpnt />
+                ((hod === 1 || incharge === 1) && groupStatus === false) ? <InchargeHodCompnt /> :
+                    ((hod === 0 || incharge === 0) && groupStatus === false) ? <EmployeeCmpnt /> : <AllView />
             }
         </Fragment>
     )

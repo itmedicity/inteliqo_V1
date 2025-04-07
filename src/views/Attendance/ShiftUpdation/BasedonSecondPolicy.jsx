@@ -99,6 +99,7 @@ const BasedonSecondPolicy = () => {
             warningNofity('Select The basic information for Process')
             setOpenBkDrop(false)
         } else {
+            setOpenBkDrop(true)
             //CHECK PUNCHMARKING HR COMPLETED WITH THE SELECTED DATE
             const monthStartDate = format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
             const postData = {
