@@ -28,8 +28,8 @@ const LeaveReportMain = () => {
     return (
         <>
             {
-                ((hod === 1 || incharge === 1) && groupStatus === true) ? <MasterComponent /> :
-                    ((hod === 1 || incharge === 1) && groupStatus === false) ? <InchargeHod /> : <EmployeeComponent />
+                ((hod === 1 || incharge === 1) && groupStatus === false) ? <InchargeHod /> :
+                    ((hod === 0 || incharge === 0) && groupStatus === false) ? <EmployeeComponent /> : <MasterComponent />
             }
         </>
     )
