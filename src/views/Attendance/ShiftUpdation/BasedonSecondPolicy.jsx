@@ -195,6 +195,7 @@ const BasedonSecondPolicy = () => {
                     if (su === 1) {
                         const punchaData = result_data;
                         setPunchData(punchaData)
+
                         //PUNCH MARKING HR PROCESS START
                         const result = await dailyPunchMarkingFunction(
                             postData_getPunchData,
@@ -206,6 +207,7 @@ const BasedonSecondPolicy = () => {
                         const { status, message, errorMessage, punchMastData } = result;
                         if (status === 1) {
                             const tb = punchMastData?.map((e) => {
+
                                 const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
                                 const crossDayStat = crossDay?.shft_cross_day ?? 0;
 
@@ -243,7 +245,8 @@ const BasedonSecondPolicy = () => {
                                     lvereq_desc: e.lvereq_desc,
                                     duty_desc: e.duty_desc,
                                     leave_status: e.leave_status,
-                                    isDoff: e.shift_id === doff
+                                    isDoff: e.shift_id === doff,
+                                    gross_salary: e.gross_salary
                                 }
                             })
                             const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));

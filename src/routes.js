@@ -172,7 +172,7 @@ const WageRegister = React.lazy(() => import('./views/Payroll/WageRegister/WageR
 const AttandanceRegister = React.lazy(() => import('./views/Payroll/AttendanceRegister/AttandaceRegisterPage'))
 const SalaryStatement = React.lazy(() => import('./views/Payroll/SalaryStatement/SalaryStatementPage'))
 const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceView/AttendanceView'))
-const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkingHR'))
+const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/MonthlyAttendanceProcess'))
 const CompanyInfo = React.lazy(() => import('./views/EmployeeRecord/CompanyInformationLeftMenu/CompanyInformation'))
 // const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkDoneList'))
 const TrainingType = React.lazy(() => import('./views/Master/TrainingTypeMaster/TrainingType'))

@@ -377,7 +377,7 @@ export const dailyPunchMarkingFunction = async (
     shiftInformation, // SHIFT INFORMATION
     commonSettings, // COMMON SETTINGS
 ) => {
-    console.log(commonSettings);
+
     const {
         cmmn_early_out, // Early going time interval
         cmmn_grace_period, // common grace period for late in time
@@ -398,7 +398,7 @@ export const dailyPunchMarkingFunction = async (
     if (succes === 1 && shiftdetail?.length > 0) {
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
         const { success, planData } = punch_master_data.data;
-        console.log(planData);
+
         if (success === 1 && planData?.length > 0) {
             const punchMasterData = planData; //PUNCHMSTER DATA
             return Promise.allSettled(
@@ -425,7 +425,7 @@ export const dailyPunchMarkingFunction = async (
                         doff: doff
                     }
                     const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e?.emp_code) === parseInt(data.em_no))
-                    console.log(employeeBasedPunchData);
+
                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
                     return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
                 })
@@ -433,7 +433,7 @@ export const dailyPunchMarkingFunction = async (
 
                 const punchMasterMappedData = data?.map((e) => e?.value)
 
-                console.log(punchMasterMappedData);
+
 
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
@@ -491,7 +491,8 @@ export const dailyPunchMarkingFunction = async (
                     const postDataForUpdatePunchMaster = {
                         postData_getPunchData: postData_getPunchData,
                         processedData: processedData,
-                        monthly_late_time_count: monthly_late_time_count
+                        monthly_late_time_count: monthly_late_time_count,
+                        cmmn_late_in: cmmn_late_in
                     }
                     const updatePunchMaster = await axioslogin.post("/attendCal/dailyPunchMarking/", postDataForUpdatePunchMaster);
                     const { success, message, data } = updatePunchMaster.data;
@@ -537,10 +538,10 @@ export const attendanceViewDailyPunch = async (
     if (succes === 1 && shiftdetail?.length > 0) {
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
         const { success, planData } = punch_master_data.data;
-        console.log(planData);
+
         if (success === 1 && planData?.length > 0) {
             const punchMasterData = planData; //PUNCHMSTER DATA
-            console.log(punchMasterData);
+
             return Promise.allSettled(
                 punchMasterData?.map(async (data, index) => {
                     const sortedShiftData = shiftInformation?.find((e) => e?.shft_slno === data?.shift_id)// SHIFT DATA
@@ -571,10 +572,8 @@ export const attendanceViewDailyPunch = async (
                 })
 
             ).then((data) => {
-                console.log(data);
-                const punchMasterMappedData = data?.map((e) => e?.value)
 
-                console.log(punchMasterMappedData);
+                const punchMasterMappedData = data?.map((e) => e?.value)
 
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
@@ -639,7 +638,7 @@ export const attendanceViewDailyPunch = async (
                         if (lcSuccess === 1 && lcData !== null && lcData !== undefined && lcData.length > 0) {
 
                             const filterEMNO = [...new Set(lcData?.map((e) => e.em_no))]
-                            console.log(filterEMNO);
+
                             // calculate and update the calculated LOP count 
                             let lateInCount = 0;
                             const filterLcData = filterEMNO
@@ -672,7 +671,7 @@ export const attendanceViewDailyPunch = async (
                                 ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
                                 ?.map((e) => e.punch_slno)
 
-                            console.log(filterLcData);
+
 
                             //UPDATE IN TO PUNCH MASTER TABLE 
                             if (filterLcData !== null && filterLcData !== undefined && filterLcData?.length > 0) {
