@@ -309,7 +309,8 @@ const ShiftUpdation = () => {
                                     holiday_status: e.holiday_status,
                                     lvereq_desc: e.lvereq_desc,
                                     duty_desc: e.duty_desc,
-                                    leave_status: e.leave_status
+                                    leave_status: e.leave_status,
+                                    gross_salary: e.gross_salary
                                 }
                             })
                             const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
