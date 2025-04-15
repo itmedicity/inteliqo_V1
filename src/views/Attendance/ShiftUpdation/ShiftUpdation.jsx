@@ -147,11 +147,7 @@ const ShiftUpdation = () => {
         }
     }, [section, setEmpSalary])
     /*******
-     * NEW HANDLE FUNCTION FOR PUNCH MARKING HR
-     * 
-     * 
-     * 
-     */
+     * NEW HANDLE FUNCTION FOR PUNCH MARKING HR */
 
     const shiftPunchMarkingHandleClickFun = useCallback(async (e) => {
         e.preventDefault()

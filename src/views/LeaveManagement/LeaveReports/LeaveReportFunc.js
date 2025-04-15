@@ -55,7 +55,8 @@ export const getEmployeeWiseHalfdayReport = async (postdata) => {
                 cancel: val.lv_cancel_status === 1 ? 'Halfday Cancelled' : val.lv_cancel_status_user === 1 ? 'Halfday Cancelled' : 'NIL',
                 cancelComment: val.lv_cancel_cmnt === null ? 'NIL' :
                     val.lv_cancel_cmnt !== null ? val.lv_cancel_cmnt :
-                        val.lv_cancel_cmnt_user === null ? 'NIL' : val.lv_cancel_cmnt_user
+                        val.lv_cancel_cmnt_user === null ? 'NIL' : val.lv_cancel_cmnt_user,
+                shft_desc: val.shft_desc
             }
         })
         return { ...dataObj, status: 1, data: arr }
@@ -88,7 +89,8 @@ export const getEmployeeWisemisspunchReport = async (postdata) => {
                 cancel: val.lv_cancel_status === 1 ? 'Miss punch Cancelled' : val.lv_cancel_req_status_user === 1 ? 'Miss punch Cancelled' : 'NIL',
                 cancelComment: val.lv_cancel_cmnt === null ? 'NIL' :
                     val.lv_cancel_cmnt !== null ? val.lv_cancel_cmnt :
-                        val.lv_cancel_cmnt_user === null ? 'NIL' : val.lv_cancel_cmnt_user
+                        val.lv_cancel_cmnt_user === null ? 'NIL' : val.lv_cancel_cmnt_user,
+                shft_desc: val.shft_desc
             }
         })
         return { ...dataObj, status: 1, data: arr }
