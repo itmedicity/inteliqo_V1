@@ -137,7 +137,6 @@ const MasterPage = () => {
             }
             getEmployeeWiseOndutyReport(postdata).then((values) => {
                 const { status, data } = values;
-                console.log(values);
                 if (status === 1) {
                     setTabledata(data)
                 } else {
@@ -171,6 +170,7 @@ const MasterPage = () => {
         { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 300 },
         { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 300 },
         { headerName: 'Request Date', field: 'reqDate', wrapText: true, minWidth: 200 },
+        { headerName: 'Shift Desc', field: 'shft_desc', wrapText: true, minWidth: 200 },
         { headerName: 'Halfday Date', field: 'lvDate', wrapText: true, minWidth: 200 },
         { headerName: 'HalfdayTime', field: 'halfdaytime', minWidth: 200 },
         { headerName: 'Reason', field: 'hf_reason', minWidth: 300 },
@@ -187,6 +187,7 @@ const MasterPage = () => {
         { headerName: 'Department', field: 'dept_name', wrapText: true, minWidth: 300 },
         { headerName: 'Department Section', field: 'sect_name', wrapText: true, minWidth: 300 },
         { headerName: 'Request Date', field: 'reqDate', wrapText: true, minWidth: 200 },
+        { headerName: 'Shift Desc', field: 'shft_desc', wrapText: true, minWidth: 200 },
         { headerName: 'Miss punch Date', field: 'lvDate', wrapText: true, minWidth: 200 },
         { headerName: 'Miss punch Time', field: 'misspunchtime', minWidth: 200 },
         { headerName: 'Reason', field: 'np_reason', minWidth: 300 },

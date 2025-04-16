@@ -1,4 +1,4 @@
-import { Option, Select } from '@mui/joy';
+import { Box, Option, Select, Typography } from '@mui/joy';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux';
 import _ from 'underscore';
@@ -49,7 +49,24 @@ const HodWiseEmpList = ({ section, setEmployee }) => {
             <Option disabled value={0}>Select Employee Name </Option>
             {
                 emplList?.map((val, index) => {
-                    return <Option key={index} value={val.em_id} onClick={() => getEmployeeId(val.em_no)}>{val.em_name}</Option>
+                    return <Option key={index} value={val.em_id} label={val.em_name} onClick={() => getEmployeeId(val.em_no)} >
+                        <Box gap={-1}
+                            sx={{
+                                display: 'flex',
+                                flex: 1,
+                                // backgroundColor: 'lightgreen',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                paddingX: 1,
+                                mx: -1,
+                                gap: 0
+                            }}>
+                            <Typography level='body-sm'>{val.em_name}</Typography>
+                            <Typography endDecorator={val.em_no} color='success' level='body-md'></Typography>
+                        </Box>
+                    </Option>
+                    //  <Option key={index} value={val.em_id} onClick={() => getEmployeeId(val.em_no)}>{val.em_name + ' ' + '(' + val.em_no + ')'}</Option>
+
                 })
             }
         </Select>
