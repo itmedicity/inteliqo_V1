@@ -434,9 +434,8 @@ const OnDutyRequest = () => {
                                         <td style={{ textAlign: 'center', }}>
                                             <Box>
                                                 <Checkbox
-                                                    disabled={val?.leave_status === 1 ? true : val?.lvereq_desc === 'H' ? true
-                                                        : val?.lvereq_desc === 'P' ? true : val?.lvereq_desc === 'HP' ? true
-                                                            : val?.lvereq_desc === 'WOFF' ? true : false}
+                                                    disabled={val?.leave_status === 1 ? true
+                                                        : val?.lvereq_desc === 'P' ? true : val?.lvereq_desc === 'WOFF' ? true : false}
                                                     checked={val?.selected === false ? false : true}
                                                     onChange={(e) => {
                                                         getoutvalue(e.target.checked, val)
