@@ -71,7 +71,9 @@ const CommonSettingNew = () => {
         onobservation_days: 0,
         hod_leave_day_count: 0,
         halfday_time_count: 0,
-        punch_taken_hour_count: 0
+        punch_taken_hour_count: 0,
+        monthly_late_time_count: 0,
+
     })
 
     const {
@@ -81,9 +83,11 @@ const CommonSettingNew = () => {
         pf_employee, pf_age, max_salary, verification_level, salary_above, leave_count,
         pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count,
         noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count, weekoff_policy_max_count,
-        weekoff_policy_min_count, onobservation_days, hod_leave_day_count
+        weekoff_policy_min_count, onobservation_days, hod_leave_day_count, monthly_late_time_count
     } = FormData
 
+    const [first_policy, setfirst_policy] = useState(false)
+    const [second_plicy, setsecond_plicy] = useState(false)
     const [levaetype, setLeaveType] = useState([])
     const [count, setCount] = useState(0)
     const [areartype, setAreartype] = useState(0)
@@ -110,6 +114,27 @@ const CommonSettingNew = () => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...FormData, [e.target.name]: value })
     }
+
+    const getfirst = useCallback(async (e) => {
+        if (e.target.checked === true) {
+            setfirst_policy(true)
+            setsecond_plicy(false)
+        } else {
+            setfirst_policy(false)
+            setsecond_plicy(true)
+        }
+    }, [])
+
+    const getSecond = useCallback(async (e) => {
+        if (e.target.checked === true) {
+            setfirst_policy(false)
+            setsecond_plicy(true)
+        } else {
+            setfirst_policy(true)
+            setsecond_plicy(false)
+        }
+    }, [])
+
     //setting data to form
     useEffect(() => {
         const getCommonSettings = async () => {
@@ -124,9 +149,7 @@ const CommonSettingNew = () => {
                     comp_hour_count, training_mastergroup, holiday_policy_count, weekoff_policy_max_count,
                     weekoff_policy_min_count, coff_min_working_hour, onobservation_days, hod_leave_day_count,
                     holiday_leave_request, halfday_time_count, punch_taken_hour_count, external_trainee,
-                    earnlvCategory } = data[0]
-
-                console.log(earnlvCategory);
+                    earnlvCategory, monthly_late_time_count, first_policy, second_plicy } = data[0]
 
                 const frmData = {
                     slno: setting_slno,
@@ -167,6 +190,8 @@ const CommonSettingNew = () => {
                     hod_leave_day_count: hod_leave_day_count,
                     halfday_time_count: halfday_time_count,
                     punch_taken_hour_count: punch_taken_hour_count,
+                    monthly_late_time_count: monthly_late_time_count,
+
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj === null ? [] : obj)
@@ -186,6 +211,8 @@ const CommonSettingNew = () => {
                 setHolidayLeave(holiday_leave_request === 0 ? false : true)
                 setCategory(external_trainee === null ? 0 : external_trainee)
                 setEarnlvCategory(earnlvCategory === null ? [] : JSON.parse(earnlvCategory))
+                setfirst_policy(first_policy === 1 ? true : false)
+                setsecond_plicy(second_plicy === 1 ? true : false)
             }
             else if (success === 0) {
                 setValue(0)
@@ -248,7 +275,10 @@ const CommonSettingNew = () => {
             halfday_time_count: halfday_time_count,
             punch_taken_hour_count: punch_taken_hour_count,
             external_trainee: category,
-            earnlvCategory: earnlvCategory
+            earnlvCategory: earnlvCategory,
+            monthly_late_time_count: monthly_late_time_count,
+            first_policy: first_policy === true ? 1 : 0,
+            second_plicy: second_plicy === true ? 1 : 0
         }
     }, [commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -257,7 +287,8 @@ const CommonSettingNew = () => {
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
-        holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory])
+        holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory, monthly_late_time_count,
+        first_policy, second_plicy])
 
     //data to edit
     const postDataEdit = useMemo(() => {
@@ -311,7 +342,10 @@ const CommonSettingNew = () => {
             halfday_time_count: halfday_time_count,
             punch_taken_hour_count: punch_taken_hour_count,
             external_trainee: category,
-            earnlvCategory: earnlvCategory
+            earnlvCategory: earnlvCategory,
+            monthly_late_time_count: monthly_late_time_count,
+            first_policy: first_policy === true ? 1 : 0,
+            second_plicy: second_plicy === true ? 1 : 0
         }
     }, [slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -320,7 +354,8 @@ const CommonSettingNew = () => {
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
-        holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory])
+        holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory,
+        monthly_late_time_count, first_policy, second_plicy])
 
     //save
     const submitFormData = useCallback(async (e) => {
@@ -355,8 +390,6 @@ const CommonSettingNew = () => {
     const RedirectToprofilePage = useCallback(() => {
         history.push(`/Home/Settings`)
     }, [history])
-
-    console.log(earnlvCategory);
 
     return (
         <Fragment>
@@ -538,6 +571,21 @@ const CommonSettingNew = () => {
                                             size="sm"
                                             name="punch_taken_hour_count"
                                             value={punch_taken_hour_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Monthly Late Time</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="monthly_late_time_count"
+                                            value={monthly_late_time_count}
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
@@ -1039,6 +1087,36 @@ const CommonSettingNew = () => {
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <CategoryMultipleSelect value={earnlvCategory} setValue={setEarnlvCategory} />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">10-minute daily grace period</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Box sx={{ flex: 1, px: 0.5 }} >
+                                            <JoyCheckbox
+                                                //label='Earn Leave'
+                                                checked={first_policy}
+                                                name="first_policy"
+                                                onchange={(e) => getfirst(e)}
+                                            />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">An overall grace time of 90 minutes per month</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Box sx={{ flex: 1, px: 0.5 }} >
+                                            <JoyCheckbox
+                                                // label='Earn Leave'
+                                                checked={second_plicy}
+                                                name="second_plicy"
+                                                onchange={(e) => getSecond(e)}
+                                            />
+                                        </Box>
                                     </Box>
                                 </Box>
                             </Paper>

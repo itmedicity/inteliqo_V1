@@ -22,6 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, empSalary }) => {
 
+
     const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
 
     const selectedDate = format(new Date(data?.duty_day), 'yyyy-MM-dd');
@@ -115,7 +116,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
 
             if (isValid(punch_In) === true && isValid(punch_out) === true) {
 
-                const salaryLimit = sortedSalaryData.gross_salary > salary_above ? true : false;
+                const salaryLimit = data?.gross_salary > salary_above ? true : false;
 
                 const getAttendance = await getAttendanceCalculation(
                     punch_In, shift_In, punch_out, shift_out, cmmn_grace_period, getLateInTime,

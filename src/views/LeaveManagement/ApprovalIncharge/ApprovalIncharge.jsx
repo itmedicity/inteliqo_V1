@@ -48,12 +48,7 @@ const ApprovalIncharge = () => {
     useEffect(() => {
         dispatch(getHodBasedDeptSectionName(em_id));
         getleaverequest().then((val) => {
-            const array = [
-                { lrequest_slno: 5, lrequest_type: "ONE HOUR REQUEST" },
-                { lrequest_slno: 6, lrequest_type: "ON DUTY REQUEST" }
-            ]
-            const arr = [...val, ...array]
-            setleaverequesttype(arr)
+            setleaverequesttype(val)
         })
     }, [dispatch, em_id])
 
@@ -67,7 +62,7 @@ const ApprovalIncharge = () => {
             const result = await getDepartmentSectionBasedHod(em_id);
             const section = await result?.map((e) => e.dept_section)
             const postData = {
-                sectIds: section
+                sectIds: section?.length === 0 ? [0] : section
             }
             if ((value === 1 || value === "1") && deptSect === 0) {
                 const result = await axioslogin.post('/LeaveRequestApproval/inchargeHod/leaveData/', postData);

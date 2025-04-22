@@ -18,8 +18,6 @@ const HolidayLeaveSelected = ({ handleChange, index, date }) => {
     const holidayLeaves = useSelector((state) => state.getCreitedHolidayLeave, _.isEqual);
     const holidays = useMemo(() => holidayLeaves, [holidayLeaves]);
 
-    // console.log(holiday)
-
     useEffect(() => {
         const { holidayLeave } = holidays;
         //filter the national hjoliday 

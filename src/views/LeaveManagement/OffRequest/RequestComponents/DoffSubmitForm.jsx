@@ -215,7 +215,7 @@ const DoffSubmitForm = () => {
                 salaryLimit, cmmn_late_in, halfday_time_count
             )
 
-            if (getAttendance?.lvereq_desc === 'P' || getAttendance?.lvereq_desc === 'LC') {
+            if (getAttendance?.lvereq_desc === 'P' || getAttendance?.lvereq_desc === 'LC' || getAttendance?.duty_desc === 'HP') {
                 setDisableSave(false)
             } else {
                 infoNofity("Can't Apply DOFF Request, Description Must be P or LC")
@@ -351,14 +351,6 @@ const DoffSubmitForm = () => {
                         />
                     </LocalizationProvider>
                 </Box>
-                {/* <Box sx={{ flex: 1, px: 0.5, mt: 0.5 }} >
-                    <Input
-                        size="md"
-                        fullWidth
-                        placeholder='Duty OFF'
-                        disabled
-                    />
-                </Box> */}
                 <Box sx={{ flex: 1, px: 0.5, mt: 0.5 }} >
                     <Input
                         size="md"
@@ -368,8 +360,6 @@ const DoffSubmitForm = () => {
                         disabled
                     />
                 </Box>
-
-
                 <Box sx={{ display: "flex", mx: 2, alignItems: 'center', }} >
                     <Checkbox
                         label={`Check In`}

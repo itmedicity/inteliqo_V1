@@ -79,7 +79,12 @@ const Leavemanagement = [
         name: 'Common Request HR View',
         to: '/Home/CommonReqstHrView',
     },
-
+    {
+        men_slno: 338,
+        component: CNavItem,
+        name: 'Employee Leave Report',
+        to: '/Home/LeaveReportEmployee',
+    },
 
 
 

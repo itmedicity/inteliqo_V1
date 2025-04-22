@@ -1,4 +1,4 @@
-import { add, addYears, differenceInDays, endOfYear, format, getMonth, subMonths, subYears } from "date-fns";
+import { addYears, differenceInDays, endOfYear, format, getMonth, subMonths } from "date-fns";
 import moment from "moment";
 import { getDepartmentSectionBasedHod } from "src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction";
 
@@ -50,14 +50,6 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
     const compansatoryOff = state?.getEmpCoffData?.coffData;
     const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
 
-
-    //console.log(casualLeaves);
-    //console.log(earnLeaves);
-
-    // console.log(compansatoryOff);
-    // console.log(commonLeaves);
-    //console.log(actual_doj);
-
     const result = differenceInDays(new Date(), new Date(actual_doj))
 
 
@@ -90,7 +82,7 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
             // Compare the years
             return yearA - yearB;
         });
-        //console.log(sortedLeaves);
+
         creditedLeavesArray.data.push(...sortedLeavesByYear)
     }
 
@@ -111,7 +103,7 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
                 cmn: 0
             }
         })?.filter((e) => e.lveRequest === 0 && result > 365) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
-        //console.log(newErnLeaves);
+
         // Sort the array by year in ascending order
         const sortedLeavesByYear = newErnLeaves.sort((a, b) => {
             // Extract year from the month string
@@ -284,8 +276,6 @@ export const getLeaveReqApprovalLevel = (state) => {
 //GET AUTHORIZATION 
 
 export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno) => {
-
-    //console.log(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno);
 
     const deptLevelApprove = (deptApprovalLevel === 3) ? // 3 -> hod and incharge
         {
@@ -826,8 +816,6 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
     const sectionWiseLeaveRequest = state?.getSectLeaveRequests?.sectLeaves
     const sectionWisehalfdayRequest = state?.getSectHalfdayRequests?.sectHalfday
     const sectionWiseMisspunchRequest = state?.getSectMisspunchRequests?.sectMisspunch
-
-    // console.log(sectionWiseMisspunchRequest);
 
     if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
         const newList = sectionWiseLeaveRequest?.map((val) => {

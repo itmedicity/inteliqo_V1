@@ -21,7 +21,9 @@ const LeaveRequestType = ({ onChange, onChangeVal }) => {
             const result = await axioslogin.get('/leaveRequestType/select')
             const { success, data } = result.data;
             if (success === 1) {
-                setleaveRequestType(data)
+
+                const arr = data?.filter((val) => val.lrequest_slno !== 5 && val.lrequest_slno !== 6)
+                setleaveRequestType(arr)
             } else {
                 setleaveRequestType([]);
             }

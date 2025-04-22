@@ -17,6 +17,8 @@ import _ from 'underscore'
 import { getEmpNameHodSectionBased, getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+
 const TableRows = lazy(() => import('../PreviousMonthReport/TableRows'))
 
 const InchargeHodView = () => {
@@ -27,6 +29,7 @@ const InchargeHodView = () => {
     const [emply, getEmployee] = useState({});
     const [selectDate, setSelectDate] = useState(moment(new Date()))
     const [tableData, setTableData] = useState([])
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0], _.isEqual)
     const { em_id, hod, incharge } = empData;
@@ -47,6 +50,7 @@ const InchargeHodView = () => {
     }, [selectDate, section])
 
     const getData = useCallback(async () => {
+        setOpenBkDrop(true)
         if (section !== 0 && emply?.em_id !== 0) {
             const result = await axioslogin.post(`/ReligionReport/sectiondata`, postDataDep)
             const { data: firstApiData, success } = result.data
@@ -90,20 +94,25 @@ const InchargeHodView = () => {
                     const array = updatedSecondApiData?.filter(val => val.em_no === emply?.em_no)
                     setTableData(array.slice(0, -1))
                     // setTableData(array)
+                    setOpenBkDrop(false)
 
                 } else {
                     warningNofity("Dutypaln Not Done")
+                    setOpenBkDrop(false)
                 }
             } else {
                 warningNofity("No Employee Punch Data")
+                setOpenBkDrop(false)
             }
         } else {
             warningNofity("Select Department & Department Section & Employee")
+            setOpenBkDrop(false)
         }
     }, [section, emply, postDataDep])
 
     return (
         <>
+            <CustomBackDrop open={openBkDrop} text="Please wait !. " />
             {
                 self === true ? <EmployeeView /> : <CustomLayout title="Incharge/HOD Punch View" displayClose={true} >
                     <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column' }}>

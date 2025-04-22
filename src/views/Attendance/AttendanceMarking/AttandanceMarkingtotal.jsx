@@ -7,12 +7,12 @@ import { axioslogin } from 'src/views/Axios/Axios';
 const AttandanceMarkingtotal = ({ data, length, count }) => {
 
     const [dutydatatotal, setdutydatatotal] = useState([])
-    console.log(dutydatatotal)
+
 
     useEffect(() => {
         const getattnsdata = async () => {
             const result = await axioslogin.post('/attandancemarking/getattendancetotal', data)
-            // console.log(result)
+
             const { success, message } = result.data
             if (success === 1) {
                 setdutydatatotal(message)

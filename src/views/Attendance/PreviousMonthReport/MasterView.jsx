@@ -16,6 +16,8 @@ import SectionBsdEmployee from 'src/views/Component/ReduxComponent/SectionBsdEmp
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useEffect } from 'react';
 import { setDepartment } from 'src/redux/actions/Department.action';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+
 const TableRows = lazy(() => import('../PreviousMonthReport/TableRows'))
 
 const MasterView = () => {
@@ -27,6 +29,7 @@ const MasterView = () => {
     const [section, changeSection] = useState(0);
     const [emply, getEmployee] = useState({});
     const [tableData, setTableData] = useState([])
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -42,6 +45,7 @@ const MasterView = () => {
     }, [dept, section, selectDate])
 
     const getData = useCallback(async () => {
+        setOpenBkDrop(true)
         if (dept !== 0 && section !== 0 && emply?.em_id !== 0) {
             const result = await axioslogin.post(`/ReligionReport/punchReportdep`, postDataDep)
             const { data: firstApiData, success } = result.data
@@ -85,21 +89,26 @@ const MasterView = () => {
                     const array = updatedSecondApiData?.filter(val => val.em_no === emply?.em_no)
 
                     setTableData(array.slice(0, -1))
+                    setOpenBkDrop(false)
 
                 } else {
                     warningNofity("Dutypaln Not Done")
+                    setOpenBkDrop(false)
                 }
             } else {
                 warningNofity("No Employee Punch Data")
+                setOpenBkDrop(false)
             }
         } else {
             warningNofity("Select Department & Department Section & Employee")
+            setOpenBkDrop(false)
         }
     }, [dept, section, emply, postDataDep])
 
 
     return (
         <CustomLayout title="All Punch View" displayClose={true} >
+            <CustomBackDrop open={openBkDrop} text="Please wait !. " />
             <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column' }}>
                 <Paper square elevation={0} sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'row', py: 0.3 }}>
                     <Box sx={{ flex: 1, px: 0.3, width: '20%', }} >

@@ -22,14 +22,20 @@ const AttendanceManagement = [
     {
         men_slno: 277,
         component: CNavItem,
-        name: 'Attendnace Punch View',
+        name: 'Attendance Punch View',
         to: '/Home/EmpPreviouspunchreport',
     },
+    // {
+    //     men_slno: 235,
+    //     component: CNavItem,
+    //     name: 'Monthly Punch Marking',
+    //     to: '/Home/PunchMarkingHR',
+    // },
     {
         men_slno: 235,
         component: CNavItem,
         name: 'Monthly Punch Marking',
-        to: '/Home/PunchMarkingHR',
+        to: '/Home/MonthlyPunchMarking',
     },
     {
         men_slno: 132,
@@ -70,7 +76,7 @@ const AttendanceManagement = [
     }, {
         men_slno: 337,
         component: CNavItem,
-        name: 'Processed Salary Report',
+        name: 'Monthly Payroll Report',
         to: '/Home/ProcessedSalaryReport',
     },
 

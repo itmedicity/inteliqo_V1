@@ -52,7 +52,6 @@ const FullandFinalSettlement = () => {
                         resgDate: format(new Date(val.request_date), 'dd-MM-yyyy')
                     }
                 })
-                console.log(data);
                 setCount(0)
                 setTableData(arr)
             } else {
@@ -199,8 +198,6 @@ const FullandFinalSettlement = () => {
     const handleChange = useCallback((newValue) => {
         setValue(newValue);
     }, [])
-
-    console.log(tableData);
 
     return (
         <Box sx={{ flex: 1 }} >
