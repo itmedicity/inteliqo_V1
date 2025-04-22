@@ -16,7 +16,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import LeaveDescription from './LeaveDescription';
 import { useSelector } from 'react-redux';
-import { processShiftPunchMarkingHrFunc } from '../PunchMarkingHR/punchMarkingHrFunc';
+import { attendanceViewPunchFunc } from '../PunchMarkingHR/punchMarkingHrFunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const isOdd = (number) => number % 2 !== 0
@@ -150,7 +150,7 @@ const EmployeeCompnt = ({ em_no, empSalary, em_dept_section }) => {
                 if (su === 1) {
                     const punchaData = result_data;
                     const empList = [empNo]
-                    const result = await processShiftPunchMarkingHrFunc(
+                    const result = await attendanceViewPunchFunc(
                         postData_getPunchData,
                         punchaData,
                         empList,

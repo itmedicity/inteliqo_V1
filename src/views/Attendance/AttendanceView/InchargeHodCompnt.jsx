@@ -369,7 +369,7 @@ const InchargeHodCompnt = ({ em_id, em_no, empSalary, em_dept_section }) => {
                 if (su === 1) {
                     const punchaData = result_data;
                     const empList = [em_no]
-                    const result = await processShiftPunchMarkingHrFunc(
+                    const result = await attendanceViewPunchFunc(
                         postData_getPunchData,
                         punchaData,
                         empList,
