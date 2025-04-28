@@ -354,7 +354,7 @@ const InchargeHodCompnt = () => {
                 setOpenBkDrop(false)
             }
         }
-    }, [commonSetting, deptSection, salary_above, shiftInformation, value, em_id])
+    }, [commonSetting, deptSection, salary_above, shiftInformation, value, em_id, em_dept_section, em_no])
 
 
 
