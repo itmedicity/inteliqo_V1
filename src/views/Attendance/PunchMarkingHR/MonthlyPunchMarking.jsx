@@ -39,7 +39,9 @@ const MonthlyPunchMarking = () => {
         holiday_policy_count, //HOLIDAY PRESENT AND ABSENT CHECKING COUNT 
         weekoff_policy_max_count, // WEEK OFF ELIGIBLE MAX DAY COUNT,
         max_late_day_count,
-        second_plicy
+        second_plicy,
+        cmmn_late_in,
+        monthly_late_time_count
     } = commonSettings;
 
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
@@ -233,6 +235,52 @@ const MonthlyPunchMarking = () => {
                     const { status, message, errorMessage, dta } = result;
                     if (status === 1) {
                         if (second_plicy === 1) {
+                            const punch_data = await axioslogin.post("/attendCal/getPunchReportLCCount/", postData_getPunchData); // added on 27/06/2024 10:00 PM (Ajith)
+                            const { success: lcSuccess, data: lcData } = punch_data.data;
+                            if (lcSuccess === 1 && lcData !== null && lcData !== undefined && lcData.length > 0) {
+
+                                const filterEMNO = [...new Set(lcData?.map((e) => e.em_no))]
+                                // calculate and update the calculated LOP count 
+                                let lateInCount = 0;
+                                const filterLcData = filterEMNO
+                                    ?.map((el) => {
+                                        return {
+                                            emNo: el,
+                                            lcArray: lcData?.filter((e) => e.em_no === el)
+                                                ?.sort((a, b) => a.punch_slno - b.punch_slno)
+                                                ?.filter((e) => e.holiday_status !== 1)
+                                                ?.filter((e) => e.late_in <= cmmn_late_in)
+                                        }
+                                    })
+                                    ?.map((val) => {
+                                        const newArray = {
+                                            emno: val.emNo,
+                                            punMasterArray: val.lcArray?.map(item => {
+                                                lateInCount = lateInCount + item.late_in;
+                                                if (item.duty_desc === "LC" && lateInCount < monthly_late_time_count) {
+
+                                                    return item;
+                                                } else if (item.duty_desc === "LC" && lateInCount > monthly_late_time_count) {
+                                                    return { ...item, lvereq_desc: "HD" };
+                                                } else {
+                                                    return item;
+                                                }
+                                            })
+                                        }
+                                        lateInCount = 0
+                                        return newArray
+                                    })
+                                    ?.map((e) => e.punMasterArray)
+                                    ?.flat()
+                                    ?.filter((e) => e.lvereq_desc === 'HD' && e.duty_desc === 'LC')
+                                    ?.map((e) => e.punch_slno)
+
+                                //UPDATE IN TO PUNCH MASTER TABLE 
+                                if (filterLcData !== null && filterLcData !== undefined && filterLcData?.length > 0) {
+                                    await axioslogin.post("/attendCal/updateLCPunchMaster/", filterLcData); // added on 27/06/2024 10:00 PM (Ajith)
+
+                                }
+                            }
                             const filterDeptAndSection = deptList?.map((e) => {
                                 return {
                                     "dept_id": e.dept_id,
