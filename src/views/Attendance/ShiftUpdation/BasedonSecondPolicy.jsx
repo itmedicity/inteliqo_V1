@@ -267,7 +267,7 @@ const BasedonSecondPolicy = () => {
             }
         }
     }, [emply, dept, section, doff, value, commonSetting, default_shift, em_no, noff,
-        notapplicable_shift, shiftInformation])
+        notapplicable_shift, shiftInformation, week_off_day])
 
     return (
         <Fragment>
