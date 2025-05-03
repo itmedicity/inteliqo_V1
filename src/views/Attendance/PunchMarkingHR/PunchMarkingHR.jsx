@@ -346,7 +346,6 @@ const PunchMarkingHR = () => {
                 const dutyPlanSlno = shiftdetail?.map((e) => e.plan_slno)
                 const updateDutyPlanTable = await axioslogin.post("/attendCal/updateDelStatDutyPlanTable/", dutyPlanSlno);
                 const { susc } = updateDutyPlanTable.data;
-
                 if (susc === 1) {
                     // UPDATE PUNCH_MARKING_HR TABLE
                     const updatePunchMarkingHR = await axioslogin.post("/attendCal/updatePunchMarkingHR/", postDataUpdatePunchMarkHR);
@@ -372,11 +371,6 @@ const PunchMarkingHR = () => {
             warningNofity('No Employees Found in Selected Department Section')
         }
     }
-
-    // const handleView = useCallback(() => {
-    //     history.push('/Home/PunchDoneList');
-    // }, [history])
-
 
     return (
         <Fragment>
