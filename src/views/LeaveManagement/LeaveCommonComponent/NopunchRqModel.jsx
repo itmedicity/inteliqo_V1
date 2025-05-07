@@ -17,7 +17,8 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [reason, setreason] = useState('')
 
-    const { em_name, em_no, sect_name, requestDate, nopunch_date, np_reason, shft_desc, slno, checkinflag, checkoutflag } = empData;
+    const { em_name, em_no, sect_name, requestDate, nopunch_date, np_reason, shft_desc, slno,
+        checkinflag, checkoutflag, nopunchdate } = empData;
 
     //login incharge id
     const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
@@ -38,9 +39,11 @@ const NopunchRqModel = ({ setOpen, open, authority, empData, setcount }) => {
             comment: reason,
             slno: slno,
             apprvdate: moment(new Date()).format('YYYY-MM-DD hh:mm:ss'),
-            us_code: em_id
+            us_code: em_id,
+            em_no: em_no,
+            duty_day: nopunchdate
         }
-    }, [reason, slno, em_id])
+    }, [reason, slno, em_id, em_no, nopunchdate])
 
 
 

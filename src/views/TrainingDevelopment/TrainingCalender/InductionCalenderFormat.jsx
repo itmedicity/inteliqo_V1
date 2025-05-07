@@ -17,7 +17,8 @@ const InductionCalenderFormat = () => {
 
     useEffect(() => {
         const obj = {
-            month: format(currentMonth, "MM")
+            month: format(currentMonth, "MM"),
+            year: format(currentMonth, "yyyy")
         }
         dispatch(InductionTrainingCalender(obj))
         SetCount(0)

@@ -163,16 +163,13 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
             if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
                 warningNofity("Punch Marking Monthly Process Done !! Can't Apply Halfday Request!!  ")
             } else {
-                // [1,2]
                 if (Object.keys(empShiftInform).length === 0) {
                     warningNofity("Duty Plan Not Planned")
                 } else {
-
                     if (selectedCL === 0 || reson === '') {
                         warningNofity("Select the leave name and reason.")
                     } else {
                         const { plan_slno, shift_id, first_half_in, first_half_out, second_half_in, second_half_out, holiday } = empShiftInform
-
                         if (holiday_leave_request === 1 && holiday === 1) {
                             warningNofity("Can't Apply Halfday Request on Holiday")
                         } else {
@@ -209,7 +206,8 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
                                 ceo_req_status: 0,
                                 resonforleave: reson,
                                 halfDayStat: halfDayStat,
-                                dutyPlanSlno: plan_slno // duty plan table slno 
+                                dutyPlanSlno: plan_slno, // duty plan table slno ,
+                                plan_slno: plan_slno
                             }
 
                             const result = await axioslogin.post('/LeaveRequest/inserthalfdayreque', halfdaysavedata)
@@ -226,15 +224,10 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
                         }
                     }
                 }
-
-
             }
-
         } else {
             errorNofity("Error getting PunchMarkingHR ")
         }
-
-
     }, [selectedCL, reson, fromDate, em_dept_section, em_department, empShiftInform, loginHod,
         loginIncharge, loginEmno, masterGroupStatus, halfDayStat, selectedClName, em_id, em_no,
         setRequestType, deptApprovalLevel, setCount, holiday_leave_request])

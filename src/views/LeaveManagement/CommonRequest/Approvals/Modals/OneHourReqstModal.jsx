@@ -106,27 +106,11 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
             hr_approval_comment: remark,
             hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
             hr_empId: loginem_id,
-            request_slno: slno
+            request_slno: slno,
+            em_no: emno,
+            duty_day: dutyDate
         }
-    }, [remark, slno, loginem_id])
-
-    // const hrApprove = useMemo(() => {
-    //     return {
-    //         checkintime: checkIn,
-    //         checkouttime: checkOut,
-    //         checkinflag: checkInFlag,
-    //         checkoutflag: checkOutFlag,
-    //         emno: emno,
-    //         dutyDay: moment(dutyDate).format('YYYY-MM-DD HH:mm'),
-    //         hr_approval_status: 1,
-    //         hr_approval_comment: remark,
-    //         hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-    //         hr_empId: loginem_id,
-    //         request_slno: slno
-    //     }
-    // }, [remark, slno, checkIn, checkOut, checkInFlag, checkOutFlag,
-    //     dutyDate, emno, loginem_id])
-
+    }, [remark, slno, loginem_id, emno, dutyDate])
 
     const handleRejectRequest = useCallback(async () => {
         if (remark === "") {

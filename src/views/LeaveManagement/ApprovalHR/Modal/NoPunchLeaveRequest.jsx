@@ -205,9 +205,11 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
             np_hr_apprv_cmnt: reason,
             np_hr_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm'),
             np_hr_uscode: loginem_id,
-            nopunch_slno: slno
+            nopunch_slno: slno,
+            em_no: emno,
+            duty_day: nopunchdate
         }
-    }, [reason, slno, loginem_id])
+    }, [reason, slno, loginem_id, emno, nopunchdate])
 
     // HALF DAY LEAVE HR REJECT
     const handleRegectRequest = useCallback(async () => {

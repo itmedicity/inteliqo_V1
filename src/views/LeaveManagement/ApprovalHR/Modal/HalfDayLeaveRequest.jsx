@@ -21,6 +21,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
 
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
+
     //DISPLAY THE DATA 
     const { slno, emno, name, section, dept_section, leavedate, shift_id, shft_desc,
         planslno, month, halfday_status, halfday_date, requestDate, hf_reason,
@@ -208,9 +209,11 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
             hf_hr_apprv_date: moment().format('YYYY-MM-DD HH:mm'),
             hf_hr_uscode: loginem_id,
             half_slno: slno,
-            hrm_cl_slno: planslno
+            hrm_cl_slno: planslno,
+            em_no: emno,
+            duty_day: leavedate
         }
-    }, [reason, planslno, slno, loginem_id])
+    }, [reason, planslno, slno, loginem_id, emno, leavedate])
     // HALF DAY LEAVE HR REJECT
     const handleRegectRequest = useCallback(async () => {
         const result = await axioslogin.patch(`/LeaveRequestApproval/HalfDayReqRejectHr`, LeaveRejectdata);
