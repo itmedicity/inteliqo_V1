@@ -799,7 +799,7 @@ export const attendanceViewPunchFunc = async (
                     })
                 ).then(async (element) => {
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
-                    const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
+                    const processedData = element?.map((e) => e.value)?.filter((v) => v?.lve_tble_updation_flag === 0)
 
                     const updatePunchMaster = await axioslogin.post("/attendCal/updatePunchMaster/", processedData);
                     const { success, message } = updatePunchMaster.data;

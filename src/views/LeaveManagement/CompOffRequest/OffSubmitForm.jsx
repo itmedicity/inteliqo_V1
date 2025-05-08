@@ -43,6 +43,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
     const [disableDate, setDisableDate] = useState(false)
 
     const [planSlno, setPlanSlno] = useState(0)
+    const [inactiveShift, setInactiveShift] = useState(false)
 
     const state = useSelector((state) => state?.getCommonSettings)
     const commonStates = useMemo(() => state, [state])
@@ -65,6 +66,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
     }, [empData])
 
     const handleChangeDate = useCallback(async (date) => {
+        setOpenBkDrop(true)
         setFromDate(date)
         const postData = {
             startDate: format(new Date(date), 'yyyy-MM-dd'),
@@ -73,10 +75,19 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
         const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
         const { success, data } = result.data;
         if (success === 1) {
-            const { plan_slno } = data[0]
-            setPlanSlno(plan_slno)
+            const { plan_slno, shift_id, holiday } = data[0]
+            if (holiday === 1) {
+                setSelectedShift(shift_id)
+                setPlanSlno(plan_slno)
+                setOpenBkDrop(false)
+                setInactiveShift(true)
+            } else {
+                setPlanSlno(plan_slno)
+                setOpenBkDrop(false)
+            }
         } else {
             setPlanSlno(0)
+            setOpenBkDrop(false)
         }
     }, [empData])
 
@@ -141,6 +152,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                         if (success === 1) {
                             setPunchDetl(data)
                             succesNofity('Done , Select The Punching Info')
+                            //tInactiveShift(false)
                         } else if (success === 0) {
                             //no record
                             warningNofity('Punching Data Not Found')
@@ -234,10 +246,12 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                 setCount(Math.random())
                 setOpenBkDrop(false)
                 setShowForm(0)
+                setInactiveShift(false)
             } else {
                 errorNofity(`Contact EDP , ${JSON.stringify(message)}`)
                 setOpenBkDrop(false)
                 setShowForm(0)
+                setInactiveShift(false)
             }
         }
     }, [reason, punchSlno, fromDate, punchInTime, punchOutTime, selectedShift, selectedShiftTiming,
@@ -245,6 +259,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
     const refresh = useCallback(() => {
         setDisableDate(false)
+        setInactiveShift(false)
     }, [])
 
     return (
@@ -288,6 +303,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                         }}
                         size='md'
                         variant='outlined'
+                        disabled={inactiveShift}
                     >
                         <Option disabled value={0}>Select Shift</Option>
                         {
