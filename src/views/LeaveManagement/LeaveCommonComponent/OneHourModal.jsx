@@ -81,9 +81,11 @@ const OneHourModal = ({ setOpen, open, authority, empData, setCount }) => {
             incharge_approval_comment: remark,
             incharge_approval_date: moment().format('YYYY-MM-DD HH:mm'),
             incharge_empid: loginem_id,
-            request_slno: slno
+            request_slno: slno,
+            em_no: emno,
+            duty_day: dutyDate
         }
-    }, [remark, slno, loginem_id])
+    }, [remark, slno, loginem_id, emno, dutyDate])
 
     const approveData = useMemo(() => {
         return {
@@ -112,16 +114,18 @@ const OneHourModal = ({ setOpen, open, authority, empData, setCount }) => {
             hod_approval_comment: remark,
             hod_approval_date: moment().format('YYYY-MM-DD HH:mm'),
             hod_empid: loginem_id,
-            request_slno: slno
+            request_slno: slno,
+            em_no: emno,
+            duty_day: dutyDate
         }
-    }, [remark, slno, loginem_id])
+    }, [remark, slno, loginem_id, emno, dutyDate])
 
     const handleRejectRequest = useCallback(async () => {
         if (authority === 1) {
             if (remark === "") {
                 infoNofity("Please Add Remarks!")
             } else {
-                const result = await axioslogin.patch('/CommonReqst/incharge/onehour', rejectData)
+                const result = await axioslogin.patch('/CommonReqst/incharge/inactiveOnehour', rejectData)
                 const { message, success } = result.data;
                 if (success === 1) {
                     setOpenBkDrop(false)
@@ -139,7 +143,7 @@ const OneHourModal = ({ setOpen, open, authority, empData, setCount }) => {
             if (remark === "") {
                 infoNofity("Please Add Remarks!")
             } else {
-                const result = await axioslogin.patch('/CommonReqst/hod/onehour', hodReject)
+                const result = await axioslogin.patch('/CommonReqst/hod/inactive/onehour', hodReject)
                 const { message, success } = result.data;
                 if (success === 1) {
                     setOpenBkDrop(false)

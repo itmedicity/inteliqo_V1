@@ -101,7 +101,7 @@ const CategoryChangeComponent = ({ empno }) => {
 
         }
     }, [branch, dept, institute, oldCate, empcategory, empid, emp_no, prob_extendDate, empDesignation,
-        oldDesg, ineffectdate, deptSection, cateineffectdate, probationconfDate, prob_extendDate,
+        oldDesg, ineffectdate, deptSection, cateineffectdate, probationconfDate,
         extended_checkbox])
 
 

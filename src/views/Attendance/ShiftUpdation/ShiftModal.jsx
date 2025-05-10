@@ -13,7 +13,6 @@ import moment from 'moment';
 import { errorNofity, succesNofity, warningNofity, } from 'src/views/CommonCode/Commonfunc';
 import { useCallback } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
-// import { Actiontypes } from 'src/redux/constants/action.type';
 import { memo } from 'react';
 import EmailIcon from '@mui/icons-material/Email';
 import { getAttendanceCalculation, getLateInTimeIntervel } from '../PunchMarkingHR/punchMarkingHrFunc';
@@ -22,8 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, empSalary }) => {
 
-
-    const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+    const sortedSalaryData = empSalary?.find((e) => e?.em_no === data?.em_no) //SALARY DATA
 
     const selectedDate = format(new Date(data?.duty_day), 'yyyy-MM-dd');
 
@@ -47,33 +45,36 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
         default_shift, //default SHIFT ID
         noff, // night off SHIFT ID
         halfday_time_count,
-        punch_taken_hour_count
+        punch_taken_hour_count,
+        doff,
+        coff_min_working_hour,
+        holiday_min_working
     } = commonSettings; //COMMON SETTING
 
     //FIND THE CROSS DAY
-    const crossDay = shiftData?.find(shft => shft.shft_slno === data.shift_id);
+    const crossDay = shiftData?.find(shft => shft?.shft_slno === data?.shift_id);
     const crossDayStat = crossDay?.shft_cross_day ?? 0;
 
     //DISPLAY DATA'S
 
-    let shiftIn = `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data?.shiftIn), 'HH:mm')}`;
-    let shiftOut = crossDayStat === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data?.shiftOut), 'HH:mm')}` :
-        `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(data?.shiftOut), 'HH:mm')}`;
+    let shiftIn = `${format(new Date(data?.duty_day), 'yyyy-MM-dd')} ${format(new Date(data?.shiftIn), 'HH:mm')}`;
+    let shiftOut = crossDayStat === 0 ? `${format(new Date(data?.duty_day), 'yyyy-MM-dd')} ${format(new Date(data?.shiftOut), 'HH:mm')}` :
+        `${format(addDays(new Date(data?.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(data?.shiftOut), 'HH:mm')}`;
 
-    const startPunchInTime = subHours(new Date(shiftIn), 16); //last 24 hours from shift in time
+    const startPunchInTime = subHours(new Date(shiftIn), punch_taken_hour_count); //last 24 hours from shift in time
     const endPunchOutTime = addHours(new Date(shiftOut), punch_taken_hour_count); //last 24 hours from shift out time
 
     //filter punch data based on in and out time
     const filterdPunchData = punchData
-        ?.map((e) => new Date(e.punch_time))
+        ?.map((e) => new Date(e?.punch_time))
         ?.filter((el) => startPunchInTime <= el && el <= endPunchOutTime)
         ?.map((e) => format(new Date(e), 'yyyy-MM-dd HH:mm'))
 
     //FILTERD PUNCH MASTER DATA BETWEEN 24 HOURS
     const filterdPunchMasterDataAll = punchMast
         ?.map((e) => [
-            (e.punch_in !== null && isValid(new Date(e.punch_in))) && new Date(e.punch_in),
-            (e.punch_in !== null && isValid(new Date(e.punch_out))) && new Date(e.punch_out)
+            (e?.punch_in !== null && isValid(new Date(e?.punch_in))) && new Date(e?.punch_in),
+            (e?.punch_in !== null && isValid(new Date(e?.punch_out))) && new Date(e?.punch_out)
         ])
         ?.flat()
         ?.filter((e) => e !== false)?.filter((el) => startPunchInTime <= el && el <= endPunchOutTime)
@@ -81,10 +82,10 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
 
     //FILTERD PUNCH MASTER SEELCTED dATE
     const filterdPunchMasterDataSelectedDate = punchMast
-        ?.filter((e) => e.duty_day === selectedDate)
+        ?.filter((e) => e?.duty_day === selectedDate)
         ?.map((e) => [
-            (e.punch_in !== null && isValid(new Date(e.punch_in))) && new Date(e.punch_in),
-            (e.punch_in !== null && isValid(new Date(e.punch_out))) && new Date(e.punch_out)
+            (e.punch_in !== null && isValid(new Date(e?.punch_in))) && new Date(e?.punch_in),
+            (e.punch_in !== null && isValid(new Date(e?.punch_out))) && new Date(e?.punch_out)
         ])
         ?.flat()
         ?.filter((e) => e !== false)?.filter((el) => startPunchInTime <= el && el <= endPunchOutTime)
@@ -121,7 +122,8 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
                 const getAttendance = await getAttendanceCalculation(
                     punch_In, shift_In, punch_out, shift_out, cmmn_grace_period, getLateInTime,
                     holidayStatus, shiftId, default_shift, notapplicable_shift, noff, week_off_day,
-                    salaryLimit, cmmn_late_in, halfday_time_count
+                    salaryLimit, cmmn_late_in, halfday_time_count, doff, coff_min_working_hour,
+                    holiday_min_working
                 )
 
                 const postData = {

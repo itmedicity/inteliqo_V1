@@ -22,7 +22,9 @@ export const processPunchMarkingHrFunc = async (
         holiday_policy_count, //HOLIDAY PRESENT AND ABSENT CHECKING COUNT 
         weekoff_policy_max_count, // WEEK OFF ELIGIBLE MAX DAY COUNT
         weekoff_policy_min_count,
-        halfday_time_count
+        halfday_time_count,
+        coff_min_working_hour,
+        holiday_min_working
     } = commonSettings; //COMMON SETTING
 
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
@@ -57,7 +59,9 @@ export const processPunchMarkingHrFunc = async (
                         naShift: notapplicable_shift,
                         defaultShift: default_shift,
                         noff: noff,
-                        holidayStatus: sortedShiftData?.holiday_status
+                        holidayStatus: sortedShiftData?.holiday_status,
+                        coff_min_working_hour: coff_min_working_hour,
+                        holiday_min_working: holiday_min_working
                     }
                     const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e.emp_code) === parseInt(data.em_no))
                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
@@ -94,7 +98,9 @@ export const processPunchMarkingHrFunc = async (
                             val.woff,
                             salaryLimit,
                             val.maximumLateInTime,
-                            halfday_time_count
+                            halfday_time_count,
+                            coff_min_working_hour,
+                            holiday_min_working
                         )
                         return {
                             em_no: val.em_no,
@@ -224,12 +230,12 @@ export const processPunchMarkingHrFunc = async (
 export const getAttendanceCalculation = async (
     punch_In, shift_in, punch_out, shift_out, cmmn_grace_period, getLateInTime,
     holidayStatus, shiftId, defaultShift, NAShift, NightOffShift, WoffShift,
-    salaryLimit, maximumLateInTime, halfday_time_count
+    salaryLimit, maximumLateInTime, halfday_time_count, coff_min_working_hour,
+    holiday_min_working
 ) => {
     const {
         // hrsWorked, 
-        lateIn,
-        earlyOut } = getLateInTime;
+        lateIn, earlyOut } = getLateInTime;
 
     //SHIFT ID CHECKING
     // ( !== default shift , !== not applicable shift , !== Night off , !== week off) 
@@ -248,7 +254,7 @@ export const getAttendanceCalculation = async (
             const isBeforeHafDayInTime = isBefore(punch_In, halfDayStartTime) || isEqual(punch_In, halfDayStartTime); //for check -> punch in before half day start in time
             const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime) || isEqual(punch_out, halfDayStartTime);
 
-            const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) >= 6;
+            const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) >= coff_min_working_hour;
             const halfDayWorkingHour = differenceInHours(new Date(punch_out), new Date(punch_In)) >= halfday_time_count;
             //  isBeforeHafDayInTime === true ==> punch in time greater than half in time (full day not half day)
             if (holidayStatus === 0) {
@@ -285,7 +291,7 @@ export const getAttendanceCalculation = async (
                                                 { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'in and out less tha half day time' } :
                                                 { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'Lose off Pay' }
 
-            } else {
+            } else if (holidayStatus === 1 && holiday_min_working === 1) {
                 // HOLIDAY === YES
                 return workingHours === true && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ? // new Entry by Ajith on  April 24th 2024, 6:31:15 pm
                     {
@@ -365,6 +371,99 @@ export const getAttendanceCalculation = async (
                                                         (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
                                                             {
                                                                 duty_status: salaryLimit === false && workingHours === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
+                                                                duty_desc: 'H',
+                                                                lvereq_desc: 'H',
+                                                                duty_remark: 'Early going Half day latein and late out'
+                                                            } :
+                                                            (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                                                                {
+                                                                    duty_status: salaryLimit === false ? 1 : 1,
+                                                                    duty_desc: 'H',
+                                                                    lvereq_desc: 'H',
+                                                                    duty_remark: 'in and out less tha half day time'
+                                                                } :
+                                                                { duty_status: salaryLimit === false ? 1 : 1, duty_desc: 'H', lvereq_desc: 'H', duty_remark: 'Holiday' }
+            }
+            else {
+                const correctWorking = isBefore(new Date(punch_In), new Date(shift_in)) && isAfter(new Date(punch_out), new Date(shift_out))
+                return correctWorking === true && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
+                    {
+                        duty_status: salaryLimit === false ? 2 : 1,
+                        duty_desc: 'HP',
+                        lvereq_desc: salaryLimit === false ? 'HP' : 'H',
+                        duty_remark: 'holiday Present'
+                    }// new Entry by Ajith on  April 24th 2024, 6:31:15 pm
+                    : earlyOut === 0 && (lateIn === 0 || lateIn <= cmmn_grace_period) && isBeforeHafDayInTime === true ?
+                        {
+                            duty_status: salaryLimit === false ? 2 : 1,
+                            duty_desc: 'HP',
+                            lvereq_desc: salaryLimit === false ? 'HP' : 'H',
+                            duty_remark: 'holiday Present'
+                        } :
+                        earlyOut === 0 && lateIn > cmmn_grace_period && lateIn < maximumLateInTime ?
+                            {
+                                duty_status: salaryLimit === false ? 2 : 1,
+                                duty_desc: 'HP',
+                                lvereq_desc: salaryLimit === false ? 'HP' : 'H',//holiday late in below 30 minutes
+                                duty_remark: 'Late Coming'
+                            } :
+                            earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && correctWorking === true ?
+                                {
+                                    duty_status: salaryLimit === false ? 2 : 1,
+                                    duty_desc: 'HP',
+                                    lvereq_desc: salaryLimit === false ? 'HP' : 'H',
+                                    duty_remark: 'working hours more than six hours so holiday present'
+                                } :
+                                earlyOut > 0 && lateIn > 0 && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && correctWorking === false ?
+                                    {
+                                        duty_status: salaryLimit === false ? 1 : 1,
+                                        duty_desc: 'H',
+                                        lvereq_desc: 'H',
+                                        duty_remark: 'working hours less than six hours so holiday only'
+                                    } :
+                                    earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && correctWorking === false ?
+                                        {
+                                            duty_status: salaryLimit === false && correctWorking === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
+                                            duty_desc: 'H',
+                                            lvereq_desc: 'H',
+                                            duty_remark: 'Late in half day after 30 minits and working hours less than 6 hours'
+                                        } :
+                                        // new entry addeded by AJITH on Wednesday, April 24, 2024 12:46:09 PM start
+                                        earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && correctWorking === true ?
+                                            {
+                                                duty_status: salaryLimit === false && correctWorking === true ? 2 : 1,// salary limit > 25000 and working hours should be > 6 hours
+                                                duty_desc: 'HP',
+                                                lvereq_desc: salaryLimit === false ? 'HP' : 'H',
+                                                duty_remark: 'Late in half day after 30 minits and working hours greater than 6 hours'
+                                            } :
+                                            // new entry addeded by AJITH on Wednesday, April 24, 2024 12:46:09 PM end
+                                            earlyOut === 0 && lateIn > maximumLateInTime && isBeforeHafDayInTime === false ?
+                                                {
+                                                    duty_status: salaryLimit === false ? 1 : 1,
+                                                    duty_desc: 'H',
+                                                    lvereq_desc: 'H',
+                                                    duty_remark: 'Late in and punch in after half day limit'
+                                                } :
+                                                // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true ?
+                                                (earlyOut > 0 && earlyOut <= maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
+                                                    {
+                                                        duty_status: salaryLimit === false && correctWorking === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
+                                                        duty_desc: 'H',
+                                                        lvereq_desc: 'H',
+                                                        duty_remark: 'Early going Half day'
+                                                    }
+                                                    :
+                                                    (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                                        {
+                                                            duty_status: salaryLimit === false && correctWorking === true ? 2 : 1,
+                                                            duty_desc: 'H',
+                                                            lvereq_desc: 'H',
+                                                            duty_remark: 'Half day latein and late out'
+                                                        } :
+                                                        // (earlyOut > 0 && earlyOut < maximumLateInTime) && lateIn > maximumLateInTime && isBeforeHafDayInTime === true ?
+                                                        (earlyOut > 0 && earlyOut > maximumLateInTime) && lateIn <= maximumLateInTime && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true && halfDayWorkingHour === true ?
+                                                            {
+                                                                duty_status: salaryLimit === false && correctWorking === true ? 2 : 1, // salary limit > 25000 and working hours should be > 6 hours
                                                                 duty_desc: 'H',
                                                                 lvereq_desc: 'H',
                                                                 duty_remark: 'Early going Half day latein and late out'
@@ -479,10 +578,8 @@ const punchInOutMapping = async (shiftMergedPunchMaster, employeeBasedPunchData)
 export const processShiftPunchMarkingHrFunc = async (
     postData_getPunchData,
     punchaData, //PUNCH DATA
-    empList, // EMPLOYEE LIST SECTION WISE
     shiftInformation, // SHIFT INFORMATION
     commonSettings, // COMMON SETTINGS
-    holidayList, // HOLIDAY LIST
     empSalary // EMPLOYEE_SALARY
 ) => {
     const {
@@ -495,22 +592,23 @@ export const processShiftPunchMarkingHrFunc = async (
         default_shift, //default SHIFT ID
         noff, // night off SHIFT ID,
         max_late_day_count,
-        halfday_time_count
+        halfday_time_count,
+        doff,
+        coff_min_working_hour,
+        holiday_min_working
     } = commonSettings; //COMMON SETTING
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
     const { succes, shiftdetail } = getDutyPlan.data;
     if (succes === 1 && shiftdetail?.length > 0) {
-        // const dutyplanInfo = shiftdetail; //DUTY PLAN
-        // const dutyPlanSlno = dutyplanInfo?.map(e => e.plan_slno) //FIND THE DUTY PLAN SLNO
         const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
         const { success, planData } = punch_master_data.data;
         if (success === 1 && planData?.length > 0) {
             const punchMasterData = planData; //PUNCHMSTER DATA
             return Promise.allSettled(
                 punchMasterData?.map(async (data, index) => {
-                    const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
-                    const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+                    const sortedShiftData = shiftInformation?.find((e) => e?.shft_slno === data?.shift_id)// SHIFT DATA
+                    const sortedSalaryData = empSalary?.find((e) => e?.em_no === data?.em_no) //SALARY DATA
                     const shiftMergedPunchMaster = {
                         ...data,
                         shft_chkin_start: sortedShiftData?.shft_chkin_start,
@@ -527,25 +625,28 @@ export const processShiftPunchMarkingHrFunc = async (
                         naShift: notapplicable_shift,
                         defaultShift: default_shift,
                         noff: noff,
-                        holidayStatus: sortedShiftData?.holiday_status
+                        holidayStatus: sortedShiftData?.holiday_status,
+                        doff: doff,
+                        coff_min_working_hour: coff_min_working_hour,
+                        holiday_min_working: holiday_min_working
                     }
-                    const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e.emp_code) === parseInt(data.em_no))
+                    const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e?.emp_code) === parseInt(data?.em_no))
                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
                     return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
                 })
             ).then((data) => {
-                const punchMasterMappedData = data?.map((e) => e.value)
+                const punchMasterMappedData = data?.map((e) => e?.value)
                 return Promise.allSettled(
                     punchMasterMappedData?.map(async (val) => {
-                        const holidayStatus = val.holiday_status;
-                        const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
-                        const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
+                        const holidayStatus = val?.holiday_status;
+                        const punch_In = val?.punch_in === null ? null : new Date(val?.punch_in);
+                        const punch_out = val?.punch_out === null ? null : new Date(val?.punch_out);
 
-                        const shift_in = new Date(val.shift_in);
-                        const shift_out = new Date(val.shift_out);
+                        const shift_in = new Date(val?.shift_in);
+                        const shift_out = new Date(val?.shift_out);
 
                         //SALARY LINMIT
-                        const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
+                        const salaryLimit = val?.gross_salary > val?.salaryLimit ? true : false;
 
                         const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
 
@@ -564,26 +665,29 @@ export const processShiftPunchMarkingHrFunc = async (
                             val.woff,
                             salaryLimit,
                             val.maximumLateInTime,
-                            halfday_time_count
+                            halfday_time_count,
+                            doff,
+                            coff_min_working_hour,
+                            holiday_min_working
                         )
                         return {
-                            punch_slno: val.punch_slno,
-                            punch_in: val.punch_in,
-                            punch_out: val.punch_out,
-                            hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
-                            late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
-                            early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
+                            punch_slno: val?.punch_slno,
+                            punch_in: val?.punch_in,
+                            punch_out: val?.punch_out,
+                            hrs_worked: (val?.shift_id === week_off_day || val?.shift_id === noff || val?.shift_id === notapplicable_shift || val?.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                            late_in: (val?.shift_id === week_off_day || val?.shift_id === noff || val?.shift_id === notapplicable_shift || val?.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                            early_out: (val?.shift_id === week_off_day || val?.shift_id === noff || val?.shift_id === notapplicable_shift || val?.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
                             duty_status: getAttendanceStatus?.duty_status,
-                            holiday_status: val.holiday_status,
-                            leave_status: val.leave_status,
+                            holiday_status: val?.holiday_status,
+                            leave_status: val?.leave_status,
                             lvereq_desc: getAttendanceStatus?.lvereq_desc,
                             duty_desc: getAttendanceStatus?.duty_desc,
-                            lve_tble_updation_flag: val.lve_tble_updation_flag
+                            lve_tble_updation_flag: val?.lve_tble_updation_flag
                         }
                     })
                 ).then(async (element) => {
                     // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
-                    const processedData = element?.map((e) => e.value)?.filter((v) => v.lve_tble_updation_flag === 0)
+                    const processedData = element?.map((e) => e?.value)?.filter((v) => v?.lve_tble_updation_flag === 0)
 
                     // PUNCH MASTER UPDATION
                     const postDataForUpdatePunchMaster = {
@@ -624,7 +728,7 @@ const holidayStatus = async (e, array, holiday_policy_count) => {
         const absentlwp = holidayFIlterArray?.filter((m) => m === 'A' || m === 'LWP' || m === 'ESI' || m === 'LOP').length
         return await Absent === 2 ? 'A' : lwp === 2 ? 'A' : absentlwp === 2 ? 'A' : ESI === 2 ? 'A' : 'H'
     } else {
-        return e.duty_desc
+        return e?.duty_desc
     };
 }
 
@@ -711,7 +815,8 @@ export const attendanceViewPunchFunc = async (
         default_shift, //default SHIFT ID
         noff, // night off SHIFT ID,
         max_late_day_count,
-        halfday_time_count
+        halfday_time_count,
+        coff_min_working_hour
     } = commonSettings; //COMMON SETTING
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
     const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
@@ -743,7 +848,8 @@ export const attendanceViewPunchFunc = async (
                         naShift: notapplicable_shift,
                         defaultShift: default_shift,
                         noff: noff,
-                        holidayStatus: sortedShiftData?.holiday_status
+                        holidayStatus: sortedShiftData?.holiday_status,
+                        coff_min_working_hour: coff_min_working_hour
                     }
                     const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e.emp_code) === parseInt(data.em_no))
                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
@@ -780,7 +886,8 @@ export const attendanceViewPunchFunc = async (
                             val.woff,
                             salaryLimit,
                             val.maximumLateInTime,
-                            halfday_time_count
+                            halfday_time_count,
+                            coff_min_working_hour
                         )
                         return {
                             punch_slno: val.punch_slno,
@@ -882,7 +989,149 @@ export const attendanceViewPunchFunc = async (
                         return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message }
                     }
                 })
-                // return { status: 1, message: "result", data: e }
+            })
+        } else {
+            return { status: 0, message: "Punch Master Data Not Found ! contact IT", errorMessage: '', punchMastData: [] }
+        }
+    } else {
+        return { status: 0, message: "Duty Plan Not Done! contact IT", errorMessage: '', punchMastData: [] }
+    }
+}
+
+
+export const dailyPunchMarkingFunction = async (
+    postData_getPunchData,
+    punchaData, //PUNCH DATA
+    shiftInformation, // SHIFT INFORMATION
+    commonSettings, // COMMON SETTINGS
+) => {
+
+    const {
+        cmmn_early_out, // Early going time interval
+        cmmn_grace_period, // common grace period for late in time
+        cmmn_late_in, //Maximum Late in Time for punch in after that direct HALF DAY 
+        salary_above, //Salary limit for calculating the holiday double wages
+        week_off_day, // week off SHIFT ID
+        notapplicable_shift, //not applicable SHIFT ID
+        default_shift, //default SHIFT ID
+        noff, // night off SHIFT ID,
+        halfday_time_count,//halfday minimum count hour
+        doff,//duty off 24, DA, respiratory 
+        monthly_late_time_count, //90 minutes
+        coff_min_working_hour,//credit off minimum working hour
+        holiday_min_working// holiday min hour exist or not
+    } = commonSettings; //COMMON SETTING
+
+    //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
+    const getDutyPlan = await axioslogin.post("/attendCal/getDutyPlanBySection/", postData_getPunchData); //GET DUTY PLAN DAAT
+    const { succes, shiftdetail } = getDutyPlan.data;
+    if (succes === 1 && shiftdetail?.length > 0) {
+        const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", postData_getPunchData); //GET PUNCH MASTER DATA
+        const { success, planData } = punch_master_data.data;
+
+        if (success === 1 && planData?.length > 0) {
+            const punchMasterData = planData; //PUNCHMSTER DATA
+            return Promise.allSettled(
+                punchMasterData?.map(async (data, index) => {
+                    const sortedShiftData = shiftInformation?.find((e) => e?.shft_slno === data?.shift_id)// SHIFT DATA
+                    //const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+                    const shiftMergedPunchMaster = {
+                        ...data,
+                        shft_chkin_start: sortedShiftData?.shft_chkin_start,
+                        shft_chkin_end: sortedShiftData?.shft_chkin_end,
+                        shft_chkout_start: sortedShiftData?.shft_chkout_start,
+                        shft_chkout_end: sortedShiftData?.shft_chkout_end,
+                        shft_cross_day: sortedShiftData?.shft_cross_day,
+                        gross_salary: data?.gross_salary,
+                        earlyGoingMaxIntervl: cmmn_early_out,
+                        gracePeriodInTime: cmmn_grace_period,
+                        maximumLateInTime: cmmn_late_in,
+                        salaryLimit: salary_above,
+                        woff: week_off_day,
+                        naShift: notapplicable_shift,
+                        defaultShift: default_shift,
+                        noff: noff,
+                        holidayStatus: sortedShiftData?.holiday_status,
+                        doff: doff,
+                        coff_min_working_hour: coff_min_working_hour,
+                        holiday_min_working: holiday_min_working
+                    }
+                    const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e?.emp_code) === parseInt(data.em_no))
+
+                    //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
+                    return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
+                })
+            ).then((data) => {
+                const punchMasterMappedData = data?.map((e) => e?.value)
+                return Promise.allSettled(
+                    punchMasterMappedData?.map(async (val) => {
+                        const holidayStatus = val?.holiday_status;
+                        const punch_In = val?.punch_in === null ? null : new Date(val?.punch_in);
+                        const punch_out = val?.punch_out === null ? null : new Date(val?.punch_out);
+
+                        const shift_in = new Date(val?.shift_in);
+                        const shift_out = new Date(val?.shift_out);
+
+                        //SALARY LINMIT
+                        const salaryLimit = val?.gross_salary > val?.salaryLimit ? true : false;
+
+                        const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+
+                        const getAttendanceStatus = await getAttendanceCalculation(
+                            punch_In,
+                            shift_in,
+                            punch_out,
+                            shift_out,
+                            cmmn_grace_period,
+                            getLateInTime,
+                            holidayStatus,
+                            val?.shift_id,
+                            val?.defaultShift,
+                            val?.naShift,
+                            val?.noff,
+                            val?.woff,
+                            salaryLimit,
+                            val?.maximumLateInTime,
+                            halfday_time_count,
+                            doff,
+                            coff_min_working_hour,
+                            holiday_min_working
+                        )
+                        return {
+                            punch_slno: val?.punch_slno,
+                            punch_in: val?.punch_in,
+                            punch_out: val?.punch_out,
+                            hrs_worked: (val?.shift_id === week_off_day || val?.shift_id === noff || val?.shift_id === notapplicable_shift || val?.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                            late_in: (val?.shift_id === week_off_day || val?.shift_id === noff || val?.shift_id === notapplicable_shift || val?.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                            early_out: (val?.shift_id === week_off_day || val?.shift_id === noff || val?.shift_id === notapplicable_shift || val?.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
+                            duty_status: getAttendanceStatus?.duty_status,
+                            holiday_status: val?.holiday_status,
+                            leave_status: val?.leave_status,
+                            lvereq_desc: getAttendanceStatus?.lvereq_desc,
+                            duty_desc: getAttendanceStatus?.duty_desc,
+                            lve_tble_updation_flag: val?.lve_tble_updation_flag
+                        }
+                    })
+                ).then(async (element) => {
+
+                    // REMOVE LEAVE REQUESTED DATA FROM THIS DATA
+                    const processedData = element?.map((e) => e?.value)?.filter((v) => v?.lve_tble_updation_flag === 0)
+
+                    // PUNCH MASTER UPDATION
+                    const postDataForUpdatePunchMaster = {
+                        postData_getPunchData: postData_getPunchData,
+                        processedData: processedData,
+                        monthly_late_time_count: monthly_late_time_count,
+                        cmmn_late_in: cmmn_late_in
+                    }
+                    const updatePunchMaster = await axioslogin.post("/attendCal/dailyPunchMarking/", postDataForUpdatePunchMaster);
+                    const { success, message, data } = updatePunchMaster.data;
+                    if (success === 1) {
+                        return { status: 1, message: "Punch Master Updated SuccessFully", errorMessage: '', punchMastData: data }
+                    } else {
+                        return { status: 0, message: "Error Processing and Updating Punch Master ! contact IT", errorMessage: message, punchMastData: [] }
+                    }
+                })
             })
         } else {
             return { status: 0, message: "Punch Master Data Not Found ! contact IT", errorMessage: '', punchMastData: [] }

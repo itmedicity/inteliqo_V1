@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { getLeaveRequestType } from '../../../redux/reduxFun/useQueryFunctions';
 import { Option, Select } from '@mui/joy';
 

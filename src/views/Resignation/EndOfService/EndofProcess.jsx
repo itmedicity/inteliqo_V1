@@ -15,8 +15,7 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import Table from '@mui/joy/Table';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import { useCallback } from 'react'
-import { processShiftPunchMarkingHrFunc } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc'
-import { dailyPunchMarkingFunction } from 'src/views/Attendance/ShiftUpdation/Function'
+import { processShiftPunchMarkingHrFunc, dailyPunchMarkingFunction } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc'
 
 const EndofProcess = ({ details, setFlag, setCount }) => {
 

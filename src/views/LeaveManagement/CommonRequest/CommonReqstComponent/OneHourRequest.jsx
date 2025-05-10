@@ -38,6 +38,7 @@ const OneHourRequest = () => {
     const [disbaleCheck, setDisbaleCheck] = useState(true)
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [empdata, setEmpdata] = useState({})
+    const [plan_slno, setPlanslno] = useState(0)
 
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
     const { em_no, em_id, em_department, em_dept_section, } = selectedEmpInform;
@@ -125,7 +126,7 @@ const OneHourRequest = () => {
         const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
         const { success, data: shiftData } = result.data;
         if (success === 1) {
-            const { shft_desc, shft_chkin_time, shft_chkout_time, shft_cross_day, holiday, shift_id } = shiftData[0];
+            const { shft_desc, shft_chkin_time, shft_chkout_time, shft_cross_day, holiday, shift_id, plan_slno } = shiftData[0];
             if (holiday === 1) {
                 warningNofity("Cannot Apply One request on Holiday")
             } else if (shift_id === default_shift || shift_id === notapplicable_shift || shift_id === week_off_day) {
@@ -134,6 +135,7 @@ const OneHourRequest = () => {
             else {
                 setSelectedShift(shift_id)
                 setShiftDesc(shft_desc)
+                setPlanslno(plan_slno)
                 const inTime = format(new Date(shft_chkin_time), 'HH:mm');
                 setCheckin(format(new Date(shft_chkin_time), 'HH:mm'))
                 setCheckout(format(new Date(shft_chkout_time), 'HH:mm'))
@@ -221,6 +223,7 @@ const OneHourRequest = () => {
                 hr_req_status: 1,
                 incharge_empid: approveStatus.usCode_inch,
                 hod_empid: approveStatus.usCode_hod,
+                plan_slno: plan_slno
             }
             const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
             const dateCheck = {
@@ -334,7 +337,7 @@ const OneHourRequest = () => {
         }
     }, [checkinBox, checkoutBox, cmmn_grace_period, em_dept_section, fromDate, deptApprovalLevel,
         punchData, punchInTime, punchOutTime, reason, em_department, em_id, em_no, loginEmid, loginHod,
-        loginIncharge, masterGroupStatus, selectedShift])
+        loginIncharge, masterGroupStatus, selectedShift, plan_slno])
 
 
     const [columndef] = useState([

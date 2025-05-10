@@ -73,6 +73,7 @@ const CommonSettingNew = () => {
         halfday_time_count: 0,
         punch_taken_hour_count: 0,
         monthly_late_time_count: 0,
+        holiday_min_working: false
 
     })
 
@@ -83,7 +84,8 @@ const CommonSettingNew = () => {
         pf_employee, pf_age, max_salary, verification_level, salary_above, leave_count,
         pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count,
         noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count, weekoff_policy_max_count,
-        weekoff_policy_min_count, onobservation_days, hod_leave_day_count, monthly_late_time_count
+        weekoff_policy_min_count, onobservation_days, hod_leave_day_count, monthly_late_time_count,
+        holiday_min_working
     } = FormData
 
     const [first_policy, setfirst_policy] = useState(false)
@@ -149,7 +151,7 @@ const CommonSettingNew = () => {
                     comp_hour_count, training_mastergroup, holiday_policy_count, weekoff_policy_max_count,
                     weekoff_policy_min_count, coff_min_working_hour, onobservation_days, hod_leave_day_count,
                     holiday_leave_request, halfday_time_count, punch_taken_hour_count, external_trainee,
-                    earnlvCategory, monthly_late_time_count, first_policy, second_plicy } = data[0]
+                    earnlvCategory, monthly_late_time_count, first_policy, second_plicy, holiday_min_working } = data[0]
 
                 const frmData = {
                     slno: setting_slno,
@@ -191,6 +193,7 @@ const CommonSettingNew = () => {
                     halfday_time_count: halfday_time_count,
                     punch_taken_hour_count: punch_taken_hour_count,
                     monthly_late_time_count: monthly_late_time_count,
+                    holiday_min_working: holiday_min_working === 1 ? true : false
 
                 }
                 const obj = JSON.parse(leavetype_multiple)
@@ -278,7 +281,8 @@ const CommonSettingNew = () => {
             earnlvCategory: earnlvCategory,
             monthly_late_time_count: monthly_late_time_count,
             first_policy: first_policy === true ? 1 : 0,
-            second_plicy: second_plicy === true ? 1 : 0
+            second_plicy: second_plicy === true ? 1 : 0,
+            holiday_min_working: holiday_min_working === true ? 1 : 0
         }
     }, [commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -288,7 +292,7 @@ const CommonSettingNew = () => {
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
         holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory, monthly_late_time_count,
-        first_policy, second_plicy])
+        first_policy, second_plicy, holiday_min_working])
 
     //data to edit
     const postDataEdit = useMemo(() => {
@@ -345,7 +349,8 @@ const CommonSettingNew = () => {
             earnlvCategory: earnlvCategory,
             monthly_late_time_count: monthly_late_time_count,
             first_policy: first_policy === true ? 1 : 0,
-            second_plicy: second_plicy === true ? 1 : 0
+            second_plicy: second_plicy === true ? 1 : 0,
+            holiday_min_working: holiday_min_working === true ? 1 : 0
         }
     }, [slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -355,7 +360,7 @@ const CommonSettingNew = () => {
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
         holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory,
-        monthly_late_time_count, first_policy, second_plicy])
+        monthly_late_time_count, first_policy, second_plicy, holiday_min_working])
 
     //save
     const submitFormData = useCallback(async (e) => {
@@ -674,15 +679,25 @@ const CommonSettingNew = () => {
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <Typography level="body1">Holiday Minimum Working Hour</Typography>
                                     </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="coff_min_working_hour"
-                                            value={coff_min_working_hour}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
+
+                                    <Box sx={{ flex: 1, px: 0.5, display: 'flex', flexDirection: 'row' }} >
+                                        <Box sx={{ mt: 1 }} >
+                                            <JoyCheckbox
+                                                name="holiday_min_working"
+                                                checked={holiday_min_working}
+                                                onchange={(e) => updateCommonSettings(e)}
+                                            />
+                                        </Box>
+                                        <Box sx={{ flex: 1, ml: 0.5 }} >
+                                            <InputComponent
+                                                placeholder={''}
+                                                type="text"
+                                                size="sm"
+                                                name="coff_min_working_hour"
+                                                value={coff_min_working_hour}
+                                                onchange={(e) => updateCommonSettings(e)}
+                                            />
+                                        </Box>
                                     </Box>
                                 </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>

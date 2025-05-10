@@ -56,7 +56,9 @@ const OneHourModal = ({ open, setOpen, onhourdata, setCount }) => {
                         cancel_comment: reason,
                         slno: onhourdata?.request_slno,
                         punch_slno: punch_slno,
-                        cancel_user: em_id
+                        cancel_user: em_id,
+                        em_no: onhourdata?.em_no,
+                        duty_day: onhourdata?.one_hour_duty_day
 
                     }
                     const result = await axioslogin.post('/CommonReqst/cancel/approvedOneHour', postData)

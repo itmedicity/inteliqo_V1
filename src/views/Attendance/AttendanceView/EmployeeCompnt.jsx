@@ -15,7 +15,7 @@ import LeaveDescription from './LeaveDescription';
 import { useSelector } from 'react-redux';
 import { processShiftPunchMarkingHrFunc } from '../PunchMarkingHR/punchMarkingHrFunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import { dailyPunchMarkingFunction } from '../ShiftUpdation/Function';
+import { dailyPunchMarkingFunction } from '../PunchMarkingHR/punchMarkingHrFunc';
 import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
 
 const isOdd = (number) => number % 2 !== 0
@@ -368,7 +368,6 @@ const EmployeeCompnt = () => {
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
                                     views={['year', 'month']}
-                                    // minDate={subMonths(new Date(), 2)}
                                     maxDate={addMonths(new Date(), 1)}
                                     value={value}
                                     onChange={(newValue) => {

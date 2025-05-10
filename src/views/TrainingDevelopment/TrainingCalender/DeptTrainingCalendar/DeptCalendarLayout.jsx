@@ -28,6 +28,7 @@ const DeptCalendarLayout = ({ count, SetCount, setTable, dept, deptSec, year, Em
     useEffect(() => {
         const obj = {
             month: format(currentMonth, "MM"),
+            year: format(currentMonth, 'yyyy'),
             dept: dept,
             deptSec: deptSec
         }
