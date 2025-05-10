@@ -52,7 +52,7 @@ const MasterView = () => {
             if (success === 1) {
                 const result = await axioslogin.post(`/ReligionReport/punchReportmasterdep`, postDataDep)
                 const { data, success } = result.data
-                if (success === 1) {
+                if (success === 1 && data?.length !== 0) {
                     const setData = data?.map((data) => {
                         let shiftIn = `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_in), 'HH:mm')}`;
                         let shiftOut = data.shft_cross_day === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}` :
