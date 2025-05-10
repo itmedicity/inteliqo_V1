@@ -31,7 +31,7 @@ const ApprovalCEO = () => {
     //state for open model
     const [openleave, setOpenleave] = useState(false);
     const [opennopunch, setOpennopunch] = useState(false);
-    const [opencompen, setOpencompen] = useState(false);
+    //const [opencompen, setOpencompen] = useState(false);
     const [openhalf, setOpenhalf] = useState(false);
 
     const em_id = useSelector((state) => {
@@ -207,15 +207,16 @@ const ApprovalCEO = () => {
             setOpenhalf(true)
         } else if (req_type === 3) {
             setOpennopunch(true)
-        } else if (req_type === 4) {
-            setOpencompen(true);
         }
+        // else if (req_type === 4) {
+        //     setOpencompen(true);
+        // }
     }
 
     const handleClose = () => {
         setOpenleave(false);
         setOpennopunch(false);
-        setOpencompen(false);
+        // setOpencompen(false);
         setOpenhalf(false);
     };
 

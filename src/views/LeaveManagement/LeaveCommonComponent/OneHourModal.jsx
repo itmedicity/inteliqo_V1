@@ -85,7 +85,7 @@ const OneHourModal = ({ setOpen, open, authority, empData, setCount }) => {
             em_no: emno,
             duty_day: dutyDate
         }
-    }, [remark, slno, loginem_id, emno])
+    }, [remark, slno, loginem_id, emno, dutyDate])
 
     const approveData = useMemo(() => {
         return {

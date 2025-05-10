@@ -10,7 +10,7 @@ import { getDepartmentShiftDetails } from '../LeavereRequsition/Func/LeaveFuncti
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { addDays, addHours, differenceInMinutes, differenceInHours, format, subHours, isValid } from 'date-fns'
+import { addDays, addHours, differenceInHours, format, subHours, isValid, isAfter, isEqual, differenceInMinutes, addMinutes } from 'date-fns'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
@@ -41,13 +41,14 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [disableDate, setDisableDate] = useState(false)
+    const [holiday_status, setHoliday] = useState(0)
 
     const [planSlno, setPlanSlno] = useState(0)
     const [inactiveShift, setInactiveShift] = useState(false)
 
     const state = useSelector((state) => state?.getCommonSettings)
     const commonStates = useMemo(() => state, [state])
-    const { salary_above, week_off_day, comp_hour_count, coff_min_working_hour } = commonStates;
+    const { salary_above, week_off_day, comp_hour_count, coff_min_working_hour, holiday_min_working, cmmn_late_in } = commonStates;
 
     useEffect(() => {
         if (Object.keys(empData).length !== 0) {
@@ -75,8 +76,17 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
         const result = await axioslogin.post('LeaveRequest/gethafdayshift/', postData);
         const { success, data } = result.data;
         if (success === 1) {
-            const { plan_slno, shift_id, holiday } = data[0]
-            if (holiday === 1) {
+            const { plan_slno, shift_id, holiday, gross_salary } = data[0]
+            setHoliday(holiday)
+            if (holiday !== 0 && gross_salary <= salary_above && shift_id !== week_off_day) {
+                warningNofity('Cannot Apply for Compensatory Off, Salary must be greater than 25k!')
+                setOpenBkDrop(false)
+                setInactiveShift(true)
+            } else if (shift_id !== week_off_day && holiday === 0) {
+                warningNofity("Can't Apply for Compensatory Off, Shift Must be Week Off")
+                setOpenBkDrop(false)
+                setInactiveShift(true)
+            } else if (holiday === 1) {
                 setSelectedShift(shift_id)
                 setPlanSlno(plan_slno)
                 setOpenBkDrop(false)
@@ -89,10 +99,12 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             setPlanSlno(0)
             setOpenBkDrop(false)
         }
-    }, [empData])
+    }, [empData, salary_above, week_off_day])
+
+
 
     const handleChangefetchShift = useCallback(async () => {
-        setDisableCheck(false)
+        setOpenBkDrop(true)
         setDisableDate(true)
         if (selectedShift !== 0 && isValid(new Date(fromDate)) && Object.keys(empData).length !== 0) {
             //GET SHIFT DATA 
@@ -100,11 +112,10 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                 emp_id: empData?.emID,
                 duty_day: format(new Date(fromDate), 'yyyy-MM-dd')
             }
-
             const result = await axioslogin.post('common/getShiftdetails/', postData);
             const { success, data, message } = result.data;
             if (success === 1) {
-                const { ot_request_flag, punch_slno, holiday_slno, shift_id } = data[0];
+                const { ot_request_flag, punch_slno, holiday_slno, punch_in, punch_out } = data[0];
                 setPunchSlno(punch_slno)
                 const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
                 const { shft_chkin_time, shft_chkout_time, shft_cross_day } = selectedShiftTiming[0]
@@ -112,69 +123,67 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                 const inTime = moment(shft_chkin_time).format('HH:mm:ss');
                 const outTime = moment(shft_chkout_time).format('HH:mm:ss');
 
-                const selecteShiftData = {
-                    inCheck: shft_chkin_time,
-                    outCheck: shft_chkout_time
-                }
-                setselectedShiftTiming(selecteShiftData);
-
                 const chekIn = `${moment(fromDate).format('YYYY-MM-DD')} ${inTime}`;
                 const chekOut = `${moment(fromDate).format('YYYY-MM-DD')} ${outTime}`;
 
-                const result = await axioslogin.get(`/common/getEmpoyeeInfomation/${empData?.emID}`);
-                const { success, data: Salarydata } = result.data;
-                if (success === 1) {
-                    const { gross_salary } = Salarydata[0]
-                    if (ot_request_flag === 1) {
-                        warningNofity('Selected Date Already Raised A COFF Request')
-                        setDisableCheck(true)
-                    }
-                    else if (holiday_slno !== 0 && gross_salary <= salary_above && shift_id !== week_off_day) {
-                        warningNofity('Cannot Apply for Compensatory Off, Salary must be greater than 25k!')
-                        setDisableCheck(true)
-                    }
-                    else if (shift_id !== week_off_day && holiday_slno === 0) {
-                        warningNofity("Can't Apply for Compensatory Off, Shift Must be Week Off")
-                        setDisableCheck(true)
-                    }
-                    else {
+                const selecteShiftData = {
+                    inCheck: chekIn,
+                    outCheck: chekOut
+                }
+                setselectedShiftTiming(selecteShiftData);
 
-                        //TO FETCH PUNCH DATA FROM TABLE
-                        const postDataForpunchMaster = {
-                            date1: shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
-                            date2: shft_cross_day === 0 ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
-                            em_no: empData?.emNo
-                        }
 
-                        //FETCH THE PUNCH TIME FROM PUNCH DATA
-                        const result = await axioslogin.post('common/getShiftdata/', postDataForpunchMaster)
-                        const { success, data } = result.data;
-                        if (success === 1) {
+                if (ot_request_flag === 1) {
+                    warningNofity('Selected Date Already Raised A COFF Request')
+                    setDisableCheck(true)
+                    setOpenBkDrop(false)
+                }
+                else {
+                    //TO FETCH PUNCH DATA FROM TABLE
+                    const postDataForpunchMaster = {
+                        date1: shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                        date2: shft_cross_day === 0 ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
+                        em_no: empData?.emNo
+                    }
+
+                    //FETCH THE PUNCH TIME FROM PUNCH DATA
+                    const result = await axioslogin.post('common/getShiftdata/', postDataForpunchMaster)
+                    const { success, data } = result.data;
+                    if (success === 1) {
+                        if (holiday_slno !== 0) {
+                            const inpunch = data?.find(val => isEqual(new Date(val?.punch_time), new Date(punch_in)));
+                            setPunchInTime(inpunch?.punch_time)
+                            const outpunch = data?.find(val => isEqual(new Date(val?.punch_time), new Date(punch_out)));
+                            setPunchOutTime(outpunch?.punch_time)
+                        } else {
                             setPunchDetl(data)
                             succesNofity('Done , Select The Punching Info')
-                            //tInactiveShift(false)
-                        } else if (success === 0) {
-                            //no record
-                            warningNofity('Punching Data Not Found')
-                            setDisableCheck(true)
-                        } else {
-                            // error
-                            errorNofity(message)
-                            setDisableCheck(true)
+                            setDisableCheck(false)
                         }
+                        setOpenBkDrop(false)
+                    } else if (success === 0) {
+                        //no record
+                        warningNofity('Punching Data Not Found')
+                        setDisableCheck(true)
+                        setOpenBkDrop(false)
+                    } else {
+                        // error
+                        errorNofity(message)
+                        setDisableCheck(true)
+                        setOpenBkDrop(false)
                     }
-                } else {
-                    warningNofity("Employee Details Not Found")
                 }
             } else {
                 warningNofity('Duty Plan Not Done')
+                setOpenBkDrop(false)
+                setDisableCheck(true)
             }
-
         } else {
             warningNofity('Select The Off Type and Shift Feild')
+            setDisableCheck(true)
+            setOpenBkDrop(false)
         }
-    }, [fromDate, selectedShift, empData, shiftTiming, salary_above,
-        week_off_day, comp_hour_count])
+    }, [fromDate, selectedShift, empData, shiftTiming, comp_hour_count])
 
     const handleChangeCheckInCheck = useCallback((e) => {
         const checkin = e.target.checked;
@@ -192,16 +201,21 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
     const handleChangeSubmitCoffRequest = useCallback(async () => {
 
         const { inCheck, outCheck } = selectedShiftTiming;
-        if (differenceInHours(new Date(punchOutTime), new Date(punchInTime)) < coff_min_working_hour) {
-            warningNofity("Can't Apply for COFF request, minimum 6 hours work needed")
+        const checkinlate = addMinutes(new Date(inCheck), cmmn_late_in)
+
+        if (holiday_min_working === 1 && (differenceInHours(new Date(punchOutTime), new Date(punchInTime)) < coff_min_working_hour)) {
+            warningNofity("Can't Apply for COFF request, minimum hours work needed")
+        } else if (isAfter(new Date(punchInTime), new Date(checkinlate)) === true || isAfter(new Date(punchOutTime), new Date(outCheck)) === false) {
+            warningNofity("Can't Apply COFF on Holiday While Attendnace is HD")
+            setDisableCheck(true)
+            setOpenBkDrop(false)
         }
-        else if (punchInTime === 0 || punchOutTime === 0) {
+        else if (holiday_status === 0 && (punchInTime === 0 || punchOutTime === 0)) {
             warningNofity('Please Select In and Out Punch')
         } else if (reason === '') {
             warningNofity('Request Reason Is Mandatory')
         } else {
             setOpenBkDrop(true)
-
             const coffPostData = {
                 startdate: format(new Date(fromDate), 'yyyy-MM-dd'),
                 punchindata: punchInTime,
@@ -255,7 +269,8 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             }
         }
     }, [reason, punchSlno, fromDate, punchInTime, punchOutTime, selectedShift, selectedShiftTiming,
-        setCount, empData, coff_min_working_hour, setShowForm, planSlno])
+        setCount, empData, coff_min_working_hour, setShowForm, planSlno, holiday_status, cmmn_late_in,
+        holiday_min_working])
 
     const refresh = useCallback(() => {
         setDisableDate(false)
@@ -291,7 +306,6 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                         size="md"
                         fullWidth
                         placeholder='Compensatory OFF'
-                        //  value={sect_name}
                         disabled
                     />
                 </Box>
@@ -337,7 +351,6 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                             onClick={refresh}
                             size='sm'
                             sx={{ width: '100%' }}
-                        //endDecorator={<Box>Show Punch Data</Box>}
                         >
                             <RefreshIcon fontSize='medium' />
                         </Button>
@@ -357,23 +370,32 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                     />
                 </Box>
                 <Box sx={{ display: 'flex', flex: 1, p: 0.2, }} >
-                    <Select
-                        value={punchInTime}
-                        onChange={(event, newValue) => {
-                            setPunchInTime(newValue);
-                        }}
-                        sx={{ width: '100%' }}
-                        size='md'
-                        variant='outlined'
-                        disabled={disableIn}
-                    >
-                        <Option disabled value={0}>Select Check In Time</Option>
-                        {
-                            punchDetl?.map((val, index) => {
-                                return <Option key={index} value={val.punch_time}>{val.punch_time}</Option>
-                            })
-                        }
-                    </Select>
+                    {
+                        holiday_status === 1 ? <Input
+                            size="md"
+                            fullWidth
+                            placeholder='In punch'
+                            value={punchInTime}
+                            disabled
+                        /> : <Select
+                            value={punchInTime}
+                            onChange={(event, newValue) => {
+                                setPunchInTime(newValue)
+                            }}
+                            sx={{ width: '100%' }}
+                            size='md'
+                            variant='outlined'
+                            disabled={disableIn}
+                        >
+                            <Option disabled value={0}>Select Check In Time</Option>
+                            {
+                                punchDetl?.map((val, index) => {
+                                    return <Option key={index} value={val.punch_time}>{val.punch_time}</Option>
+                                })
+                            }
+                        </Select>
+                    }
+
                 </Box>
                 <Box sx={{ display: "flex", mx: 2, alignItems: 'center', }} >
                     <Checkbox
@@ -388,23 +410,31 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
                 </Box>
                 <Box sx={{ display: 'flex', flex: 1, p: 0.2, }} >
-                    <Select
-                        value={punchOutTime}
-                        onChange={(event, newValue) => {
-                            setPunchOutTime(newValue);
-                        }}
-                        sx={{ width: '100%' }}
-                        size='md'
-                        variant='outlined'
-                        disabled={disableOut}
-                    >
-                        <Option disabled value={0}>Select Check Out Time</Option>
-                        {
-                            punchDetl?.map((val, index) => {
-                                return <Option key={index} value={val.punch_time}>{val.punch_time}</Option>
-                            })
-                        }
-                    </Select>
+                    {
+                        holiday_status === 1 ? <Input
+                            size="md"
+                            fullWidth
+                            placeholder='Out punch'
+                            value={punchOutTime}
+                            disabled
+                        /> : <Select
+                            value={punchOutTime}
+                            onChange={(event, newValue) => {
+                                setPunchOutTime(newValue);
+                            }}
+                            sx={{ width: '100%' }}
+                            size='md'
+                            variant='outlined'
+                            disabled={disableOut}
+                        >
+                            <Option disabled value={0}>Select Check Out Time</Option>
+                            {
+                                punchDetl?.map((val, index) => {
+                                    return <Option key={index} value={val.punch_time}>{val.punch_time}</Option>
+                                })
+                            }
+                        </Select>
+                    }
                 </Box>
             </Box>
             <Box
