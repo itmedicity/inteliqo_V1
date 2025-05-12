@@ -18,9 +18,9 @@ import Table from '@mui/joy/Table';
 import LeaveDescription from './LeaveDescription';
 import { useSelector } from 'react-redux';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
-import { attendanceViewPunchFunc, processShiftPunchMarkingHrFunc } from '../PunchMarkingHR/punchMarkingHrFunc';
+import { attendanceViewPunchFunc, processShiftPunchMarkingHrFunc, dailyPunchMarkingFunction } from '../PunchMarkingHR/punchMarkingHrFunc';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import { attendanceViewDailyPunch, dailyPunchMarkingFunction } from '../ShiftUpdation/Function';
+import { attendanceViewDailyPunch, } from '../ShiftUpdation/Function';
 import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
 
 const isOdd = (number) => number % 2 !== 0
@@ -31,10 +31,7 @@ const InchargeHodCompnt = () => {
 
     const [value, setValue] = useState(moment(new Date()));
     const [deptSection, setDeptSection] = useState(0)
-    // const [dateArray, setDateArray] = useState([])
-    //const [empArray, setEmpArray] = useState([])
     const [self, setSelf] = useState(false)
-    // const [mainArray, setMainArray] = useState([])
 
     const [tableArray, settableArray] = useState([])
     const [daysNum, setdaysNum] = useState([])

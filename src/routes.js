@@ -61,7 +61,6 @@ const EmployeeDocumentChecklist = React.lazy(() => import('./views/EmployeeRecor
 //const VaccinationInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/VaccinationInformation'))
 const FineorDeduction = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/FineorDeduction'))
 // const EmployeeEndofService = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeEndofService'))
-const DesignationMastTableEdit = React.lazy(() => import('./views/Master/Designation/DesignationMastTableEdit'))
 const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
 const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmpAllowanceTableEdit'))
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
@@ -77,7 +76,7 @@ const OTApprovalHOD = React.lazy(() => import('./views/LeaveManagement/OTApprova
 const OTApprovalHR = React.lazy(() => import('./views/LeaveManagement/OTApprovalHR/OtHrApproval'))
 const OTUpdation = React.lazy(() => import('./views/LeaveManagement/OTUpdation/OtUpdtnCalculation'))
 const LeaveRequestType = React.lazy(() => import('./views/Master/LeaveRequestType/LeaveRequestTypeMast'))
-const ShiftUpdation = React.lazy(() => import('./views/Attendance/ShiftUpdation/DailyPunchMarking'))
+const ShiftUpdation = React.lazy(() => import('./views/Attendance/ShiftUpdation/ShiftUpdation'))
 const ResignationRequest = React.lazy(() => import('./views/Resignation/ResigantionRequest/ResignationMainPage'))
 const ResignationApprovalIncharge = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/Inchargeapproval'))
 const ResignationApprovalHod = React.lazy(() => import('./views/Resignation/ResigantionRequest/Approvals/Hodapproval'))
@@ -172,9 +171,7 @@ const WageRegister = React.lazy(() => import('./views/Payroll/WageRegister/WageR
 const AttandanceRegister = React.lazy(() => import('./views/Payroll/AttendanceRegister/AttandaceRegisterPage'))
 const SalaryStatement = React.lazy(() => import('./views/Payroll/SalaryStatement/SalaryStatementPage'))
 const AttendanceView = React.lazy(() => import('./views/Attendance/AttendanceView/AttendanceView'))
-const PunchMarkingHR = React.lazy(() => import('./views/Attendance/PunchMarkingHR/MonthlyAttendanceProcess'))
 const CompanyInfo = React.lazy(() => import('./views/EmployeeRecord/CompanyInformationLeftMenu/CompanyInformation'))
-// const PunchDoneList = React.lazy(() => import('./views/Attendance/PunchMarkingHR/PunchMarkDoneList'))
 const TrainingType = React.lazy(() => import('./views/Master/TrainingTypeMaster/TrainingType'))
 const TrainingCategory = React.lazy(() => import('./views/Master/TrainingCategoryMaster/TrainingCategory'))
 const TrainingName = React.lazy(() => import('./views/Master/TrainingNameMaster/TrainingName'))
@@ -368,7 +365,6 @@ const routes = [
   { path: '/Home/EmployeeDocumentChecklist/:id/:no', exact: true, name: 'Employee Document Checklist', component: EmployeeDocumentChecklist },
   //{ path: '/Home/VaccinationInformation/:id', exact: true, name: 'Vaccination Information', component: VaccinationInformation },
   { path: '/Home/FineorDeduction/:id/:no', exact: true, name: 'Fine or Other Deduction', component: FineorDeduction },
-  { path: '/Home/DesignationMastTableEdit/:id', exact: true, name: 'Designation master Table Edit', component: DesignationMastTableEdit },
   { path: '/Home/DesignationTypeedit/:id', exact: true, name: 'Branch Master Table Edit', component: DesignationTypeedit },
   { path: '/Home/EmpAllowanceTableEdit/:slno/:id/:no', exact: true, name: 'Employee Allowance Table Edit ', component: EmpAllowanceTableEdit },
   { path: '/Home/ShiftMaster', exact: true, name: 'ShiftMaster', component: ShiftMaster },
@@ -481,7 +477,6 @@ const routes = [
   { path: '/Home/AttandanceRegister', exact: true, name: 'Attandance Register', component: AttandanceRegister },
   { path: '/Home/SalaryStatement', exact: true, name: 'Attandance Register', component: SalaryStatement },
   { path: '/Home/AttendanceView', exact: true, name: 'Attandance View', component: AttendanceView },
-  { path: '/Home/PunchMarkingHR', exact: true, name: 'Punch Marking HR ', component: PunchMarkingHR },
   { path: '/Home/CompanyInfo', exact: true, name: 'Punch Marking HR ', component: CompanyInfo },
   //{ path: '/Home/PunchDoneList', exact: true, name: 'Punch Marking Done List ', component: PunchDoneList },
   //training

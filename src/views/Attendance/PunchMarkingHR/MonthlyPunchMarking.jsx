@@ -30,7 +30,6 @@ const MonthlyPunchMarking = () => {
     const [value, setValue] = useState(moment(new Date()));
     const [holidayList, setHolidayList] = useState([]);
     const [empSalary, setEmpSalary] = useState([]);
-    //  const [empList, setEmpList] = useState([]);
 
     //GET REDUX stored information using useSelector
     const commonSettings = useSelector((state) => state?.getCommonSettings)
@@ -248,7 +247,7 @@ const MonthlyPunchMarking = () => {
                                             emNo: el,
                                             lcArray: lcData?.filter((e) => e.em_no === el)
                                                 ?.sort((a, b) => a.punch_slno - b.punch_slno)
-                                                ?.filter((e) => e.holiday_status !== 1)
+                                                // ?.filter((e) => e.holiday_status !== 1)
                                                 ?.filter((e) => e.late_in <= cmmn_late_in)
                                         }
                                     })

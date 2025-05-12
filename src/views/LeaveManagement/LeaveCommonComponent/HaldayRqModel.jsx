@@ -4,7 +4,6 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { Typography } from '@mui/joy';
 import { useSelector } from 'react-redux';
-// import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import Button from '@mui/joy/Button';
 import Modal from '@mui/joy/Modal';
 import ModalClose from '@mui/joy/ModalClose';
@@ -15,7 +14,7 @@ import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined
 const HaldayRqModel = ({ setOpen, open, authority, empData, setcount }) => {
 
     const { em_name, requestDate, halfday_date, month, hf_reason, em_no, sect_name, slno,
-        planslno, halfday_status, shft_desc } = empData;
+        planslno, halfday_status, shft_desc, leavedate } = empData;
 
     //login incharge id
     const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
@@ -107,7 +106,9 @@ const HaldayRqModel = ({ setOpen, open, authority, empData, setcount }) => {
             slno: slno,
             apprvdate: format(new Date(), 'yyyy-MM-dd hh:mm:ss'),
             us_code: em_id,
-            hrm_cl_slno: planslno
+            hrm_cl_slno: planslno,
+            em_no: em_no,
+            duty_day: leavedate
         }
         //incharge approval
         if (authority === 1) {
@@ -174,12 +175,11 @@ const HaldayRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                 }
             }
         }
-    }, [reason, slno, authority, setcount, em_id, setOpen, planslno])
+    }, [reason, slno, authority, setcount, em_id, setOpen, planslno, em_no, leavedate])
 
 
     return (
         <Fragment>
-            {/* <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" /> */}
             <Modal
                 aria-labelledby="modal-title"
                 aria-describedby="modal-desc"
@@ -312,74 +312,6 @@ const HaldayRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                             </Box>
                         </Box>
                     </Box>
-                    {/* <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md"> Request Date</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md"> : {requestDate}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}>
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md"> Leave Type</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md">: Casual leave</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md"> Leave Date</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md">: {halfday_date}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md">Month of Leave</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md"> : {month}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md"> Halfday Time</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md">: {halfday_status === 1 ? 'First Half' : 'Second Half'}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box>
-                    <Box sx={{ display: "flex", width: "100%" }} >
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left", fontWeight: 500 }}  >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md"> Leave Reason</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                        <Box sx={{ display: "flex", flex: 1, px: 0.5, justifyContent: "left" }} >
-                            <CssVarsProvider>
-                                <Typography level="body1" fontSize="md">: {hf_reason}</Typography>
-                            </CssVarsProvider>
-                        </Box>
-                    </Box> */}
                     <Box sx={{ pt: 0.5 }} >
                         <Textarea name="Outlined" placeholder="Reason For Approve/Reject The Request here…"
                             variant="outlined" onChange={(e) => setreason(e.target.value)} />

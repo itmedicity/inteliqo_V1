@@ -351,7 +351,6 @@ const AnnualLeaveInformation = () => {
                 }
 
             } else {
-                // console.log('no contract')
 
                 const resultselect = await axioslogin.post('/yearleaveprocess/select_yearlyprocess', datatoselect)
 

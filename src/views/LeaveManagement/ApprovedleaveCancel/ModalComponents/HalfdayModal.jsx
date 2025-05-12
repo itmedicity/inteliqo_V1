@@ -61,7 +61,9 @@ const HalfdayModal = ({ open, setOpen, empData, setCount }) => {
                         lv_cancel_us_code: em_id,
                         punch_slno: punch_slno,
                         hrm_cl_slno: empData?.planslno,
-                        half_slno: parseInt(empData?.half_slno)
+                        half_slno: parseInt(empData?.half_slno),
+                        em_no: empData?.em_no,
+                        duty_day: empData?.leavedate
                     }
                     const resultdel = await axioslogin.patch('/LeaveRequestApproval/cancel/halfday', postData);
                     const { success } = await resultdel.data;
