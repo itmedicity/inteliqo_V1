@@ -59,19 +59,20 @@ const EmployeeView = () => {
 
                     }
                 })
-                const updatedSecondApiData = setData.map(data => {
-                    const correspondingFirstData = firstApiData.filter(firstApiData => {
+                const updatedSecondApiData = setData?.map(data => {
+                    const correspondingFirstData = firstApiData?.filter(firstApiData => {
                         return (
-                            parseInt(firstApiData.emp_code) === data.em_no &&
-                            new Date(firstApiData.punch_time).toDateString() === new Date(data.duty_day).toDateString()
+                            parseInt(firstApiData?.emp_code) === data?.em_no &&
+                            new Date(firstApiData?.punch_time).toDateString() === new Date(data?.duty_day).toDateString()
                         );
                     });
                     return {
                         ...data,
-                        new_field: correspondingFirstData.map(data => data.punch_time)
+                        new_field: correspondingFirstData.map(data => data?.punch_time)
                     };
                 });
-                setTableData(updatedSecondApiData.slice(0, -1))
+                const array = updatedSecondApiData?.sort((a, b) => new Date(a?.duty_day) - new Date(b?.duty_day));
+                setTableData(array)
                 setOpenBkDrop(false)
                 // setTableData(updatedSecondApiData)
             }
@@ -121,8 +122,8 @@ const EmployeeView = () => {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['year', 'month']}
-                                minDate={subMonths(new Date(), 1)}
-                                maxDate={addMonths(new Date(), 1)}
+                                minDate={subMonths(new Date(), 2)}
+                                maxDate={endOfMonth(new Date())}
                                 value={selectDate}
                                 size="small"
                                 onChange={(newValue) => {

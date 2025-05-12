@@ -228,19 +228,31 @@ export const processPunchMarkingHrFunc = async (
 }
 
 export const getAttendanceCalculation = async (
-    punch_In, shift_in, punch_out, shift_out, cmmn_grace_period, getLateInTime,
-    holidayStatus, shiftId, defaultShift, NAShift, NightOffShift, WoffShift,
-    salaryLimit, maximumLateInTime, halfday_time_count, coff_min_working_hour,
+    punch_In,
+    shift_in,
+    punch_out,
+    shift_out,
+    cmmn_grace_period,
+    getLateInTime,
+    holidayStatus,
+    shiftId,
+    defaultShift,
+    NAShift,
+    NightOffShift,
+    WoffShift,
+    salaryLimit,
+    maximumLateInTime,
+    halfday_time_count,
+    doff,
+    coff_min_working_hour,
     holiday_min_working
 ) => {
-    const {
-        // hrsWorked, 
-        lateIn, earlyOut } = getLateInTime;
+    const { lateIn, earlyOut } = getLateInTime;
 
     //SHIFT ID CHECKING
     // ( !== default shift , !== not applicable shift , !== Night off , !== week off) 
     // if true ==> ( its a working shift ) 
-    const checkShiftIdStatus = (shiftId !== defaultShift && shiftId !== NAShift && shiftId !== NightOffShift && shiftId !== WoffShift)
+    const checkShiftIdStatus = (shiftId !== defaultShift && shiftId !== NAShift && shiftId !== NightOffShift && shiftId !== WoffShift && shiftId !== doff)
     //HALF DAY CALCULATION
     const totalShiftInMInits = differenceInMinutes(new Date(shift_out), new Date(shift_in))
     const halfDayInMinits = totalShiftInMInits / 2;
@@ -383,8 +395,7 @@ export const getAttendanceCalculation = async (
                                                                     duty_remark: 'in and out less tha half day time'
                                                                 } :
                                                                 { duty_status: salaryLimit === false ? 1 : 1, duty_desc: 'H', lvereq_desc: 'H', duty_remark: 'Holiday' }
-            }
-            else {
+            } else {
                 const correctWorking = isBefore(new Date(punch_In), new Date(shift_in)) && isAfter(new Date(punch_out), new Date(shift_out))
                 return correctWorking === true && isBeforeHafDayInTime === true && isAfterHalfDayOutTime === true ?
                     {
@@ -486,8 +497,9 @@ export const getAttendanceCalculation = async (
         return shiftId === defaultShift && holidayStatus === 0 ? { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'no duty plan' } :
             shiftId === WoffShift ? { duty_status: 1, duty_desc: 'WOFF', lvereq_desc: 'WOFF', duty_remark: 'week off' } :
                 shiftId === NightOffShift ? { duty_status: 1, duty_desc: 'NOFF', lvereq_desc: 'NOFF', duty_remark: 'night off' } :
-                    shiftId === defaultShift && holidayStatus === 1 ? { duty_status: 1, duty_desc: 'H', lvereq_desc: 'H', duty_remark: 'holiday' } :
-                        { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'no applicable' }
+                    shiftId === doff ? { duty_status: 1, duty_desc: 'DOFF', lvereq_desc: 'DOFF', duty_remark: 'duty off' } :
+                        shiftId === defaultShift && holidayStatus === 1 ? { duty_status: 1, duty_desc: 'H', lvereq_desc: 'H', duty_remark: 'holiday' } :
+                            { duty_status: 0, duty_desc: 'A', lvereq_desc: 'A', duty_remark: 'no applicable' }
     }
 }
 

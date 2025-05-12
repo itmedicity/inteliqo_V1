@@ -58,7 +58,11 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
         default_shift, //default SHIFT ID
         noff, // night off SHIFT ID
         halfday_time_count,
-        comp_hour_count
+        comp_hour_count,
+        doff,//duty off 24, DA, respiratory 
+        monthly_late_time_count, //90 minutes
+        coff_min_working_hour,//credit off minimum working hour
+        holiday_min_working// holiday min hour exist or not
     } = commonSettings; //COMMON SETTING
 
     //FIND THE CROSS DAY
@@ -191,7 +195,10 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                                         naShift: notapplicable_shift,
                                         defaultShift: default_shift,
                                         noff: noff,
-                                        holidayStatus: crossDay?.holiday_status
+                                        holidayStatus: crossDay?.holiday_status,
+                                        doff: doff,
+                                        coff_min_working_hour: coff_min_working_hour,
+                                        holiday_min_working: holiday_min_working
                                     }
 
                                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
@@ -229,7 +236,10 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                                             val.woff,
                                             salaryLimit,
                                             val.maximumLateInTime,
-                                            halfday_time_count
+                                            halfday_time_count,
+                                            doff,
+                                            coff_min_working_hour,
+                                            holiday_min_working
                                         )
 
                                         return {
@@ -287,7 +297,7 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
     }, [remark, dutyDate, dept_sect_id, setCount, setOpen, emno, checkInFlag, checkOutFlag,
         cmmn_early_out, cmmn_grace_period, cmmn_late_in, comp_hour_count, crossDay, crossDayStat,
         default_shift, halfday_time_count, loginem_id, noff, notapplicable_shift, salary_above,
-        slno, week_off_day])
+        slno, week_off_day, coff_min_working_hour, doff, holiday_min_working])
 
 
     return (
