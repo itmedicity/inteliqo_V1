@@ -23,7 +23,8 @@ export const attendanceViewDailyPunch = async (
         doff,
         monthly_late_time_count,
         coff_min_working_hour,
-        holiday_min_working
+        holiday_min_working,
+
     } = commonSettings; //COMMON SETTING
 
     //GET DUTY PLAN AND CHECK DUTY PLAN IS EXCIST OR NOT
@@ -62,7 +63,7 @@ export const attendanceViewDailyPunch = async (
                         holiday_min_working: holiday_min_working
                     }
                     const employeeBasedPunchData = punchaData?.filter((e) => parseInt(e?.emp_code) === parseInt(data?.em_no))
-                    //  console.log(employeeBasedPunchData);
+
                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
                     return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
                 })
@@ -326,9 +327,6 @@ export const getAttendnaceDescription = async (
 
             const isBeforeHafDayInTime = isBefore(punch_In, halfDayStartTime) || isEqual(punch_In, halfDayStartTime); //for check -> punch in before half day start in time
             const isAfterHalfDayOutTime = isAfter(punch_out, halfDayStartTime) || isEqual(punch_out, halfDayStartTime);
-
-            // console.log(isAfter(new Date(punch_In), new Date(checkinlate)));
-            // console.log( isAfter(new Date(punchOutTime), new Date(outCheck)) === false);
 
             const workingHours = differenceInHours(new Date(punch_out), new Date(punch_In)) >= coff_min_working_hour;
 
