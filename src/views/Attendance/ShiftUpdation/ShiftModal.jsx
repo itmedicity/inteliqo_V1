@@ -21,7 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, empSalary }) => {
 
-    const sortedSalaryData = empSalary?.find((e) => e?.em_no === data?.em_no) //SALARY DATA
+    // const sortedSalaryData = empSalary?.find((e) => e?.em_no === data?.em_no) //SALARY DATA
 
     const selectedDate = format(new Date(data?.duty_day), 'yyyy-MM-dd');
 
@@ -155,7 +155,7 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
 
     }, [inTime, outTime, shiftIn, shiftOut, data, default_shift, notapplicable_shift, noff,
         week_off_day, salary_above, cmmn_late_in, cmmn_grace_period, setOpen, setTableArray,
-        sortedSalaryData, halfday_time_count, coff_min_working_hour, doff, holiday_min_working])
+        halfday_time_count, coff_min_working_hour, doff, holiday_min_working])
 
     const deletePunch = useCallback(async () => {
         if (data?.leave_status === 1) {
