@@ -7,7 +7,7 @@ import _ from 'underscore';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { addDays, addMonths, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
+import { addDays, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
 import { CssVarsProvider, IconButton, Input } from '@mui/joy';
 import moment from 'moment';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
