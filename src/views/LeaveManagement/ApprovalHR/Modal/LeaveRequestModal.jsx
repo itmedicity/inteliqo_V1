@@ -559,7 +559,11 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount, previousLeave }) => 
                                 </Typography>
                             </Box>
                         </Box>
-                        <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8, width: '100%' }} >
+                        <Paper variant="outlined" square sx={{
+                            p: 0.5, mb: 0.8, width: '100%',
+                            height: 200,
+                            overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+                        }} >
                             {
                                 reqDetl?.map((val, idx) => {
                                     return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >
