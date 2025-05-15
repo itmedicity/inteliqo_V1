@@ -10,7 +10,7 @@ import { getDepartmentShiftDetails } from '../LeavereRequsition/Func/LeaveFuncti
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { addDays, addHours, differenceInHours, format, subHours, isValid, isAfter, isEqual, differenceInMinutes, addMinutes } from 'date-fns'
+import { addDays, addHours, differenceInHours, format, subHours, isValid, isAfter, isEqual, differenceInMinutes, addMinutes, isBefore } from 'date-fns'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
@@ -117,7 +117,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             if (success === 1) {
                 const { ot_request_flag, punch_slno, holiday_slno, punch_in, punch_out } = data[0];
                 setPunchSlno(punch_slno)
-                const selectedShiftTiming = shiftTiming?.filter(val => val.shft_slno === selectedShift)
+                const selectedShiftTiming = shiftTiming?.filter(val => val?.shft_slno === selectedShift)
                 const { shft_chkin_time, shft_chkout_time, shft_cross_day } = selectedShiftTiming[0]
 
                 const inTime = moment(shft_chkin_time).format('HH:mm:ss');
@@ -148,15 +148,20 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
                     //FETCH THE PUNCH TIME FROM PUNCH DATA
                     const result = await axioslogin.post('common/getShiftdata/', postDataForpunchMaster)
-                    const { success, data } = result.data;
+                    const { success, data: punchmastdata } = result.data;
+
                     if (success === 1) {
                         if (holiday_slno !== 0) {
-                            const inpunch = data?.find(val => isEqual(new Date(val?.punch_time), new Date(punch_in)));
+                            const formattedPunchIn = formatToMinute(punch_in);
+                            const inpunch = punchmastdata?.find(val => formatToMinute(val.punch_time) === formattedPunchIn);
+                            //const inpunch = punchmastdata?.find(val => isEqual(new Date(val?.punch_time), new Date(punch_in)));
                             setPunchInTime(inpunch?.punch_time)
-                            const outpunch = data?.find(val => isEqual(new Date(val?.punch_time), new Date(punch_out)));
+                            const formattedPunchOut = formatToMinute(punch_out);
+                            const outpunch = punchmastdata?.find(val => formatToMinute(val.punch_time) === formattedPunchOut);
+                            // const outpunch = punchmastdata?.find(val => isEqual(new Date(val?.punch_time), new Date(punch_out)));
                             setPunchOutTime(outpunch?.punch_time)
                         } else {
-                            setPunchDetl(data)
+                            setPunchDetl(punchmastdata)
                             succesNofity('Done , Select The Punching Info')
                             setDisableCheck(false)
                         }
@@ -185,6 +190,12 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
         }
     }, [fromDate, selectedShift, empData, shiftTiming, comp_hour_count])
 
+    // Extract date parts for comparison
+    const formatToMinute = (dateStr) => {
+        const date = new Date(dateStr);
+        return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+    };
+
     const handleChangeCheckInCheck = useCallback((e) => {
         const checkin = e.target.checked;
         setCheckIn(checkin)
@@ -205,7 +216,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
         if (holiday_min_working === 1 && (differenceInHours(new Date(punchOutTime), new Date(punchInTime)) < coff_min_working_hour)) {
             warningNofity("Can't Apply for COFF request, minimum hours work needed")
-        } else if (isAfter(new Date(punchInTime), new Date(checkinlate)) === true || isAfter(new Date(punchOutTime), new Date(outCheck)) === false) {
+        } else if (isBefore(new Date(punchInTime), new Date(checkinlate)) === false && isAfter(new Date(punchOutTime), new Date(outCheck)) === false && isEqual(new Date(punchOutTime), new Date(outCheck)) === false) {
             warningNofity("Can't Apply COFF on Holiday While Attendnace is HD")
             setDisableCheck(true)
             setOpenBkDrop(false)
@@ -252,7 +263,6 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                 lvetype_slno: 11,
                 plan_slno: planSlno
             }
-
             const result = await axioslogin.post('/LeaveRequest/creditCoff', coffPostData)
             const { success, message } = result.data;
             if (success === 1) {

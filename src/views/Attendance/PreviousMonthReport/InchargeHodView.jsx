@@ -9,7 +9,7 @@ import EmployeeView from './EmployeeView'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { addDays, addMonths, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
+import { addDays, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
 import { CssVarsProvider, IconButton, Input } from '@mui/joy'
 import moment from 'moment'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
@@ -81,18 +81,18 @@ const InchargeHodView = () => {
                     const updatedSecondApiData = setData.map(data => {
                         const correspondingFirstData = firstApiData.filter(firstApiData => {
                             return (
-                                parseInt(firstApiData.emp_code) === data.em_no &&
-                                new Date(firstApiData.punch_time).toDateString() === new Date(data.duty_day).toDateString()
+                                parseInt(firstApiData?.emp_code) === data.em_no &&
+                                new Date(firstApiData?.punch_time).toDateString() === new Date(data?.duty_day).toDateString()
                             );
                         });
                         return {
                             ...data,
-                            new_field: correspondingFirstData.map(data => data.punch_time)
+                            new_field: correspondingFirstData?.map(data => data?.punch_time)
                         };
                     });
 
-                    const array = updatedSecondApiData?.filter(val => val.em_no === emply?.em_no)
-                    setTableData(array.slice(0, -1))
+                    const array = updatedSecondApiData?.filter(val => val?.em_no === emply?.em_no)?.sort((a, b) => new Date(a?.duty_day) - new Date(b?.duty_day));
+                    setTableData(array)
                     // setTableData(array)
                     setOpenBkDrop(false)
 
@@ -129,8 +129,8 @@ const InchargeHodView = () => {
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
                                         views={['year', 'month']}
-                                        minDate={subMonths(new Date(), 1)}
-                                        maxDate={addMonths(new Date(), 1)}
+                                        minDate={subMonths(new Date(), 2)}
+                                        maxDate={endOfMonth(new Date())}
                                         value={selectDate}
                                         size="small"
                                         onChange={(newValue) => {
