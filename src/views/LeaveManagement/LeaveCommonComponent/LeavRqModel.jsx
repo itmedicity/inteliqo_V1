@@ -390,7 +390,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                 sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
 
             >
-                <ModalDialog size="lg"  >
+                <ModalDialog size="lg" sx={{}}  >
                     <ModalClose
                         variant="outlined"
                         sx={{
@@ -399,6 +399,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                             boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
                             borderRadius: '50%',
                             bgcolor: 'background.body',
+
                         }}
                     />
                     <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
@@ -502,7 +503,10 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                                 </Typography>
                             </Box>
                         </Box>
-                        <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8, width: '100%' }} >
+                        <Paper variant="outlined" square sx={{
+                            p: 0.5, mb: 0.8, width: '100%', height: 200,
+                            overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+                        }} >
                             {
                                 details?.map((val, idx) => {
                                     return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >
