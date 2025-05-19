@@ -1,11 +1,18 @@
 
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { logo, NABH } from "src/views/Constant/Static";
+import { PUBLIC_NAS_FOLDER } from "src/views/Constant/Static";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export const PdfTranning = (getdata, ShowData) => {
+
+
+    // const url = `${PUBLIC_NAS_FOLDER}/Log`;
+
+    // console.log(url);
+
+
     const doc = {
         // header: {
         //     margin: [10, 10, 10, 20],
@@ -173,8 +180,8 @@ export const PdfTranning = (getdata, ShowData) => {
         // },
 
         images: {
-            logo: logo,
-            NABH: NABH
+            logo: `${PUBLIC_NAS_FOLDER}/Logo/tmc.png`,
+            NABH: `${PUBLIC_NAS_FOLDER}/Logo/NABH.png`
         },
 
         // footer: {

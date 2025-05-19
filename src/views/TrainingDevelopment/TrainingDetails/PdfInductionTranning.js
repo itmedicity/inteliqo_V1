@@ -1,6 +1,6 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { logo, NABH } from "src/views/Constant/Static";
+import { PUBLIC_NAS_FOLDER } from "src/views/Constant/Static";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -167,10 +167,9 @@ export const PdfInductionTrannings = (selected, ShowData) => {
         // },
 
         images: {
-            logo: logo,
-            NABH: NABH
+            logo: `${PUBLIC_NAS_FOLDER}/Logo/tmc.png`,
+            NABH: `${PUBLIC_NAS_FOLDER}/Logo/NABH.png`
         },
-
         // footer: {
         //     columns: [
         //         '',
