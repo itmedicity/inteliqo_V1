@@ -15,7 +15,7 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import Table from '@mui/joy/Table';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import { useCallback } from 'react'
-import { processShiftPunchMarkingHrFunc } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc'
+import { processShiftPunchMarkingHrFunc, dailyPunchMarkingFunction } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc'
 
 const EndofProcess = ({ details, setFlag, setCount }) => {
 
@@ -202,122 +202,242 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
             warningNofity('Notice Period Not Completed!')
             return
         } else {
-            const postData_getPunchData = {
-                preFromDate: format(subDays(new Date(startOfMonths), 2), 'yyyy-MM-dd 00:00:00'),
-                preToDate: format(addDays(new Date(lastWorkingDay), 1), 'yyyy-MM-dd 23:59:59'),
-                fromDate: format(new Date(startOfMonths), 'yyyy-MM-dd'),
-                toDate: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-                fromDate_dutyPlan: format(new Date(startOfMonths), 'yyyy-MM-dd'),
-                toDate_dutyPlan: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-                fromDate_punchMaster: format(subDays(new Date(startOfMonths), 0), 'yyyy-MM-dd'),
-                toDate_punchMaster: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-                section: details.sect_id,
-                empList: [em_no],
-                loggedEmp: em_no,
-                frDate: format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
-                trDate: format(lastDayOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
-            }
-
-            // // GET PUNCH DATA FROM TABLE START
-            const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
-            const { su, result_data } = punch_data.data;
-            if (su === 1) {
-                const punchaData = result_data;
-                const empList = [em_no]
-                // PUNCH MARKING HR PROCESS START
-                const result = await processShiftPunchMarkingHrFunc(
-                    postData_getPunchData,
-                    punchaData,
-                    empList,
-                    shiftInformation,
-                    commonSetting,
-                    holidayList,
-                    empSalary
-                )
-                const { status, message, errorMessage, punchMastData } = result;
-                if (status === 1) {
-                    const tb = punchMastData?.map((e) => {
-                        const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
-                        const crossDayStat = crossDay?.shft_cross_day ?? 0;
-
-                        let shiftIn = `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_in), 'HH:mm')}`;
-                        let shiftOut = crossDayStat === 0 ? `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}` :
-                            `${format(addDays(new Date(e.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}`;
-
-                        // GET THE HOURS WORKED IN MINITS
-                        let interVal = intervalToDuration({
-                            start: isValid(new Date(e.punch_in)) ? new Date(e.punch_in) : 0,
-                            end: isValid(new Date(e.punch_out)) ? new Date(e.punch_out) : 0
-                        })
-                        return {
-                            punch_slno: e.punch_slno,
-                            duty_day: e.duty_day,
-                            shift_id: e.shift_id,
-                            emp_id: e.emp_id,
-                            em_no: e.em_no,
-                            punch_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_in,
-                            punch_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_out,
-                            shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-                            shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
-                            hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                                formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
-                            hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                                differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
-                            late_in: e.late_in,
-                            early_out: e.early_out,
-                            shiftIn: e.shift_in,
-                            shiftOut: e.shift_out,
-                            hideStatus: 0,
-                            isWeekOff: (e.shift_id === week_off_day),
-                            isNOff: e.shift_id === noff,
-                            holiday_status: e.holiday_status,
-                            lvereq_desc: e.lvereq_desc,
-                            duty_desc: e.duty_desc,
-                            leave_status: e.leave_status
-                        }
-                    })
-                    const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
-                    setdisplayArray(array);
-
-                    const totalDays = getDaysInMonth(new Date(details?.relieving_date))
-                    setTotaldays(totalDays)
-                    const totalLC = array?.filter(el => el.lvereq_desc === "LC").length ?? 0
-                    setLcCount(totalLC)
-                    const totalHD = (array?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length ?? 0
-                    setHdLop(totalHD)
-                    const totalLV = (array?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length ?? 0
-                    setLeaveCount(totalLV)
-                    const totalHP = (array?.filter(val => val.lvereq_desc === 'HP')).length
-                    setHolidayWorked(totalHP)
-                    const totalH = (array?.filter(val => val.holiday_status === 1)).length
-                    setHolidayCount(totalH)
-
-                    const workday =
-                        (array?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
-                            val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
-                            val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
-                            val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
-                            val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
-                            val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length ?? 0
-                    const totalPayday = workday + (totalHD * 0.5)
-                    setPayDays(totalPayday)
-                    const totallopCount = totalDays - totalPayday;
-                    setLopCount(totallopCount)
-                    const lopAmount = ((gross_salary / totalDays) * totallopCount).toFixed(2)
-                    setlopamount(lopAmount);
-                    setHolidayAmount(((gross_salary / totalDays) * totalHP).toFixed(2))
-
-                    const netSalary = (gross_salary / totalDays) * totalPayday
-                    setnetSalary(netSalary.toFixed(2))
-
-                    succesNofity('Punch Master Updated Successfully')
-                } else {
-                    warningNofity(message, errorMessage)
+            if (commonSetting?.second_plicy === 1) {
+                const postData_getPunchData = {
+                    preFromDate: format(subDays(new Date(startOfMonths), 2), 'yyyy-MM-dd 00:00:00'),
+                    preToDate: format(addDays(new Date(lastWorkingDay), 1), 'yyyy-MM-dd 23:59:59'),
+                    fromDate: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+                    toDate: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                    fromDate_dutyPlan: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+                    toDate_dutyPlan: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                    fromDate_punchMaster: format(subDays(new Date(startOfMonths), 0), 'yyyy-MM-dd'),
+                    toDate_punchMaster: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                    section: details.sect_id,
+                    empList: [em_no],
+                    loggedEmp: em_no,
+                    frDate: format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
+                    trDate: format(new Date(details?.relieving_date), 'yyyy-MM-dd'),
                 }
+
+                // // GET PUNCH DATA FROM TABLE START
+                const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
+                const { su, result_data } = punch_data.data;
+                if (su === 1) {
+                    const punchaData = result_data;
+                    const empList = [em_no]
+                    // PUNCH MARKING HR PROCESS START
+                    const result = await dailyPunchMarkingFunction(
+                        postData_getPunchData,
+                        punchaData,
+                        shiftInformation,
+                        commonSetting
+                    )
+                    const { status, message, errorMessage, punchMastData } = result;
+                    if (status === 1) {
+                        const tb = punchMastData?.map((e) => {
+                            const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
+                            const crossDayStat = crossDay?.shft_cross_day ?? 0;
+
+                            let shiftIn = `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_in), 'HH:mm')}`;
+                            let shiftOut = crossDayStat === 0 ? `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}` :
+                                `${format(addDays(new Date(e.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}`;
+
+                            // GET THE HOURS WORKED IN MINITS
+                            let interVal = intervalToDuration({
+                                start: isValid(new Date(e.punch_in)) ? new Date(e.punch_in) : 0,
+                                end: isValid(new Date(e.punch_out)) ? new Date(e.punch_out) : 0
+                            })
+                            return {
+                                punch_slno: e.punch_slno,
+                                duty_day: e.duty_day,
+                                shift_id: e.shift_id,
+                                emp_id: e.emp_id,
+                                em_no: e.em_no,
+                                punch_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_in,
+                                punch_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_out,
+                                shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+                                shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+                                hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                                    formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                                    differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
+                                late_in: e.late_in,
+                                early_out: e.early_out,
+                                shiftIn: e.shift_in,
+                                shiftOut: e.shift_out,
+                                hideStatus: 0,
+                                isWeekOff: (e.shift_id === week_off_day),
+                                isNOff: e.shift_id === noff,
+                                holiday_status: e.holiday_status,
+                                lvereq_desc: e.lvereq_desc,
+                                duty_desc: e.duty_desc,
+                                leave_status: e.leave_status
+                            }
+                        })
+
+                        const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+                        setdisplayArray(array);
+
+                        const totalDays = getDaysInMonth(new Date(details?.relieving_date))
+                        setTotaldays(totalDays)
+                        const totalLC = array?.filter(el => el.lvereq_desc === "LC").length ?? 0
+                        setLcCount(totalLC)
+                        const totalHD = (array?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length ?? 0
+                        setHdLop(totalHD)
+                        const totalLV = (array?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length ?? 0
+                        setLeaveCount(totalLV)
+                        const totalHP = (array?.filter(val => val.lvereq_desc === 'HP')).length
+                        setHolidayWorked(totalHP)
+                        const totalH = (array?.filter(val => val.holiday_status === 1)).length
+                        setHolidayCount(totalH)
+
+                        const workday =
+                            (array?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
+                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
+                                val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
+                                val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
+                                val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
+                                val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length ?? 0
+                        const totalPayday = workday + (totalHD * 0.5)
+                        setPayDays(totalPayday)
+                        const totallopCount = totalDays - totalPayday;
+                        setLopCount(totallopCount)
+                        const lopAmount = ((gross_salary / totalDays) * totallopCount).toFixed(2)
+                        setlopamount(lopAmount);
+                        setHolidayAmount(((gross_salary / totalDays) * totalHP).toFixed(2))
+
+                        const netSalary = (gross_salary / totalDays) * totalPayday
+                        setnetSalary(netSalary.toFixed(2))
+
+                        succesNofity('Punch Master Updated Successfully')
+                    } else {
+                        warningNofity(message, errorMessage)
+                    }
+                } else {
+                    warningNofity("Error getting punch Data From DB")
+                    // setOpenBkDrop(false)
+                }
+
             } else {
-                warningNofity("Error getting punch Data From DB")
-                // setOpenBkDrop(false)
+                const postData_getPunchData = {
+                    preFromDate: format(subDays(new Date(startOfMonths), 2), 'yyyy-MM-dd 00:00:00'),
+                    preToDate: format(addDays(new Date(lastWorkingDay), 1), 'yyyy-MM-dd 23:59:59'),
+                    fromDate: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+                    toDate: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                    fromDate_dutyPlan: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+                    toDate_dutyPlan: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                    fromDate_punchMaster: format(subDays(new Date(startOfMonths), 0), 'yyyy-MM-dd'),
+                    toDate_punchMaster: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                    section: details.sect_id,
+                    empList: [em_no],
+                    loggedEmp: em_no,
+                    frDate: format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
+                    trDate: format(new Date(details?.relieving_date), 'yyyy-MM-dd'),
+                }
+
+                // // GET PUNCH DATA FROM TABLE START
+                const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
+                const { su, result_data } = punch_data.data;
+                if (su === 1) {
+                    const punchaData = result_data;
+                    const empList = [em_no]
+                    // PUNCH MARKING HR PROCESS START
+                    const result = await processShiftPunchMarkingHrFunc(
+                        postData_getPunchData,
+                        punchaData,
+                        empList,
+                        shiftInformation,
+                        commonSetting,
+                        holidayList,
+                        empSalary
+                    )
+                    const { status, message, errorMessage, punchMastData } = result;
+                    if (status === 1) {
+                        const tb = punchMastData?.map((e) => {
+                            const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
+                            const crossDayStat = crossDay?.shft_cross_day ?? 0;
+
+                            let shiftIn = `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_in), 'HH:mm')}`;
+                            let shiftOut = crossDayStat === 0 ? `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}` :
+                                `${format(addDays(new Date(e.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}`;
+
+                            // GET THE HOURS WORKED IN MINITS
+                            let interVal = intervalToDuration({
+                                start: isValid(new Date(e.punch_in)) ? new Date(e.punch_in) : 0,
+                                end: isValid(new Date(e.punch_out)) ? new Date(e.punch_out) : 0
+                            })
+                            return {
+                                punch_slno: e.punch_slno,
+                                duty_day: e.duty_day,
+                                shift_id: e.shift_id,
+                                emp_id: e.emp_id,
+                                em_no: e.em_no,
+                                punch_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_in,
+                                punch_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_out,
+                                shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
+                                shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
+                                hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                                    formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                                    differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
+                                late_in: e.late_in,
+                                early_out: e.early_out,
+                                shiftIn: e.shift_in,
+                                shiftOut: e.shift_out,
+                                hideStatus: 0,
+                                isWeekOff: (e.shift_id === week_off_day),
+                                isNOff: e.shift_id === noff,
+                                holiday_status: e.holiday_status,
+                                lvereq_desc: e.lvereq_desc,
+                                duty_desc: e.duty_desc,
+                                leave_status: e.leave_status
+                            }
+                        })
+
+                        const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+                        setdisplayArray(array);
+
+                        const totalDays = getDaysInMonth(new Date(details?.relieving_date))
+                        setTotaldays(totalDays)
+                        const totalLC = array?.filter(el => el.lvereq_desc === "LC").length ?? 0
+                        setLcCount(totalLC)
+                        const totalHD = (array?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length ?? 0
+                        setHdLop(totalHD)
+                        const totalLV = (array?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length ?? 0
+                        setLeaveCount(totalLV)
+                        const totalHP = (array?.filter(val => val.lvereq_desc === 'HP')).length
+                        setHolidayWorked(totalHP)
+                        const totalH = (array?.filter(val => val.holiday_status === 1)).length
+                        setHolidayCount(totalH)
+
+                        const workday =
+                            (array?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
+                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
+                                val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
+                                val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
+                                val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
+                                val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length ?? 0
+                        const totalPayday = workday + (totalHD * 0.5)
+                        setPayDays(totalPayday)
+                        const totallopCount = totalDays - totalPayday;
+                        setLopCount(totallopCount)
+                        const lopAmount = ((gross_salary / totalDays) * totallopCount).toFixed(2)
+                        setlopamount(lopAmount);
+                        setHolidayAmount(((gross_salary / totalDays) * totalHP).toFixed(2))
+
+                        const netSalary = (gross_salary / totalDays) * totalPayday
+                        setnetSalary(netSalary.toFixed(2))
+
+                        succesNofity('Punch Master Updated Successfully')
+                    } else {
+                        warningNofity(message, errorMessage)
+                    }
+                } else {
+                    warningNofity("Error getting punch Data From DB")
+                    // setOpenBkDrop(false)
+                }
             }
+
         }
     }, [details, em_no, empSalary, commonSetting, holidayList, shiftInformation, gross_salary,
         default_shift, noff, notapplicable_shift, week_off_day, resignation_type])

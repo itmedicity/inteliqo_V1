@@ -155,6 +155,7 @@ const InductionAttendedStaffReport = () => {
     }, [requestUser, setRequestUser])
 
     const SearchingProcess = useCallback(async () => {
+        setDropOpen(true)
         const id = requestUser?.emID;
         if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && requestUser?.emID !== 0) {
             try {
@@ -187,16 +188,20 @@ const InductionAttendedStaffReport = () => {
                         sect_name: val.sect_name
                     }));
                     SetEmployeeData(obj); // Update state with final object
+                    setDropOpen(false)
                 } else {
                     SetEmployeeData([]) // Clear data if no result
+                    setDropOpen(false)
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
                 SetEmployeeData([]); // Clear data on error
+                setDropOpen(false)
             }
         } else {
             warningNofity("Select Basic Information for Search");
             SetEmployeeData([]); // Clear data if no department or section is selected
+            setDropOpen(false)
         }
     }, [requestUser, setDropOpen]);
 

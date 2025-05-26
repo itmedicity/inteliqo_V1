@@ -13,16 +13,18 @@ import SectionBsdEmployee from 'src/views/Component/ReduxComponent/SectionBsdEmp
 import { useDispatch, useSelector } from 'react-redux';
 import { setDepartment } from 'src/redux/actions/Department.action';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment';
 import { Actiontypes } from 'src/redux/constants/action.type'
-// import { addDays, format } from 'date-fns';
 import { getAttendanceCalculation, getLateInTimeIntervel, } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc';
 import { setCommonSetting } from 'src/redux/actions/Common.Action';
 import { setShiftDetails } from 'src/redux/actions/Shift.Action';
-import { addDays, addHours, differenceInHours, format, endOfMonth, isValid, max, min, subHours, formatDuration, intervalToDuration, lastDayOfMonth, startOfMonth } from "date-fns";
-
+import { addDays, addHours, differenceInHours, format, isValid, max, min, subHours, formatDuration, intervalToDuration } from "date-fns";
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
+import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action';
+import { setDept } from 'src/redux/actions/Dept.Action';
 
 const AttendenceReport = () => {
     const [deptName, setDepartmentName] = useState(0)
@@ -32,6 +34,8 @@ const AttendenceReport = () => {
     const [fromdate, Setfromdate] = useState(moment(new Date()));
     const [todate, Settodate] = useState(moment(new Date()));
     const [tableData, setTableData] = useState([])
+    const [openBkDrop, setOpenBkDrop] = useState(false)
+    const [all, setAll] = useState(false)
 
     const commonSettings = useSelector((state) => state?.getCommonSettings)
     const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
@@ -40,7 +44,28 @@ const AttendenceReport = () => {
         dispatch(setDepartment());
         dispatch(setCommonSetting())
         dispatch(setShiftDetails())
+        dispatch(setDeptWiseSection());
+        dispatch(setDept())
     }, [dispatch])
+
+    const {
+        cmmn_early_out, // Early going time interval
+        cmmn_grace_period, // common grace period for late in time
+        cmmn_late_in, //Maximum Late in Time for punch in after that direct HALF DAY 
+        salary_above, //Salary limit for calculating the holiday double wages
+        week_off_day, // week off SHIFT ID
+        notapplicable_shift, //not applicable SHIFT ID
+        default_shift, //default SHIFT ID
+        noff, // night off SHIFT ID
+        halfday_time_count,
+        second_plicy,
+        max_late_day_count
+    } = commonSettings; //COMMON SETTING
+
+    const deptSect = useSelector((state) => state?.getDeptSectList?.deptSectionList)
+    const departments = useSelector((state) => state?.getdept?.departmentlist,)
+    const allDept = useMemo(() => departments, [departments])
+    const allSection = useMemo(() => deptSect, [deptSect])
 
     const postData = useMemo(() => {
         return {
@@ -51,219 +76,459 @@ const AttendenceReport = () => {
 
     }, [em_no, fromdate, todate])
 
+    const postPunchData = useMemo(() => {
+        return {
+            // empno: em_no,
+            deptName: deptName,
+            deptSecName: deptSecName,
+            fromdate: isValid(new Date(fromdate)) ? format(new Date(fromdate), 'yyyy-MM-dd') : null,
+            todate: isValid(new Date(todate)) ? format(addDays(new Date(todate), 1), 'yyyy-MM-dd ') : null,
+        }
 
-    const {
-        cmmn_early_out, // Early going time interval
-        cmmn_grace_period, // common grace period for late in time
-        cmmn_late_in, //Maximum Late in Time for punch in after that direct HALF DAY 
-        salary_above, //Salary limit for calculating the holiday double wages
-        week_off_day, // week off SHIFT ID
-        notapplicable_shift, //not applicable SHIFT ID
-        default_shift, //default SHIFT ID
-        noff // night off SHIFT ID
-    } = commonSettings; //COMMON SETTING
+    }, [deptSecName, fromdate, todate, deptName])
 
-    const getData = useCallback(async (e) => {
-        //GET ALL SHIFT INFORMATION 
-
-        if (deptName !== 0 && fromdate !== '' && todate !== '' && deptSecName !== 0) {
-
-            const postDataForAttendaceMark = {
-                month: format(startOfMonth(new Date(fromdate)), 'yyyy-MM-dd'),
-                section: deptSecName
+    const getAttendanceData = useCallback(async () => {
+        setOpenBkDrop(true)
+        if (all === true) {
+            const deptArray = allDept?.map(val => val.dept_id)
+            const sectArray = allSection?.map(val => val.sect_id)
+            const getEmpData = {
+                em_department: deptArray,
+                em_dept_section: sectArray,
             }
-            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", postDataForAttendaceMark);
-            const { success, data } = checkPunchMarkingHr.data
-            if (success === 0 || success === 1) {
-                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromdate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
-                const lastDay_month = format(lastDayOfMonth(new Date(fromdate)), 'yyyy-MM-dd')
-                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
-                    warningNofity("Punch Marking Monthly Process Done !! can't do the Process !! ")
-                    const { em_id } = Empno;
-                    const getPunchMast_PostData = {
-                        fromDate_punchMaster: format(new Date(fromdate), 'yyyy-MM-dd'),
-                        toDate_punchMaster: format(new Date(todate), 'yyyy-MM-dd '),
-                        empList: [em_id],
-                    }
-                    const punch_master_data = await axioslogin.post("/attendCal/punchMastData/emid/", getPunchMast_PostData); //GET PUNCH MASTER DATA
-                    const { success, planData: punchMasterData } = punch_master_data.data;
+            const result1 = await axioslogin.post("/payrollprocess/getAllEmployee", getEmpData);
+            const { succes, dataa: employeeData } = result1.data
+            if (succes === 1) {
+                const arr = employeeData?.map((val) => val.em_no)
+                const getPunchMast_PostData = {
+                    fromDate_punchMaster: format(new Date(fromdate), 'yyyy-MM-dd'),
+                    toDate_punchMaster: isValid(new Date(todate)) ? format(addDays(new Date(todate), 2), 'yyyy-MM-dd ') : null,
+                    empList: arr,
+                    preFromDate: format(new Date(fromdate), 'yyyy-MM-dd'),
+                    preToDate: isValid(new Date(todate)) ? format(addDays(new Date(todate), 2), 'yyyy-MM-dd ') : null,
+                }
+                const punch_master_data = await axioslogin.post("/attendCal/getPunchMasterDataSectionWise/", getPunchMast_PostData); //GET PUNCH MASTER DATA
+                const { success, planData: punchMasterData } = punch_master_data.data;
+                if (success === 1) {
+                    const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", getPunchMast_PostData);
+                    const { su, result_data: punchaMasData } = punch_data.data;
+                    if (su === 1) {
+                        const maindata = await Promise.allSettled(
 
-                    if (success === 1) {
-                        const arr = punchMasterData?.map((val) => {
+                            punchMasterData?.map(async (data, index) => {
+                                const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
+                                // const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+                                const shiftMergedPunchMaster = {
+                                    ...data,
+                                    shft_chkin_start: sortedShiftData?.shft_chkin_start,
+                                    shft_chkin_end: sortedShiftData?.shft_chkin_end,
+                                    shft_chkout_start: sortedShiftData?.shft_chkout_start,
+                                    shft_chkout_end: sortedShiftData?.shft_chkout_end,
+                                    shft_cross_day: sortedShiftData?.shft_cross_day,
+                                    // gross_salary: sortedSalaryData?.gross_salary,
+                                    earlyGoingMaxIntervl: cmmn_early_out,
+                                    gracePeriodInTime: cmmn_grace_period,
+                                    maximumLateInTime: cmmn_late_in,
+                                    salaryLimit: salary_above,
+                                    woff: week_off_day,
+                                    naShift: notapplicable_shift,
+                                    defaultShift: default_shift,
+                                    noff: noff,
+                                    holidayStatus: sortedShiftData?.holiday_status
+                                }
+                                // const employeeBasedPunchData = punchaMasData.filter((e) => e.emp_code == data.em_no)
+                                const employeeBasedPunchData = punchaMasData.filter((e) => String(e.emp_code) === String(data.em_no));
 
-                            const inTime = moment(val?.shift_in).format('HH:mm');
-                            const outTime = moment(val?.shift_out).format('HH:mm');
-                            const chekIn = `${moment(val?.duty_day).format('DD-MM-yyyy')} ${inTime}`;
-                            const chekOut = `${moment(val?.duty_day).format('DD-MM-yyyy')} ${outTime}`;
-
-                            let interVal = intervalToDuration({
-                                start: isValid(new Date(val.punch_in)) ? new Date(val.punch_in) : 0,
-                                end: isValid(new Date(val.punch_out)) ? new Date(val.punch_out) : 0
+                                return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
                             })
+                        ).then((data) => {
+                            if (data?.length > 0) {
+                                const punchMasterMappedData = data?.map((e) => e.value)
+                                return Promise.allSettled(
+                                    punchMasterMappedData?.map(async (val) => {
+                                        const holidayStatus = val.holiday_status;
+                                        const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
+                                        const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
 
-                            return {
-                                punch_in: (moment(val?.punch_in).format("HH:mm")) === "Invalid date" ? "No Punch" : (moment(val?.punch_in).format("HH:mm")),
-                                punch_out: (moment(val?.punch_out).format(" HH:mm")) === "Invalid date" ? "No Punch" : (moment(val?.punch_out).format("HH:mm")),
-                                lvereq_desc: val?.lvereq_desc,
-                                duty_desc: val?.duty_desc,
-                                sect: val?.sect_name,
-                                Duty: (moment(val?.duty_day).format("DD-MM-yyyy")),
-                                Shift_in: chekIn,
-                                Shift_Out: chekOut,
-                                // hrsWorked: formatDuration({ hours: val?.hrs_worked.hours, minutes: val?.hrs_worked.minutes }),
-                                worked: (isValid(new Date(val.punch_in)) && val.punch_in !== null) && (isValid(new Date(val.punch_out)) && val.punch_out !== null) ?
-                                    formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
-                                late: val?.late_in,
-                                early: val?.early_out,
-                                em_no: val?.em_no,
-                            }
-
-                        })
-                        setTableData(arr)
-                    } else {
-                        setTableData([])
-                    }
-                } else {
-                    dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-                    const punch_data = await axioslogin.post("/AttendenceReport/getPunchDataEmCodeWiseDateWise/", postData);
-                    const { su, result_data } = punch_data.data;
-                    if (su === 1 && result_data?.length > 0) {
-                        const punchaData = result_data;
-                        const punch_master_data = await axioslogin.post("/AttendenceReport/getPunchMasterDataSectionWise/", postData); //GET PUNCH MASTER DATA
-                        const { success, planData } = punch_master_data.data;
-
-                        if (success === 1 && planData?.length > 0) {
-                            const punchMasterData = planData; //PUNCHMSTER DATA
-                            const maindata = await Promise.allSettled(
-                                punchMasterData?.map(async (data, index) => {
-
-                                    const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
-                                    // const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
-                                    const shiftMergedPunchMaster = {
-                                        ...data,
-                                        shft_chkin_start: sortedShiftData?.shft_chkin_start,
-                                        shft_chkin_end: sortedShiftData?.shft_chkin_end,
-                                        shft_chkout_start: sortedShiftData?.shft_chkout_start,
-                                        shft_chkout_end: sortedShiftData?.shft_chkout_end,
-                                        shft_cross_day: sortedShiftData?.shft_cross_day,
-                                        // gross_salary: sortedSalaryData?.gross_salary,
-                                        earlyGoingMaxIntervl: cmmn_early_out,
-                                        gracePeriodInTime: cmmn_grace_period,
-                                        maximumLateInTime: cmmn_late_in,
-                                        salaryLimit: salary_above,
-                                        woff: week_off_day,
-                                        naShift: notapplicable_shift,
-                                        defaultShift: default_shift,
-                                        noff: noff,
-                                        holidayStatus: sortedShiftData?.holiday_status
-                                    }
-
-                                    const employeeBasedPunchData = punchaData?.filter((e) => e.emp_code = data.em_no)
-
-                                    return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
-                                })
-                            ).then((data) => {
-                                if (data?.length > 0) {
-                                    const punchMasterMappedData = data?.map((e) => e.value)
-                                    return Promise.allSettled(
-                                        punchMasterMappedData?.map(async (val) => {
-                                            const holidayStatus = val.holiday_status;
-                                            const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
-                                            const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
-                                            const shift_in = new Date(val.shift_in);
-                                            const shift_out = new Date(val.shift_out);
-                                            let interVal = intervalToDuration({
-                                                start: isValid(new Date(val.punch_in)) ? new Date(val.punch_in) : 0,
-                                                end: isValid(new Date(val.punch_out)) ? new Date(val.punch_out) : 0
-                                            })
-                                            //SALARY LINMIT
-                                            const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
-                                            const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
-                                            const getAttendanceStatus = await getAttendanceCalculation(
-                                                punch_In,
-                                                shift_in,
-                                                punch_out,
-                                                shift_out,
-                                                cmmn_grace_period,
-                                                getLateInTime,
-                                                holidayStatus,
-                                                val.shift_id,
-                                                val.defaultShift,
-                                                val.naShift,
-                                                val.noff,
-                                                val.woff,
-                                                salaryLimit,
-                                                val.maximumLateInTime
-                                            )
-
-                                            return {
-
-                                                punch_slno: val.punch_slno,
-                                                punch_in: (moment(val?.punch_in).format("HH:mm")) === "Invalid date" ? "No Punch" : (moment(val?.punch_in).format("HH:mm")),
-                                                punch_out: (moment(val?.punch_out).format(" HH:mm")) === "Invalid date" ? "No Punch" : (moment(val?.punch_out).format("HH:mm")),
-                                                hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
-                                                late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
-                                                early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
-                                                duty_status: getAttendanceStatus?.duty_status,
-                                                holiday_status: val.holiday_status,
-                                                leave_status: val.leave_status,
-                                                lvereq_desc: val?.leave_status === 1 ? val?.lvereq_desc : getAttendanceStatus?.lvereq_desc,
-                                                duty_desc: val?.leave_status === 1 ? val?.duty_desc : getAttendanceStatus?.duty_desc,
-                                                lve_tble_updation_flag: val.lve_tble_updation_flag,
-                                                name: val?.em_name,
-                                                dept: val?.dept_name,
-                                                sect: val?.sect_name,
-                                                Duty: (moment(val?.duty_day).format("DD-MM-yyyy")),
-                                                Shift_in: (moment(val?.shift_in).format("DD-MM-yyyy HH:mm")),
-                                                Shift_Out: (moment(val?.shift_out).format("DD-MM-yyyy HH:mm ")),
-                                                // hrsWorked: formatDuration({ hours: val?.hrs_worked.hours, minutes: val?.hrs_worked.minutes }),
-                                                worked: (isValid(new Date(val.punch_in)) && val.punch_in !== null) && (isValid(new Date(val.punch_out)) && val.punch_out !== null) ?
-                                                    formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
-                                                late: val?.late_in,
-                                                early: val?.early_out,
-                                                em_no: val?.em_no,
-                                            }
+                                        const shift_in = new Date(val.shift_in);
+                                        const shift_out = new Date(val.shift_out);
+                                        let interVal = intervalToDuration({
+                                            start: isValid(new Date(val.punch_in)) ? new Date(val.punch_in) : 0,
+                                            end: isValid(new Date(val.punch_out)) ? new Date(val.punch_out) : 0
                                         })
-                                    ).then(async (element) => {
+                                        //SALARY LINMIT
+                                        const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
+                                        const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+                                        const getAttendanceStatus = await getAttendanceCalculation(
+                                            punch_In,
+                                            shift_in,
+                                            punch_out,
+                                            shift_out,
+                                            cmmn_grace_period,
+                                            getLateInTime,
+                                            holidayStatus,
+                                            val.shift_id,
+                                            val.defaultShift,
+                                            val.naShift,
+                                            val.noff,
+                                            val.woff,
+                                            salaryLimit,
+                                            val.maximumLateInTime,
+                                            halfday_time_count
+                                        )
 
-                                        if (element?.length > 0) {
-                                            const extractedValues = element?.map(item => item.value);
-                                            return { status: 1, data: extractedValues }
-                                            // setTableData(extractedValues)
-                                        } else {
-                                            return { status: 0, message: "something went wrong", errorMessage: '' }
+                                        return {
+
+                                            punch_slno: val.punch_slno,
+                                            punch_in: val.punch_in,
+                                            punch_out: val.punch_out,
+                                            duty_day: val.duty_day,
+                                            hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                                            late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                                            early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
+                                            duty_status: getAttendanceStatus?.duty_status,
+                                            holiday_status: val.holiday_status,
+                                            leave_status: val.leave_status,
+                                            lvereq_desc: val?.leave_status === 1 ? val?.lvereq_desc : getAttendanceStatus?.lvereq_desc,
+                                            duty_desc: val?.leave_status === 1 ? val?.duty_desc : getAttendanceStatus?.duty_desc,
+                                            lve_tble_updation_flag: val.lve_tble_updation_flag,
+                                            name: val?.em_name,
+                                            dept: val?.dept_name,
+                                            sect: val?.sect_name,
+                                            Duty: (moment(val?.duty_day).format("DD-MM-yyyy")),
+                                            Shift_in: (moment(val?.shift_in).format("DD-MM-yyyy HH:mm")),
+                                            Shift_Out: (moment(val?.shift_out).format("DD-MM-yyyy HH:mm ")),
+                                            worked: (isValid(new Date(val.punch_in)) && val.punch_in !== null) && (isValid(new Date(val.punch_out)) && val.punch_out !== null) ?
+                                                formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                            late: val?.late_in,
+                                            early: val?.early_out,
+                                            em_no: val?.em_no,
                                         }
                                     })
-
-                                } else {
-                                    return { status: 0, message: "something went wrong", errorMessage: '' }
-                                }
-                            })
-                            if (maindata?.status === 1) {
-                                setTableData(maindata?.data.slice(0, -1))
+                                ).then(async (element) => {
+                                    if (element?.length > 0) {
+                                        const extractedValues = element?.map(item => item.value);
+                                        return { status: 1, data: extractedValues }
+                                    } else {
+                                        setOpenBkDrop(false)
+                                        return { status: 0, message: "something went wrong", errorMessage: '' }
+                                    }
+                                })
                             } else {
-                                setTableData([])
+                                setOpenBkDrop(false)
+                                return { status: 0, message: "something went wrong", errorMessage: '' }
                             }
+                        })
+                        if (maindata?.status === 1) {
+                            setTableData(maindata?.data.slice(0, -1))
+                            setOpenBkDrop(false)
                         } else {
-                            return { status: 0, message: "something went wrong", errorMessage: '' }
+                            setTableData([])
+                            setOpenBkDrop(false)
                         }
+                    } else {
+                        setOpenBkDrop(false)
+                        infoNofity("Punch Data not found")
                     }
+                } else {
+                    setOpenBkDrop(false)
+                    infoNofity("Dutyplan not done for this department")
                 }
             } else {
-                errorNofity("Error getting PunchMarkingHR ")
+                warningNofity("Error While Fetching Data!")
+            }
+        } else if (deptName !== 0 && deptSecName !== 0 && Empno?.em_id !== 0) {
+            setOpenBkDrop(true)
+            dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+            const punch_data = await axioslogin.post("/AttendenceReport/getPunchDataEmCodeWiseDateWise/", postData);
+            const { su, result_data } = punch_data.data;
+            if (su === 1 && result_data?.length > 0) {
+                const punchaData = result_data;
+                const punch_master_data = await axioslogin.post("/AttendenceReport/getPunchMasterDataSectionWise/", postData); //GET PUNCH MASTER DATA
+                const { success, planData } = punch_master_data.data;
+
+                if (success === 1 && planData?.length > 0) {
+                    const punchMasterData = planData; //PUNCHMSTER DATA
+                    const maindata = await Promise.allSettled(
+                        punchMasterData?.map(async (data, index) => {
+
+                            const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
+                            // const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+                            const shiftMergedPunchMaster = {
+                                ...data,
+                                shft_chkin_start: sortedShiftData?.shft_chkin_start,
+                                shft_chkin_end: sortedShiftData?.shft_chkin_end,
+                                shft_chkout_start: sortedShiftData?.shft_chkout_start,
+                                shft_chkout_end: sortedShiftData?.shft_chkout_end,
+                                shft_cross_day: sortedShiftData?.shft_cross_day,
+                                // gross_salary: sortedSalaryData?.gross_salary,
+                                earlyGoingMaxIntervl: cmmn_early_out,
+                                gracePeriodInTime: cmmn_grace_period,
+                                maximumLateInTime: cmmn_late_in,
+                                salaryLimit: salary_above,
+                                woff: week_off_day,
+                                naShift: notapplicable_shift,
+                                defaultShift: default_shift,
+                                noff: noff,
+                                holidayStatus: sortedShiftData?.holiday_status
+                            }
+
+                            const employeeBasedPunchData = punchaData?.filter((e) => e.emp_code = data.em_no)
+
+                            return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
+                        })
+                    ).then((data) => {
+                        if (data?.length > 0) {
+                            const punchMasterMappedData = data?.map((e) => e.value)
+                            return Promise.allSettled(
+                                punchMasterMappedData?.map(async (val) => {
+                                    const holidayStatus = val.holiday_status;
+                                    const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
+                                    const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
+                                    const shift_in = new Date(val.shift_in);
+                                    const shift_out = new Date(val.shift_out);
+                                    let interVal = intervalToDuration({
+                                        start: isValid(new Date(val.punch_in)) ? new Date(val.punch_in) : 0,
+                                        end: isValid(new Date(val.punch_out)) ? new Date(val.punch_out) : 0
+                                    })
+                                    //SALARY LINMIT
+                                    const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
+                                    const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+                                    const getAttendanceStatus = await getAttendanceCalculation(
+                                        punch_In,
+                                        shift_in,
+                                        punch_out,
+                                        shift_out,
+                                        cmmn_grace_period,
+                                        getLateInTime,
+                                        holidayStatus,
+                                        val.shift_id,
+                                        val.defaultShift,
+                                        val.naShift,
+                                        val.noff,
+                                        val.woff,
+                                        salaryLimit,
+                                        val.maximumLateInTime,
+                                        halfday_time_count
+                                    )
+
+                                    return {
+
+                                        punch_slno: val.punch_slno,
+                                        punch_in: (moment(val?.punch_in).format("HH:mm")) === "Invalid date" ? "No Punch" : (moment(val?.punch_in).format("HH:mm")),
+                                        punch_out: (moment(val?.punch_out).format(" HH:mm")) === "Invalid date" ? "No Punch" : (moment(val?.punch_out).format("HH:mm")),
+                                        hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                                        late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                                        early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
+                                        duty_status: getAttendanceStatus?.duty_status,
+                                        holiday_status: val.holiday_status,
+                                        leave_status: val.leave_status,
+                                        lvereq_desc: val?.leave_status === 1 ? val?.lvereq_desc : getAttendanceStatus?.lvereq_desc,
+                                        duty_desc: val?.leave_status === 1 ? val?.duty_desc : getAttendanceStatus?.duty_desc,
+                                        lve_tble_updation_flag: val.lve_tble_updation_flag,
+                                        name: val?.em_name,
+                                        dept: val?.dept_name,
+                                        sect: val?.sect_name,
+                                        Duty: (moment(val?.duty_day).format("DD-MM-yyyy")),
+                                        Shift_in: (moment(val?.shift_in).format("DD-MM-yyyy HH:mm")),
+                                        Shift_Out: (moment(val?.shift_out).format("DD-MM-yyyy HH:mm ")),
+                                        // hrsWorked: formatDuration({ hours: val?.hrs_worked.hours, minutes: val?.hrs_worked.minutes }),
+                                        worked: (isValid(new Date(val.punch_in)) && val.punch_in !== null) && (isValid(new Date(val.punch_out)) && val.punch_out !== null) ?
+                                            formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                        late: val?.late_in,
+                                        early: val?.early_out,
+                                        em_no: val?.em_no,
+                                    }
+                                })
+                            ).then(async (element) => {
+
+                                if (element?.length > 0) {
+                                    const extractedValues = element?.map(item => item.value);
+                                    setOpenBkDrop(false)
+                                    return { status: 1, data: extractedValues }
+                                    // setOpenBkDrop(false)
+                                    // setTableData(extractedValues)
+                                } else {
+                                    setOpenBkDrop(false)
+                                    return { status: 0, message: "something went wrong", errorMessage: '' }
+                                    // setOpenBkDrop(false)
+                                }
+                            })
+
+                        } else {
+                            setOpenBkDrop(false)
+                            return { status: 0, message: "something went wrong", errorMessage: '' }
+                            //setOpenBkDrop(false)
+                        }
+                    })
+                    if (maindata?.status === 1) {
+                        setTableData(maindata?.data.slice(0, -1))
+                        setOpenBkDrop(false)
+                    } else {
+                        setTableData([])
+                        setOpenBkDrop(false)
+                    }
+                } else {
+                    setOpenBkDrop(false)
+                    return { status: 0, message: "something went wrong", errorMessage: '' }
+                    // 
+                }
+            } else {
+                setOpenBkDrop(false)
             }
         } else {
-            warningNofity("Please Select All Fields")
+            const getEmpData = {
+                dept_id: deptName,
+                sect_id: deptSecName,
+            }
+            //To get the emp details
+            const result = await axioslogin.post('/empmast/getEmpDet', getEmpData)
+            const { success, data } = result.data
+
+            if (success === 1 && data?.length > 0) {
+                // const empData = data;
+                const punchdep_data = await axioslogin.post("/AttendenceReport/getPunchDataDptWiseDateWise/", postPunchData);
+                const { su, resultPunch_data } = punchdep_data?.data;
+                if (su === 1 && resultPunch_data?.length > 0) {
+                    const punchaMasData = resultPunch_data;
+                    const punchResult = await axioslogin.post("/AttendenceReport/getPunchMasterDataDeptWise", postPunchData)
+                    const { success, planData } = punchResult.data;
+                    const punchMasterData = planData;
+                    if (success === 1 && punchMasterData?.length > 0) {
+                        //PUNCHMSTER DATA
+                        const maindata = await Promise.allSettled(
+
+                            punchMasterData?.map(async (data, index) => {
+                                const sortedShiftData = shiftInformation?.find((e) => e.shft_slno === data.shift_id)// SHIFT DATA
+                                // const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
+                                const shiftMergedPunchMaster = {
+                                    ...data,
+                                    shft_chkin_start: sortedShiftData?.shft_chkin_start,
+                                    shft_chkin_end: sortedShiftData?.shft_chkin_end,
+                                    shft_chkout_start: sortedShiftData?.shft_chkout_start,
+                                    shft_chkout_end: sortedShiftData?.shft_chkout_end,
+                                    shft_cross_day: sortedShiftData?.shft_cross_day,
+                                    // gross_salary: sortedSalaryData?.gross_salary,
+                                    earlyGoingMaxIntervl: cmmn_early_out,
+                                    gracePeriodInTime: cmmn_grace_period,
+                                    maximumLateInTime: cmmn_late_in,
+                                    salaryLimit: salary_above,
+                                    woff: week_off_day,
+                                    naShift: notapplicable_shift,
+                                    defaultShift: default_shift,
+                                    noff: noff,
+                                    holidayStatus: sortedShiftData?.holiday_status
+                                }
+                                // const employeeBasedPunchData = punchaMasData.filter((e) => e.emp_code == data.em_no)
+                                const employeeBasedPunchData = punchaMasData.filter((e) => String(e.emp_code) === String(data.em_no));
+
+                                return await punchInOutMapping(shiftMergedPunchMaster, employeeBasedPunchData)
+                            })
+                        ).then((data) => {
+                            if (data?.length > 0) {
+                                const punchMasterMappedData = data?.map((e) => e.value)
+                                return Promise.allSettled(
+                                    punchMasterMappedData?.map(async (val) => {
+                                        const holidayStatus = val.holiday_status;
+                                        const punch_In = val.punch_in === null ? null : new Date(val.punch_in);
+                                        const punch_out = val.punch_out === null ? null : new Date(val.punch_out);
+
+                                        const shift_in = new Date(val.shift_in);
+                                        const shift_out = new Date(val.shift_out);
+                                        let interVal = intervalToDuration({
+                                            start: isValid(new Date(val.punch_in)) ? new Date(val.punch_in) : 0,
+                                            end: isValid(new Date(val.punch_out)) ? new Date(val.punch_out) : 0
+                                        })
+                                        //SALARY LINMIT
+                                        const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
+                                        const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+                                        const getAttendanceStatus = await getAttendanceCalculation(
+                                            punch_In,
+                                            shift_in,
+                                            punch_out,
+                                            shift_out,
+                                            cmmn_grace_period,
+                                            getLateInTime,
+                                            holidayStatus,
+                                            val.shift_id,
+                                            val.defaultShift,
+                                            val.naShift,
+                                            val.noff,
+                                            val.woff,
+                                            salaryLimit,
+                                            val.maximumLateInTime,
+                                            halfday_time_count
+                                        )
+
+                                        return {
+
+                                            punch_slno: val.punch_slno,
+                                            punch_in: val.punch_in,
+                                            punch_out: val.punch_out,
+                                            duty_day: val.duty_day,
+                                            hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                                            late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                                            early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
+                                            duty_status: getAttendanceStatus?.duty_status,
+                                            holiday_status: val.holiday_status,
+                                            leave_status: val.leave_status,
+                                            lvereq_desc: val?.leave_status === 1 ? val?.lvereq_desc : getAttendanceStatus?.lvereq_desc,
+                                            duty_desc: val?.leave_status === 1 ? val?.duty_desc : getAttendanceStatus?.duty_desc,
+                                            lve_tble_updation_flag: val.lve_tble_updation_flag,
+                                            name: val?.em_name,
+                                            dept: val?.dept_name,
+                                            sect: val?.sect_name,
+                                            Duty: (moment(val?.duty_day).format("DD-MM-yyyy")),
+                                            Shift_in: (moment(val?.shift_in).format("DD-MM-yyyy HH:mm")),
+                                            Shift_Out: (moment(val?.shift_out).format("DD-MM-yyyy HH:mm ")),
+                                            // hrsWorked: formatDuration({ hours: val?.hrs_worked.hours, minutes: val?.hrs_worked.minutes }),
+                                            worked: (isValid(new Date(val.punch_in)) && val.punch_in !== null) && (isValid(new Date(val.punch_out)) && val.punch_out !== null) ?
+                                                formatDuration({ hours: interVal.hours, minutes: interVal.minutes }) : 0,
+                                            late: val?.late_in,
+                                            early: val?.early_out,
+                                            em_no: val?.em_no,
+                                        }
+
+                                    })
+
+                                ).then(async (element) => {
+
+                                    if (element?.length > 0) {
+                                        const extractedValues = element?.map(item => item.value);
+                                        return { status: 1, data: extractedValues }
+                                        // setTableData(extractedValues)
+                                    } else {
+                                        return { status: 0, message: "something went wrong", errorMessage: '' }
+                                    }
+                                })
+
+                            } else {
+                                return { status: 0, message: "something went wrong", errorMessage: '' }
+                            }
+                        })
+                        if (maindata?.status === 1) {
+                            setTableData(maindata?.data.slice(0, -1))
+                            setOpenBkDrop(false)
+                        } else {
+                            setTableData([])
+                            setOpenBkDrop(false)
+                        }
+                    }
+
+
+                } else {
+                    setOpenBkDrop(false)
+                    infoNofity("No employee under given condition")
+                    // setEmpArray([])
+                }
+            } else {
+                setOpenBkDrop(false)
+                infoNofity("No employee to show")
+            }
         }
-    }, [fromdate, todate, postData, shiftInformation, cmmn_early_out, deptSecName, deptName,
-        cmmn_grace_period, Empno,
-        cmmn_late_in,
-        salary_above,
-        week_off_day,
-        notapplicable_shift,
-        default_shift,
-        dispatch,
-        noff])
+    }, [all, Empno, cmmn_early_out, cmmn_grace_period, cmmn_late_in, default_shift, deptName, deptSecName, dispatch,
+        fromdate, halfday_time_count, noff, notapplicable_shift, salary_above, shiftInformation, todate,
+        week_off_day, allDept, allSection, postData, postPunchData])
 
     const punchInOutMapping = async (shiftMergedPunchMaster, employeeBasedPunchData) => {
         const crossDay = shiftMergedPunchMaster?.shft_cross_day;
@@ -334,6 +599,7 @@ const AttendenceReport = () => {
     return (
         <Box sx={{ display: "flex", flexGrow: 1, width: "100%", }} >
             <ToastContainer />
+            <CustomBackDrop open={openBkDrop} text="Please wait !.. Processing Data... " />
             <ReportLayout title="Attendence Report" displayClose={true} data={tableData} >
                 <Paper sx={{ display: 'flex', flex: 1, flexDirection: 'column', }}>
                     <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
@@ -346,7 +612,14 @@ const AttendenceReport = () => {
                         <Box sx={{ flex: 1, px: 0.5 }}>
                             <SectionBsdEmployee getEmploy={setEmpNo} />
                         </Box>
-
+                        <Box sx={{ px: 0.3, mt: 1 }} >
+                            <JoyCheckbox
+                                label='All'
+                                name="all"
+                                checked={all}
+                                onchange={(e) => setAll(e.target.checked)}
+                            />
+                        </Box>
                         <Box sx={{ flex: 1, px: 0.5, display: "flex", flexDirection: "row", }} >
                             <Typography sx={{ p: 1 }}>From:</Typography>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -370,19 +643,16 @@ const AttendenceReport = () => {
                                     )}
                                 />
                             </LocalizationProvider>
-
-
                         </Box>
                         <Box sx={{ flex: 1, px: 0.5, display: "flex", flexDirection: "row", }} >
                             <Typography sx={{ p: 1 }}>To:</Typography>
-
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 < DatePicker
                                     // disableFuture={true}
                                     views={['day']}
                                     value={todate}
                                     inputFormat='dd-MM-yyyy'
-                                    maxDate={endOfMonth(new Date(fromdate))}
+                                    maxDate={new Date()}
                                     size="small"
                                     onChange={(e) => {
                                         Settodate(moment(e).format("YYYY-MM-DD"));
@@ -397,25 +667,21 @@ const AttendenceReport = () => {
                                     )}
                                 />
                             </LocalizationProvider>
-
                         </Box>
                         <Box sx={{ px: 0.5, mr: 1, mt: .5 }}>
-
                             <IconButton variant="outlined" size='sm' color="primary"
-                                onClick={getData}
+                                onClick={getAttendanceData}
                             >
                                 <PublishedWithChangesIcon />
                             </IconButton>
                         </Box>
                     </Box>
-
                     <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", width: "100%" }} >
                         <CustomAgGridRptFormatOne
                             tableDataMain={tableData}
                             columnDefMain={columnDef}
                         />
                     </Paper>
-
                 </Paper>
             </ReportLayout>
         </Box >

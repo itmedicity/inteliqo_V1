@@ -1,6 +1,7 @@
 import { eachDayOfInterval, endOfMonth, format, startOfMonth } from "date-fns";
 import moment from "moment";
 import { axioslogin } from "src/views/Axios/Axios";
+import { employeeIdNumber } from "src/views/Constant/Constant";
 
 export const planInitialState = {
     FROM_DATE: "FROM_DATE",
@@ -233,7 +234,8 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                         shift: values?.date >= values?.doj ? default_shift : notapplicable_shift,
                         holidayStatus: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : 1,
                         holidayName: values?.holiday_type === 1 && holiday?.special_type === 2 ? null : holiday?.hld_desc,
-                        holidaySlno: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : holiday?.hld_slno
+                        holidaySlno: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : holiday?.hld_slno,
+                        plan_user: employeeIdNumber()
                     }
                 } else {
                     return {
@@ -243,7 +245,8 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                         shift: values?.date >= values?.doj ? default_shift : notapplicable_shift,
                         holidayStatus: 0,
                         holidayName: null,
-                        holidaySlno: 0
+                        holidaySlno: 0,
+                        plan_user: employeeIdNumber()
                     }
                 }
             }
@@ -259,7 +262,8 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                         shift: values?.date >= values?.doj ? default_shift : notapplicable_shift,
                         holidayStatus: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : 1,
                         holidayName: values?.holiday_type === 1 && holiday?.special_type === 2 ? null : holiday?.hld_desc,
-                        holidaySlno: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : holiday?.hld_slno
+                        holidaySlno: values?.holiday_type === 1 && holiday?.special_type === 2 ? 0 : holiday?.hld_slno,
+                        plan_user: employeeIdNumber()
                     }
                 } else {
                     return {
@@ -269,7 +273,8 @@ export const dutyPlanInsertFun = async (formData, commonSettings, holidayList, e
                         shift: values?.date >= values?.doj ? default_shift : notapplicable_shift,
                         holidayStatus: 0,
                         holidayName: null,
-                        holidaySlno: 0
+                        holidaySlno: 0,
+                        plan_user: employeeIdNumber()
                     }
                 }
             }

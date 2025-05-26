@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect, memo, useMemo } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import { Button, CssVarsProvider, Input, Tooltip } from '@mui/joy'
 import Typography from '@mui/joy/Typography';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
@@ -19,7 +19,7 @@ import JoyDepartmentSection from '../MuiComponents/JoyComponent/JoyDepartmentSec
 import JoyInstitutionSelect from '../MuiComponents/JoyComponent/JoyInstitutionSelect'
 import JoyDesignationSelect from '../MuiComponents/JoyComponent/JoyDesignationSelect'
 import moment from 'moment'
-import JoyCategorySelect from '../MuiComponents/JoyComponent/JoyCategorySelect'
+//import JoyCategorySelect from '../MuiComponents/JoyComponent/JoyCategorySelect'
 import SaveIcon from '@mui/icons-material/Save';
 import { setDepartment } from 'src/redux/actions/Department.action'
 import PermannetCategorySelect from '../MuiComponents/PermannetCategorySelect'
@@ -181,8 +181,8 @@ const CompanyChange = ({ empid, setFlag, empno, display, name }) => {
             //em_prob_end_date: moment(probationperiod).format('YYYY-MM-DD'),
             contract_status: 0,
             probation_status: 0,
-            create_user: employeeNumber(),
-            edit_user: employeeNumber(),
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
             em_id: em_id,
             em_no: empno,
             com_designation: designation,

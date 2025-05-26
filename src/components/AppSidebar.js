@@ -22,7 +22,7 @@ import { IoIosGitNetwork } from "react-icons/io";
 import { VscMortarBoard, VscLaw, VscFeedback } from "react-icons/vsc";
 import { CNavGroup, CNavItem } from '@coreui/react'
 
-import recruitMenuArray from '../Menus/AttendanceMang'
+import recruitMenuArray from '../Menus/Recruitment'
 import AttendanceManagement from '../Menus/AttendanceMang'
 import Employeerecord from '../Menus/EmployeeRecord'
 import Leavemanagement from '../Menus/LeaveManagemrent'
@@ -240,14 +240,14 @@ const AppSidebar = () => {
         <CSidebarBrand className="d-none d-md-flex" to="/">
 
           <Box sx={{ display: "flex", flexDirection: "column", px: 1, }}>
-            <Box sx={{ display: "flex", textTransform: 'capitalize', fontStyle: "oblique" }} >
+            <Box sx={{ display: "flex", textTransform: 'capitalize' }} >
               <CssVarsProvider>
                 <Typography textColor="#ffffff" level='h4'>
                   {em_name?.toLowerCase()}
                 </Typography>
               </CssVarsProvider>
             </Box>
-            <Box sx={{ display: "flex", textTransform: 'capitalize', fontStyle: "oblique" }} >
+            <Box sx={{ display: "flex", textTransform: 'capitalize' }} >
               <CssVarsProvider>
                 <Typography textColor="#ffffff">
                   {sect_name?.toLowerCase()}

@@ -3,13 +3,15 @@ import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import { Button, CssVarsProvider, Tooltip, Typography } from '@mui/joy'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import SaveIcon from '@mui/icons-material/Save';
+import { differenceInDays, differenceInMonths, endOfYear, startOfYear } from 'date-fns';
+
 
 const StatutoryInformation = () => {
 
@@ -161,8 +163,8 @@ const StatutoryInformation = () => {
             em_esi_status: esi === false ? 0 : 1,
             em_esi_no: esino,
             em_grade: selectGrade,
-            create_user: employeeNumber(),
-            edit_user: employeeNumber(),
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
             nps: nps === false ? 0 : 1,
             npsnumber: npsnumber,
             npsamount: npsamount,
@@ -183,7 +185,7 @@ const StatutoryInformation = () => {
             em_esi_no: esino,
             em_grade: selectGrade,
             esi_slno: value,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             nps: nps === false ? 0 : 1,
             npsnumber: npsnumber,
             npsamount: npsamount,
@@ -205,15 +207,15 @@ const StatutoryInformation = () => {
             lwf_status: lwf === false ? 0 : 1,
             lwfnumber: lwfnumber,
             lwfamount: lwfamount,
-            create_user: employeeNumber(),
-            edit_user: employeeNumber(),
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
         }
     }, [id, no, nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
 
     const postNpsEdit = useMemo(() => {
         return {
             em_id: no,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             nps: nps === false ? 0 : 1,
             npsnumber: npsnumber,
             npsamount: npsamount,
@@ -235,7 +237,7 @@ const StatutoryInformation = () => {
             em_esi_no: esino,
             em_grade: selectGrade,
             esi_slno: value,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             nps: nps === false ? 0 : 1,
             npsnumber: npsnumber,
             npsamount: npsamount,
@@ -247,15 +249,37 @@ const StatutoryInformation = () => {
     }, [no, pf, pfno, uanno, esi, esino, selectGrade, value,
         nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
 
-
     //saving form data
     const submitFormData = async (e) => {
         e.preventDefault()
         if (value === 0 && Esiallowed === 1) {
+
+            const { hrm_lv_cmn, em_no,
+                cmn_lv_allowedflag,
+                Iv_process_slno,
+                update_user,
+                em_id,
+                cmn_lv_year } = leaveProcessdata
+            const startMonth = startOfYear(new Date())
+            const daycount = differenceInDays(new Date(), startMonth)
+            const postdata = {
+                em_no: em_no,
+                llvetype_slno: 6,
+                cmn_lv_allowedflag,
+                cmn_lv_allowed: daycount,
+                cmn_lv_taken: 0,
+                cmn_lv_balance: daycount,
+                Iv_process_slno: Iv_process_slno,
+                update_user: update_user,
+                em_id: em_id,
+                cmn_lv_year: cmn_lv_year,
+                hrm_lv_cmn: hrm_lv_cmn
+            }
+
             const result = await axioslogin.post('/empesipf', postData)
             const { success, message } = result.data
             if (success === 1) {
-                const result = await axioslogin.patch('/yearleaveprocess/inactive/sick', leaveProcessdata)
+                const result = await axioslogin.patch('/yearleaveprocess/inactive/sick', postdata)
                 const { success, message } = result.data
                 if (success === 1) {
                     succesNofity(message)
@@ -290,11 +314,34 @@ const StatutoryInformation = () => {
                 }
 
             } else {
+
+                const { hrm_lv_cmn, em_no,
+                    cmn_lv_allowedflag,
+                    Iv_process_slno,
+                    update_user,
+                    em_id,
+                    cmn_lv_year } = esidata;
+                const endMonth = endOfYear(new Date())
+                const sickCount = differenceInMonths(endMonth, new Date())
+
+                const postdata = {
+                    em_no: em_no,
+                    llvetype_slno: 7,
+                    cmn_lv_allowedflag,
+                    cmn_lv_allowed: sickCount + 1,
+                    cmn_lv_taken: 0,
+                    cmn_lv_balance: sickCount + 1,
+                    Iv_process_slno: Iv_process_slno,
+                    update_user: update_user,
+                    em_id: em_id,
+                    cmn_lv_year: cmn_lv_year,
+                    hrm_lv_cmn: hrm_lv_cmn
+                }
                 if (esi === false) {
                     const result = await axioslogin.patch('/empesipf/inactive', inactiveEsi)
                     const { success, message } = result.data
                     if (success === 2) {
-                        const result = await axioslogin.patch('/yearleaveprocess/inactive/esi', esidata)
+                        const result = await axioslogin.patch('/yearleaveprocess/inactive/esi', postdata)
                         const { success, message } = result.data
                         if (success === 1) {
                             succesNofity(message)

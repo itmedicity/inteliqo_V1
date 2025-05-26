@@ -121,7 +121,10 @@ const TrainingTopic = () => {
             trainers: trainers,
             subtype_name: subtype_name
         }
-    }, [dept, dept_status, videos, subtype, trainers, video_time, training_topic_name, hours, trainingname, training_status, tutorial_status, medical_status, non_medical_status, pretest_status, post_test_status, online_status, offline_status, both_status, em_id])
+    }, [dept, dept_status, videos, subtype, trainers, video_time, training_topic_name, hours,
+        trainingname, training_status, tutorial_status, medical_status, non_medical_status,
+        pretest_status, post_test_status, online_status, offline_status, both_status, em_id,
+        subtype_name])
     //patchdata
     const patchdata = useMemo(() => {
         return {

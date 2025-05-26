@@ -13,7 +13,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import { useMemo } from 'react';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 
 const DueClearenceMaster = () => {
 
@@ -39,7 +39,7 @@ const DueClearenceMaster = () => {
             due_desc: clrnce_desc,
             due_shortname: clrnce_shortname,
             due_status: clerence_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [clrnce_desc, clrnce_shortname, clerence_status])
 
@@ -56,7 +56,7 @@ const DueClearenceMaster = () => {
             due_desc: clrnce_desc,
             due_shortname: clrnce_shortname,
             due_status: clerence_status === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             duemast_slno: slno
         }
     }, [clrnce_desc, clrnce_shortname, slno, clerence_status])

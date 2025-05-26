@@ -1,154 +1,199 @@
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core'
-import React, { Fragment, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
+import { memo } from 'react'
+import { Box, Grid, IconButton } from '@mui/material'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
-import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { useStyles } from 'src/views/CommonCode/MaterialStyle'
-import { employeeNumber } from 'src/views/Constant/Constant'
-import DesignationTable from './DesignationTable'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
+import MasterLayout from '../MasterComponents/MasterLayout'
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
+import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
+import SaveIcon from '@mui/icons-material/Save';
+import CommonAgGrid from 'src/views/Component/CommonAgGrid'
+import { Button, CssVarsProvider } from '@mui/joy'
+import EditIcon from '@mui/icons-material/Edit';
+import { useMemo } from 'react'
 
 const DesignationMast = () => {
-    const classes = useStyles();
     const [count, setCount] = useState(0);
-    const history = useHistory();
+    const [slno, setSlno] = useState(0)
+    const [tableData, setTableData] = useState([])
+    const [flag, setFlag] = useState(0)
     const [designation, setDesignation] = useState({
         desg_name: '',
+        desg_notice_prd: 0,
         desg_status: false
     });
     const { desg_name, desg_notice_prd, desg_status } = designation;
     // update state to feild
-    const updateDesignationfld = (e) => {
+    const updateDesignationfld = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setDesignation({ ...designation, [e.target.name]: value })
-    }
+    }, [designation])
 
-    const postDesigData = {
-        desg_name,
-        desg_notice_prd,
-        desg_status: desg_status === true ? 1 : 0,
-        create_user: employeeNumber()
-    }
-    // reset forn
-    const resetForm = {
-        desg_name: '',
-        desg_notice_prd: '',
-        desg_status: false
-    }
-    // submit fnc
-    const submitDesignation = async (e) => {
-        e.preventDefault();
-        const result = await axioslogin.post('/designation', postDesigData)
-        const { message, success } = result.data;
-        if (success === 1) {
-            succesNofity(message);
-            setCount(count + 1);
-            setDesignation(resetForm);
-        } else if (success === 0) {
-            infoNofity(message.sqlMessage);
-        } else {
-            infoNofity(message)
+    const postDesigData = useMemo(() => {
+        return {
+            desg_name,
+            desg_notice_prd,
+            desg_status: desg_status === true ? 1 : 0,
+            create_user: employeeIdNumber()
         }
-    }
+    }, [desg_name, desg_notice_prd, desg_status])
+    // reset forn
+    const resetForm = useMemo(() => {
+        return {
+            desg_name: '',
+            desg_notice_prd: 0,
+            desg_status: false
+        }
+    }, [])
 
-    // redirect to setting
-    const toSettings = () => {
-        history.push('/Home/Settings');
-    }
+    const postDesignationData = useMemo(() => {
+        return {
+            desg_name,
+            desg_notice_prd,
+            desg_status: desg_status === true ? 1 : 0,
+            desg_slno: slno,
+            edit_user: employeeIdNumber()
+        }
+
+    }, [desg_name, desg_notice_prd, desg_status, slno])
+    // submit fnc
+    const submitDesignation = useCallback(async (e) => {
+        e.preventDefault();
+        if (flag === 1) {
+            const result = await axioslogin.patch('/designation', postDesignationData)
+            const { message, success } = result.data;
+            if (success === 2) {
+                setDesignation(resetForm);
+                setCount(count + 1);
+                succesNofity(message);
+                setFlag(0)
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        } else {
+            const result = await axioslogin.post('/designation', postDesigData)
+            const { message, success } = result.data;
+            if (success === 1) {
+                succesNofity(message);
+                setCount(count + 1);
+                setDesignation(resetForm);
+            } else if (success === 0) {
+                infoNofity(message.sqlMessage);
+            } else {
+                infoNofity(message)
+            }
+        }
+
+    }, [postDesigData, flag, count, resetForm, postDesignationData])
+
+    // Get data
+    useEffect(() => {
+        const getDesigList = async () => {
+            const result = await axioslogin.get('/designation')
+            const { success, data } = result.data;
+            if (success === 1) {
+                setTableData(data);
+                setCount(0)
+            } else {
+                setTableData([]);
+            }
+        }
+        getDesigList();
+    }, [count]);
+
+    const [columnDef] = useState([
+        { headerName: 'Sl No', field: 'desg_slno' },
+        { headerName: 'Designation', field: 'desg_name', filter: true, width: 150 },
+        { headerName: 'Period ', field: 'desg_notice_prd', width: 100 },
+        { headerName: 'Status ', field: 'status', width: 100 },
+        {
+            headerName: 'Edit', cellRenderer: params =>
+                <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
+                    <EditIcon color='primary' />
+                </IconButton>
+        },
+    ])
+
+    const getEdit = useCallback((params) => {
+        setFlag(1)
+        const { desg_name, desg_notice_prd, desg_status, desg_slno } = params.data
+        const frmdata = {
+            desg_name: desg_name,
+            desg_notice_prd: desg_notice_prd,
+            desg_status: desg_status === 1 ? true : false
+        }
+        setDesignation(frmdata)
+        setSlno(desg_slno)
+    }, [])
 
     return (
-        <Fragment>
-            <SessionCheck />
+        <MasterLayout title="Designation Master" displayClose={true} >
             <ToastContainer />
-            <div className="card">
-                <div className="card-header bg-dark pb-0 border border-dark text-white">
-                    <h5>Designation</h5>
-                </div>
-                <div className="card-body">
-                    <div className="row">
-                        <div className="col-md-4">
-                            <form className={classes.root} onSubmit={submitDesignation} >
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="Designation Name"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="desg_name"
-                                            value={desg_name}
-                                            onChange={(e) => updateDesignationfld(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <TextField
-                                            label="Notice Period"
-                                            fullWidth
-                                            size="small"
-                                            autoComplete="off"
-                                            variant="outlined"
-                                            required
-                                            name="desg_notice_prd"
-                                            value={desg_notice_prd}
-                                            onChange={(e) => updateDesignationfld(e)}
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <FormControlLabel
-                                            className="pb-0 mb-0"
-                                            control={
-                                                <Checkbox
-                                                    name="desg_status"
-                                                    color="secondary"
-                                                    value={desg_status}
-                                                    checked={desg_status}
-                                                    className="ml-2 "
-                                                    onChange={(e) => updateDesignationfld(e)}
-                                                />
-                                            }
-                                            label="Status"
-                                        />
-                                    </div>
-                                    <div className="row col-md-12">
-                                        <div className="col-md-6 col-sm-12 col-xs-12 mb-1">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                type="Submit"
-                                                className="ml-2"
-                                            >
-                                                Save
-                                            </Button>
-                                        </div>
-                                        <div className="col-md-6 col-sm-12 col-xs-12">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                fullWidth
-                                                className="ml-2"
-                                                onClick={toSettings}
-                                            >
-                                                Close
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div className="col-md-8">
-                            <DesignationTable update={count} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Fragment>
+            <Box sx={{ width: "100%" }} >
+                <Grid container spacing={1}>
+                    <Grid item xl={3} lg={2}>
+                        <Box sx={{ width: "100%", p: 1 }}>
+                            <InputComponent
+                                placeholder={'Designation Name'}
+                                type="text"
+                                size="sm"
+                                name="desg_name"
+                                value={desg_name}
+                                onchange={(e) => updateDesignationfld(e)}
+                            />
+                        </Box>
+                        <Box sx={{ width: "100%", p: 1 }}>
+                            <InputComponent
+                                placeholder={'Notice Period'}
+                                type="text"
+                                size="sm"
+                                name="desg_notice_prd"
+                                value={desg_notice_prd}
+                                onchange={(e) => updateDesignationfld(e)}
+                            />
+                        </Box>
+                        <Box sx={{ pl: 1 }} >
+                            <JoyCheckbox
+                                label='Status'
+                                checked={desg_status}
+                                name="desg_status"
+                                onchange={(e) => updateDesignationfld(e)}
+                            />
+                        </Box>
+                        <Box sx={{ px: 0.5, mt: 0.9 }}>
+                            <CssVarsProvider>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    size="md"
+                                    color="primary"
+                                    onClick={submitDesignation}
+                                >
+                                    <SaveIcon />
+                                </Button>
+                            </CssVarsProvider>
+                        </Box>
+                    </Grid>
+                    <Grid item xs={9} lg={9} xl={9} md={9}>
+                        <CommonAgGrid
+                            columnDefs={columnDef}
+                            tableData={tableData}
+                            sx={{
+                                height: 500,
+                                width: "100%"
+                            }}
+                            rowHeight={30}
+                            headerHeight={30}
+                        />
+                    </Grid>
+                </Grid>
+            </Box>
+        </MasterLayout>
     )
 }
 
-export default DesignationMast
+export default memo(DesignationMast) 

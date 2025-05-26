@@ -4,7 +4,7 @@ import React, { memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import SaveIcon from '@mui/icons-material/Save';
 import { useCallback } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
@@ -44,7 +44,7 @@ const DepartmentMasterPage = () => {
                 dept_name: dept_name,
                 dept_alias: dept_alias,
                 dept_status: dept_status === true ? 1 : 0,
-                create_user: employeeNumber(),
+                create_user: employeeIdNumber(),
                 dept_type: type,
             }
             const result = await axioslogin.post('/department', formData).then((response) => {
@@ -74,7 +74,7 @@ const DepartmentMasterPage = () => {
                 dept_status: dept_status === true ? 1 : 0,
                 dept_name: dept_name,
                 dept_alias: dept_alias,
-                edit_user: employeeNumber(),
+                edit_user: employeeIdNumber(),
                 dept_type: type,
                 dept_id: id
             }

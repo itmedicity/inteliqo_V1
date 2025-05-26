@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import { Box, Grid, IconButton } from '@mui/material'
@@ -37,7 +37,7 @@ const EducationMaster = () => {
         return {
             edu_desc,
             edu_status: edu_status === true ? 1 : 0,
-            edu_create: employeeNumber()
+            edu_create: employeeIdNumber()
         }
     }, [edu_desc, edu_status])
 
@@ -55,7 +55,7 @@ const EducationMaster = () => {
             edu_desc,
             edu_status: edu_status === true ? 1 : 0,
             edu_slno: slno,
-            edu_edit: employeeNumber()
+            edu_edit: employeeIdNumber()
         }
     }, [edu_desc, slno, edu_status])
 

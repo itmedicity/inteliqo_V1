@@ -16,7 +16,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import { PayrolMasterContext } from 'src/Context/MasterContext'
 import moment from 'moment';
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 
 const EmpAllowanceTableEdit = () => {
     const classes = useStyles();
@@ -103,7 +103,7 @@ const EmpAllowanceTableEdit = () => {
         last_wage: last_amount,
         em_start_date: month_start,
         em_end_date: month_end,
-        edit_user: employeeNumber(),
+        edit_user: employeeIdNumber(),
         ernded_slno: slno,
 
     }
@@ -143,7 +143,7 @@ const EmpAllowanceTableEdit = () => {
                     em_no: id,
                     em_id: no,
                     gross_salary: sum,
-                    updated_user: employeeNumber(),
+                    updated_user: employeeIdNumber(),
                 }
                 const result2 = await axioslogin.post('/hrmgrosssalary', postData2)
                 const { success, message } = result2.data

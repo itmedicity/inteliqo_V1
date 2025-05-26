@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import moment from 'moment';
 import { errorNofity, infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -73,7 +73,7 @@ const ModelSalaryIncrement = ({ open, handleClose, emno, em_salary_desc }) => {
         incr_start_date: moment(start_date).format('YYYY-MM-DD'),
         incre_type: increment_type === false ? 0 : 1,
         incre_amount: increment_type === false ? parseInt(last_amount) - parseInt(increment_amount) : parseInt(last_amount) + parseInt(increment_amount),
-        edit_user: employeeNumber(),
+        edit_user: employeeIdNumber(),
         incre_slno: incre_slno
     }
     //for editing salary increment settings

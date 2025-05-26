@@ -245,7 +245,7 @@ const DayWiseAttendence = () => {
                                     dept_name: deptName,
                                     sect_name: sect_name,
                                     punchMaster: dateRange?.map((e) => {
-                                        // console.log(e)
+
                                         return {
                                             attDate: e,
                                             em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
@@ -420,7 +420,11 @@ const DayWiseAttendence = () => {
 
                                 let emName = empArray?.find(e => e.em_no === el).name;
                                 let deptName = empArray?.find(e => e.em_no === el).dept;
+
+                                // let emNo = empArray?.find(e => e.em_no === el).em_no;
+
                                 //let emNo = empArray?.find(e => e.em_no === el).em_no;
+
                                 let sect_name = empArray?.find(e => e.em_no === el).sect;
 
                                 return {
@@ -432,7 +436,6 @@ const DayWiseAttendence = () => {
                                     dept_name: deptName,
                                     sect_name: sect_name,
                                     punchMaster: dateRange?.map((e) => {
-                                        // console.log(e)
                                         return {
                                             attDate: e,
                                             em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,
@@ -610,7 +613,11 @@ const DayWiseAttendence = () => {
                                 const empArray = mainarray?.filter(e => e.em_no === el)
                                 let emName = empArray?.find(e => e.em_no === el).name;
                                 let deptName = empArray?.find(e => e.em_no === el).dept;
+
+                                // let emNo = empArray?.find(e => e.em_no === el).em_no;
+
                                 //let emNo = empArray?.find(e => e.em_no === el).em_no;
+
                                 let sect_name = empArray?.find(e => e.em_no === el).sect;
 
                                 return {
@@ -622,7 +629,6 @@ const DayWiseAttendence = () => {
                                     dept_name: deptName,
                                     sect_name: sect_name,
                                     punchMaster: dateRange?.map((e) => {
-                                        // console.log(e)
                                         return {
                                             attDate: e,
                                             em_name: empArray?.find(em => em.duty_day === e)?.em_name ?? emName,

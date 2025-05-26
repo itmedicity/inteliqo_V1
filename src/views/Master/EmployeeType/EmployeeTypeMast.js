@@ -4,7 +4,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import MasterLayout from '../MasterComponents/MasterLayout';
 import EditIcon from '@mui/icons-material/Edit';
 import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
@@ -28,7 +28,7 @@ const EmployeeTypeMast = () => {
             emptype_name: empType,
             el_aplicable: status === true ? 1 : 0,
             is_type: permanent === true ? 1 : contract === true ? 2 : probation === true ? 3 : training === true ? 4 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [empType, status, contract, permanent, probation, training])
 
@@ -37,7 +37,7 @@ const EmployeeTypeMast = () => {
             emptype_name: empType,
             el_aplicable: status === true ? 1 : 0,
             is_type: permanent === true ? 1 : contract === true ? 2 : probation === true ? 3 : training === true ? 4 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             emptype_slno: slno
         }
     }, [empType, status, contract, permanent, probation, training, slno])

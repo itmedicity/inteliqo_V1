@@ -18,6 +18,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import GroupMultiSelect from './GroupMultiSelect'
+import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategorySelect'
+import CategoryMultipleSelect from 'src/views/MuiComponents/JoyComponent/CategoryMultipleSelect'
 
 const CommonSettingNew = () => {
 
@@ -69,7 +71,10 @@ const CommonSettingNew = () => {
         onobservation_days: 0,
         hod_leave_day_count: 0,
         halfday_time_count: 0,
-        punch_taken_hour_count: 0
+        punch_taken_hour_count: 0,
+        monthly_late_time_count: 0,
+        holiday_min_working: false
+
     })
 
     const {
@@ -79,14 +84,19 @@ const CommonSettingNew = () => {
         pf_employee, pf_age, max_salary, verification_level, salary_above, leave_count,
         pf_employee_amount, pf_employer_amount, noff_count, onHourRq_no, max_late_day_count,
         noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count, weekoff_policy_max_count,
-        weekoff_policy_min_count, onobservation_days, hod_leave_day_count
+        weekoff_policy_min_count, onobservation_days, hod_leave_day_count, monthly_late_time_count,
+        holiday_min_working
     } = FormData
 
+    const [first_policy, setfirst_policy] = useState(false)
+    const [second_plicy, setsecond_plicy] = useState(false)
     const [levaetype, setLeaveType] = useState([])
     const [count, setCount] = useState(0)
     const [areartype, setAreartype] = useState(0)
     const [earntype, setEarnType] = useState([])
     const [holidayLeave, setHolidayLeave] = useState(false)
+    const [category, setCategory] = useState(0)
+    const [earnlvCategory, setEarnlvCategory] = useState([])
 
     useEffect(() => {
         const getemptypedata = async () => {
@@ -106,6 +116,27 @@ const CommonSettingNew = () => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setFormData({ ...FormData, [e.target.name]: value })
     }
+
+    const getfirst = useCallback(async (e) => {
+        if (e.target.checked === true) {
+            setfirst_policy(true)
+            setsecond_plicy(false)
+        } else {
+            setfirst_policy(false)
+            setsecond_plicy(true)
+        }
+    }, [])
+
+    const getSecond = useCallback(async (e) => {
+        if (e.target.checked === true) {
+            setfirst_policy(false)
+            setsecond_plicy(true)
+        } else {
+            setfirst_policy(true)
+            setsecond_plicy(false)
+        }
+    }, [])
+
     //setting data to form
     useEffect(() => {
         const getCommonSettings = async () => {
@@ -119,7 +150,8 @@ const CommonSettingNew = () => {
                     areartype, max_late_day_count, leave_count, noff_selct_day_count, noff, group_slno, doff, comp_day_count,
                     comp_hour_count, training_mastergroup, holiday_policy_count, weekoff_policy_max_count,
                     weekoff_policy_min_count, coff_min_working_hour, onobservation_days, hod_leave_day_count,
-                    holiday_leave_request, halfday_time_count, punch_taken_hour_count } = data[0]
+                    holiday_leave_request, halfday_time_count, punch_taken_hour_count, external_trainee,
+                    earnlvCategory, monthly_late_time_count, first_policy, second_plicy, holiday_min_working } = data[0]
 
                 const frmData = {
                     slno: setting_slno,
@@ -160,6 +192,9 @@ const CommonSettingNew = () => {
                     hod_leave_day_count: hod_leave_day_count,
                     halfday_time_count: halfday_time_count,
                     punch_taken_hour_count: punch_taken_hour_count,
+                    monthly_late_time_count: monthly_late_time_count,
+                    holiday_min_working: holiday_min_working === 1 ? true : false
+
                 }
                 const obj = JSON.parse(leavetype_multiple)
                 setLeaveType(obj === null ? [] : obj)
@@ -177,6 +212,10 @@ const CommonSettingNew = () => {
                 setNoff(noff)
                 setDoff(doff)
                 setHolidayLeave(holiday_leave_request === 0 ? false : true)
+                setCategory(external_trainee === null ? 0 : external_trainee)
+                setEarnlvCategory(earnlvCategory === null ? [] : JSON.parse(earnlvCategory))
+                setfirst_policy(first_policy === 1 ? true : false)
+                setsecond_plicy(second_plicy === 1 ? true : false)
             }
             else if (success === 0) {
                 setValue(0)
@@ -237,7 +276,13 @@ const CommonSettingNew = () => {
             hod_leave_day_count: hod_leave_day_count,
             holiday_leave_request: holidayLeave === true ? 1 : 0,
             halfday_time_count: halfday_time_count,
-            punch_taken_hour_count: punch_taken_hour_count
+            punch_taken_hour_count: punch_taken_hour_count,
+            external_trainee: category,
+            earnlvCategory: earnlvCategory,
+            monthly_late_time_count: monthly_late_time_count,
+            first_policy: first_policy === true ? 1 : 0,
+            second_plicy: second_plicy === true ? 1 : 0,
+            holiday_min_working: holiday_min_working === true ? 1 : 0
         }
     }, [commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -246,7 +291,8 @@ const CommonSettingNew = () => {
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
-        holidayLeave, halfday_time_count, punch_taken_hour_count])
+        holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory, monthly_late_time_count,
+        first_policy, second_plicy, holiday_min_working])
 
     //data to edit
     const postDataEdit = useMemo(() => {
@@ -298,7 +344,13 @@ const CommonSettingNew = () => {
             hod_leave_day_count: hod_leave_day_count,
             holiday_leave_request: holidayLeave === true ? 1 : 0,
             halfday_time_count: halfday_time_count,
-            punch_taken_hour_count: punch_taken_hour_count
+            punch_taken_hour_count: punch_taken_hour_count,
+            external_trainee: category,
+            earnlvCategory: earnlvCategory,
+            monthly_late_time_count: monthly_late_time_count,
+            first_policy: first_policy === true ? 1 : 0,
+            second_plicy: second_plicy === true ? 1 : 0,
+            holiday_min_working: holiday_min_working === true ? 1 : 0
         }
     }, [slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -307,7 +359,8 @@ const CommonSettingNew = () => {
         max_late_day_count, noff_selct_day_count, comp_day_count, comp_hour_count, holiday_policy_count,
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
-        holidayLeave, halfday_time_count, punch_taken_hour_count])
+        holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory,
+        monthly_late_time_count, first_policy, second_plicy, holiday_min_working])
 
     //save
     const submitFormData = useCallback(async (e) => {
@@ -339,9 +392,9 @@ const CommonSettingNew = () => {
         }
     }, [postData, postDataEdit, count, value])
 
-    const RedirectToprofilePage = () => {
+    const RedirectToprofilePage = useCallback(() => {
         history.push(`/Home/Settings`)
-    }
+    }, [history])
 
     return (
         <Fragment>
@@ -375,11 +428,11 @@ const CommonSettingNew = () => {
                         <Box sx={{ width: '50%' }}>
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
-                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}> Common Settings</Typography>
+                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Attendnace Setting</Typography>
                                 </Paper>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1"> Common Grace Period</Typography>
+                                        <Typography level="body1">Punch In Common Grace Period (Minutes)</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <InputComponent
@@ -391,13 +444,10 @@ const CommonSettingNew = () => {
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}  >
-                                        <Typography level="body1"> In Minutes</Typography>
-                                    </Box>
                                 </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1"> Max. Late In</Typography>
+                                        <Typography level="body1"> Punch In Max. Late In (Minutes)</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <InputComponent
@@ -409,13 +459,10 @@ const CommonSettingNew = () => {
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}  >
-                                        <Typography level="body1">In Minutes</Typography>
-                                    </Box>
                                 </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Max. Early Out</Typography>
+                                        <Typography level="body1">Punch Out Early Out (Minutes)</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <InputComponent
@@ -427,13 +474,10 @@ const CommonSettingNew = () => {
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}  >
-                                        <Typography level="body1">In Minutes</Typography>
-                                    </Box>
                                 </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Max. Late Day Count</Typography>
+                                        <Typography level="body1">Max. Late Day Count (Days)</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <InputComponent
@@ -445,98 +489,241 @@ const CommonSettingNew = () => {
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}  >
-                                        <Typography level="body1">days</Typography>
-                                    </Box>
                                 </Box>
-
-                                {/* <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">Late In Grace Period</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
-                                            name="commn_latein_grace"
-                                            value={commn_latein_grace}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">In Minutes</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box>
-
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">Early Out Grace Period</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <TextInput
-                                            type="text"
-                                            classname="form-control form-control-sm"
-                                            Placeholder=""
-                                            name="commn_earlyout_grace"
-                                            value={commn_earlyout_grace}
-                                            changeTextValue={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}  >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">In Minutes</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-                                </Box> */}
-
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Employee Verification Level</Typography>
+                                        <Typography level="body1">Week Off Policy Max Count (Days)</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <InputComponent
                                             placeholder={''}
                                             type="text"
                                             size="sm"
-                                            name="verification_level"
-                                            value={verification_level}
+                                            name="weekoff_policy_max_count"
+                                            value={weekoff_policy_max_count}
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}  >
-                                        <Typography level="body1">In Numbers</Typography>
-                                    </Box>
                                 </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Holiday Salary Setting</Typography>
+                                        <Typography level="body1"> Week Off Policy Min Count (Days)</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <InputComponent
                                             placeholder={''}
                                             type="text"
                                             size="sm"
-                                            name="salary_above"
-                                            value={salary_above}
+                                            name="weekoff_policy_min_count"
+                                            value={weekoff_policy_min_count}
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }}  >
-                                        <Typography level="body1">In Rupees</Typography>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1"> Holiday Policy Count (Days)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="holiday_policy_count"
+                                            value={holiday_policy_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">On observation Days (Days)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="onobservation_days"
+                                            value={onobservation_days}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Halfday Time Count (Hours)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="halfday_time_count"
+                                            value={halfday_time_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Punch Updation Count(Hours)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="punch_taken_hour_count"
+                                            value={punch_taken_hour_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Monthly Late Time</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="monthly_late_time_count"
+                                            value={monthly_late_time_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
                                     </Box>
                                 </Box>
                             </Paper>
-                        </Box>
-                        <Box sx={{ width: '50%', pl: 1 }}>
+
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
+                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Leave Settings</Typography>
+                                </Paper>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Employee Can Apply Leave (Days)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="leave_count"
+                                            value={leave_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Incharge/Hod Can Apply Leave (Days)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="hod_leave_day_count"
+                                            value={hod_leave_day_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Donot Allow Holiday Leave Request </Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <JoyCheckbox
+                                            //label='All'
+                                            name="holidayLeave"
+                                            checked={holidayLeave}
+                                            onchange={(e) => setHolidayLeave(e.target.checked)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Credited COFF Day Limit (Days)</Typography>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="comp_day_count"
+                                            value={comp_day_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Coff Request Punch Taken Count (Hour)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="comp_hour_count"
+                                            value={comp_hour_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Holiday Minimum Working Hour</Typography>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5, display: 'flex', flexDirection: 'row' }} >
+                                        <Box sx={{ mt: 1 }} >
+                                            <JoyCheckbox
+                                                name="holiday_min_working"
+                                                checked={holiday_min_working}
+                                                onchange={(e) => updateCommonSettings(e)}
+                                            />
+                                        </Box>
+                                        <Box sx={{ flex: 1, ml: 0.5 }} >
+                                            <InputComponent
+                                                placeholder={''}
+                                                type="text"
+                                                size="sm"
+                                                name="coff_min_working_hour"
+                                                value={coff_min_working_hour}
+                                                onchange={(e) => updateCommonSettings(e)}
+                                            />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">No. of One Hour Request/month (Nos)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="onHourRq_no"
+                                            value={onHourRq_no}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Allowed Half Day Leave Type</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5, pt: 0.5 }} >
+                                        <LeaveTypeMultipeSelect value={levaetype} setValue={setLeaveType} />
+                                    </Box>
+                                </Box>
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey', mt: 0.5 }}>
                                     <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}> CarryForward Leave Setting</Typography>
                                 </Paper>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
@@ -578,9 +765,76 @@ const CommonSettingNew = () => {
                             </Paper>
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
-                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>ESI Setting</Typography>
+                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Master Group Setting</Typography>
+                                </Paper>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Master Group</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <GroupMultiSelect value={group_slno} setValue={setGroup_Slno} />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <CssVarsProvider>
+                                            <Typography level="body1">Training Master Group</Typography>
+                                        </CssVarsProvider>
+                                    </Box>
+
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <GroupMultiSelect value={training_group_slno} setValue={setTraining_Group_Slno} />
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        </Box>
+
+                        {/* Secong column starting */}
+
+                        <Box sx={{ width: '50%', pl: 1 }}>
+
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
+                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Salary Setting</Typography>
                                 </Paper>
 
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">Holiday Salary Limit (In Rupees)</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="salary_above"
+                                            value={salary_above}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1"> Arear Type</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5, pt: 0.5 }} >
+                                        <Select
+                                            value={areartype}
+                                            onChange={(event, newValue) => {
+                                                setAreartype(newValue);
+                                            }}
+                                            size='md'
+                                            variant='outlined'
+                                        >
+                                            <Option disabled value={0}> Select Earn Type</Option>
+                                            {
+                                                earntype?.map((val, index) => {
+                                                    return <Option key={index} value={val.erning_type_id}>{val.earning_type_name}</Option>
+                                                })
+                                            }
+                                        </Select>
+                                    </Box>
+                                </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <Typography level="body1"> ESI Limit</Typography>
@@ -626,19 +880,10 @@ const CommonSettingNew = () => {
                                         />
                                     </Box>
                                 </Box>
-                            </Paper>
-                        </Box>
-                    </Box>
-                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ width: '50%' }}>
-                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
-                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
-                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>PF Setting</Typography>
-                                </Paper>
 
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1"> Salary Limit</Typography>
+                                        <Typography level="body1"> PF Salary Limit</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <TextInput
@@ -742,55 +987,42 @@ const CommonSettingNew = () => {
                                     </Box>
                                 </Box>
                             </Paper>
-                        </Box>
 
-                        <Box sx={{ width: '50%', pl: 1, }}>
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
-                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Allowed Half Day Leave Type</Typography>
-                                </Paper>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ width: '30%', px: 0.5 }} >
-                                        <Typography level="body1">Leave Type</Typography>
-                                    </Box>
-                                    <Box sx={{ width: '70%', px: 0.5, pt: 0.5 }} >
-                                        <LeaveTypeMultipeSelect value={levaetype} setValue={setLeaveType} />
-                                    </Box>
-                                </Box>
-                            </Paper>
-                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
-                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
-                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Arear Setting</Typography>
+                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>NOFF Count Setting</Typography>
                                 </Paper>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1"> Arear Type</Typography>
+                                        <Typography level="body1">Max Select NOFF Days</Typography>
                                     </Box>
-
-                                    <Box sx={{ flex: 1, px: 0.5, pt: 0.5 }} >
-                                        <Select
-                                            value={areartype}
-                                            onChange={(event, newValue) => {
-                                                setAreartype(newValue);
-                                            }}
-                                            size='md'
-                                            variant='outlined'
-                                        >
-                                            <Option disabled value={0}> Select Earn Type</Option>
-                                            {
-                                                earntype?.map((val, index) => {
-                                                    return <Option key={index} value={val.erning_type_id}>{val.earning_type_name}</Option>
-                                                })
-                                            }
-                                        </Select>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="noff_selct_day_count"
+                                            value={noff_selct_day_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1"> Min Days Of NOFF</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <InputComponent
+                                            placeholder={''}
+                                            type="text"
+                                            size="sm"
+                                            name="noff_count"
+                                            value={noff_count}
+                                            onchange={(e) => updateCommonSettings(e)}
+                                        />
                                     </Box>
                                 </Box>
                             </Paper>
-                        </Box>
-                    </Box>
-
-                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ width: '50%' }}>
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
                                     <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Shift Setting</Typography>
@@ -837,276 +1069,69 @@ const CommonSettingNew = () => {
                                     </Box>
                                 </Box>
                             </Paper>
-                        </Box>
-
-                        <Box sx={{ width: '50%', pl: 1 }}>
                             <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
                                 <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
-                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>NOFF Count Setting</Typography>
+                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}> Common Settings</Typography>
                                 </Paper>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Max Select NOFF Days</Typography>
+                                        <Typography level="body1">Employee Verification Level(Number)</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
                                         <InputComponent
                                             placeholder={''}
                                             type="text"
                                             size="sm"
-                                            name="noff_selct_day_count"
-                                            value={noff_selct_day_count}
+                                            name="verification_level"
+                                            value={verification_level}
                                             onchange={(e) => updateCommonSettings(e)}
                                         />
                                     </Box>
                                 </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1"> Min Days Of NOFF</Typography>
+                                        <Typography level="body1">External Trainee Category</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="noff_count"
-                                            value={noff_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
+                                        <JoyCategorySelect value={category} setValue={setCategory} />
                                     </Box>
                                 </Box>
-                            </Paper>
-                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
-                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
-                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Master Group Setting</Typography>
-                                </Paper>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Master Group</Typography>
+                                        <Typography level="body1">Earn Leave Category</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <GroupMultiSelect value={group_slno} setValue={setGroup_Slno} />
+                                        <CategoryMultipleSelect value={earnlvCategory} setValue={setEarnlvCategory} />
                                     </Box>
                                 </Box>
                                 <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <CssVarsProvider>
-                                            <Typography level="body1">Training Master Group</Typography>
-                                        </CssVarsProvider>
-                                    </Box>
-
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <GroupMultiSelect value={training_group_slno} setValue={setTraining_Group_Slno} />
-                                    </Box>
-                                </Box>
-                            </Paper>
-
-                        </Box>
-                    </Box>
-                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                        <Box sx={{ width: '50%', }}>
-                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
-                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
-                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Leave Settings</Typography>
-                                </Paper>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Employee Can Apply Leave</Typography>
+                                        <Typography level="body1">10-minute daily grace period</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="leave_count"
-                                            value={leave_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
+                                        <Box sx={{ flex: 1, px: 0.5 }} >
+                                            <JoyCheckbox
+                                                //label='Earn Leave'
+                                                checked={first_policy}
+                                                name="first_policy"
+                                                onchange={(e) => getfirst(e)}
+                                            />
+                                        </Box>
                                     </Box>
                                 </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Incharge/Hod Can Apply Leave</Typography>
+                                        <Typography level="body1">An overall grace time of 90 minutes per month</Typography>
                                     </Box>
                                     <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="hod_leave_day_count"
-                                            value={hod_leave_day_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Donot Allow Holiday Leave Request </Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <JoyCheckbox
-                                            //label='All'
-                                            name="holidayLeave"
-                                            checked={holidayLeave}
-                                            onchange={(e) => setHolidayLeave(e.target.checked)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Credited COFF Day Limit</Typography>
-                                    </Box>
-
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="comp_day_count"
-                                            value={comp_day_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Coff Request Punch Taken Count(Hour)</Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="comp_hour_count"
-                                            value={comp_hour_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Holiday Minimum Working Hour</Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="coff_min_working_hour"
-                                            value={coff_min_working_hour}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">No. of One Hour Request/month</Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="onHourRq_no"
-                                            value={onHourRq_no}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                            </Paper>
-                        </Box>
-                        <Box sx={{ width: '50%' }}>
-                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
-                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
-                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}>Attendnace Setting</Typography>
-                                </Paper>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Week Off Policy Max Count</Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="weekoff_policy_max_count"
-                                            value={weekoff_policy_max_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1"> Week Off Policy Min Count</Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="weekoff_policy_min_count"
-                                            value={weekoff_policy_min_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1"> Holiday Policy Count</Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="holiday_policy_count"
-                                            value={holiday_policy_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">On observation Days</Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="onobservation_days"
-                                            value={onobservation_days}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Halfday Time Count</Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="halfday_time_count"
-                                            value={halfday_time_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
-                                    </Box>
-                                </Box>
-                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <Typography level="body1">Punch Updation Count(Hours)</Typography>
-                                    </Box>
-                                    <Box sx={{ flex: 1, px: 0.5 }} >
-                                        <InputComponent
-                                            placeholder={''}
-                                            type="text"
-                                            size="sm"
-                                            name="punch_taken_hour_count"
-                                            value={punch_taken_hour_count}
-                                            onchange={(e) => updateCommonSettings(e)}
-                                        />
+                                        <Box sx={{ flex: 1, px: 0.5 }} >
+                                            <JoyCheckbox
+                                                // label='Earn Leave'
+                                                checked={second_plicy}
+                                                name="second_plicy"
+                                                onchange={(e) => getSecond(e)}
+                                            />
+                                        </Box>
                                     </Box>
                                 </Box>
                             </Paper>

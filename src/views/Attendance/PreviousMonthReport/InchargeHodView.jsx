@@ -9,7 +9,7 @@ import EmployeeView from './EmployeeView'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { addDays, addMonths, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
+import { addDays, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
 import { CssVarsProvider, IconButton, Input } from '@mui/joy'
 import moment from 'moment'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
@@ -17,6 +17,8 @@ import _ from 'underscore'
 import { getEmpNameHodSectionBased, getHodBasedDeptSectionName } from 'src/redux/actions/LeaveReqst.action'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+
 const TableRows = lazy(() => import('../PreviousMonthReport/TableRows'))
 
 const InchargeHodView = () => {
@@ -27,6 +29,7 @@ const InchargeHodView = () => {
     const [emply, getEmployee] = useState({});
     const [selectDate, setSelectDate] = useState(moment(new Date()))
     const [tableData, setTableData] = useState([])
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     const empData = useSelector((state) => state?.getProfileData?.ProfileData[0], _.isEqual)
     const { em_id, hod, incharge } = empData;
@@ -47,6 +50,7 @@ const InchargeHodView = () => {
     }, [selectDate, section])
 
     const getData = useCallback(async () => {
+        setOpenBkDrop(true)
         if (section !== 0 && emply?.em_id !== 0) {
             const result = await axioslogin.post(`/ReligionReport/sectiondata`, postDataDep)
             const { data: firstApiData, success } = result.data
@@ -77,33 +81,38 @@ const InchargeHodView = () => {
                     const updatedSecondApiData = setData.map(data => {
                         const correspondingFirstData = firstApiData.filter(firstApiData => {
                             return (
-                                parseInt(firstApiData.emp_code) === data.em_no &&
-                                new Date(firstApiData.punch_time).toDateString() === new Date(data.duty_day).toDateString()
+                                parseInt(firstApiData?.emp_code) === data.em_no &&
+                                new Date(firstApiData?.punch_time).toDateString() === new Date(data?.duty_day).toDateString()
                             );
                         });
                         return {
                             ...data,
-                            new_field: correspondingFirstData.map(data => data.punch_time)
+                            new_field: correspondingFirstData?.map(data => data?.punch_time)
                         };
                     });
 
-                    const array = updatedSecondApiData?.filter(val => val.em_no === emply?.em_no)
-                    setTableData(array.slice(0, -1))
+                    const array = updatedSecondApiData?.filter(val => val?.em_no === emply?.em_no)?.sort((a, b) => new Date(a?.duty_day) - new Date(b?.duty_day));
+                    setTableData(array)
                     // setTableData(array)
+                    setOpenBkDrop(false)
 
                 } else {
                     warningNofity("Dutypaln Not Done")
+                    setOpenBkDrop(false)
                 }
             } else {
                 warningNofity("No Employee Punch Data")
+                setOpenBkDrop(false)
             }
         } else {
             warningNofity("Select Department & Department Section & Employee")
+            setOpenBkDrop(false)
         }
     }, [section, emply, postDataDep])
 
     return (
         <>
+            <CustomBackDrop open={openBkDrop} text="Please wait !. " />
             {
                 self === true ? <EmployeeView /> : <CustomLayout title="Incharge/HOD Punch View" displayClose={true} >
                     <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column' }}>
@@ -120,8 +129,8 @@ const InchargeHodView = () => {
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DatePicker
                                         views={['year', 'month']}
-                                        minDate={subMonths(new Date(), 1)}
-                                        maxDate={addMonths(new Date(), 1)}
+                                        minDate={subMonths(new Date(), 2)}
+                                        maxDate={endOfMonth(new Date())}
                                         value={selectDate}
                                         size="small"
                                         onChange={(newValue) => {

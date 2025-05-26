@@ -11,7 +11,6 @@ import LeavRqModel from '../LeaveCommonComponent/LeavRqModel'
 import { useDispatch, useSelector } from 'react-redux'
 import HaldayRqModel from '../LeaveCommonComponent/HaldayRqModel'
 import NopunchRqModel from '../LeaveCommonComponent/NopunchRqModel'
-import CompOffRqModel from '../LeaveCommonComponent/CompOffRqModel'
 import _ from 'underscore';
 import MappingCheckbox from 'src/views/MuiComponents/MappingCheckbox';
 import { getCompOffRqstAll, getHalfdayRqstAll, getLeaveRequestAll, getNopunchRqstAll } from 'src/redux/actions/LeaveApprovalAction';
@@ -32,7 +31,7 @@ const ApprovalCEO = () => {
     //state for open model
     const [openleave, setOpenleave] = useState(false);
     const [opennopunch, setOpennopunch] = useState(false);
-    const [opencompen, setOpencompen] = useState(false);
+    //const [opencompen, setOpencompen] = useState(false);
     const [openhalf, setOpenhalf] = useState(false);
 
     const em_id = useSelector((state) => {
@@ -208,15 +207,16 @@ const ApprovalCEO = () => {
             setOpenhalf(true)
         } else if (req_type === 3) {
             setOpennopunch(true)
-        } else if (req_type === 4) {
-            setOpencompen(true);
         }
+        // else if (req_type === 4) {
+        //     setOpencompen(true);
+        // }
     }
 
     const handleClose = () => {
         setOpenleave(false);
         setOpennopunch(false);
-        setOpencompen(false);
+        // setOpencompen(false);
         setOpenhalf(false);
     };
 
@@ -226,8 +226,7 @@ const ApprovalCEO = () => {
                 reqtype === 1 ? <LeavRqModel open={openleave} handleClose={handleClose} slno={slno} authority={3} em_id={em_id} count={count} setcount={setcount} />
                     : reqtype === 2 ? <HaldayRqModel open={openhalf} handleClose={handleClose} slno={slno} authority={3} em_id={em_id} count={count} setcount={setcount} />
                         : reqtype === 3 ? <NopunchRqModel open={opennopunch} handleClose={handleClose} slno={slno} authority={3} em_id={em_id} count={count} setcount={setcount} />
-                            : reqtype === 4 ? <CompOffRqModel open={opencompen} handleClose={handleClose} slno={slno} authority={3} em_id={em_id} count={count} setcount={setcount} />
-                                : null
+                            : null
             }
             <PageLayoutCloseOnly
                 heading="Leave Approval CEO"

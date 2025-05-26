@@ -73,7 +73,7 @@ const DeptStaffExamReport = () => {
         setMasterGroupStatus(groupStatus)
         dispatch(setCommonSetting());
         dispatch(setShiftDetails())
-    }, [groupStatus])
+    }, [groupStatus, dispatch])
 
     //GET THE DEPARTMENT SECTION DETAILS BASED ON LOGED USER EM_ID
     useEffect(() => {
@@ -173,6 +173,7 @@ const DeptStaffExamReport = () => {
     }, []);
 
     const SearchingProcess = useCallback(async () => {
+        setDropOpen(true)
         if (requestUser?.deptID !== 0 && requestUser?.sectionID !== 0 && topic !== 0 && selectedMonth !== '') {
             const obj = {
                 deptID: requestUser?.deptID,
@@ -215,14 +216,17 @@ const DeptStaffExamReport = () => {
                             post_mark: val.post_mark
                         }));
                         SetEmployeeData(mappedData)
+                        setDropOpen(false)
                         if (employeeID !== 0) {
                             const filterWithEmNo = mappedData?.filter((val) => val.em_no === employeeID)
                             SetEmployeeData(filterWithEmNo);
+                            setDropOpen(false)
                         }
                     }
                     else {
                         SetEmployeeData([]);
                         warningNofity("No Record Found")
+                        setDropOpen(false)
                     }
                 }
                 else if (Pending_flag === true) {
@@ -259,25 +263,30 @@ const DeptStaffExamReport = () => {
                             post_mark: val.post_mark
                         }));
                         SetEmployeeData(FailledmappedData)
+                        setDropOpen(false)
                         if (employeeID !== 0) {
                             const filterWithEmNo = FailledmappedData?.filter((val) => val.em_no === employeeID)
                             SetEmployeeData(filterWithEmNo);
+                            setDropOpen(false)
                         }
                     }
                     else {
                         SetEmployeeData([]);
                         warningNofity("No Record Found")
+                        setDropOpen(false)
                     }
                 }
 
             } catch (error) {
                 console.error('Error fetching data:', error);
                 SetEmployeeData([]); // Clear data on error
+                setDropOpen(false)
             }
 
         }
         else {
             warningNofity("Enter Basic Informations For Search");
+            setDropOpen(false)
         }
     }, [employeeID, topic, requestUser, selectedMonth, Pending_flag]);
 

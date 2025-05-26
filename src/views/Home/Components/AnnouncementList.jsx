@@ -75,7 +75,7 @@ const AnnouncementList = () => {
                                             </Suspense>
                                         </ListItemDecorator>
                                         <ListItemContent>
-                                            <Typography sx={{ textTransform: 'capitalize' }}>
+                                            <Typography sx={{ textTransform: 'capitalize', mt: 1, ml: 0.5, }}>
                                                 {val.showStatus === 1 ? `${empName} (${sectname})` : Announcementheading}
                                             </Typography>
                                             <Typography level="body2"
@@ -84,10 +84,10 @@ const AnnouncementList = () => {
                                                     mt: 1,
                                                     color: 'white',
                                                     display: 'inline-block',
-                                                    whiteSpace: 'nowrap',
+                                                    // whiteSpace: 'nowrap',
                                                     overflow: 'none',
                                                     width: '100%', // Set this to the desired width
-                                                    animation: 'marquee 10s linear infinite',
+                                                    animation: 'marquee 20s linear infinite',
                                                 }} >
                                                 {val.showStatus === 1 ? msg : val.Announcement}
                                                 <style>

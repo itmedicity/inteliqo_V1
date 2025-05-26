@@ -1,5 +1,5 @@
 
-import { Box, Button, Checkbox, IconButton, Input, Option, Select, Table, Textarea, Tooltip, Typography } from '@mui/joy';
+import { Box, Button, Checkbox, IconButton, Input, Table, Textarea, Tooltip, Typography } from '@mui/joy';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import React, { lazy, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { addDays, format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { addDays, eachDayOfInterval, format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import { Paper } from '@mui/material';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
@@ -22,8 +22,7 @@ const OnDutyRequest = () => {
     const [toDate, setToDate] = useState(new Date())
     const [dates, setDates] = useState([])
     const [remark, setRemark] = useState('')
-    const [deptShift, setDeptShift] = useState([])
-    const [selectedShift, setSelectedShift] = useState(0)
+    // const [selectedShift, setSelectedShift] = useState(0)
     const [tableData, setTableData] = useState([])
     const [count, setCount] = useState(0)
     const [deleteOpen, setDeleteOpen] = useState(false)
@@ -104,60 +103,57 @@ const OnDutyRequest = () => {
 
     }, [em_id, count])
 
-    useEffect(() => {
-        const getdepartmentShift = async () => {
-            if (em_department !== 0 && em_dept_section !== 0) {
-                const postData = {
-                    dept_id: em_department,
-                    sect_id: em_dept_section
-                }
-                const result = await axioslogin.post('/departmentshift/shift', postData)
-                const { success, data, message } = await result.data;
-                if (success === 1) {
-                    const { shft_code } = data[0];
-                    const obj = JSON.parse(shft_code)
-                    setDeptShift(obj);
-                } else if (success === 0) {
-                    warningNofity(message);
-                } else {
-                    errorNofity(message)
-                }
-            }
-        }
-        getdepartmentShift();
-    }, [em_department, em_dept_section])
-
     const Displaydata = useCallback(async () => {
-        if (selectedShift === 0) {
-            warningNofity("Plaese select any shift")
-        } else {
-            var dateArray = [];
-            var currentDate = fromDate;
-            var stopDate = toDate;
-            while (currentDate <= stopDate) {
-                dateArray.push(format(new Date(currentDate), 'yyyy-MM-dd'),)
-                currentDate = addDays(new Date(currentDate), 1);
+
+        //dataes difference count for checking the the duyt plan is done or not
+        const dateDiffrence = eachDayOfInterval({
+            start: new Date(fromDate),
+            end: new Date(toDate)
+        })
+
+        //FOR LISTING THE SELECTED DATE IN THE SCREEN
+        const modifiedTable = dateDiffrence?.map((e) => {
+            return {
+                date: e,
             }
-            const arr = dateArray.map((val) => {
-                const obj = {
-                    "date": val,
-                    "inValue": false,
-                    "outValue": false
+        })
+
+        const postdata = {
+            empno: em_no,
+            fromdate: format(new Date(fromDate), 'yyyy-MM-dd'),
+            todate: format(new Date(toDate), 'yyyy-MM-dd')
+        }
+
+        const result = await axioslogin.post(`/ReligionReport/punchReportmaster`, postdata)
+        const { success, data: punchMasteData } = result.data
+
+        if (success === 1) {
+
+            const arr = punchMasteData?.map((val) => {
+                const a = modifiedTable?.find((e) => format(new Date(e.date), 'yyyy-MM-dd') === val.duty_day)
+                let shiftIn = `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_in), 'HH:mm')}`;
+                let shiftOut = val.shft_cross_day === 0 ? `${format(new Date(val.duty_day), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}` :
+                    `${format(addDays(new Date(val.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(val.shift_out), 'HH:mm')}`;
+                return {
+                    ...val,
+                    datenew: a?.date ?? null,
+                    selected: false,
+                    punch_in: shiftIn,
+                    punch_out: shiftOut,
                 }
-                return obj
             })
             setDates(arr)
         }
-    }, [fromDate, selectedShift, toDate])
+        else {
+            warningNofity('Error while getting Punch Master data, Contact IT')
+            return
+        }
+    }, [fromDate, toDate, em_no])
 
-    const getValue = async (e, val) => {
-        let arr = dates.map((item) => item.date === val.date ? { ...item, inValue: e } : item)
+    const getoutvalue = useCallback(async (e, val) => {
+        let arr = dates.map((item) => item.duty_day === val.duty_day ? { ...item, selected: e } : item)
         setDates(arr)
-    }
-    const getoutvalue = async (e, val) => {
-        let arr = dates.map((item) => item.date === val.date ? { ...item, outValue: e } : item)
-        setDates(arr)
-    }
+    }, [dates])
 
     const Submitrequest = useCallback(async () => {
 
@@ -170,10 +166,10 @@ const OnDutyRequest = () => {
                 dept_id: em_department,
                 dept_sect_id: em_dept_section,
                 request_date: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                on_duty_date: format(new Date(val.date), 'yyyy-MM-dd'),
-                shift_id: selectedShift,
-                in_time: val.inValue === true ? 1 : 0,
-                out_time: val.outValue === true ? 1 : 0,
+                on_duty_date: format(new Date(val.duty_day), 'yyyy-MM-dd'),
+                shift_id: val?.shift_id,
+                in_time: val?.selected === true ? 1 : 0,
+                out_time: val?.selected === true ? 1 : 0,
                 onduty_reason: remark,
                 attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
                 incharge_req_status: approveStatus.inc_apr,
@@ -223,7 +219,6 @@ const OnDutyRequest = () => {
                         setFromDate(new Date())
                         setToDate(new Date())
                         setRemark('')
-                        setSelectedShift(0)
                         setDates([])
                         setCount(Math.random())
                     } else if (success === 2) {
@@ -231,14 +226,12 @@ const OnDutyRequest = () => {
                         setFromDate(new Date())
                         setToDate(new Date())
                         setRemark('')
-                        setSelectedShift(0)
                         setDates([])
                     } else {
                         errorNofity(message)
                         setFromDate(new Date())
                         setToDate(new Date())
                         setRemark('')
-                        setSelectedShift(0)
                         setDates([])
                     }
                 }
@@ -247,7 +240,7 @@ const OnDutyRequest = () => {
             }
         }
 
-    }, [em_dept_section, fromDate, remark, em_id, em_no, em_department, selectedShift, dates,
+    }, [em_dept_section, fromDate, remark, em_id, em_no, em_department, dates,
         deptApprovalLevel, masterGroupStatus, loginEmid, loginIncharge, loginHod, toDate])
 
 
@@ -297,25 +290,6 @@ const OnDutyRequest = () => {
         <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', mt: 0.5, }}>
             <DeleteOnduty open={deleteOpen} setOpen={setDeleteOpen} empData={empdata} setCount={setCount} />
             <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', width: '100%', mt: 0.5 }}>
-                <Box sx={{ width: '30%', px: 0.5 }} >
-                    <Select
-                        defaultValue={selectedShift}
-                        onChange={(event, newValue) => {
-                            setSelectedShift(newValue);
-                        }}
-                        size='sm'
-                        sx={{ width: '100%' }}
-                        variant='outlined'
-                        color='primary'
-                    >
-                        <Option value={0} disabled >Select Shift ...</Option>
-                        {
-                            deptShift?.map((val, index) => {
-                                return <Option key={index} value={val.shiftcode}>{val.shiftDescription}</Option>
-                            })
-                        }
-                    </Select>
-                </Box>
                 <Box sx={{ alignItems: 'center', display: 'flex' }} >
                     <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >From Date</Typography>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -362,7 +336,7 @@ const OnDutyRequest = () => {
                         color="primary"
                         onClick={Displaydata}
                     >
-                        Select Date
+                        Search
                     </Button>
 
                 </Box>
@@ -381,11 +355,12 @@ const OnDutyRequest = () => {
                     >
                         <thead>
                             <tr>
-                                <th style={{ textAlign: 'center', }}> Date</th>
-                                <th style={{ textAlign: 'center', }}>IN </th>
-                                <th style={{ textAlign: 'center', }}>OUT</th>
-
-
+                                <th style={{ width: '20%', textAlign: 'center', }}>Selected Date</th>
+                                <th style={{ textAlign: 'center', }}>Shift Desc</th>
+                                <th style={{ textAlign: 'center', }}>Leave Desc</th>
+                                <th style={{ textAlign: 'center', }}>Duty Desc</th>
+                                <th style={{ textAlign: 'center', }}>Action</th>
+                                <th style={{ textAlign: 'center', }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -393,33 +368,75 @@ const OnDutyRequest = () => {
                                 dates?.map((val, idx) =>
                                     <tr key={idx} style={{ p: 0, m: 0 }} >
                                         <td style={{ textAlign: 'center', }}>
-                                            <Box  >
-
-                                                <Typography
-                                                    level="title-md"
-                                                    textColor="var(--joy-palette-success-plainColor)"
-                                                    fontFamily="monospace"
-                                                    sx={{ opacity: '80%' }}
-                                                >
-                                                    {val.date}
-                                                </Typography>
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-between', px: 3, py: 0 }} >
+                                                <Box>
+                                                    <Typography
+                                                        level="title-md"
+                                                        fontFamily="monospace"
+                                                        sx={{ opacity: '80%' }}
+                                                    >
+                                                        {format(val?.datenew, 'dd-MMMM')}
+                                                    </Typography>
+                                                </Box>
+                                                <Box>
+                                                    <Typography
+                                                        level="title-md"
+                                                        fontFamily="monospace"
+                                                        sx={{ opacity: '50%' }}
+                                                    >
+                                                        {format(val?.datenew, 'eee')}
+                                                    </Typography>
+                                                </Box>
                                             </Box>
                                         </td>
-                                        <td style={{ textAlign: 'center' }} >
-                                            <Box>
-                                                <Checkbox
-                                                    checked={val?.inValue || false}
-                                                    // disabled={val?.duty_desc !== 'A' ? true : val?.shift_id === default_shift ? true : false}
-                                                    onChange={(e) => {
-                                                        getValue(e.target.checked, val)
-                                                    }}
-                                                />
-                                            </Box>
+                                        <td
+                                            style={{
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            <Typography
+                                                level="title-md"
+                                                textColor="var(--joy-palette-success-plainColor)"
+                                                fontFamily="monospace"
+                                                sx={{ opacity: '50%' }}
+                                            >
+                                                {val?.shft_desc}
+                                            </Typography>
+                                        </td>
+                                        <td
+                                            style={{
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            <Typography
+                                                level="title-md"
+                                                textColor="var(--joy-palette-success-plainColor)"
+                                                fontFamily="monospace"
+                                                sx={{ opacity: '50%' }}
+                                            >
+                                                {val?.lvereq_desc}
+                                            </Typography>
+                                        </td>
+                                        <td
+                                            style={{
+                                                textAlign: 'center',
+                                            }}
+                                        >
+                                            <Typography
+                                                level="title-md"
+                                                textColor="var(--joy-palette-success-plainColor)"
+                                                fontFamily="monospace"
+                                                sx={{ opacity: '50%' }}
+                                            >
+                                                {val?.duty_desc}
+                                            </Typography>
                                         </td>
                                         <td style={{ textAlign: 'center', }}>
                                             <Box>
                                                 <Checkbox
-                                                    checked={val?.outValue || false}
+                                                    disabled={val?.leave_status === 1 ? true
+                                                        : val?.lvereq_desc === 'P' ? true : val?.lvereq_desc === 'WOFF' ? true : false}
+                                                    checked={val?.selected === false ? false : true}
                                                     onChange={(e) => {
                                                         getoutvalue(e.target.checked, val)
                                                     }}
@@ -432,7 +449,7 @@ const OnDutyRequest = () => {
                         </tbody>
                     </Table>
                 </Paper>
-            </Box>
+            </Box >
 
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                 <Box sx={{ pr: 1, flex: 1 }}>
@@ -480,7 +497,7 @@ const OnDutyRequest = () => {
                 />
             </Paper>
 
-        </Paper>
+        </Paper >
     )
 }
 

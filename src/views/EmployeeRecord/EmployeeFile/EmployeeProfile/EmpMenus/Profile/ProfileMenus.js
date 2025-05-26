@@ -31,7 +31,7 @@ const ProfileMenus = ({ slno, count, setCount, redirect }) => {
 
     const {
         em_no, addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, branch_name, dept_name, verification_status,
-        desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email, em_age_year,
+        desg_name, ecat_name, em_conf_end_date, em_contract_end_date, em_dob, em_doj, em_email,
         em_gender, em_mobile, em_name, em_phone, em_retirement_date, hrm_pin1, per_region, pres_region,
         sect_name, em_adhar_no, em_account_no, bank_name, em_maritalstatus, relg_name, group_name, em_ifsc, em_pan_no,
         em_esi_no, em_pf_no, em_uan_no, second_level_required, second_level_verification, verification_required, em_id,

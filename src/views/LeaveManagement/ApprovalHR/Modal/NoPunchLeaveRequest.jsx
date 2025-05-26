@@ -39,7 +39,11 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
         noff, // night off SHIFT ID,
-        halfday_time_count
+        halfday_time_count,
+        doff,//duty off 24, DA, respiratory 
+        monthly_late_time_count, //90 minutes
+        coff_min_working_hour,//credit off minimum working hour
+        holiday_min_working// holiday min hour exist or not
     } = commonSettings; //COMMON SETTING
 
     //FIND THE CROSS DAY
@@ -94,7 +98,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
 
                         return Promise.allSettled(
                             data?.map(async (row, index) => {
-                                // console.log(data)
+
                                 //const sortedShiftData = shiftData?.find((e) => e.shft_slno === shift_id)// SHIFT DATA
                                 //const sortedSalaryData = empSalary?.find((e) => e.em_no === data.em_no) //SALARY DATA
                                 const shiftMergedPunchMaster = {
@@ -113,7 +117,10 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                     naShift: notapplicable_shift,
                                     defaultShift: default_shift,
                                     noff: noff,
-                                    holidayStatus: crossDay?.holiday_status
+                                    holidayStatus: crossDay?.holiday_status,
+                                    doff: doff,
+                                    coff_min_working_hour: coff_min_working_hour,
+                                    holiday_min_working: holiday_min_working
                                 }
 
                                 //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
@@ -150,7 +157,10 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                         val.woff,
                                         salaryLimit,
                                         val.maximumLateInTime,
-                                        halfday_time_count
+                                        halfday_time_count,
+                                        doff,
+                                        coff_min_working_hour,
+                                        holiday_min_working
                                     )
                                     return {
                                         punch_slno: val.punch_slno,
@@ -197,7 +207,8 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
         }
     }, [reason, setCount, setOpen, slno, dept_section, nopunchdate, crossDay, cmmn_early_out,
         cmmn_grace_period, cmmn_late_in, crossDayStat, default_shift, emno, noff, notapplicable_shift,
-        salary_above, week_off_day, checkinflag, checkoutflag, loginem_id, halfday_time_count])
+        salary_above, week_off_day, checkinflag, checkoutflag, loginem_id, halfday_time_count,
+        coff_min_working_hour, doff, holiday_min_working])
 
     const NoPunchRejectdata = useMemo(() => {
         return {
@@ -205,9 +216,11 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
             np_hr_apprv_cmnt: reason,
             np_hr_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm'),
             np_hr_uscode: loginem_id,
-            nopunch_slno: slno
+            nopunch_slno: slno,
+            em_no: emno,
+            duty_day: nopunchdate
         }
-    }, [reason, slno, loginem_id])
+    }, [reason, slno, loginem_id, emno, nopunchdate])
 
     // HALF DAY LEAVE HR REJECT
     const handleRegectRequest = useCallback(async () => {

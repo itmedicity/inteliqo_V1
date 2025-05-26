@@ -33,7 +33,7 @@ export const ExporttoExcel = async (excelData, fileName) => {
 
 }
 
-export const exportToWOFFExcel = async (excelData, fileName) => {
+export const exportToWOFFExcel = async (excelData, fileName, sheetName) => {
     // const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
     // Helper function to convert string to ArrayBuffer
@@ -49,7 +49,7 @@ export const exportToWOFFExcel = async (excelData, fileName) => {
     const ws = XLSX.utils.aoa_to_sheet(excelData);
 
     // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(wb, ws, "Week Off Report");
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
 
     // Convert workbook to binary Excel file
     const wbout = XLSX.write(wb, { type: 'binary', bookType: "xlsx" });

@@ -61,7 +61,8 @@ const MisspunchModal = ({ open, setOpen, missData, setCount }) => {
                         lv_cancel_us_code: em_id,
                         nopunch_slno: missData?.nopunch_slno,
                         punch_slno: punch_slno,
-
+                        em_no: missData?.em_no,
+                        duty_day: missData?.nopunchdate
                     }
                     const resultdel = await axioslogin.post('/LeaveRequestApproval/cancel/misspunch', postData);
                     const { success } = await resultdel.data;

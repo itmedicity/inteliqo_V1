@@ -4,7 +4,7 @@ import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import BankSelection from './BankSelection'
 import MasterLayout from '../MasterComponents/MasterLayout'
 import { Box, Button, CssVarsProvider } from '@mui/joy'
@@ -50,7 +50,7 @@ const BankMaster = () => {
       ...bankData,
       bank_mastname: bankmast,
       bank_status: bank_status === true ? 1 : 0,
-      create_user: employeeNumber()
+      create_user: employeeIdNumber()
     }
   }, [bankData, bankmast, bank_status])
 
@@ -61,7 +61,7 @@ const BankMaster = () => {
       bank_ifsc,
       bank_address,
       bank_status: bank_status === true ? 1 : 0,
-      edit_user: employeeNumber(),
+      edit_user: employeeIdNumber(),
       bank_slno: slno
     }
   }, [bank_name, bankmast, bank_ifsc, bank_address, bank_status, slno])

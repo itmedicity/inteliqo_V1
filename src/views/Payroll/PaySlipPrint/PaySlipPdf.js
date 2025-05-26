@@ -8,8 +8,6 @@ export const pdfdownlod = (deduction, earnings, em_no, em_id, desg_name,
     attendance_marking_month, em_doj, em_name,
     em_esi_no, em_uan_no) => {
 
-    console.log(deduction);
-
     var doc = {
         background: function (currentPage, pageSize) {
             return {

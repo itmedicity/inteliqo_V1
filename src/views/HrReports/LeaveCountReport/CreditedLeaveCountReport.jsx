@@ -37,6 +37,7 @@ const CreditedLeaveCountReport = () => {
             const postData = {
                 fromDate1: format(startOfYear(new Date(toDate)), 'yyyy-MM-dd 00:00:00'),
                 toDate1: format(new Date(toDate), 'yyyy-MM-dd 23:59:59'),
+                currentyear: format(new Date(toDate), 'yyyy-MM-dd '),
             }
             const result = await axioslogin.post('/yearleaveprocess/getLeavecountbyDate', postData);
             const { success, data } = result.data
@@ -60,9 +61,9 @@ const CreditedLeaveCountReport = () => {
                         <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >Select Month</Typography>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
-                                views={['month']}
+                                views={['year', 'month']}
                                 inputFormat="dd-MM-yyyy"
-                                maxDate={endOfMonth(new Date(toDate))}
+                                //maxDate={endOfMonth(new Date(toDate))}
                                 value={endOfMonth(new Date(toDate))}
                                 size="small"
                                 onChange={(newValue) => setToDate(newValue)}

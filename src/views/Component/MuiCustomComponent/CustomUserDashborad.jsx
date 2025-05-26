@@ -12,7 +12,6 @@ const CustomUserDashborad = ({ children, title, displayClose }) => {
     const history = useHistory();
 
     const toRedirectToHome = () => {
-        console.log("click");
         history.push(`/Home/EmpDashboardPage`)
     }
 

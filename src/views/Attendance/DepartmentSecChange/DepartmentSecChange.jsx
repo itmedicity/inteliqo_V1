@@ -15,9 +15,11 @@ import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyDesignationSelect from 'src/views/MuiComponents/JoyComponent/JoyDesignationSelect'
 import { setPersonalData } from 'src/redux/actions/Profile.action'
 import _ from 'underscore'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput'
 import moment from 'moment'
+import DepartmentSelect from 'src/views/MuiComponents/JoyComponent/DepartmentSelect'
+import DepartmentSectionSelect from 'src/views/MuiComponents/JoyComponent/DepartmentSectionSelect'
 
 const DepartmentSecChange = () => {
 
@@ -29,6 +31,7 @@ const DepartmentSecChange = () => {
 
     const [newDept, setNewDept] = useState(0)
     const [newDeptSect, setNewDeptSect] = useState(0)
+
     const [weekoff, setweekoff] = useState(false)
     const [designation, setDesignation] = useState(0)
     const [deptChangeDate, setDeptChangeDate] = useState('')
@@ -58,8 +61,8 @@ const DepartmentSecChange = () => {
             em_designation: designation !== 0 ? designation : em_designation,
             saturday_weekoff: weekoff === true ? 1 : 0,
             em_id: emply.em_id,
-            create_user: employeeNumber(),
-            edit_user: employeeNumber(),
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
             em_no: em_no,
             com_designation: em_designation,
             com_designation_new: designation !== 0 ? designation : em_designation,
@@ -87,6 +90,8 @@ const DepartmentSecChange = () => {
                 const { message, success } = result.data;
                 if (success === 2) {
                     succesNofity(message);
+                    getEmployee(0)
+                    dispatch(setDepartment());
                 } else if (success === 0) {
                     infoNofity(message.sqlMessage);
                 }
@@ -126,10 +131,12 @@ const DepartmentSecChange = () => {
                         </CssVarsProvider>
                     </Box>
                     <Box sx={{ flex: 1, px: 0.5 }}>
-                        <DepartmentDropRedx getDept={setNewDept} />
+                        <DepartmentSelect value={newDept} setValue={setNewDept} />
+                        {/* <DepartmentDropRedx getDept={setNewDept} /> */}
                     </Box>
                     <Box sx={{ flex: 1, px: 0.5 }}>
-                        <DepartmentSectionRedx getSection={setNewDeptSect} />
+                        <DepartmentSectionSelect value={newDeptSect} setValue={setNewDeptSect} dept={newDept} />
+                        {/* <DepartmentSectionRedx getSection={setNewDeptSect} /> */}
                     </Box>
                     <Box sx={{ flex: 1, px: 0.5 }}>
 

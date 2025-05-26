@@ -6,7 +6,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import MasterLayout from '../MasterComponents/MasterLayout'
@@ -66,7 +66,7 @@ const DepartmentSectionMast = () => {
             authorization_incharge: inchargestatus,
             authorization_hod: hodstatus,
             sect_status: sectionStatus,
-            create_user: employeeNumber(),
+            create_user: employeeIdNumber(),
             dept_sub_sect: general === true ? 1 : ot === true ? 2 : icu === true ? 3 : er === true ? 4 : 0
         }
     }, [deptSectionName, dept, inchargestatus, hodstatus, sectionStatus, general, icu, ot, er])
@@ -79,7 +79,7 @@ const DepartmentSectionMast = () => {
             authorization_hod: hodstatus,
             sect_status: sectionStatus,
             dept_id: dept,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             sect_id: slno,
             dept_sub_sect: general === true ? 1 : ot === true ? 2 : icu === true ? 3 : er === true ? 4 : 0
         }
@@ -124,7 +124,7 @@ const DepartmentSectionMast = () => {
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'sect_id', width: 100 },
         { headerName: 'Section Name', field: 'sect_name', filter: true, width: 250 },
-        { headerName: 'Department Name', field: 'dept_name', filter: true, width: 200 },
+        { headerName: 'Department Name', field: 'dept_name', filter: true, width: 250 },
         { headerName: 'Sub Section', field: 'sub_sect_name', filter: true, width: 150 },
         { headerName: 'Incharge Authorization', field: 'incharge', filter: true, width: 150 },
         { headerName: 'HOD Authorization', field: 'hod', filter: true, width: 150 },

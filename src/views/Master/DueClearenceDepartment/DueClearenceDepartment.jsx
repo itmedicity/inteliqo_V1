@@ -1,4 +1,4 @@
-import { Box, Button, CssVarsProvider } from '@mui/joy';
+import { Box, Button, CssVarsProvider, Tooltip } from '@mui/joy';
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React, { memo, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import { setDepartment } from 'src/redux/actions/Department.action';
 import { useDispatch } from 'react-redux';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 
 const DueClearenceDepartment = () => {
 
@@ -62,7 +62,7 @@ const DueClearenceDepartment = () => {
             dept_id: dept,
             sect_id: deptSect,
             due_dept_code: arraydata,
-            updated_user: employeeNumber()
+            updated_user: employeeIdNumber()
         }
     }, [dept, deptSect, arraydata])
 
@@ -71,7 +71,7 @@ const DueClearenceDepartment = () => {
             dept_id: dept,
             sect_id: deptSect,
             due_dept_code: arraydata,
-            updated_user: employeeNumber(),
+            updated_user: employeeIdNumber(),
             due_dept_slno: slno
         }
     }, [dept, deptSect, arraydata, slno])
@@ -169,26 +169,30 @@ const DueClearenceDepartment = () => {
                                 <DeptSecSelectAuth sectValue={duedept} getDeptSection={setDueDept} setDeptname={setDeptname} />
                             </Box>
                             <CssVarsProvider>
-                                <Button aria-label="Like" variant="outlined" color="primary"
-                                    onClick={getDepartmentdata} sx={{
-                                        color: '#90caf9'
-                                    }} >
-                                    <AddCircleOutlineIcon />
-                                </Button>
+                                <Tooltip title="Add" followCursor placement='top' arrow >
+                                    <Button aria-label="Like" variant="outlined" color="primary"
+                                        onClick={getDepartmentdata} sx={{
+                                            color: '#90caf9'
+                                        }} >
+                                        <AddCircleOutlineIcon />
+                                    </Button>
+                                </Tooltip>
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ px: 0.5, mt: 0.9 }}>
-                            <CssVarsProvider>
-                                <Button
-                                    variant="outlined"
-                                    component="label"
-                                    size="md"
-                                    color="primary"
-                                    onClick={submitFormData}
-                                >
-                                    <SaveIcon />
-                                </Button>
-                            </CssVarsProvider>
+                            <Tooltip title="Save" followCursor placement='top' arrow >
+                                <CssVarsProvider>
+                                    <Button
+                                        variant="outlined"
+                                        component="label"
+                                        size="md"
+                                        color="primary"
+                                        onClick={submitFormData}
+                                    >
+                                        <SaveIcon />
+                                    </Button>
+                                </CssVarsProvider>
+                            </Tooltip>
                         </Box>
                         <Box sx={{ flex: 1, mt: 0.5 }}></Box>
                         <Box sx={{ flex: 1, mt: 0.5 }}></Box>

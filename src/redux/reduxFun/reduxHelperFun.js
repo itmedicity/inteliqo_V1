@@ -1,4 +1,4 @@
-import { endOfYear, format, getMonth, subMonths } from "date-fns";
+import { addYears, differenceInDays, endOfYear, format, getMonth, subMonths } from "date-fns";
 import moment from "moment";
 import { getDepartmentSectionBasedHod } from "src/views/LeaveManagement/LeavereRequsition/Func/LeaveFunction";
 
@@ -39,7 +39,7 @@ export const findBalanceCommonLeveCount = (state) => {
 
 
 //GET AND FILTER ALL LEAVE AND CONVERT TO AN ARRAY
-export const allLeavesConvertAnArray = (state) => {
+export const allLeavesConvertAnArray = (state, actual_doj) => {
     let creditedLeavesArray = {
         status: false,
         data: []
@@ -50,45 +50,70 @@ export const allLeavesConvertAnArray = (state) => {
     const compansatoryOff = state?.getEmpCoffData?.coffData;
     const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
 
+    const result = differenceInDays(new Date(), new Date(actual_doj))
 
 
     // Push casual leaves to the array if available
     if (casualLeaves?.length > 0) {
         const newCasualLeavesAttay = casualLeaves?.map((e) => {
             let leveCount = e.cl_lv_taken === 0 ? 1 : e.cl_lv_taken;
+            const leaveYear = format(new Date(e.cl_lv_year), 'yyyy');
             return {
                 type: 'CL',
                 name: 'Casual Leave',
                 leavetype: 1,
                 slno: e.hrm_cl_slno,
-                month: e.cl_lv_mnth + '-' + leveCount,
+                month: e.cl_lv_mnth + '-' + leveCount + '-' + leaveYear,
                 count: leveCount,
                 lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
                 common_slno: 0,
                 cmn: 0,
                 leaveMonth: e.cl_lv_year
             }
+            // })?.filter((e) => e.lveRequest === 0)
         })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
-        creditedLeavesArray.data.push(...newCasualLeavesAttay)
+
+        // Sort the array by year in ascending order
+        const sortedLeavesByYear = newCasualLeavesAttay.sort((a, b) => {
+            // Extract year from the month string
+            const yearA = parseInt(a.month.split('-')[2]);
+            const yearB = parseInt(b.month.split('-')[2]);
+
+            // Compare the years
+            return yearA - yearB;
+        });
+
+        creditedLeavesArray.data.push(...sortedLeavesByYear)
     }
 
     // Push earned leaves to the array if available
     if (earnLeaves?.length > 0) {
         const newErnLeaves = earnLeaves?.map((e) => {
             let leveCount = e.ernlv_taken === 0 ? 1 : e.ernlv_taken;
+            const leaveYear = format(new Date(addYears(new Date(e.ernlv_year), 1)), 'yyyy');
             return {
                 type: 'EL',
                 name: 'Earn Leave',
                 leavetype: 8,
                 slno: e.hrm_ernlv_slno,
-                month: e.ernlv_mnth + '-' + leveCount,
+                month: e.ernlv_mnth + '-' + leveCount + '-' + leaveYear,
                 count: leveCount,
                 lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
                 common_slno: 0,
                 cmn: 0
             }
-        })?.filter((e) => e.lveRequest === 0) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
-        creditedLeavesArray.data.push(...newErnLeaves)
+        })?.filter((e) => e.lveRequest === 0 && result > 365) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+
+        // Sort the array by year in ascending order
+        const sortedLeavesByYear = newErnLeaves.sort((a, b) => {
+            // Extract year from the month string
+            const yearA = parseInt(a.month.split('-')[2]);
+            const yearB = parseInt(b.month.split('-')[2]);
+
+            // Compare the years
+            return yearA - yearB;
+        });
+        creditedLeavesArray.data.push(...sortedLeavesByYear)
     }
 
     // Push compensatory off leaves to the array if available
@@ -224,6 +249,7 @@ export const getCaualLeaveDetl = (state) => {
             status: e.hl_lv_tkn_status,
             leaveMonth: e.cl_lv_year
         }
+        //})?.filter(e => e.status === 0)
     })?.filter(e => e.status === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date()))
 }
 
@@ -250,8 +276,6 @@ export const getLeaveReqApprovalLevel = (state) => {
 //GET AUTHORIZATION 
 
 export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno) => {
-
-    //console.log(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno);
 
     const deptLevelApprove = (deptApprovalLevel === 3) ? // 3 -> hod and incharge
         {
@@ -304,8 +328,6 @@ export const getInchargeHodAuthorization = async (masterGroupStatus, deptApprova
                     hod_apr_time: null,
                     usCode_hod: null
                 }
-
-    //console.log(deptLevelApprove);
 
     return (masterGroupStatus === true) ?
         {
@@ -794,8 +816,6 @@ export const getEmployeeLeaveRs = (state, hod, incharge, masterGroupStatus, em_i
     const sectionWiseLeaveRequest = state?.getSectLeaveRequests?.sectLeaves
     const sectionWisehalfdayRequest = state?.getSectHalfdayRequests?.sectHalfday
     const sectionWiseMisspunchRequest = state?.getSectMisspunchRequests?.sectMisspunch
-
-    // console.log(sectionWiseMisspunchRequest);
 
     if ((hod === 1 || incharge === 1) && masterGroupStatus === true) {
         const newList = sectionWiseLeaveRequest?.map((val) => {

@@ -10,6 +10,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar'
+import { format } from 'date-fns'
 
 const CasualLeaveCard = ({ title, id, processStat }) => {
   const [clData, setclData] = useState([])
@@ -62,7 +63,7 @@ const CasualLeaveCard = ({ title, id, processStat }) => {
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {row.cl_lv_mnth}
+                      {row.cl_lv_mnth + ` - ` + format(new Date(row.cl_lv_year), 'yyyy')}
                     </TableCell>
                     <TableCell align="right">{row.cl_lv_credit}</TableCell>
                     <TableCell align="right">{row.cl_lv_taken}</TableCell>

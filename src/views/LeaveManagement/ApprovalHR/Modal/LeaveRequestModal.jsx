@@ -41,21 +41,6 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount, previousLeave }) => 
         if (lve_uniq_no !== null && lve_uniq_no !== undefined) {
             getLeaveReqDetl(lve_uniq_no)
         }
-
-        // const getleaveMonthData = async () => {
-        //     const postdata = {
-        //         emp_id: [em_id],
-        //         // emp_id: [168],
-        //         from: format(startOfMonth(new Date(data?.fromDate)), 'yyyy-MM-dd'),
-        //         to: format(endOfMonth(new Date(data?.fromDate)), 'yyyy-MM-dd'),
-        //     }
-        //     const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-        //     const { success, data: punchmast } = result.data
-        //     console.log(punchmast);
-        // }
-
-
-        // getleaveMonthData()
     }, [lve_uniq_no, data, em_id])
 
     //UPDATE LEAVE FUNCTION 
@@ -384,7 +369,7 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount, previousLeave }) => 
         //UPDATE COMMON LEAVE TABLE
         const commonLeavePromise = new Promise(async (resolve, reject) => {
             if (commonLeaves?.length > 0) {
-                const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCasualyLeave`, commonLeaves);
+                const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCommonLeave`, commonLeaves);
                 const { success, message } = resultcl.data;
                 if (success === 1) {
                     resolve('Common Leave Request Updated')
@@ -574,7 +559,11 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount, previousLeave }) => 
                                 </Typography>
                             </Box>
                         </Box>
-                        <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8, width: '100%' }} >
+                        <Paper variant="outlined" square sx={{
+                            p: 0.5, mb: 0.8, width: '100%',
+                            height: 200,
+                            overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+                        }} >
                             {
                                 reqDetl?.map((val, idx) => {
                                     return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >

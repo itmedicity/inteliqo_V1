@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="left" ref={ref} {...props} />;
@@ -35,7 +35,7 @@ const ArearModal = ({ open, setOpen, data }) => {
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
-            console.log(data);
+
             const { sect_name, em_name, em_no, em_id, dept_name, em_department, em_dept_section } = data;
             const details = {
                 emno: em_no,
@@ -54,14 +54,12 @@ const ArearModal = ({ open, setOpen, data }) => {
     }, [data])
 
     const submitAllowance = useCallback(async () => {
-        console.log(moment(arearMonth).format('YYYY-MM-DD'));
-        console.log(moment(startOfMonth(startOfMonth(new Date(arearMonth)))).format('YYYY-MM-DD'));
         const postData = {
             em_id: emid,
             em_no: emno,
             arrear_amount: amount,
             arrear_month: moment(startOfMonth(startOfMonth(new Date(arearMonth)))).format('YYYY-MM-DD'),
-            create_user: employeeNumber(),
+            create_user: employeeIdNumber(),
             arear_remark: remark,
             department: dept_id,
             department_sect: sect_id

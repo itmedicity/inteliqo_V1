@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify'
 import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import MasterLayout from '../MasterComponents/MasterLayout'
@@ -40,7 +40,7 @@ const LeaveRequestTypeMast = () => {
             lrequest_type,
             lrequest_short,
             lrequest_status: lrequest_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [lrequest_type, lrequest_short, lrequest_status])
 
@@ -58,7 +58,7 @@ const LeaveRequestTypeMast = () => {
             lrequest_short,
             lrequest_status: lrequest_status === true ? 1 : 0,
             lrequest_slno: slno,
-            edit_user: employeeNumber()
+            edit_user: employeeIdNumber()
         }
     }, [lrequest_type, lrequest_short, lrequest_status, slno])
 

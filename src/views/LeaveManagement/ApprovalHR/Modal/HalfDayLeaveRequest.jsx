@@ -21,6 +21,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
 
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
+
     //DISPLAY THE DATA 
     const { slno, emno, name, section, dept_section, leavedate, shift_id, shft_desc,
         planslno, month, halfday_status, halfday_date, requestDate, hf_reason,
@@ -39,7 +40,10 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
         notapplicable_shift, //not applicable SHIFT ID
         default_shift, //default SHIFT ID
         noff, // night off SHIFT ID
-        halfday_time_count
+        halfday_time_count,
+        doff,//duty off 24, DA, respiratory 
+        coff_min_working_hour,//credit off minimum working hour
+        holiday_min_working// holiday min hour exist or not
     } = commonSettings; //COMMON SETTING
 
     //FIND THE CROSS DAY
@@ -111,7 +115,10 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                         naShift: notapplicable_shift,
                                         defaultShift: default_shift,
                                         noff: noff,
-                                        holidayStatus: crossDay?.holiday_status
+                                        holidayStatus: crossDay?.holiday_status,
+                                        doff: doff,
+                                        coff_min_working_hour: coff_min_working_hour,
+                                        holiday_min_working: holiday_min_working
                                     }
 
                                     //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
@@ -149,7 +156,10 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                             val.woff,
                                             salaryLimit,
                                             val.maximumLateInTime,
-                                            halfday_time_count
+                                            halfday_time_count,
+                                            doff,
+                                            coff_min_working_hour,
+                                            holiday_min_working
                                         )
 
                                         return {
@@ -198,8 +208,8 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
             }
         }
     }, [setCount, setOpen, reason, slno, leavedate, emno, dept_section, crossDay, cmmn_early_out, cmmn_grace_period,
-        cmmn_late_in, crossDayStat, default_shift, noff, notapplicable_shift, salary_above,
-        week_off_day, halfday_status, planslno, loginem_id, halfday_time_count])
+        cmmn_late_in, crossDayStat, default_shift, noff, notapplicable_shift, salary_above, doff, holiday_min_working,
+        week_off_day, halfday_status, planslno, loginem_id, halfday_time_count, coff_min_working_hour])
 
     const LeaveRejectdata = useMemo(() => {
         return {
@@ -208,9 +218,11 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
             hf_hr_apprv_date: moment().format('YYYY-MM-DD HH:mm'),
             hf_hr_uscode: loginem_id,
             half_slno: slno,
-            hrm_cl_slno: planslno
+            hrm_cl_slno: planslno,
+            em_no: emno,
+            duty_day: leavedate
         }
-    }, [reason, planslno, slno, loginem_id])
+    }, [reason, planslno, slno, loginem_id, emno, leavedate])
     // HALF DAY LEAVE HR REJECT
     const handleRegectRequest = useCallback(async () => {
         const result = await axioslogin.patch(`/LeaveRequestApproval/HalfDayReqRejectHr`, LeaveRejectdata);

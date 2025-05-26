@@ -207,7 +207,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
         //UPDATE COMMON LEAVE TABLE
         const commonLeavePromise = new Promise(async (resolve, reject) => {
             if (commonLeaves?.length > 0) {
-                const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCasualyLeave`, commonLeaves);
+                const resultcl = await axioslogin.post(`/LeaveRequestApproval/CancelCommonLeave`, commonLeaves);
                 const { success, message } = resultcl.data;
                 if (success === 1) {
                     resolve('Casual Leave Request Updated')
@@ -236,10 +236,19 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                         const result = await axioslogin.patch('/LeaveRequestApproval/inchargeapprv', LeaveRejectdata)
                         const { success } = result.data;
                         if (success === 1) {
-                            setOpenBkDrop(false)
-                            setcount(Math.random())
-                            succesNofity('Leave Request Approved')
-                            setOpen(false)
+                            const result = await axioslogin.post('/LeaveRequestApproval/cancel/lvReqDetail', LeaveRejectdata)
+                            const { success } = result.data;
+                            if (success === 1) {
+                                setOpenBkDrop(false)
+                                setcount(Math.random())
+                                succesNofity('Leave Request Approved')
+                                setOpen(false)
+                            } else {
+                                setOpenBkDrop(false)
+                                setOpen(false)
+                                setcount(Math.random())
+                                errorNofity('Error Updating Leave Request')
+                            }
                         } else {
                             setOpenBkDrop(false)
                             setOpen(false)
@@ -282,12 +291,21 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                                 coffLeavePromise,
                                 commonLeavePromise
 
-                            ]).then(result => {
+                            ]).then(async (result) => {
                                 if (result) {
-                                    setOpenBkDrop(false)
-                                    setcount(Math.random())
-                                    succesNofity('Leave Request Approved')
-                                    setOpen(false)
+                                    const result = await axioslogin.post('/LeaveRequestApproval/cancel/lvReqDetail', LeaveRejectdata)
+                                    const { success } = result.data;
+                                    if (success === 1) {
+                                        setOpenBkDrop(false)
+                                        setcount(Math.random())
+                                        succesNofity('Leave Request Approved')
+                                        setOpen(false)
+                                    } else {
+                                        setOpenBkDrop(false)
+                                        setOpen(false)
+                                        setcount(Math.random())
+                                        errorNofity('Error Updating Leave Request')
+                                    }
                                 }
                             }).catch(error => {
                                 setcount(Math.random())
@@ -320,12 +338,21 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                             coffLeavePromise,
                             commonLeavePromise
 
-                        ]).then(result => {
+                        ]).then(async (result) => {
                             if (result) {
-                                setOpenBkDrop(false)
-                                setcount(Math.random())
-                                succesNofity('Leave Request Approved')
-                                setOpen(false)
+                                const result = await axioslogin.post('/LeaveRequestApproval/cancel/lvReqDetail', LeaveRejectdata)
+                                const { success } = result.data;
+                                if (success === 1) {
+                                    setOpenBkDrop(false)
+                                    setcount(Math.random())
+                                    succesNofity('Leave Request Approved')
+                                    setOpen(false)
+                                } else {
+                                    setOpenBkDrop(false)
+                                    setOpen(false)
+                                    setcount(Math.random())
+                                    errorNofity('Error Updating Leave Request')
+                                }
                             }
                         }).catch(error => {
                             setcount(Math.random())
@@ -363,7 +390,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                 sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
 
             >
-                <ModalDialog size="lg"  >
+                <ModalDialog size="lg" sx={{}}  >
                     <ModalClose
                         variant="outlined"
                         sx={{
@@ -372,6 +399,7 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                             boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
                             borderRadius: '50%',
                             bgcolor: 'background.body',
+
                         }}
                     />
                     <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
@@ -475,7 +503,10 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
                                 </Typography>
                             </Box>
                         </Box>
-                        <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8, width: '100%' }} >
+                        <Paper variant="outlined" square sx={{
+                            p: 0.5, mb: 0.8, width: '100%', height: 200,
+                            overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
+                        }} >
                             {
                                 details?.map((val, idx) => {
                                     return <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }} key={idx} >

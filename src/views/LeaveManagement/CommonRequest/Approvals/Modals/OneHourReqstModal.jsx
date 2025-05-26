@@ -7,7 +7,8 @@ import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined
 import moment from 'moment';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
+import { addDays, addHours, format, lastDayOfMonth, startOfMonth, subHours } from 'date-fns';
+import { getAttendanceCalculation, getLateInTimeIntervel, punchInOutChecking } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc';
 import { useSelector } from 'react-redux';
 
 const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
@@ -34,21 +35,47 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
             checkInFlag: 0,
             checkOutFlag: 0,
             increq: 0,
-            incaprv: 0
+            incaprv: 0,
+            shift_id: 0
         }
     )
-    const { slno, emno, name, section, reqDate, dutyDate, reason, shft_desc, checkIn, checkOut,
+    const { slno, emno, name, section, reqDate, dutyDate, reason, shft_desc,
         inchargeComment, hodComment, checkInFlag, checkOutFlag, dept_sect_id,
-        one_hour_day
+        one_hour_day, shift_id
     } = details;
 
     const loginem_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0)
+    const shiftData = useSelector((state) => state?.getShiftList?.shiftDetails)
+    const commonSettings = useSelector((state) => state?.getCommonSettings)
+
+    const {
+        cmmn_early_out, // Early going time interval
+        cmmn_grace_period, // common grace period for late in time
+        cmmn_late_in, //Maximum Late in Time for punch in after that direct HALF DAY 
+        salary_above, //Salary limit for calculating the holiday double wages
+        week_off_day, // week off SHIFT ID
+        notapplicable_shift, //not applicable SHIFT ID
+        default_shift, //default SHIFT ID
+        noff, // night off SHIFT ID
+        halfday_time_count,
+        comp_hour_count,
+        doff,//duty off 24, DA, respiratory 
+        monthly_late_time_count, //90 minutes
+        coff_min_working_hour,//credit off minimum working hour
+        holiday_min_working// holiday min hour exist or not
+    } = commonSettings; //COMMON SETTING
+
+    //FIND THE CROSS DAY
+    const crossDay = shiftData?.find(shft => shft.shft_slno === shift_id);
+    //const { shft_chkin_time, shft_chkout_time } = crossDay;
+    const crossDayStat = crossDay?.shft_cross_day ?? 0;
+
 
     useEffect(() => {
         if (Object.keys(data).length !== 0) {
             const { slno, emno, name, section, status, requestDate, one_hour_duty_day, shft_desc,
                 check_in, check_out, incharge_approval_comment, hod_approval_comment, reason,
-                emid, checkin_flag, checkout_flag, increq, incaprv, one_hour_day } = data;
+                emid, checkin_flag, checkout_flag, increq, incaprv, one_hour_day, shift_id } = data;
             const details = {
                 slno: slno,
                 emno: emno,
@@ -68,7 +95,8 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                 checkOutFlag: checkout_flag,
                 increq: increq,
                 incaprv: incaprv,
-                one_hour_day: one_hour_day
+                one_hour_day: one_hour_day,
+                shift_id: shift_id
             }
             setDetails(details)
         } else {
@@ -82,27 +110,11 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
             hr_approval_comment: remark,
             hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
             hr_empId: loginem_id,
-            request_slno: slno
+            request_slno: slno,
+            em_no: emno,
+            duty_day: dutyDate
         }
-    }, [remark, slno, loginem_id])
-
-    const hrApprove = useMemo(() => {
-        return {
-            checkintime: checkIn,
-            checkouttime: checkOut,
-            checkinflag: checkInFlag,
-            checkoutflag: checkOutFlag,
-            emno: emno,
-            dutyDay: moment(dutyDate).format('YYYY-MM-DD HH:mm'),
-            hr_approval_status: 1,
-            hr_approval_comment: remark,
-            hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            hr_empId: loginem_id,
-            request_slno: slno
-        }
-    }, [remark, slno, checkIn, checkOut, checkInFlag, checkOutFlag,
-        dutyDate, emno, loginem_id])
-
+    }, [remark, slno, loginem_id, emno, dutyDate])
 
     const handleRejectRequest = useCallback(async () => {
         if (remark === "") {
@@ -143,25 +155,149 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                     setOpenBkDrop(false)
                     setOpen(false)
                 } else {
-                    const result = await axioslogin.patch('/CommonReqst/hr/comment', hrApprove)
-                    const { success } = result.data;
-                    if (success === 1) {
-                        setOpenBkDrop(false)
-                        setOpen(false)
-                        setCount(Math.random())
-                        succesNofity("HR Approved Successfully!")
+
+                    const postData = {
+                        preFromDate: format(subHours(new Date(dutyDate), comp_hour_count), 'yyyy-MM-dd 00:00:00'),
+                        preToDate: crossDayStat === 0 ? format(addHours(new Date(dutyDate), comp_hour_count), 'yyyy-MM-dd 23:59:59') : format(addHours(new Date(addDays(new Date(dutyDate), 1)), comp_hour_count), 'yyyy-MM-dd 23:59:59'),
+                        empList: [emno],
+                    }
+
+                    const punchmastData = {
+                        empno: emno,
+                        dutyday: format(new Date(dutyDate), 'yyyy-MM-dd')
+                    }
+                    const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData);
+                    const { su, result_data } = punch_data.data;
+                    if (su === 1) {
+                        const punchaData = result_data;
+                        const punch_master_data = await axioslogin.post("/attendCal/attendanceshiftdetl/", punchmastData); //GET PUNCH MASTER DATA
+                        const { success, data } = punch_master_data.data;
+                        if (success === 1) {
+                            let shiftIn = `${format(new Date(dutyDate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkInTime), 'HH:mm:ss')}`;
+                            let shiftOut = crossDayStat === 0 ? `${format(new Date(dutyDate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}` :
+                                `${format(addDays(new Date(dutyDate), 1), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}`;
+
+                            return Promise.allSettled(
+                                data?.map(async (row, index) => {
+                                    const shiftMergedPunchMaster = {
+                                        ...row,
+                                        shft_chkin_start: crossDay?.shft_chkin_start,
+                                        shft_chkin_end: crossDay?.shft_chkin_end,
+                                        shft_chkout_start: crossDay?.shft_chkout_start,
+                                        shft_chkout_end: crossDay?.shft_chkout_end,
+                                        shft_cross_day: crossDay?.shft_cross_day,
+                                        gross_salary: crossDay?.gross_salary,
+                                        earlyGoingMaxIntervl: cmmn_early_out,
+                                        gracePeriodInTime: cmmn_grace_period,
+                                        maximumLateInTime: cmmn_late_in,
+                                        salaryLimit: salary_above,
+                                        woff: week_off_day,
+                                        naShift: notapplicable_shift,
+                                        defaultShift: default_shift,
+                                        noff: noff,
+                                        holidayStatus: crossDay?.holiday_status,
+                                        doff: doff,
+                                        coff_min_working_hour: coff_min_working_hour,
+                                        holiday_min_working: holiday_min_working
+                                    }
+
+                                    //FUNCTION FOR MAPPING THE PUNCH IN AND OUT 
+                                    return await punchInOutChecking(shiftMergedPunchMaster, punchaData)
+                                })
+                            ).then((data) => {
+                                const punchMasterMappedData = data?.map((e) => e.value)
+                                return Promise.allSettled(
+                                    punchMasterMappedData?.map(async (val) => {
+
+                                        const holidayStatus = val.holiday_status;
+                                        const punch_In = checkInFlag === 1 ? new Date(shiftIn) : val.punch_in === null ? null : new Date(val.punch_in);
+                                        const punch_out = checkOutFlag === 1 ? new Date(shiftOut) : val.punch_out === null ? null : new Date(val.punch_out);
+
+                                        const shift_in = new Date(shiftIn);
+                                        const shift_out = new Date(shiftOut);
+
+                                        //SALARY LINMIT
+                                        const salaryLimit = val.gross_salary > val.salaryLimit ? true : false;
+
+                                        const getLateInTime = await getLateInTimeIntervel(punch_In, shift_in, punch_out, shift_out)
+
+                                        const getAttendanceStatus = await getAttendanceCalculation(
+                                            punch_In,
+                                            shift_in,
+                                            punch_out,
+                                            shift_out,
+                                            cmmn_grace_period,
+                                            getLateInTime,
+                                            holidayStatus,
+                                            val.shift_id,
+                                            val.defaultShift,
+                                            val.naShift,
+                                            val.noff,
+                                            val.woff,
+                                            salaryLimit,
+                                            val.maximumLateInTime,
+                                            halfday_time_count,
+                                            doff,
+                                            coff_min_working_hour,
+                                            holiday_min_working
+                                        )
+
+                                        return {
+                                            punch_slno: val.punch_slno,
+                                            punch_in: checkInFlag === 1 ? format(new Date(punch_In), 'yyyy-MM-dd HH:mm:ss') : val.punch_in,
+                                            punch_out: checkOutFlag === 1 ? format(new Date(punch_out), 'yyyy-MM-dd HH:mm:ss') : val.punch_out,
+                                            hrs_worked: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.hrsWorked,
+                                            late_in: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.lateIn,
+                                            early_out: (val.shift_id === week_off_day || val.shift_id === noff || val.shift_id === notapplicable_shift || val.shift_id === default_shift) ? 0 : getLateInTime?.earlyOut,
+                                            duty_status: getAttendanceStatus?.duty_status,
+                                            holiday_status: val.holiday_status,
+                                            leave_status: 1,
+                                            lvereq_desc: getAttendanceStatus?.lvereq_desc,
+                                            duty_desc: 'OHP',
+                                            lve_tble_updation_flag: 1,
+                                            duty_day: format(new Date(dutyDate), 'yyyy-MM-dd'),
+
+                                            hr_approval_status: 1,
+                                            hr_approval_comment: remark,
+                                            hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
+                                            hr_empId: loginem_id,
+                                            request_slno: slno,
+                                            em_no: emno,
+                                        }
+                                    })
+                                ).then(async (element) => {
+                                    const { value } = element[0];
+                                    const result = await axioslogin.patch('/CommonReqst/hr/comment', value)
+                                    const { success } = result.data;
+                                    if (success === 1) {
+                                        setOpenBkDrop(false)
+                                        setOpen(false)
+                                        setCount(Math.random())
+                                        succesNofity("HR Approved Successfully!")
+                                    } else {
+                                        setOpenBkDrop(false)
+                                        setOpen(false)
+                                        setCount(Math.random())
+                                        errorNofity("Error Occured! Contact IT")
+                                    }
+                                })
+                            })
+
+                        } else {
+                            warningNofity("There Is No Punchmast Data!")
+                        }
                     } else {
-                        setOpenBkDrop(false)
-                        setOpen(false)
-                        setCount(Math.random())
-                        errorNofity("Error Occured! Contact IT")
+                        warningNofity("There Is No Punch Data!")
                     }
                 }
             } else {
                 errorNofity("Error getting PunchMarkingHR ")
             }
         }
-    }, [remark, dutyDate, dept_sect_id, hrApprove, setCount, setOpen])
+    }, [remark, dutyDate, dept_sect_id, setCount, setOpen, emno, checkInFlag, checkOutFlag,
+        cmmn_early_out, cmmn_grace_period, cmmn_late_in, comp_hour_count, crossDay, crossDayStat,
+        default_shift, halfday_time_count, loginem_id, noff, notapplicable_shift, salary_above,
+        slno, week_off_day, coff_min_working_hour, doff, holiday_min_working])
 
 
     return (
@@ -171,7 +307,8 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                 aria-labelledby="modal-title"
                 aria-describedby="modal-desc"
                 open={open}
-                onClose={() => setOpen(false)}
+                onClose={() => setOpen(false)
+                }
                 sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
             >
                 <ModalDialog size="lg"  >

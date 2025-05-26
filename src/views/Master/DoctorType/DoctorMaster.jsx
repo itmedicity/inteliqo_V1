@@ -7,7 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import SessionCheck from 'src/views/Axios/SessionCheck'
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
-import { employeeNumber } from 'src/views/Constant/Constant'
+import { employeeIdNumber } from 'src/views/Constant/Constant'
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import MasterLayout from '../MasterComponents/MasterLayout'
@@ -37,7 +37,7 @@ const DoctorMaster = () => {
         return {
             doctype_desc,
             doctype_status: doctype_status === true ? 1 : 0,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
     }, [doctype_desc, doctype_status])
 
@@ -53,7 +53,7 @@ const DoctorMaster = () => {
             doctype_desc,
             doctype_status: doctype_status === true ? 1 : 0,
             doctype_slno: slno,
-            edit_user: employeeNumber()
+            edit_user: employeeIdNumber()
         }
     }, [doctype_desc, doctype_status, slno])
 

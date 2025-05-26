@@ -10,13 +10,13 @@ const JoyCategorySelect = ({ value, setValue }) => {
 
     useEffect(() => dispatch(setCategory()), [dispatch])
 
-    const empCategory = useSelector((state) => state.getEmployeeCategory.empCategory, _.isEqual)
+    const empCategory = useSelector((state) => state?.getEmployeeCategory?.empCategory, _.isEqual)
     const cateData = useMemo(() => empCategory, [empCategory]);
 
     useEffect(() => {
         if ((value !== 0) && (flag === 0)) {
-            const array = cateData?.find((e) => e.category_slno === value)
-            setValue(array.category_slno)
+            const array = cateData?.find((e) => e?.category_slno === value)
+            setValue(array?.category_slno)
         }
     }, [value, setValue, flag, cateData])
 
@@ -40,6 +40,7 @@ const JoyCategorySelect = ({ value, setValue }) => {
             }}
             size='md'
             variant='outlined'
+            sx={{ width: '100%' }}
         >
             <Option disabled value={0}> Select Category</Option>
             {

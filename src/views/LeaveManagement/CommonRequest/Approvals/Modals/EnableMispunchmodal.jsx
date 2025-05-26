@@ -7,7 +7,7 @@ import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import moment from 'moment';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { ToastContainer } from 'react-toastify';
@@ -80,7 +80,7 @@ const EnableMispunchmodal = ({ open, setOpen, data, setCount, count, authority }
             incharge_approval_status: 2,
             incharge_approval_comment: remark,
             incharge_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            incharge_empid: employeeNumber(),
+            incharge_empid: employeeIdNumber(),
             slno: slno
         }
     }, [remark, slno])
@@ -90,7 +90,7 @@ const EnableMispunchmodal = ({ open, setOpen, data, setCount, count, authority }
             hod_approval_status: 2,
             hod_approval_comment: remark,
             hod_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            hod_empid: employeeNumber(),
+            hod_empid: employeeIdNumber(),
             slno: slno
         }
     }, [remark, slno])
@@ -100,7 +100,7 @@ const EnableMispunchmodal = ({ open, setOpen, data, setCount, count, authority }
             ceo_approval_status: 2,
             ceo_approval_comment: remark,
             ceo_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            ceo_empid: employeeNumber(),
+            ceo_empid: employeeIdNumber(),
             slno: slno
         }
     }, [remark, slno])
@@ -110,7 +110,7 @@ const EnableMispunchmodal = ({ open, setOpen, data, setCount, count, authority }
             hr_approval_status: 2,
             hr_approval_comment: remark,
             hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            hr_empId: employeeNumber(),
+            hr_empId: employeeIdNumber(),
             slno: slno
         }
     }, [remark, slno])
@@ -184,7 +184,7 @@ const EnableMispunchmodal = ({ open, setOpen, data, setCount, count, authority }
             incharge_approval_status: 1,
             incharge_approval_comment: remark,
             incharge_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            incharge_empid: employeeNumber(),
+            incharge_empid: employeeIdNumber(),
             slno: slno
         }
     }, [remark, slno])
@@ -195,7 +195,7 @@ const EnableMispunchmodal = ({ open, setOpen, data, setCount, count, authority }
             hod_approval_status: 1,
             hod_approval_comment: remark,
             hod_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            hod_empid: employeeNumber(),
+            hod_empid: employeeIdNumber(),
             slno: slno
         }
     }, [remark, slno])
@@ -205,7 +205,7 @@ const EnableMispunchmodal = ({ open, setOpen, data, setCount, count, authority }
             ceo_approval_status: 1,
             ceo_approval_comment: remark,
             ceo_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            ceo_empid: employeeNumber(),
+            ceo_empid: employeeIdNumber(),
             slno: slno
         }
     }, [remark, slno])
@@ -220,7 +220,7 @@ const EnableMispunchmodal = ({ open, setOpen, data, setCount, count, authority }
             hr_approval_status: 1,
             hr_approval_comment: remark,
             hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
-            hr_empId: employeeNumber(),
+            hr_empId: employeeIdNumber(),
             slno: slno
         }
     }, [remark, slno, emno, checkInFlag, checkOutFlag, checkIn, checkOut])

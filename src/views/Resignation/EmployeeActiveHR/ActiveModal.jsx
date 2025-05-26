@@ -3,7 +3,7 @@ import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import { format } from 'date-fns';
 import { getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
@@ -61,14 +61,14 @@ const ActiveModal = ({ open, setOpen, data, setCount }) => {
             em_id: emid,
             em_no: emno,
             remark: reason,
-            create_user: employeeNumber()
+            create_user: employeeIdNumber()
         }
 
         if (reason === '') {
             setOpen(false)
             infoNofity("Please Add Remark!")
         } else if (resignation === true) {
-            console.log("hgfj");
+
             const resigndta = {
                 dept_id: dept_id,
                 sect_id: sect_id,

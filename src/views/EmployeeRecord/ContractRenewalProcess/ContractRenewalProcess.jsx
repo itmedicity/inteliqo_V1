@@ -11,7 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { getContractClosedata } from 'src/redux/reduxFun/reduxHelperFun';
 
 const EXistContractDetl = React.lazy(() => import('./EXistContractDetl'))
@@ -214,7 +214,7 @@ const ContractRenewalProcess = () => {
       emp_username: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo,
       emp_password: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo,
       emp_email: email,
-      create_user: employeeNumber(),
+      create_user: employeeIdNumber(),
       dutyplanData: dutyplanData,
       punchmast: punchmast,
       punchslno: punchslno,
@@ -257,22 +257,26 @@ const ContractRenewalProcess = () => {
 
         const newEmno = contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo;
 
-
-        const result = await axioslogin.patch('/empcontract/update/contract', updateempMast)
+        const result = await axioslogin.patch('/empcontract/contractrenewapprove', updateempMast)
         const { success, message } = result.data
-        if (success === 1) {
-          const updateContractLogTable = await axioslogin.post('/empcontract/createcontractlog', oldPersonalData.personalData)
-          if (updateContractLogTable.data.success === 1) {
-            succesNofity("Contract Renewal Completed Successfully!")
-            history.push(`/Home/Prfle/${newEmno}/${no}/${0}`)
-          }
-          else {
+        if (success === 2) {
+          const result = await axioslogin.patch('/empcontract/update/contract', updateempMast)
+          const { success, message } = result.data
+          if (success === 1) {
+            const updateContractLogTable = await axioslogin.post('/empcontract/createcontractlog', oldPersonalData.personalData)
+            if (updateContractLogTable.data.success === 1) {
+              succesNofity("Contract Renewal Completed Successfully!")
+              history.push(`/Home/Prfle/${newEmno}/${no}/${0}`)
+            }
+            else {
+              warningNofity(message)
+            }
+          } else {
             warningNofity(message)
           }
         } else {
           warningNofity(message)
         }
-
       }
     }
   }, [contractTpPermanent, newCatgeory, permanentEmpNo, updateempMast, attendancedetls,
@@ -339,7 +343,6 @@ const ContractRenewalProcess = () => {
   //     })
   //     /** 1 -> next category contain contract*/
   //   } else if (modelStatus === 1 && contstatus === 1) {
-  //     console.log(newcontractdetl);
   //     employeeNewContractEntry(newcontractdetl).then((values) => {
   //       const { status } = values
   //       if (status === 1) {

@@ -45,26 +45,15 @@ const FullandFinalSettlement = () => {
             const result = await axioslogin.get("/Resignation/fullsetteleEmplo/all")
             const { success, data } = result?.data
             if (success === 1) {
+                const arr = data?.map((val) => {
+                    return {
+                        ...val,
+                        relivDate: format(new Date(val.relieving_date), 'dd-MM-yyy'),
+                        resgDate: format(new Date(val.request_date), 'dd-MM-yyyy')
+                    }
+                })
                 setCount(0)
-                setTableData(data)
-                // const { relieving_date, em_id, } = result?.data?.data[0];
-                // const postdata = {
-                //     emp_id: em_id,
-                //     from: moment(startOfMonth(new Date(relieving_date))).format('YYYY-MM-DD'),
-                //     to: relieving_date
-                // }
-                // const punchdata = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-                // const { success, data } = punchdata.data
-                // if (success === 1) {
-                //     const lossofpay = (data.filter(val => val.leave_status === 0 && val.duty_status === 0)).length
-                //     const calculatedlop = (data.filter(val => val.duty_desc === 'A' && val.leave_status === 0)).length
-                //     const holiday = (data.filter(val => val.holiday_status === 1)).length
-
-                // } else {
-                //     setLop(0)
-                //     setCalcLop(0)
-                //     setHoliday(0)
-                // }
+                setTableData(arr)
             } else {
                 setTableData([])
             }
@@ -152,14 +141,13 @@ const FullandFinalSettlement = () => {
                     </Box>
                 }
             }
-
-
         },
         { headerName: 'Emp ID', field: 'em_no', filter: true, minWidth: 100 },
         { headerName: 'Emp Name ', field: 'em_name', minWidth: 250, },
         { headerName: 'Department', field: 'dept_name', filter: true, minWidth: 250 },
         { headerName: 'Department Section', field: 'sect_name', filter: true, minWidth: 300 },
-        { headerName: 'Request Date', field: 'request_date', wrapText: true, minWidth: 200, },
+        { headerName: 'Request Date', field: 'resgDate', wrapText: true, minWidth: 200, },
+        { headerName: 'Relieving Date', field: 'relivDate', wrapText: true, minWidth: 200, },
         { headerName: 'Type', field: 'Resign', wrapText: true, minWidth: 250, },
         { headerName: 'Status', field: 'resignstatus', filter: true, minWidth: 200, },
 

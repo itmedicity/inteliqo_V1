@@ -36,6 +36,7 @@ export const attednane_one = [
     { to: '/Home/DutyplanReport', name: 'Dutyplan Report ', slno: 297 },
     { to: '/Home/HODAttendanceReport', name: 'HOD`s Attendnace Report ', slno: 322 },
     { to: '/Home/AbsenteeismReport', name: 'Absenteeism Report(Month) ', slno: 327 },
+    { to: "/Home/InactiveEmplyeeAttendnaceReport", name: 'Inactive Emplyee Attendnace Report', slno: 339 }
 ]
 
 export const attednane_two = [
@@ -43,6 +44,7 @@ export const attednane_two = [
     { to: '/Home/DeptPunchReport', name: 'Employee Processed Punch Report', slno: 257 },
     { to: '/Home/WeekOffReport', name: 'Week Off Report', slno: 323 },
     { to: '/Home/AbsenteeismDeptReport', name: 'Absenteeism Report(Department) ', slno: 328 },
+    { to: '/Home/DutyplanChangeReport', name: 'Dutyplan Change Report', slno: 339 }
 ]
 export const attednane_three = [
     { to: '/Home/AttendenceReports', name: 'Employee Wise Attendence Report', slno: 283 },
@@ -52,6 +54,7 @@ export const attednane_three = [
 ]
 export const leave_One = [
     { to: '/Home/LeaveReports', name: 'Employee Leave Report', slno: 270 },
+    { to: '/Home/YearlyLeaveCountReport', name: 'Previous Year Leave Count Report', slno: 332 }
 ]
 export const leave_two = [
     { to: '/Home/OndutyReport', name: 'Employee On Duty Report', slno: 298 },

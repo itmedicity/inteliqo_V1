@@ -53,7 +53,7 @@ const OnobservationRequest = () => {
             setShow(1)
         }
 
-    }, [department, deptSection, fromDate, toDate])
+    }, [department, deptSection])
 
 
 

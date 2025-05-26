@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 
 
 const JoySectionWiseEmployee = ({ employee, getEmploy }) => {
-    // console.log(employee);
+
 
 
     //EMPLOYEE INFOR BASED ON SELECTED DEPT & SECTION

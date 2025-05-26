@@ -5,7 +5,7 @@ import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { addDays, addMonths, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
+import { addDays, endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
 import { CssVarsProvider, IconButton, Input } from '@mui/joy';
 import moment from 'moment';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
@@ -16,6 +16,8 @@ import SectionBsdEmployee from 'src/views/Component/ReduxComponent/SectionBsdEmp
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useEffect } from 'react';
 import { setDepartment } from 'src/redux/actions/Department.action';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
+
 const TableRows = lazy(() => import('../PreviousMonthReport/TableRows'))
 
 const MasterView = () => {
@@ -27,6 +29,7 @@ const MasterView = () => {
     const [section, changeSection] = useState(0);
     const [emply, getEmployee] = useState({});
     const [tableData, setTableData] = useState([])
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     useEffect(() => {
         dispatch(setDepartment());
@@ -42,13 +45,14 @@ const MasterView = () => {
     }, [dept, section, selectDate])
 
     const getData = useCallback(async () => {
+        setOpenBkDrop(true)
         if (dept !== 0 && section !== 0 && emply?.em_id !== 0) {
             const result = await axioslogin.post(`/ReligionReport/punchReportdep`, postDataDep)
             const { data: firstApiData, success } = result.data
             if (success === 1) {
                 const result = await axioslogin.post(`/ReligionReport/punchReportmasterdep`, postDataDep)
                 const { data, success } = result.data
-                if (success === 1) {
+                if (success === 1 && data?.length !== 0) {
                     const setData = data?.map((data) => {
                         let shiftIn = `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_in), 'HH:mm')}`;
                         let shiftOut = data.shft_cross_day === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}` :
@@ -69,45 +73,50 @@ const MasterView = () => {
                         }
                     })
 
-                    const updatedSecondApiData = setData.map(data => {
-                        const correspondingFirstData = firstApiData.filter(firstApiData => {
+                    const updatedSecondApiData = setData?.map(data => {
+                        const correspondingFirstData = firstApiData?.filter(firstApiData => {
                             return (
-                                parseInt(firstApiData.emp_code) === data.em_no &&
-                                new Date(firstApiData.punch_time).toDateString() === new Date(data.duty_day).toDateString()
+                                parseInt(firstApiData?.emp_code) === data?.em_no &&
+                                new Date(firstApiData?.punch_time).toDateString() === new Date(data?.duty_day).toDateString()
                             );
                         });
                         return {
                             ...data,
-                            new_field: correspondingFirstData.map(data => data.punch_time)
+                            new_field: correspondingFirstData?.map(data => data?.punch_time)
                         };
                     });
 
-                    const array = updatedSecondApiData?.filter(val => val.em_no === emply?.em_no)
+                    const array = updatedSecondApiData?.filter(val => val?.em_no === emply?.em_no)?.sort((a, b) => new Date(a?.duty_day) - new Date(b?.duty_day));
 
-                    setTableData(array.slice(0, -1))
+                    setTableData(array)
+                    setOpenBkDrop(false)
 
                 } else {
                     warningNofity("Dutypaln Not Done")
+                    setOpenBkDrop(false)
                 }
             } else {
                 warningNofity("No Employee Punch Data")
+                setOpenBkDrop(false)
             }
         } else {
             warningNofity("Select Department & Department Section & Employee")
+            setOpenBkDrop(false)
         }
     }, [dept, section, emply, postDataDep])
 
 
     return (
         <CustomLayout title="All Punch View" displayClose={true} >
+            <CustomBackDrop open={openBkDrop} text="Please wait !. " />
             <Box sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'column' }}>
                 <Paper square elevation={0} sx={{ display: 'flex', flex: 1, px: 0.5, flexDirection: 'row', py: 0.3 }}>
                     <Box sx={{ flex: 1, px: 0.3, width: '20%', }} >
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['year', 'month']}
-                                minDate={subMonths(new Date(), 1)}
-                                maxDate={addMonths(new Date(), 1)}
+                                minDate={subMonths(new Date(), 2)}
+                                maxDate={endOfMonth(new Date())}
                                 value={selectDate}
                                 size="small"
                                 onChange={(newValue) => {

@@ -10,7 +10,7 @@ import SessionCheck from 'src/views/Axios/SessionCheck';
 import { infoNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import DistrictSelection from 'src/views/CommonCode/DistrictSelection';
 import CommonAgGrid from 'src/views/Component/CommonAgGrid';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 import MasterLayout from '../MasterComponents/MasterLayout';
@@ -46,7 +46,7 @@ const RegionMast = () => {
             reg_name,
             reg_pincode,
             reg_status: reg_status === true ? 1 : 0,
-            create_user: employeeNumber(),
+            create_user: employeeIdNumber(),
             reg_dist_slno: district
         }
     }, [reg_name, reg_pincode, reg_status, district])
@@ -68,7 +68,7 @@ const RegionMast = () => {
             reg_dist_slno: district,
             reg_pincode,
             reg_status: reg_status === true ? 1 : 0,
-            edit_user: employeeNumber(),
+            edit_user: employeeIdNumber(),
             reg_slno: slno
         }
     }, [reg_name, reg_pincode, reg_status, district, slno])
@@ -146,7 +146,7 @@ const RegionMast = () => {
     }, [])
 
     return (
-        <MasterLayout title="Registation Type" displayClose={true} >
+        <MasterLayout title="Region Master" displayClose={true} >
             <ToastContainer />
             <SessionCheck />
             <Box sx={{ width: "100%" }} >

@@ -1,7 +1,7 @@
 import { Box, Button, CssVarsProvider, Input } from '@mui/joy'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { addMonths, eachDayOfInterval, endOfMonth, format, getDaysInMonth, isValid, startOfMonth } from 'date-fns'
+import { addMonths, eachDayOfInterval, endOfMonth, format, isValid, startOfMonth } from 'date-fns'
 import React, { memo, useMemo, useState } from 'react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,7 +13,7 @@ import { useCallback } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
-import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { errorNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ReportLayout from 'src/views/HrReports/ReportComponent/ReportLayout'
 import { Paper } from '@mui/material'
 import SalaryReportAgGrid from 'src/views/Component/SalaryReportAgGrid'
@@ -23,6 +23,8 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { getHolidayList } from 'src/redux/actions/LeaveProcess.action'
 import { DeptWiseAttendanceViewFun } from '../AttendanceView/Functions'
 import { ExporttoExcel } from 'src/views/HrReports/DayWiseAttendence/ExportToExcel'
+import { attendnaceCountCalculationFunc, employeeEarnDeduction, getAllPunchmastData } from './SalaryProcessFunctions'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 
 const SalaryProcessed = () => {
 
@@ -34,6 +36,7 @@ const SalaryProcessed = () => {
     const [all, setAll] = useState(false)
     const [mainArray, setArray] = useState([])
     const [processBtn, setProcessBtn] = useState(false)
+    const [openBkDrop, setOpenBkDrop] = useState(false);
 
 
     useEffect(() => {
@@ -58,6 +61,7 @@ const SalaryProcessed = () => {
     const onClickProcess = useCallback(async () => {
         setProcessBtn(true)
         if (all === true) {
+            setOpenBkDrop(true)
             const deptArray = allDept?.map(val => val.dept_id)
             const sectArray = allSection?.map(val => val.sect_id)
             const getEmpData = {
@@ -68,95 +72,131 @@ const SalaryProcessed = () => {
             const { succes, dataa: employeeData } = result1.data
             if (succes === 1 && isValid(value) && value !== null) {
 
-                const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
-                const { data: deductData } = result1.data
+                employeeEarnDeduction(getEmpData).then((values) => {
+                    const { status, data: deductData } = values;
 
-                const arr = employeeData && employeeData.map((val) => val.em_id)
-                const postdata = {
-                    emp_id: arr,
-                    // emp_id: [168],
-                    from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                    to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
-                }
-                const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-                const { success, data } = result.data
-                if (success === 1) {
-                    const finalDataArry = employeeData?.map((val) => {
-                        const empwise = data.filter((value) => value.emp_id === val.em_id)
-
-                        const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
-                        //  const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
-                        const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
-                        const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
-                        const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
-
-                        const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
-
-                        const npsamount = val.nps === 1 ? val.npsamount : 0
-                        const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
-
-                        const onedaySalary = val.gross_salary / getDaysInMonth(new Date(value))
-
-                        // const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLOP + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLOP + (totalHD * 0.5)
-                        // const totallopCount = totalLOP + (totalHD * 0.5)
-
-                        const workday =
-                            (empwise?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
-                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
-                                val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
-                                val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
-                                val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
-                                val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length
-
-                        const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
-
-                        const totalDays = getDaysInMonth(new Date(value))
-                        const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
-                        const totalPayday = workday + (totalHD * 0.5)
-                        const totallopCount = totalDays - totalPayday;
-                        // const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
-                        const lopamount = totallopCount * (val.gross_salary / totalDays);
-                        //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
-                        const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
-
-                        return {
-                            em_no: val.em_no,
-                            em_name: val.em_name,
-                            branch_name: val.branch_name,
-                            dept_name: val.dept_name,
-                            sect_name: val.sect_name,
-                            ecat_name: val.ecat_name,
-                            desg_name: val.desg_name,
-                            inst_emp_type: val.inst_emp_type,
-                            empSalary: val.gross_salary,
-                            em_account_no: val.em_account_no,
-                            em_ifsc: val.em_ifsc,
-                            totalDays: getDaysInMonth(new Date(value)),
-                            totalLeaves: totalLV,
-                            totalHoliday: totalH,
-                            totallopCount: totalPayday === 0 ? getDaysInMonth(new Date(value)) : totallopCount,
-                            holidayworked: totalHP,
-                            totalHD: totalHD,
-                            totalLC: totalLC,
-                            paydays: totalPayday,
-                            lopAmount: Math.round(onedaySalary * totallopCount),
-                            npsamount: npsamount,
-                            lwfamount: lwfamount,
-                            holidaySalary: Math.round(holidaysalary),
-                            deductValue: deductValue,
-                            totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary),
+                    if (status === 1 || status === 2) {
+                        const arr = employeeData && employeeData.map((val) => val.em_id)
+                        const postdata = {
+                            emp_id: arr,
+                            from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                            to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
                         }
-                    })
-                    setArray(finalDataArry)
-                }
-                else {
-                    warningNofity("No Punch Details")
-                }
+                        getAllPunchmastData(postdata).then((punchmastdata) => {
+                            const { status, data } = punchmastdata;
+                            if (status === 1) {
+                                attendnaceCountCalculationFunc(employeeData, deductData, data, value, commonSettings).then((allData) => {
+                                    const { status, data } = allData
+                                    if (status === 1) {
+                                        setArray(data)
+                                        setOpenBkDrop(false)
+                                    } else {
+                                        errorNofity("Error While Attendance Calculation")
+                                        setOpenBkDrop(false)
+                                    }
+                                })
+                            } else {
+                                errorNofity("Error While Geting All Employee PunchMast Data")
+                                setOpenBkDrop(false)
+                            }
+                        })
+                    } else {
+                        errorNofity("Error While Getting Deduction Details!")
+                        setOpenBkDrop(false)
+                    }
+                })
+
+                // const result1 = await axioslogin.post("/payrollprocess/empDeduction", getEmpData)
+                // const { data: deductData } = result1.data
+
+                // const arr = employeeData && employeeData.map((val) => val.em_id)
+                // const postdata = {
+                //     emp_id: arr,
+                //     // emp_id: [168],
+                //     from: format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                //     to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                // }
+                // const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
+                // const { success, data } = result.data
+                // if (success === 1) {
+                //     const finalDataArry = employeeData?.map((val) => {
+                //         const empwise = data.filter((value) => value.emp_id === val.em_id)
+
+                //         const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
+                //         //  const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
+                //         const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
+                //         const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD' || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
+                //         const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
+
+                //         const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
+
+                //         const npsamount = val.nps === 1 ? val.npsamount : 0
+                //         const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
+
+                //         const onedaySalary = val.gross_salary / getDaysInMonth(new Date(value))
+
+                //         // const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLOP + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLOP + (totalHD * 0.5)
+                //         // const totallopCount = totalLOP + (totalHD * 0.5)
+
+                //         const workday =
+                //             (empwise?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
+                //                 val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
+                //                 val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
+                //                 val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
+                //                 val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
+                //                 val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length
+
+                //         const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
+
+                //         const totalDays = getDaysInMonth(new Date(value))
+                //         const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
+                //         const totalPayday = workday + (totalHD * 0.5)
+                //         const totallopCount = totalDays - totalPayday;
+                //         // const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
+                //         const lopamount = totallopCount * (val.gross_salary / totalDays);
+                //         //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
+                //         const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
+
+                //         return {
+                //             em_no: val.em_no,
+                //             em_name: val.em_name,
+                //             branch_name: val.branch_name,
+                //             dept_name: val.dept_name,
+                //             sect_name: val.sect_name,
+                //             ecat_name: val.ecat_name,
+                //             desg_name: val.desg_name,
+                //             inst_emp_type: val.inst_emp_type,
+                //             empSalary: val.gross_salary,
+                //             em_account_no: val.em_account_no,
+                //             em_ifsc: val.em_ifsc,
+                //             totalDays: getDaysInMonth(new Date(value)),
+                //             totalLeaves: totalLV,
+                //             totalHoliday: totalH,
+                //             totallopCount: totalPayday === 0 ? getDaysInMonth(new Date(value)) : totallopCount,
+                //             holidayworked: totalHP,
+                //             totalHD: totalHD,
+                //             totalLC: totalLC,
+                //             paydays: totalPayday,
+                //             lopAmount: Math.round(onedaySalary * totallopCount),
+                //             npsamount: npsamount,
+                //             lwfamount: lwfamount,
+                //             holidaySalary: Math.round(holidaysalary),
+                //             deductValue: deductValue,
+                //             totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary),
+                //         }
+                //     })
+                //     setArray(finalDataArry)
+                // }
+                // else {
+                //     warningNofity("No Punch Details")
+                // }
             } else {
-                warningNofity("Error While Fetching data!")
+                warningNofity("Error While Fetching Employee data!")
+                setOpenBkDrop(false)
             }
 
         } else {
+            setOpenBkDrop(true)
             const getEmpData = {
                 em_department: dept,
                 em_dept_section: deptSection,
@@ -173,83 +213,102 @@ const SalaryProcessed = () => {
                     to: format(endOfMonth(new Date(value)), 'yyyy-MM-dd'),
                 }
 
-                const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
-                const { success, data } = result.data
-                if (success === 1) {
-                    const finalDataArry = employeeData?.map((val) => {
-                        const empwise = data.filter((value) => value.emp_id === val.em_id)
+                // const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
+                // const { success, data } = result.data
+                // if (success === 1) {
+                getAllPunchmastData(postdata).then((punchmastdata) => {
+                    const { status, data } = punchmastdata;
+                    if (status === 1) {
+                        attendnaceCountCalculationFunc(employeeData, deductData, data, value, commonSettings).then((allData) => {
+                            const { status, data } = allData
+                            if (status === 1) {
+                                setArray(data)
+                                setOpenBkDrop(false)
+                            } else {
+                                errorNofity("Error While Attendance Calculation")
+                                setOpenBkDrop(false)
+                            }
+                        })
+                    } else {
+                        errorNofity("Error While Geting All Employee PunchMast Data")
+                        setOpenBkDrop(false)
+                    }
+                })
+                // const finalDataArry = employeeData?.map((val) => {
+                //     const empwise = data.filter((value) => value.emp_id === val.em_id)
 
-                        const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
-                        //const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
-                        const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
-                        const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD'
-                            || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
-                        const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
+                //     const totalH = (empwise?.filter(val => val.holiday_status === 1)).length
+                //     //const totalLOP = (empwise?.filter(val => val.lvereq_desc === 'A' || val.lvereq_desc === 'ESI' || val.lvereq_desc === 'LWP' || val.lvereq_desc === 'ML')).length
+                //     const totalLV = (empwise?.filter(val => val.lvereq_desc === 'SL' || val.lvereq_desc === 'CL' || val.lvereq_desc === 'COFF' || val.lvereq_desc === 'EL')).length
+                //     const totalHD = (empwise?.filter(val => val.lvereq_desc === 'HD' || val.lvereq_desc === 'CHD' || val.lvereq_desc === 'EGHD'
+                //         || val.lvereq_desc === 'HDSL' || val.lvereq_desc === 'HDCL')).length
+                //     const totalLC = (empwise?.filter(val => val.lvereq_desc === 'LC')).length
 
-                        const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
+                //     const deductValue = (deductData?.filter(item => val.em_no === item.em_no).reduce((acc, curr) => acc + (curr.em_amount), 0)) ?? 0;
 
-                        const npsamount = val.nps === 1 ? val.npsamount : 0
-                        const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
+                //     const npsamount = val.nps === 1 ? val.npsamount : 0
+                //     const lwfamount = val.lwf_status === 1 ? val.lwfamount : 0
 
-                        const onedaySalary = val.gross_salary / getDaysInMonth(new Date(value))
+                //     const onedaySalary = val.gross_salary / getDaysInMonth(new Date(value))
 
-                        // const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLOP + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLOP + (totalHD * 0.5)
-                        // const totallopCount = totalLOP + (totalHD * 0.5)
+                //     // const totallopCount = totalLC > commonSettings?.max_late_day_count ? totalLOP + (totalHD * 0.5) + ((totalLC - commonSettings?.max_late_day_count) / 2) : totalLOP + (totalHD * 0.5)
+                //     // const totallopCount = totalLOP + (totalHD * 0.5)
 
-                        const workday =
-                            (empwise?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
-                                val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
-                                val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
-                                val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
-                                val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
-                                val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length
+                //     const workday =
+                //         (empwise?.filter(val => val.lvereq_desc === 'P' || val.lvereq_desc === 'WOFF' ||
+                //             val.lvereq_desc === 'COFF' || val.lvereq_desc === 'NOFF' || val.lvereq_desc === 'DOFF' ||
+                //             val.lvereq_desc === 'SL' || val.lvereq_desc === 'HP' ||
+                //             val.lvereq_desc === 'CL' || val.lvereq_desc === 'EL' ||
+                //             val.lvereq_desc === 'H' || val.lvereq_desc === 'OHP' ||
+                //             val.lvereq_desc === 'ODP' || val.lvereq_desc === 'OBS' || val.lvereq_desc === 'LC')).length
 
-                        const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
+                //     const totalHP = (empwise?.filter(val => val.lvereq_desc === 'HP')).length
 
 
-                        const totalDays = getDaysInMonth(new Date(value))
-                        const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
-                        const totalPayday = workday + (totalHD * 0.5)
-                        const totallopCount = totalDays - totalPayday;
-                        // const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
-                        const lopamount = totallopCount * (val.gross_salary / totalDays);
-                        //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
-                        const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
+                //     const totalDays = getDaysInMonth(new Date(value))
+                //     const holidaysalary = val.gross_salary <= commonSettings.salary_above ? onedaySalary * totalHP : 0;
+                //     const totalPayday = workday + (totalHD * 0.5)
+                //     const totallopCount = totalDays - totalPayday;
+                //     // const totalPayday = workday === 0 ? 0 : totalDays - totallopCount
+                //     const lopamount = totallopCount * (val.gross_salary / totalDays);
+                //     //const paydaySalay = (val.gross_salary / totalDays) * totalPayday
+                //     const totalSalary = Number(val.gross_salary).toFixed(2) - Number(npsamount).toFixed(2) - Number(lwfamount).toFixed(2) - Number(deductValue).toFixed(2) - Number(lopamount).toFixed(2)
 
-                        return {
-                            em_no: val.em_no,
-                            em_name: val.em_name,
-                            branch_name: val.branch_name,
-                            dept_name: val.dept_name,
-                            sect_name: val.sect_name,
-                            ecat_name: val.ecat_name,
-                            desg_name: val.desg_name,
-                            inst_emp_type: val.inst_emp_type,
-                            empSalary: val.gross_salary,
-                            em_account_no: val.em_account_no,
-                            em_ifsc: val.em_ifsc,
-                            totalDays: getDaysInMonth(new Date(value)),
-                            totalLeaves: totalLV,
-                            totalHoliday: totalH,
-                            totallopCount: totallopCount,
-                            holidayworked: totalHP,
-                            totalHD: totalHD,
-                            totalLC: totalLC,
-                            paydays: totalPayday,
-                            lopAmount: Math.round(onedaySalary * totallopCount),
-                            npsamount: npsamount,
-                            lwfamount: lwfamount,
-                            holidaySalary: Math.round(holidaysalary),
-                            deductValue: deductValue,
-                            totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary),
-                        }
-                    })
-                    setArray(finalDataArry)
-                } else {
-                    warningNofity("No Punch Details or Not a Valid date")
-                }
+                //     return {
+                //         em_no: val.em_no,
+                //         em_name: val.em_name,
+                //         branch_name: val.branch_name,
+                //         dept_name: val.dept_name,
+                //         sect_name: val.sect_name,
+                //         ecat_name: val.ecat_name,
+                //         desg_name: val.desg_name,
+                //         inst_emp_type: val.inst_emp_type,
+                //         empSalary: val.gross_salary,
+                //         em_account_no: val.em_account_no,
+                //         em_ifsc: val.em_ifsc,
+                //         totalDays: getDaysInMonth(new Date(value)),
+                //         totalLeaves: totalLV,
+                //         totalHoliday: totalH,
+                //         totallopCount: totallopCount,
+                //         holidayworked: totalHP,
+                //         totalHD: totalHD,
+                //         totalLC: totalLC,
+                //         paydays: totalPayday,
+                //         lopAmount: Math.round(onedaySalary * totallopCount),
+                //         npsamount: npsamount,
+                //         lwfamount: lwfamount,
+                //         holidaySalary: Math.round(holidaysalary),
+                //         deductValue: deductValue,
+                //         totalSalary: totalSalary < 0 ? 0 : Math.round(totalSalary),
+                //     }
+                // })
+                // setArray(finalDataArry)
+                // } else {
+                //     warningNofity("No Punch Details or Not a Valid date")
+                // }
             } else {
                 warningNofity("No Employee Under this Department || Department Section")
+                setOpenBkDrop(false)
             }
         }
     }, [value, all, dept, deptSection, commonSettings, allDept, allSection])
@@ -315,7 +374,7 @@ const SalaryProcessed = () => {
                         ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
 
                     const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
-                        // console.log(el);
+
                         const empArray = punchMasteData?.filter(e => e.em_no === el)
                         let emName = empArray?.find(e => e.em_no === el).em_name;
                         let emNo = empArray?.find(e => e.em_no === el).em_no;
@@ -323,15 +382,13 @@ const SalaryProcessed = () => {
                         let deptName = empArray?.find(e => e.em_no === el).dept_name;
                         let sectName = empArray?.find(e => e.em_no === el).sect_name;
 
-                        // console.log(dateRange)
-                        // console.log(grossSalary)
                         return {
                             em_no: el,
                             em_name: emName,
                             dept_name: deptName,
                             sect_name: sectName,
                             arr: dateRange?.map((e) => {
-                                // console.log(e)
+
                                 return {
                                     attDate: e,
                                     duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
@@ -404,7 +461,7 @@ const SalaryProcessed = () => {
                         ?.map(e => format(new Date(e), 'yyyy-MM-dd'));
 
                     const resultss = [...new Set(punchMasteData?.map(e => e.em_no))]?.map((el) => {
-                        // console.log(el);
+
                         const empArray = punchMasteData?.filter(e => e.em_no === el)
                         let emName = empArray?.find(e => e.em_no === el).em_name;
                         let emNo = empArray?.find(e => e.em_no === el).em_no;
@@ -412,15 +469,13 @@ const SalaryProcessed = () => {
                         let deptName = empArray?.find(e => e.em_no === el).dept_name;
                         let sectName = empArray?.find(e => e.em_no === el).sect_name;
 
-                        // console.log(dateRange)
-                        // console.log(grossSalary)
                         return {
                             em_no: el,
                             em_name: emName,
                             dept_name: deptName,
                             sect_name: sectName,
                             arr: dateRange?.map((e) => {
-                                // console.log(e)
+
                                 return {
                                     attDate: e,
                                     duty_date: empArray?.find(em => em.duty_day === e)?.duty_date ?? e,
@@ -476,6 +531,7 @@ const SalaryProcessed = () => {
 
     return (
         <ReportLayout title="Salary Reports" data={mainArray} displayClose={true} >
+            <CustomBackDrop open={openBkDrop} text="!!! Please wait...Generating Salary Sheet.... Do not Refesh or Reload the Browser !!!" />
             <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
                 <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
                     <Box sx={{ flex: 1, px: 0.5 }} >

@@ -5,7 +5,7 @@ import React, { Fragment, memo, useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
-import { employeeNumber } from 'src/views/Constant/Constant';
+import { employeeIdNumber } from 'src/views/Constant/Constant';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
@@ -49,7 +49,7 @@ const HRReqstModal = ({ open, setOpen, data }) => {
             hr_comments: reason,
             hr_status: 1,
             hrm_comment_date: moment().format('YYYY-MM-DD HH:mm'),
-            hr_userid: employeeNumber(),
+            hr_userid: employeeIdNumber(),
             general_slno: general_slno
         }
         const result = await axioslogin.patch('/CommonReqst/hr/general', patchData)

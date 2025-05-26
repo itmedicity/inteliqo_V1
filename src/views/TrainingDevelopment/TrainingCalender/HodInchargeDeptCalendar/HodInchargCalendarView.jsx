@@ -43,6 +43,7 @@ const HodInchargCalendarView = () => {
     useEffect(() => {
         const obj = {
             month: format(currentMonth, "MM"),
+            year: format(currentMonth, 'yyyy'),
             dept: em_department,
             deptSec: em_dept_section
         }
