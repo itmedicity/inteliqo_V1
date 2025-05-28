@@ -246,7 +246,10 @@ const OneHourRequest = () => {
 
                         const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd HH:mm')
                         const result = punchData.find((val) => val)
-                        const dd = isBefore(new Date(result.punch_time), new Date(relaxTime)) && isAfter(new Date(result.punch_time), new Date(punchInTime)) || isEqual(new Date(result.punch_time), new Date(punchInTime)) ? 1 : 0
+                        const dd = isBefore(new Date(result.punch_time), new Date(relaxTime))
+                            && isAfter(new Date(result.punch_time), new Date(punchInTime))
+                            || isEqual(new Date(result.punch_time), new Date(punchInTime))
+                            || isEqual(new Date(result.punch_time), new Date(relaxTime)) ? 1 : 0
 
                         if (dd === 0) {
                             setOpenBkDrop(false)
@@ -287,7 +290,9 @@ const OneHourRequest = () => {
                     } else {
                         const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd HH:mm')
                         const result = punchData.findLast((val) => val)
-                        const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime)) && isAfter(new Date(result.punch_time), new Date(outtime)) || isEqual(new Date(result.punch_time), new Date(outtime)) ? 1
+                        const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime))
+                            && isAfter(new Date(result.punch_time), new Date(outtime))
+                            || isEqual(new Date(result.punch_time), new Date(outtime)) ? 1
                             : 0
 
                         if (dd === 0) {
