@@ -88,6 +88,12 @@ const Employeerecord = [
         name: 'Department Section Change',
         to: '/Home/DeptSecChange',
     },
+    {
+        men_slno: 330,
+        component: CNavItem,
+        name: 'Salary Increment Updation',
+        to: '/Home/SalaryIncrementSetting',
+    },
 
 ]
 
