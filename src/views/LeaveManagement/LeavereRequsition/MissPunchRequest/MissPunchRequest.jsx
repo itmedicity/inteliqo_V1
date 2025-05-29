@@ -36,6 +36,8 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
     const [disableCheck, setDisableCheck] = useState(true)
     const [disableDate, setDisableDate] = useState(false)
 
+    const [disableSave, setDisableSave] = useState(false)
+
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
     const { em_no, em_id, em_department, em_dept_section, } = selectedEmpInform;
 
@@ -116,6 +118,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
     }, [])
 
     const handleChangeMissPunchRequest = useCallback(async () => {
+        setDisableSave(true)
 
         const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
 
@@ -196,6 +199,8 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 setCount(Math.random())
                                 setDropOpen(false)
                                 setRequestType(0)
+                                setDisableSave(false)
+
                             } else if (success === 2) {
                                 warningNofity(message)
                                 setDropOpen(false)
@@ -229,6 +234,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                             const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
                             const { success, message } = result.data;
                             if (success === 1) {
+
                                 succesNofity(message)
                                 setCount(Math.random())
                                 setDropOpen(false)
@@ -295,9 +301,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                         paddingX: 2,
                         paddingY: 1.15,
                         borderRadius: 5,
-                        // height: 10,
                         '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
-                        // backgroundColor: 'green'
                     }}>
                         <Checkbox
                             overlay
@@ -319,9 +323,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                         paddingX: 2,
                         paddingY: 1.15,
                         borderRadius: 5,
-                        // height: 10,
                         '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
-                        // backgroundColor: 'green'
                     }}>
                         <Checkbox
                             overlay
@@ -353,6 +355,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                     <Box sx={{ display: 'flex', flex: 1, }} >
                         <Tooltip title="Save Compansatory Off Request" variant="outlined" color="success" placement="top" followCursor arrow>
                             <Button
+                                disabled={disableSave}
                                 variant="outlined"
                                 component="label"
                                 size="sm"

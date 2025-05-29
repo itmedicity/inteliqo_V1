@@ -25,6 +25,7 @@ import { DeptWiseAttendanceViewFun } from '../AttendanceView/Functions'
 import { ExporttoExcel } from 'src/views/HrReports/DayWiseAttendence/ExportToExcel'
 import { attendnaceCountCalculationFunc, employeeEarnDeduction, getAllPunchmastData } from './SalaryProcessFunctions'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import { Actiontypes } from 'src/redux/constants/action.type'
 
 const SalaryProcessed = () => {
 
@@ -57,9 +58,15 @@ const SalaryProcessed = () => {
     const holiday = useSelector((state) => state.getHolidayList);
     const holidayList = useMemo(() => holiday, [holiday]);
 
+    const handleChangeDate = useCallback(async (date) => {
+        setValue(date)
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
+    }, [])
+
 
     const onClickProcess = useCallback(async () => {
         setProcessBtn(true)
+        dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
         if (all === true) {
             setOpenBkDrop(true)
             const deptArray = allDept?.map(val => val.dept_id)
@@ -541,9 +548,7 @@ const SalaryProcessed = () => {
                                 // minDate={subMonths(new Date(), 1)}
                                 maxDate={addMonths(new Date(), 1)}
                                 value={value}
-                                onChange={(newValue) => {
-                                    setValue(newValue);
-                                }}
+                                onChange={handleChangeDate}
                                 renderInput={({ inputRef, inputProps, InputProps }) => (
                                     <Box sx={{ display: 'flex', alignItems: 'center', }}>
                                         <CssVarsProvider>
