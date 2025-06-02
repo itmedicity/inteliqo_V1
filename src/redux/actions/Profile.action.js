@@ -19,6 +19,8 @@ export const setProfileData = (id) => async (dispatch) => {
     const { data, success } = result.data;
     if (success === 1) {
         dispatch({ type: FETCH_EMP_PROFILE_DATA, payload: data[0] })
+    } else {
+        dispatch({ type: FETCH_EMP_PROFILE_DATA, payload: [] })
     }
 }
 
@@ -34,6 +36,8 @@ export const setPersonalData = (id) => {
         const { data, success } = result.data;
         if (success === 1) {
             dispatch({ type: FETCH_EMP_PERSONAL_INFOM, payload: data[0], status: true })
+        } else {
+            dispatch({ type: FETCH_EMP_PERSONAL_INFOM, payload: [], status: false })
         }
     }
 }
@@ -67,6 +71,8 @@ export const getannualleave = (no) => {
         const { success, data } = result.data
         if (success === 1) {
             dispatch({ type: FETCH_LEAVE_AVAIL_LIST, payload: data[0] })
+        } else {
+            dispatch({ type: FETCH_LEAVE_AVAIL_LIST, payload: [] })
         }
     }
 }
@@ -75,9 +81,10 @@ export const notify = (no) => {
     return async (dispatch) => {
         const result = await axioslogin.get(`/common/getnotifydata/${no}`)
         const { success, data } = result.data
-
         if (success === 1) {
             dispatch({ type: FETCH_NOTIFYDETL, payload: data[0] })
+        } else {
+            dispatch({ type: FETCH_NOTIFYDETL, payload: [] })
         }
     }
 }
@@ -88,6 +95,8 @@ export const jondescription = (postData) => {
         const { success, data } = result.data
         if (success === 1) {
             dispatch({ type: FETCH_JOB_DESCRIPTION, payload: data })
+        } else {
+            dispatch({ type: FETCH_JOB_DESCRIPTION, payload: [] })
         }
     }
 }
@@ -98,6 +107,8 @@ export const getContractDetlEmp = (id) => {
         const { success, data } = result.data
         if (success === 1) {
             dispatch({ type: FETCH_CONTRACT_DETL, payload: data })
+        } else {
+            dispatch({ type: FETCH_CONTRACT_DETL, payload: [] })
         }
     }
 }
@@ -108,6 +119,8 @@ export const getSalaryInformation = (postData2) => {
         const { success, data } = result.data
         if (success === 1) {
             dispatch({ type: FETCH_SALARY_DETL, payload: data[0] })
+        } else {
+            dispatch({ type: FETCH_SALARY_DETL, payload: [] })
         }
     }
 }

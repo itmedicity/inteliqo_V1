@@ -8,7 +8,7 @@ import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog';
 import CustoTypography from 'src/views/Component/MuiCustomComponent/CustoTypography';
 import _ from 'underscore';
 
-const LeaveCategoryInfo = () => {
+const LeaveCategoryInform = () => {
     const dataTabStyle = {
         display: 'flex', flex: 1, justifyContent: 'flex-start'
     }
@@ -77,4 +77,4 @@ const LeaveCategoryInfo = () => {
     )
 }
 
-export default memo(LeaveCategoryInfo)
+export default memo(LeaveCategoryInform)
