@@ -7,10 +7,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import EmpDetailsModal from './EmpDetailsModal';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import moment from 'moment';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
-import { urlExist } from 'src/views/Constant/Constant';
 import { PdfInductionTrannings } from './PdfInductionTranning';
-import ProfilePicDefault from 'src/assets/images/nosigature.jpg'
 
 const InductionTableview = ({ Inductdata }) => {
     const [tabledata, SetTabledata] = useState([])
@@ -80,14 +77,7 @@ const InductionTableview = ({ Inductdata }) => {
     const HandlePdf = useCallback((params) => {
         const getdata = params.api.getSelectedRows()
         const { em_id } = getdata[0];
-        const getHODSign = async (hodID) => {
-            const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER}/${hodID}/signature/signature.jpg`);
-            return profilePic
-        }
-        const getHod = async (emid) => {
-            const result = await axioslogin.get(`/TrainingDetails/GetHOD/${emid}`)
-            return result.data
-        }
+
         const getTrainneerName = async (emid) => {
             const results = await axioslogin.get(`/TrainingDetails/getInductTrainersdetail/${emid}`)
             return results.data
@@ -97,65 +87,27 @@ const InductionTableview = ({ Inductdata }) => {
             const result = await axioslogin.get(`/TrainingDetails/getInductiontrainings/${emid}`)
             const { success, data } = result.data;
             if (success === 2) {
-                getHod(emid).then((value) => {
-                    const { dataas, success } = value
-                    if (success === 2) {
-                        const { emp_id } = dataas[0]
-                        getHODSign(emp_id).then((sign) => {
-                            urlExist(sign, (status) => {
-                                if (status === true) {
-                                    const HODSign = JSON.parse(sign)
-                                    getTrainneerName(emid).then((values) => {
-                                        const { datas } = values
-                                        const ShowData = datas?.map((val) => {
-                                            const mapdata = data.find((item) => item.indct_emp_no === val.indct_emp_no && item.schedule_topic === val.schedule_topic)
-                                            return {
-                                                trainer_name: val.trainer_name.toLowerCase(),
-                                                Induct_slno: mapdata.Induct_slno,
-                                                induct_pre_mark: mapdata.training_status === 1 && mapdata.pretest_status === 1 ? mapdata.induct_pre_mark : "NA",
-                                                induct_post_mark: mapdata.training_status === 1 && mapdata.posttest_status === 1 ? mapdata.induct_post_mark : "NA",
-                                                hours: mapdata.hours,
-                                                date: moment(mapdata.induction_date).format("DD/MM/YY"),
-                                                training_topic_name: mapdata.training_topic_name.toLowerCase(),
-                                                Remark: mapdata.pretest_status === 1 && mapdata.posttest_status === 1 && mapdata.induct_post_mark >= 2 ? "Eligible" : "Not Eligible",
-                                                training_induct_hod_aprvl_status: mapdata.training_induct_hod_aprvl_status,
-                                                training_iduct_tnd_verify_status: mapdata.training_iduct_tnd_verify_status,
-                                                training_status: mapdata.training_status
-                                            }
-                                        })
-                                        PdfInductionTrannings(getdata[0], ShowData, HODSign)
-                                    })
 
-
-                                } else {
-
-                                    getTrainneerName(emid).then((values) => {
-                                        const { datas } = values
-                                        const ShowData = datas?.map((val) => {
-                                            const mapdata = data.find((item) => item.indct_emp_no === val.indct_emp_no && item.schedule_topic === val.schedule_topic)
-                                            return {
-                                                trainer_name: val.trainer_name.toLowerCase(),
-                                                Induct_slno: mapdata.Induct_slno,
-                                                induct_pre_mark: mapdata.training_status === 1 && mapdata.pretest_status === 1 ? mapdata.induct_pre_mark : "NA",
-                                                induct_post_mark: mapdata.training_status === 1 && mapdata.posttest_status === 1 ? mapdata.induct_post_mark : "NA",
-                                                hours: mapdata.hours,
-                                                date: moment(mapdata.induction_date).format("DD/MM/YY"),
-                                                training_topic_name: mapdata.training_topic_name.toLowerCase(),
-                                                Remark: mapdata.pretest_status === 1 && mapdata.posttest_status === 1 && mapdata.induct_post_mark >= 2 ? "Eligible" : "Not Eligible",
-                                                training_induct_hod_aprvl_status: mapdata.training_induct_hod_aprvl_status,
-                                                training_iduct_tnd_verify_status: mapdata.training_iduct_tnd_verify_status,
-                                                training_status: mapdata.training_status
-                                            }
-                                        })
-                                        PdfInductionTrannings(getdata[0], ShowData, ProfilePicDefault)
-                                    })
-                                }
-                            })
-
-                        })
-                    }
+                getTrainneerName(emid).then((values) => {
+                    const { datas } = values
+                    const ShowData = datas?.map((val) => {
+                        const mapdata = data.find((item) => item.indct_emp_no === val.indct_emp_no && item.schedule_topic === val.schedule_topic)
+                        return {
+                            trainer_name: val.trainer_name.toLowerCase(),
+                            Induct_slno: mapdata.Induct_slno,
+                            induct_pre_mark: mapdata.training_status === 1 && mapdata.pretest_status === 1 ? mapdata.induct_pre_mark : "NA",
+                            induct_post_mark: mapdata.training_status === 1 && mapdata.posttest_status === 1 ? mapdata.induct_post_mark : "NA",
+                            hours: mapdata.hours,
+                            date: moment(mapdata.induction_date).format("DD/MM/YY"),
+                            training_topic_name: mapdata.training_topic_name.toLowerCase(),
+                            Remark: mapdata.pretest_status === 1 && mapdata.posttest_status === 1 && mapdata.induct_post_mark >= 2 ? "Eligible" : "Not Eligible",
+                            training_induct_hod_aprvl_status: mapdata.training_induct_hod_aprvl_status,
+                            training_iduct_tnd_verify_status: mapdata.training_iduct_tnd_verify_status,
+                            training_status: mapdata.training_status
+                        }
+                    })
+                    PdfInductionTrannings(getdata[0], ShowData)
                 })
-
             }
             else {
 

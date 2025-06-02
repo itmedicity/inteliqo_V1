@@ -104,7 +104,6 @@ const InductionDetailsMainpage = () => {
                         training_status: mapdata.training_status
                     };
                 });
-
                 PdfInductionTrannings(selected[0], showData);
             }
         };
