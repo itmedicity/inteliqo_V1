@@ -5,7 +5,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import moment from 'moment'
 
 import { TableCell } from '@material-ui/core';
-import Avatharattndance from './Avatharattndance';
+// import Avatharattndance from './Avatharattndance';
 // import { deepOrange, deepPurple, green, brown, cyan } from '@mui/material/colors';
 
 const AttendanceMarkingTabdata = ({ data, count, dateformat, rageset }) => {
@@ -72,7 +72,7 @@ const AttendanceMarkingTabdata = ({ data, count, dateformat, rageset }) => {
                     dutydata && dutydata.map((val, index) => {
 
                         return <TableCell key={index} align="right" style={{ padding: 0, width: '8rem', height: '3rem' }}>
-                            <Avatharattndance val={val} />
+                            {/* <Avatharattndance val={val} /> */}
 
                         </TableCell>
 

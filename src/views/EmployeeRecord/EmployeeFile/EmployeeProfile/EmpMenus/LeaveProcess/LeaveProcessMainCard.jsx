@@ -47,7 +47,7 @@ const CommonLeaveTable = React.lazy(() => import('./CommonLeavesCard'))
 const CreditedLeaveTable = React.lazy(() => import('./CreditedLeavesCard'))
 const EarnedLeaveTable = React.lazy(() => import('./EarnedLeaveCard'))
 const HolidayLeaveTable = React.lazy(() => import('./HolidayLeaveCard'))
-const LeaveCategoryInfo = React.lazy(() => import('src/views/EmployeeRecord/EmployeeFile/EmployeeProfile/EmpMenus/AnnualLeaveInformation/LeaveCategoryInfo'))
+const LeaveCategoryInformation = React.lazy(() => import('./LeaveCategoryInform'))
 
 const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
   const dispatch = useDispatch()
@@ -344,7 +344,7 @@ const LeaveProcessMainCard = ({ empInfo, formStatus }) => {
       <ToastContainer />
       <CustomBackDrop open={open} />
       <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }}>
-        <LeaveCategoryInfo />
+        <LeaveCategoryInformation />
         <Box sx={{ display: 'flex', py: 0.5 }}>
           <Box sx={{ display: 'flex', flex: 1 }}>
             <Paper square sx={{ flex: 1 }}>
