@@ -28,7 +28,8 @@ import {
     getAppraisalIncharge,
     getAppraisalCeo,
     getAllAppraisal,
-    getesiNotAddedEmp
+    getesiNotAddedEmp,
+    getRetiredEmployees
 } from 'src/redux/actions/Dashboard.actions';
 
 const DashAlertCmp = () => {
@@ -52,7 +53,6 @@ const DashAlertCmp = () => {
     useEffect(() => {
         dispatch(getleavereqCountHR())
         dispatch(getleavereqCountIncharge())
-
         dispatch(getResignCount())
         dispatch(getcontractCloseCount())
         dispatch(getovertimeCount())
@@ -60,10 +60,8 @@ const DashAlertCmp = () => {
         dispatch(getovertimeCountHOD())
         dispatch(getovertimeCountCEO())
         dispatch(getovertimeCountUser(em_id))
-
         dispatch(getleavereqCountHOD())
         dispatch(getleavereqCountCEO())
-
         dispatch(getLeaveRequestCountUser(em_id))
         dispatch(getresignreqCountIncharge())
         dispatch(getresignreqCountHOD())
@@ -78,6 +76,7 @@ const DashAlertCmp = () => {
         dispatch(getAppraisalCeo())
         dispatch(getAllAppraisal())
         dispatch(getesiNotAddedEmp())
+        dispatch(getRetiredEmployees())
     }, [em_id, dispatch])
 
     const data = Object.values(notificationNewState);

@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
+import { Option, Select } from '@mui/joy';
 import React, { memo, useEffect, useState } from 'react'
 import { axioslogin } from '../Axios/Axios';
 const UniversitySelect = ({ value, setValue, unidisable }) => {
@@ -18,26 +18,21 @@ const UniversitySelect = ({ value, setValue, unidisable }) => {
     }, []);
 
     return (
-        <FormControl fullWidth
-            size='small'   >
-            <Select
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                size="small"
-                fullWidth
-                variant='outlined'
-                disabled={unidisable}
-            >
-                <MenuItem value={0} >
-                    Select University
-                </MenuItem>
-                {
-                    data && data.map((val, index) => {
-                        return <MenuItem key={index} value={val.unver_slno}>{val.unver_name}</MenuItem>
-                    })
-                }
-            </Select>
-        </FormControl>
+        <Select
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+            }}
+            size='md'
+            variant='outlined'
+        >
+            <Option disabled value={0}>Select University</Option>
+            {
+                data?.map((val, index) => {
+                    return <Option key={index} value={val.unver_slno}>{val.unver_name}</Option>
+                })
+            }
+        </Select>
     )
 }
 

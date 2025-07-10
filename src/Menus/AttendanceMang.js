@@ -56,12 +56,12 @@ const AttendanceManagement = [
         to: '/Home/EmployeeAnnualLeave',
     },
 
-    {
-        men_slno: 125,
-        component: CNavItem,
-        name: 'Attendance Process',
-        to: '/Home/AttendanceMarking',
-    },
+    // {
+    //     men_slno: 125,
+    //     component: CNavItem,
+    //     name: 'Attendance Process',
+    //     to: '/Home/AttendanceMarking',
+    // },
     {
         men_slno: 286,
         component: CNavItem,

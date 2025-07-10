@@ -60,7 +60,7 @@ const RegistrationRenew = () => {
     //For Edit
     const getDataTable = (data) => {
         const { emqual_slno, em_no, em_id } = data
-        history.push(`/Home/QualificationTableEdit/${emqual_slno}/${em_no}/${em_id}`)
+        // history.push(`/Home/QualificationTableEdit/${emqual_slno}/${em_no}/${em_id}`)
     }
 
 

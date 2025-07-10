@@ -35,6 +35,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
 
     const [disableCheck, setDisableCheck] = useState(true)
     const [disableDate, setDisableDate] = useState(false)
+    const [disableButton, setDisableButton] = useState(false)
 
     const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
     const { em_no, em_id, em_department, em_dept_section, } = selectedEmpInform;
@@ -196,6 +197,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 setCount(Math.random())
                                 setDropOpen(false)
                                 setRequestType(0)
+                                setDisableButton(true)
                             } else if (success === 2) {
                                 warningNofity(message)
                                 setDropOpen(false)
@@ -233,6 +235,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 setCount(Math.random())
                                 setDropOpen(false)
                                 setRequestType(0)
+                                setDisableButton(true)
                             } else if (success === 2) {
                                 warningNofity(message)
                                 setDropOpen(false)
@@ -295,9 +298,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                         paddingX: 2,
                         paddingY: 1.15,
                         borderRadius: 5,
-                        // height: 10,
                         '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
-                        // backgroundColor: 'green'
                     }}>
                         <Checkbox
                             overlay
@@ -319,9 +320,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                         paddingX: 2,
                         paddingY: 1.15,
                         borderRadius: 5,
-                        // height: 10,
                         '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
-                        // backgroundColor: 'green'
                     }}>
                         <Checkbox
                             overlay
@@ -358,6 +357,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 size="sm"
                                 fullWidth
                                 color="primary"
+                                disabled={disableButton}
                                 onClick={handleChangeMissPunchRequest}
                             >
                                 Save Request

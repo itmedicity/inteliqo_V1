@@ -1,7 +1,8 @@
-import { Dialog, DialogContent, Typography } from '@material-ui/core'
 import React, { Fragment } from 'react'
 import styled from '@emotion/styled';
 import Backdrop from '@mui/material/Backdrop'
+import { Dialog, DialogContent } from '@mui/material';
+import { Typography } from '@mui/joy';
 const AlertComponent = ({ open, handleClosee, alertmsg }) => {
     return (
         <Fragment>

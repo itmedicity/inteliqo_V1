@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
+import { Option, Select } from '@mui/joy';
 import React, { memo, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setRegistrationType } from 'src/redux/actions/RegistrationType.Action';
@@ -15,26 +15,22 @@ const CourseSelectRedux = ({ value, setValue, education, coursedisable }) => {
     const filterarr = course?.filter(val => val.edu_slno === education)
 
     return (
-        <FormControl fullWidth
-            size='small'   >
-            <Select
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                size="small"
-                fullWidth
-                variant='outlined'
-                disabled={coursedisable}
-            >
-                <MenuItem value={0} >
-                    Select Course
-                </MenuItem>
-                {
-                    filterarr && filterarr.map((val, index) => {
-                        return <MenuItem key={index} value={val.cour_slno}>{val.cour_desc}</MenuItem>
-                    })
-                }
-            </Select>
-        </FormControl>
+        <Select
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+            }}
+            size='md'
+            variant='outlined'
+            disabled={coursedisable}
+        >
+            <Option disabled value={0}> Select Course</Option>
+            {
+                filterarr?.map((val, index) => {
+                    return <Option key={index} value={val.cour_slno}>{val.cour_desc}</Option>
+                })
+            }
+        </Select>
     )
 }
 

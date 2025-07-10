@@ -78,22 +78,6 @@ const MonthlySalaryProcess = () => {
                         }),
                     }
                 })
-
-                // const getData = {
-                //     month: format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
-                // }
-                // const result = await axioslogin.post('/payrollprocess/processed/empdata', getData);
-                // const { success, data: allList } = result.data;
-                // if (success === 1) {
-
-
-                //     setDeptList(findDept)
-
-                //     setOpenBkDrop(false)
-                // } else {
-                //     warningNofity("No Such data Exist")
-                //     setOpenBkDrop(false)
-                // }
                 setDeptList(findDept)
                 setOpenBkDrop(false)
             } else if (succ === 2) {
@@ -256,47 +240,6 @@ const MonthlySalaryProcess = () => {
             errorNofity(message)
         }
     }, [em_no, value])
-
-
-    // const exportDataClick = useCallback(() => {
-    //     if (process === 0) {
-    //         warningNofity("Click The Process Button First!")
-    //     } else {
-    //         const fileName = format(new Date(value), 'MMMM');
-    //         const array = mainArray?.map((val) => {
-    //             return {
-    //                 'ID': val.em_no,
-    //                 'Name ': val.em_name,
-    //                 'Branch': val.branch_name,
-    //                 'Department': val.dept_name,
-    //                 'Department Section ': val.sect_name,
-    //                 'Category ': val.ecat_name,
-    //                 'Designation ': val.desg_name,
-    //                 'Institution ': val.inst_emp_type,
-    //                 'Account Number': val.em_account_no,
-    //                 'IFSC Number': val.em_ifsc,
-    //                 'Total Days ': val.totalDays,
-    //                 "Leave Count": val.totalLeaves,
-    //                 "Holiday Count": val.totalHoliday,
-    //                 'No Of Half Day LOP(HD)': val.totalHD,
-    //                 'No Of LC Count': val.totalLC,
-    //                 'Total LOP': val.totallopCount,
-    //                 'Total Pay Day': val.paydays,
-    //                 'LOP Amount ': val.lopAmount,
-    //                 'NPS Amount': val.npsamount,
-    //                 'LWF Amount': val.lwfamount,
-    //                 'Deduction Amount': val.deductValue,
-    //                 'Gross Salary ': val.empSalary,
-    //                 'Total Salary': val.totalSalary,
-    //                 'Holiday Worked ': val.holidayworked,
-    //                 'Holiday Amount': val.holidaySalary,
-    //             }
-
-    //         })
-    //         ExportAttendance(array, fileName)
-    //         setProcess(0)
-    //     }
-    // }, [process, value, mainArray])
 
     const insertSectionAttendance = useCallback(async (dept, section, date) => {
         setOpenBkDrop(true)

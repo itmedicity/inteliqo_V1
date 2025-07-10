@@ -1,4 +1,3 @@
-// import { CssVarsProvider, Typography } from '@mui/joy'
 import { Paper, Button, Divider, CircularProgress } from '@mui/material'
 import { Box } from '@mui/system'
 import React from 'react'
@@ -20,8 +19,6 @@ import {
   getEmployeeCurrentLeaveProcessInfom,
   processedLeaveList,
   newProcessedEmployeeData,
-  // categoryChangedNewObject,
-  // updateInactiveLeaves,
   updateOldLeaveProcessedData,
   insertNewLeaveProcessData,
   incativeExistLeave,
@@ -29,7 +26,6 @@ import {
 } from './Functions/LeaveProcessFun'
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { getProcessserialnum } from 'src/views/Constant/Constant'
-// import CircularProgressBar from 'src/views/Component/MuiCustomComponent/CircularProgressBar'
 import { ToastContainer } from 'react-toastify'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 import LeaveReduxFun from './Functions/LeaveReduxFun'
@@ -41,7 +37,6 @@ import AccordionGroup from '@mui/joy/AccordionGroup';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/joy'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 
-// const CarryForwardLeaveTable = React.lazy(() => import('./CarryForwardCard'))
 const CasualLeaveTable = React.lazy(() => import('./CasualLeaveCard'))
 const CommonLeaveTable = React.lazy(() => import('./CommonLeavesCard'))
 const CreditedLeaveTable = React.lazy(() => import('./CreditedLeavesCard'))

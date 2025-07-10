@@ -58,8 +58,8 @@ const AttendenceReport = () => {
         default_shift, //default SHIFT ID
         noff, // night off SHIFT ID
         halfday_time_count,
-        second_plicy,
-        max_late_day_count
+        // second_plicy,
+        // max_late_day_count
     } = commonSettings; //COMMON SETTING
 
     const deptSect = useSelector((state) => state?.getDeptSectList?.deptSectionList)

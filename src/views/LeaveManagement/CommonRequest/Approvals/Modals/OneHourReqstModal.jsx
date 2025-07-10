@@ -60,7 +60,6 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
         halfday_time_count,
         comp_hour_count,
         doff,//duty off 24, DA, respiratory 
-        monthly_late_time_count, //90 minutes
         coff_min_working_hour,//credit off minimum working hour
         holiday_min_working// holiday min hour exist or not
     } = commonSettings; //COMMON SETTING

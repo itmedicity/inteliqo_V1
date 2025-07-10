@@ -17,6 +17,7 @@ import {
     insertEarnLeaves,
     insertHolidayFun,
     updateCasualLeave,
+    updateCommonLeaveAfterRenewal,
     updateCommonLeaves,
     updateEarnLeaves,
     updateEarnLeavesAfterRenewal,
@@ -107,28 +108,52 @@ const LeaveProcessCard = ({ data, category }) => {
                             } else {
                                 warningNofity(message)
                             }
-                        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 110' + err) })
-                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -111' + err) })
+                        }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 111' + err) })
+                    }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line -112' + err) })
                 }
                 else if (leaveName === 2) {
-                    //Common Off days Leave Credit option
-                    updateCommonLeaves(lv_process_slno, em_id, em_no, em_gender, statutory_esi, category).then((values) => {
-                        const { status, data } = values;
-                        //insert Common Leaves
-                        if (status === 1) {
-                            insertCommonLeaves(data, lv_process_slno).then((messages) => {
-                                let { status, message } = messages;
-                                if (status === 1) {
-                                    infoNofity(message)
-                                    dispatch({ type: UPDATE_CASUAL_LEAVE })
-                                } else {
-                                    warningNofity(message)
-                                }
-                            }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 127' + err) })
-                        } else {
-                            warningNofity('Error ! ,Contact Edp !!! line - 129')
-                        }
-                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 131' + err) })
+
+                    // Calculate the difference in days between the current date and the actual date of joining (DOJ)
+                    const result = differenceInDays(new Date(), new Date(actual_doj))
+                    // Check if the category status is true and the difference in days is greater than 365
+                    if (cateStatus === true && result > 365) {
+                        updateCommonLeaveAfterRenewal(lv_process_slno, em_id, em_no, em_gender, statutory_esi, category).then((values) => {
+                            const { status, data } = values;
+                            //insert Common Leaves
+                            if (status === 1) {
+                                insertCommonLeaves(data, lv_process_slno).then((messages) => {
+                                    let { status, message } = messages;
+                                    if (status === 1) {
+                                        infoNofity(message)
+                                        dispatch({ type: UPDATE_CASUAL_LEAVE })
+                                    } else {
+                                        warningNofity(message)
+                                    }
+                                }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 133' + err) })
+                            } else {
+                                warningNofity('Error ! ,Contact IT !!! line - 135')
+                            }
+                        })
+                    } else {
+                        //Common Off days Leave Credit option
+                        updateCommonLeaves(lv_process_slno, em_id, em_no, em_gender, statutory_esi, category).then((values) => {
+                            const { status, data } = values;
+                            //insert Common Leaves
+                            if (status === 1) {
+                                insertCommonLeaves(data, lv_process_slno).then((messages) => {
+                                    let { status, message } = messages;
+                                    if (status === 1) {
+                                        infoNofity(message)
+                                        dispatch({ type: UPDATE_CASUAL_LEAVE })
+                                    } else {
+                                        warningNofity(message)
+                                    }
+                                }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 152' + err) })
+                            } else {
+                                warningNofity('Error ! ,Contact IT !!! line - 154')
+                            }
+                        }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 156' + err) })
+                    }
                 }
                 else if (leaveName === 3) {
 
@@ -183,11 +208,11 @@ const LeaveProcessCard = ({ data, category }) => {
                                     } else {
                                         warningNofity(message)
                                     }
-                                }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -186' + err) })
+                                }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line -212' + err) })
                             } else {
                                 warningNofity(message)
                             }
-                        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 190' + err) })
+                        }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 216' + err) })
                     } else {
 
                         updateEarnLeaves(calulatedProcessDate, lv_process_slno, em_id, em_no).then((dateRange) => {
@@ -200,14 +225,13 @@ const LeaveProcessCard = ({ data, category }) => {
                                 } else {
                                     warningNofity(message)
                                 }
-                            }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -198' + err) })
-                        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line - 199' + err) })
+                            }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line -229' + err) })
+                        }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 230' + err) })
                     }
                 }
                 else if (leaveName === 4) {
-
                     // National And Festival Holiday
-                    updateHolidayLeaves(calulatedProcessDate, lv_process_slno, em_id, em_no, em_doj).then((value) => {
+                    updateHolidayLeaves(lv_process_slno, em_id, em_no, em_doj).then((value) => {
                         //insert function holiday
                         let { status, data } = value;
                         if (status === 0) {
@@ -223,12 +247,12 @@ const LeaveProcessCard = ({ data, category }) => {
                                 } else {
                                     warningNofity(message)
                                 }
-                            }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -226 ' + err) })
+                            }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line -250 ' + err) })
                         }
-                    }).catch((err) => { warningNofity('Error ! ,Contact Edp !!!line 228' + err) })
+                    }).catch((err) => { warningNofity('Error ! ,Contact IT !!!line 252' + err) })
                 }
             }
-        }).catch((err) => { warningNofity('Error ! ,Contact Edp !!! line -231' + err) })
+        }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line -255' + err) })
     }, [actual_doj, cateStatus, category, dispatch, em_doj, em_id, em_no, empCategoryProcessDetl,
         lv_process_slno, statutory_esi])
 

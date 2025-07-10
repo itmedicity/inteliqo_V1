@@ -1,33 +1,32 @@
-import React, { memo, useEffect, useMemo } from 'react'
 import { Button, Checkbox, Input, Option, Select, Textarea, Typography } from '@mui/joy'
 import { Box, Paper } from '@mui/material'
-import { format, getDaysInMonth, startOfMonth, subDays, addDays, intervalToDuration, isValid, formatDuration, differenceInMinutes, isAfter } from 'date-fns'
-import moment from 'moment'
-import { useState } from 'react'
-import { axioslogin } from 'src/views/Axios/Axios'
-import { useSelector } from 'react-redux'
-import _ from 'underscore'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { useSelector } from 'react-redux';
 import Files from 'react-files'
 import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
 import PermMediaOutlinedIcon from '@mui/icons-material/PermMediaOutlined';
-import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import { succesNofity, warningNofity, infoNofity } from '../CommonCode/Commonfunc';
+import { format, getDaysInMonth, startOfMonth, subDays, addDays, intervalToDuration, isValid, formatDuration, differenceInMinutes, isAfter } from 'date-fns'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import Table from '@mui/joy/Table';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import { useCallback } from 'react'
-import { processShiftPunchMarkingHrFunc, dailyPunchMarkingFunction } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc'
+import Table from '@mui/joy/Table';
+import { axioslogin } from '../Axios/Axios';
+import { dailyPunchMarkingFunction, processShiftPunchMarkingHrFunc } from '../Attendance/PunchMarkingHR/punchMarkingHrFunc';
 
-const EndofProcess = ({ details, setFlag, setCount }) => {
+const RetirementProcess = ({ detail, setFlag, setCount }) => {
 
-
-    // STATE MANAGMENT START HERE
+    const details = useMemo(() => detail, [detail])
     const [files, setFiles] = useState('')
     const [exclusions, setExclusions] = useState(false)
     const [exclusionReason, setExclusionReason] = useState('')
-    const [empSalary, setEmpSalary] = useState(0)
+    const [selectedFile, setSelectedFile] = useState([])
+    const [attendanceProcess, setAttendnaceProcess] = useState(0)
+    const [earnAmount, setEarnAmount] = useState(0)
+    const [earnRemark, setEarnRemark] = useState('')
+    const [earnArray, setEarnArray] = useState([])
+    const [earnName, setEarnName] = useState('')
     const [earnValue, setEarnvalue] = useState(0)
     const [displayArray, setdisplayArray] = useState([])
-    // const [open1, setOpen1] = useState(false);
     const [totalDays, setTotaldays] = useState(0)
     const [leaveCount, setLeaveCount] = useState(0)
     const [holidayCount, setHolidayCount] = useState(0)
@@ -36,11 +35,6 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
     const [lopCount, setLopCount] = useState(0)
     const [payDays, setPayDays] = useState(0)
     const [holidayWorked, setHolidayWorked] = useState(0)
-    const [attendanceProcess, setAttendnaceProcess] = useState(0)
-    const [earnAmount, setEarnAmount] = useState(0)
-    const [earnRemark, setEarnRemark] = useState('')
-    const [earnArray, setEarnArray] = useState([])
-    const [earnName, setEarnName] = useState('')
     const [npsamount, setNpsamount] = useState(0)
     const [lwfamount, setLwfAmount] = useState(0)
     const [lopamount, setlopamount] = useState(0)
@@ -49,47 +43,50 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
     const [extraDeduct, setExtraDeduct] = useState(0)
     const [deductionAmount, setDeductionAmount] = useState(0)
     const [netSalary, setnetSalary] = useState(0)
-    const [selectedFile, setSelectedFile] = useState([])
-
 
     const [empdata, setEmpdata] = useState({
         dept_name: '',
         em_no: 0,
         em_name: '',
-        request_date: '',
+        date_of_birth: '',
         em_doj: '',
-        relieving_date: '',
+        retirement_date: '',
         desg_name: '',
         gross_salary: '',
         em_id: 0,
-        resignation_type: ''
-    })
-    const { dept_name, em_no, em_name, desg_name, gross_salary, em_id, resignation_type } = empdata;
 
-    // const state = useSelector((state) => state?.getCommonSettings, _.isEqual)
+    })
+    const { dept_name, em_no, em_name, desg_name, gross_salary, em_id } = empdata;
+
+    // DISPATCH SELECTOR
+    const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
+    const commonstate = useSelector((state) => state?.getCommonSettings)
+    const commonSetting = useMemo(() => commonstate, [commonstate])
+
+    const { week_off_day, notapplicable_shift, default_shift, noff, doff, second_plicy } = commonSetting;
 
     useEffect(() => {
         if (Object.keys(details).length !== 0) {
-            const { dept_name, em_no, em_name, request_date, em_doj, relieving_date,
-                desg_name, gross_salary, em_id, resignation_type } = details;
+            const { dept_name, em_no, em_name, em_doj, relieving_date,
+                desg_name, gross_salary, em_id, em_retirement_date, em_dob } = details;
             const obj = {
                 dept_name: dept_name,
                 em_no: em_no,
                 em_name: em_name,
-                request_date: request_date,
+                date_of_birth: em_dob,
                 em_doj: em_doj,
                 relieving_date: relieving_date,
                 desg_name: desg_name,
                 gross_salary: gross_salary,
                 em_id: em_id,
-                resignation_type: resignation_type
+                retirement_date: em_retirement_date
             }
             setEmpdata(obj)
-            //  getPunchData(postdata)
         } else {
             setEmpdata({})
         }
     }, [details])
+
 
     useEffect(() => {
         const getEmpEsi = async () => {
@@ -120,40 +117,9 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
             } else {
                 setDeductionAmount(0)
             }
-
         }
-
         getDeduction(em_id)
     }, [em_no, gross_salary, em_id])
-
-    /*******************************************************************************************/
-
-    //NEW CODE FUNCTIONS START HERE
-
-    // DISPATCH SELECTOR
-    const shiftInformation = useSelector((state) => state?.getShiftList?.shiftDetails)
-    const commonstate = useSelector((state) => state?.getCommonSettings, _.isEqual)
-    const commonSetting = useMemo(() => commonstate, [commonstate])
-
-    const { week_off_day, notapplicable_shift, default_shift, noff } = commonSetting;
-
-    //DATA FETCHING START HERE
-
-    /**
-     * Retrieves the gross salary of an employee based on their section ID.
-     *
-     * @return {Promise<void>} - A Promise that resolves when the salary is retrieved and set.
-     */
-
-    useEffect(() => {
-        const getEmployeeSalary = async () => {
-            const getGrossSalaryEmpWise = await axioslogin.get(`/common/getgrossSalaryByEmployeeNo/${details.sect_id}`);
-            const { su, dataa } = getGrossSalaryEmpWise.data;
-            if (su === 1) setEmpSalary(dataa)
-        }
-        getEmployeeSalary()
-    }, [details.sect_id])
-
 
     // HANDLER
     const handleChange = (files) => {
@@ -165,12 +131,12 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
     }
 
     /**
-     * Handles file upload errors based on the error code.
-     *
-     * @param {Object} error - The error object containing the error code.
-     * @param {File} file - The file that caused the error.
-     * @return {void} No return value.
-     */
+   * Handles file upload errors based on the error code.
+   *
+   * @param {Object} error - The error object containing the error code.
+   * @param {File} file - The file that caused the error.
+   * @return {void} No return value.
+   */
 
     const handleError = (error, file) => {
         const { code } = error
@@ -185,99 +151,92 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
         }
     }
 
-    const dateOfJoinDate = format(new Date(details?.em_doj), "dd-MM-yyyy")
-    const resignationDate = format(new Date(details?.request_date), "dd-MM-yyyy")
-    const notePeriodEndDate = format(new Date(details?.relieving_date), "dd-MM-yyyy")
-
-    // FUNCTIONS for PROCESS THE ATTENDFANCE
-
     const calculateProceeAttendence = useCallback(async () => {
         setAttendnaceProcess(1)
         const today = format(new Date(), 'yyyy-MM-dd');
-        const lastWorkingDay = resignation_type === '2' ? format(subDays(new Date(details?.relieving_date), 1), 'yyyy-MM-dd 00:00:00') : format(new Date(details?.relieving_date), 'yyyy-MM-dd');
-        const startOfMonths = format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd')
-
+        const lastWorkingDay = format(new Date(details?.em_retirement_date), 'yyyy-MM-dd');
+        const startOfMonths = format(startOfMonth(new Date(details?.em_retirement_date)), 'yyyy-MM-dd')
         if (today <= lastWorkingDay) {
-            warningNofity('Notice Period Not Completed!')
+            warningNofity('Retirement Date Not Completed!')
             return
         } else {
-            if (commonSetting?.second_plicy === 1) {
-                const postData_getPunchData = {
-                    preFromDate: format(subDays(new Date(startOfMonths), 2), 'yyyy-MM-dd 00:00:00'),
-                    preToDate: format(addDays(new Date(lastWorkingDay), 1), 'yyyy-MM-dd 23:59:59'),
-                    fromDate: format(new Date(startOfMonths), 'yyyy-MM-dd'),
-                    toDate: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-                    fromDate_dutyPlan: format(new Date(startOfMonths), 'yyyy-MM-dd'),
-                    toDate_dutyPlan: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-                    fromDate_punchMaster: format(subDays(new Date(startOfMonths), 0), 'yyyy-MM-dd'),
-                    toDate_punchMaster: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-                    section: details.sect_id,
-                    empList: [em_no],
-                    loggedEmp: em_no,
-                    frDate: format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
-                    trDate: format(new Date(details?.relieving_date), 'yyyy-MM-dd'),
-                }
-
-                // // GET PUNCH DATA FROM TABLE START
-                const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
-                const { su, result_data } = punch_data.data;
-                if (su === 1) {
-                    const punchaData = result_data;
-                    //const empList = [em_no]
-                    // PUNCH MARKING HR PROCESS START
+            const postData_getPunchData = {
+                preFromDate: format(subDays(new Date(startOfMonths), 2), 'yyyy-MM-dd 00:00:00'),
+                preToDate: format(addDays(new Date(lastWorkingDay), 1), 'yyyy-MM-dd 23:59:59'),
+                fromDate: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+                toDate: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                fromDate_dutyPlan: format(new Date(startOfMonths), 'yyyy-MM-dd'),
+                toDate_dutyPlan: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                fromDate_punchMaster: format(subDays(new Date(startOfMonths), 0), 'yyyy-MM-dd'),
+                toDate_punchMaster: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
+                section: details.sect_id,
+                empList: [em_no],
+                loggedEmp: em_no,
+                frDate: format(startOfMonth(new Date(details?.em_retirement_date)), 'yyyy-MM-dd'),
+                trDate: format(new Date(details?.em_retirement_date), 'yyyy-MM-dd'),
+            }
+            // GET PUNCH DATA FROM TABLE START
+            const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
+            const { su, result_data } = punch_data.data;
+            if (su === 1) {
+                const punchaData = result_data;
+                if (second_plicy === 1) { //checking second policy is running
+                    //PUNCH MARKING HR PROCESS START
                     const result = await dailyPunchMarkingFunction(
                         postData_getPunchData,
                         punchaData,
                         shiftInformation,
-                        commonSetting
+                        commonSetting,
                     )
                     const { status, message, errorMessage, punchMastData } = result;
                     if (status === 1) {
                         const tb = punchMastData?.map((e) => {
-                            const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
+
+                            const crossDay = shiftInformation?.find((shft) => shft?.shft_slno === e?.shift_id);
                             const crossDayStat = crossDay?.shft_cross_day ?? 0;
 
-                            let shiftIn = `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_in), 'HH:mm')}`;
-                            let shiftOut = crossDayStat === 0 ? `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}` :
-                                `${format(addDays(new Date(e.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}`;
+                            let shiftIn = `${format(new Date(e?.duty_day), 'yyyy-MM-dd')} ${format(new Date(e?.shift_in), 'HH:mm')}`;
+                            let shiftOut = crossDayStat === 0 ? `${format(new Date(e?.duty_day), 'yyyy-MM-dd')} ${format(new Date(e?.shift_out), 'HH:mm')}` :
+                                `${format(addDays(new Date(e?.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e?.shift_out), 'HH:mm')}`;
 
                             // GET THE HOURS WORKED IN MINITS
                             let interVal = intervalToDuration({
-                                start: isValid(new Date(e.punch_in)) ? new Date(e.punch_in) : 0,
-                                end: isValid(new Date(e.punch_out)) ? new Date(e.punch_out) : 0
+                                start: isValid(new Date(e?.punch_in)) ? new Date(e?.punch_in) : 0,
+                                end: isValid(new Date(e?.punch_out)) ? new Date(e?.punch_out) : 0
                             })
                             return {
-                                punch_slno: e.punch_slno,
-                                duty_day: e.duty_day,
-                                shift_id: e.shift_id,
-                                emp_id: e.emp_id,
-                                em_no: e.em_no,
-                                punch_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_in,
-                                punch_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_out,
-                                shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-                                shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
-                                hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                                punch_slno: e?.punch_slno,
+                                duty_day: e?.duty_day,
+                                shift_id: e?.shift_id,
+                                emp_id: e?.emp_id,
+                                em_no: e?.em_no,
+                                punch_in: (e?.shift_id === default_shift || e?.shift_id === notapplicable_shift || e?.shift_id === week_off_day || e?.shift_id === noff || e?.shift_id === doff) ? crossDay?.shft_desc : e?.punch_in,
+                                punch_out: (e?.shift_id === default_shift || e?.shift_id === notapplicable_shift || e?.shift_id === week_off_day || e?.shift_id === noff || e?.shift_id === doff) ? crossDay?.shft_desc : e?.punch_out,
+                                shift_in: (e?.shift_id === default_shift || e?.shift_id === notapplicable_shift || e?.shift_id === week_off_day || e?.shift_id === noff || e?.shift_id === doff) ? crossDay?.shft_desc : format(new Date(shiftIn), 'yyyy-MM-dd HH:mm'),
+                                shift_out: (e?.shift_id === default_shift || e?.shift_id === notapplicable_shift || e?.shift_id === week_off_day || e?.shift_id === noff || e?.shift_id === doff) ? crossDay?.shft_desc : format(new Date(shiftOut), 'yyyy-MM-dd HH:mm'),
+                                hrs_worked: (isValid(new Date(e?.punch_in)) && e?.punch_in !== null) && (isValid(new Date(e?.punch_out)) && e?.punch_out !== null) ?
                                     formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
-                                hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                                    differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
-                                late_in: e.late_in,
-                                early_out: e.early_out,
-                                shiftIn: e.shift_in,
-                                shiftOut: e.shift_out,
+                                hrsWrkdInMints: (isValid(new Date(e?.punch_in)) && e?.punch_in !== null) && (isValid(new Date(e?.punch_out)) && e?.punch_out !== null) ?
+                                    differenceInMinutes(new Date(e?.punch_out), new Date(e?.punch_in)) : 0,
+                                late_in: e?.late_in,
+                                early_out: e?.early_out,
+                                shiftIn: e?.shift_in,
+                                shiftOut: e?.shift_out,
                                 hideStatus: 0,
-                                isWeekOff: (e.shift_id === week_off_day),
-                                isNOff: e.shift_id === noff,
-                                holiday_status: e.holiday_status,
-                                lvereq_desc: e.lvereq_desc,
-                                duty_desc: e.duty_desc,
-                                leave_status: e.leave_status
+                                isWeekOff: (e?.shift_id === week_off_day),
+                                isNOff: e?.shift_id === noff,
+                                holiday_status: e?.holiday_status,
+                                lvereq_desc: e?.lvereq_desc,
+                                duty_desc: e?.duty_desc,
+                                leave_status: e?.leave_status,
+                                isDoff: e?.shift_id === doff,
+                                gross_salary: e?.gross_salary
                             }
                         })
-
                         const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
                         setdisplayArray(array);
 
-                        const totalDays = getDaysInMonth(new Date(details?.relieving_date))
+                        const totalDays = getDaysInMonth(new Date(details?.em_retirement_date))
                         setTotaldays(totalDays)
                         const totalLC = array?.filter(el => el.lvereq_desc === "LC").length ?? 0
                         setLcCount(totalLC)
@@ -313,89 +272,60 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                         warningNofity(message, errorMessage)
                     }
                 } else {
-                    warningNofity("Error getting punch Data From DB")
-                    // setOpenBkDrop(false)
-                }
-
-            } else {
-                const postData_getPunchData = {
-                    preFromDate: format(subDays(new Date(startOfMonths), 2), 'yyyy-MM-dd 00:00:00'),
-                    preToDate: format(addDays(new Date(lastWorkingDay), 1), 'yyyy-MM-dd 23:59:59'),
-                    fromDate: format(new Date(startOfMonths), 'yyyy-MM-dd'),
-                    toDate: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-                    fromDate_dutyPlan: format(new Date(startOfMonths), 'yyyy-MM-dd'),
-                    toDate_dutyPlan: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-                    fromDate_punchMaster: format(subDays(new Date(startOfMonths), 0), 'yyyy-MM-dd'),
-                    toDate_punchMaster: format(new Date(lastWorkingDay), 'yyyy-MM-dd'),
-                    section: details.sect_id,
-                    empList: [em_no],
-                    loggedEmp: em_no,
-                    frDate: format(startOfMonth(new Date(details?.relieving_date)), 'yyyy-MM-dd'),
-                    trDate: format(new Date(details?.relieving_date), 'yyyy-MM-dd'),
-                }
-
-                // // GET PUNCH DATA FROM TABLE START
-                const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData_getPunchData);
-                const { su, result_data } = punch_data.data;
-                if (su === 1) {
-                    const punchaData = result_data;
-                    const empList = [em_no]
-                    // PUNCH MARKING HR PROCESS START
+                    //daily punch marking with normal grace period and lc 
                     const result = await processShiftPunchMarkingHrFunc(
                         postData_getPunchData,
                         punchaData,
-                        empList,
                         shiftInformation,
                         commonSetting,
-                        empSalary
                     )
                     const { status, message, errorMessage, punchMastData } = result;
                     if (status === 1) {
                         const tb = punchMastData?.map((e) => {
-                            const crossDay = shiftInformation?.find((shft) => shft.shft_slno === e.shift_id);
+                            const crossDay = shiftInformation?.find((shft) => shft?.shft_slno === e?.shift_id);
                             const crossDayStat = crossDay?.shft_cross_day ?? 0;
 
-                            let shiftIn = `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_in), 'HH:mm')}`;
-                            let shiftOut = crossDayStat === 0 ? `${format(new Date(e.duty_day), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}` :
-                                `${format(addDays(new Date(e.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e.shift_out), 'HH:mm')}`;
+                            let shiftIn = `${format(new Date(e?.duty_day), 'yyyy-MM-dd')} ${format(new Date(e?.shift_in), 'HH:mm')}`;
+                            let shiftOut = crossDayStat === 0 ? `${format(new Date(e?.duty_day), 'yyyy-MM-dd')} ${format(new Date(e?.shift_out), 'HH:mm')}` :
+                                `${format(addDays(new Date(e?.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(e?.shift_out), 'HH:mm')}`;
 
                             // GET THE HOURS WORKED IN MINITS
                             let interVal = intervalToDuration({
-                                start: isValid(new Date(e.punch_in)) ? new Date(e.punch_in) : 0,
-                                end: isValid(new Date(e.punch_out)) ? new Date(e.punch_out) : 0
+                                start: isValid(new Date(e?.punch_in)) ? new Date(e?.punch_in) : 0,
+                                end: isValid(new Date(e?.punch_out)) ? new Date(e?.punch_out) : 0
                             })
                             return {
-                                punch_slno: e.punch_slno,
-                                duty_day: e.duty_day,
-                                shift_id: e.shift_id,
-                                emp_id: e.emp_id,
-                                em_no: e.em_no,
-                                punch_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_in,
-                                punch_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : e.punch_out,
-                                shift_in: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftIn).format('DD-MM-YYYY HH:mm'),
-                                shift_out: (e.shift_id === default_shift || e.shift_id === notapplicable_shift || e.shift_id === week_off_day || e.shift_id === noff) ? crossDay?.shft_desc : moment(shiftOut).format('DD-MM-YYYY HH:mm'),
-                                hrs_worked: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
+                                punch_slno: e?.punch_slno,
+                                duty_day: e?.duty_day,
+                                shift_id: e?.shift_id,
+                                emp_id: e?.emp_id,
+                                em_no: e?.em_no,
+                                punch_in: (e?.shift_id === default_shift || e?.shift_id === notapplicable_shift || e?.shift_id === week_off_day || e?.shift_id === noff) ? crossDay?.shft_desc : e?.punch_in,
+                                punch_out: (e?.shift_id === default_shift || e?.shift_id === notapplicable_shift || e?.shift_id === week_off_day || e?.shift_id === noff) ? crossDay?.shft_desc : e?.punch_out,
+                                shift_in: (e?.shift_id === default_shift || e?.shift_id === notapplicable_shift || e?.shift_id === week_off_day || e?.shift_id === noff) ? crossDay?.shft_desc : format(new Date(shiftIn), 'yyyy-MM-dd HH:mm'),
+                                shift_out: (e?.shift_id === default_shift || e?.shift_id === notapplicable_shift || e?.shift_id === week_off_day || e?.shift_id === noff) ? crossDay?.shft_desc : format(new Date(shiftOut), 'yyyy-MM-dd HH:mm'),
+                                hrs_worked: (isValid(new Date(e?.punch_in)) && e?.punch_in !== null) && (isValid(new Date(e?.punch_out)) && e?.punch_out !== null) ?
                                     formatDuration({ days: interVal.days, hours: interVal.hours, minutes: interVal.minutes }) : 0,
-                                hrsWrkdInMints: (isValid(new Date(e.punch_in)) && e.punch_in !== null) && (isValid(new Date(e.punch_out)) && e.punch_out !== null) ?
-                                    differenceInMinutes(new Date(e.punch_out), new Date(e.punch_in)) : 0,
-                                late_in: e.late_in,
-                                early_out: e.early_out,
-                                shiftIn: e.shift_in,
-                                shiftOut: e.shift_out,
+                                hrsWrkdInMints: (isValid(new Date(e?.punch_in)) && e?.punch_in !== null) && (isValid(new Date(e?.punch_out)) && e?.punch_out !== null) ?
+                                    differenceInMinutes(new Date(e?.punch_out), new Date(e?.punch_in)) : 0,
+                                late_in: e?.late_in,
+                                early_out: e?.early_out,
+                                shiftIn: e?.shift_in,
+                                shiftOut: e?.shift_out,
                                 hideStatus: 0,
-                                isWeekOff: (e.shift_id === week_off_day),
-                                isNOff: e.shift_id === noff,
-                                holiday_status: e.holiday_status,
-                                lvereq_desc: e.lvereq_desc,
-                                duty_desc: e.duty_desc,
-                                leave_status: e.leave_status
+                                isWeekOff: (e?.shift_id === week_off_day),
+                                isNOff: e?.shift_id === noff,
+                                holiday_status: e?.holiday_status,
+                                lvereq_desc: e?.lvereq_desc,
+                                duty_desc: e?.duty_desc,
+                                leave_status: e?.leave_status,
+                                gross_salary: e?.gross_salary
                             }
                         })
-
                         const array = tb.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
                         setdisplayArray(array);
 
-                        const totalDays = getDaysInMonth(new Date(details?.relieving_date))
+                        const totalDays = getDaysInMonth(new Date(details?.em_retirement_date))
                         setTotaldays(totalDays)
                         const totalLC = array?.filter(el => el.lvereq_desc === "LC").length ?? 0
                         setLcCount(totalLC)
@@ -430,83 +360,13 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                     } else {
                         warningNofity(message, errorMessage)
                     }
-                } else {
-                    warningNofity("Error getting punch Data From DB")
-                    // setOpenBkDrop(false)
                 }
-            }
-
-        }
-    }, [details, em_no, empSalary, commonSetting, shiftInformation, gross_salary,
-        default_shift, noff, notapplicable_shift, week_off_day, resignation_type])
-
-    //HANDLE SUBMIT THE RESIGNATION PROCESS 
-    const handleSave = useCallback(async () => {
-        const postData = {
-            em_id: em_id,
-            em_no: em_no,
-            exclusion: exclusions === true ? 1 : 0,
-            exclusion_reason: exclusionReason,
-            resignation_date: format(new Date(details?.request_date), 'yyyy-MM-dd'),
-            relieving_date: format(new Date(details?.relieving_date), 'yyyy-MM-dd'),
-            total_days: totalDays,
-            leave_count: leaveCount,
-            holiday_count: holidayCount,
-            halfday_count: hdLop,
-            late_count: lcCount,
-            lop_count: lopCount,
-            holiday_worked: holidayWorked,
-            total_paydays: payDays,
-            lop_amount: lopamount,
-            nps_amount: npsamount,
-            lwf_amount: lwfamount,
-            deduction_amount: deductionAmount,
-            holiday_amount: holidayamount,
-            extra_earnings: extraEarn,
-            extra_deduction: extraDeduct,
-            gross_salary: gross_salary,
-            net_salary: netSalary,
-            total_payableamount: netSalary,
-            refund_amount: resignation_type === '2' ? netSalary : 0
-        }
-
-        if ((files === '' || files === undefined) && exclusions === false) {
-            warningNofity("Upload the file")
-            return
-        } else if (exclusions === true && exclusionReason === '') {
-            warningNofity("Enter the reason")
-            return
-        } else if (isAfter(new Date(details?.relieving_date), new Date())) {
-            warningNofity("Notice Period Not Yet Completed")
-        } else if (attendanceProcess === 0) {
-            warningNofity("Process Attendnace First!")
-        } else {
-            const formData = new FormData()
-            formData.append('file', selectedFile[0]);
-            formData.append('postData', JSON.stringify(postData));
-
-            const result = await axioslogin.post('/Resignation/insertFinal', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-            })
-            const { success, message } = result.data;
-            if (success === 1) {
-                succesNofity(message)
-                setCount(Math.random())
-                setFlag(0)
-            } else if (success === 2) {
-                warningNofity(message)
-            } else if (success === 0) {
-                infoNofity(message)
             } else {
-                errorNofity("Error Occured!!!!! Please Contact IT")
+                warningNofity("Error getting punch Data From DB")
             }
         }
-    }, [files, exclusions, exclusionReason, details, em_id, totalDays, leaveCount, holidayCount, hdLop, lcCount,
-        lopCount, holidayWorked, payDays, gross_salary, lopamount, lwfamount, npsamount, holidayamount, netSalary,
-        deductionAmount, extraEarn, extraDeduct, attendanceProcess, selectedFile, setFlag, em_no, setCount,
-        resignation_type])
+    }, [em_no, commonSetting, default_shift, details, doff, noff, notapplicable_shift, second_plicy,
+        shiftInformation, week_off_day, gross_salary])
 
     const addEarn = useCallback(() => {
         if (earnValue !== 0 && earnAmount !== 0 && earnRemark !== '') {
@@ -529,6 +389,71 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
         }
     }, [earnValue, earnAmount, earnRemark, earnArray, earnName, netSalary,])
 
+    //HANDLE SUBMIT THE Retirement PROCESS 
+    const handleSave = useCallback(async () => {
+        const postData = {
+            em_id: em_id,
+            em_no: em_no,
+            exclusion: exclusions === true ? 1 : 0,
+            exclusion_reason: exclusionReason,
+            em_doj: format(new Date(details?.em_doj), 'yyyy-MM-dd'),
+            retirement_date: format(new Date(details?.em_retirement_date), 'yyyy-MM-dd'),
+            total_days: totalDays,
+            leave_count: leaveCount,
+            holiday_count: holidayCount,
+            halfday_count: hdLop,
+            late_count: lcCount,
+            lop_count: lopCount,
+            holiday_worked: holidayWorked,
+            total_paydays: payDays,
+            lop_amount: lopamount,
+            nps_amount: npsamount,
+            lwf_amount: lwfamount,
+            deduction_amount: deductionAmount,
+            holiday_amount: holidayamount,
+            extra_earnings: extraEarn,
+            extra_deduction: extraDeduct,
+            gross_salary: gross_salary,
+            net_salary: netSalary,
+            total_payableamount: netSalary
+        }
+
+        if ((files === '' || files === undefined) && exclusions === false) {
+            warningNofity("Upload the file")
+            return
+        } else if (exclusions === true && exclusionReason === '') {
+            warningNofity("Enter the reason")
+            return
+        } else if (isAfter(new Date(details?.em_retirement_date), new Date())) {
+            warningNofity("Retirement Date Not Yet Completed")
+        } else if (attendanceProcess === 0) {
+            warningNofity("Process Attendnace First!")
+        } else {
+            const formData = new FormData()
+            formData.append('file', selectedFile[0]);
+            formData.append('postData', JSON.stringify(postData));
+
+            const result = await axioslogin.post('/Resignation/insert/retirement', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+            })
+            const { success, message } = result.data;
+            if (success === 1) {
+                // setProgress(100)
+                succesNofity(message)
+                setCount(Math.random())
+                setFlag(0)
+            } else if (success === 2) {
+                warningNofity(message)
+            } else {
+                infoNofity(message)
+            }
+        }
+    }, [files, exclusions, exclusionReason, details, em_id, totalDays, leaveCount, holidayCount, hdLop, lcCount,
+        lopCount, holidayWorked, payDays, gross_salary, lopamount, lwfamount, npsamount, holidayamount, netSalary,
+        deductionAmount, extraEarn, extraDeduct, attendanceProcess, selectedFile, setFlag, em_no, setCount])
+
     return (
         <Box sx={{ width: "100%", p: 1, overflow: 'auto', '::-webkit-scrollbar': { display: "none" } }} >
             <Paper variant='outlined' sx={{ p: 1, display: "flex", flexDirection: "column", }} >
@@ -540,12 +465,12 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Employee ID :'} >{em_no}</Typography>
                             <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Department :'}>{dept_name}</Typography>
                             <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Designation :'}>{desg_name}</Typography>
-                            <Typography level='body-md' color='danger' fontFamily="monospace" lineHeight={1.2} startDecorator={'Resignation Type:'} >{resignation_type === '2' ? '24 Hour Resignation' : 'Normal Resignation'}</Typography>
+
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', flexBasis: '30%' }} >
-                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Date Of Joining :'}>{dateOfJoinDate}</Typography>
-                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Resignation Date :'}>{resignationDate}</Typography>
-                            <Typography level='body-md' color='danger' fontFamily="monospace" lineHeight={1.2} startDecorator={'Notice Period End Date :'} >{notePeriodEndDate}</Typography>
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Date Of Joining :'}>{details?.em_doj === null ? '' : format(new Date(details?.em_doj), "dd-MM-yyyy")}</Typography>
+                            <Typography level='body-md' color='neutral' fontFamily="monospace" lineHeight={1.2} startDecorator={'Date Of Birth :'}>{details?.em_dob === null ? '' : format(new Date(details?.em_dob), "dd-MM-yyyy")}</Typography>
+                            <Typography level='body-md' color='danger' fontFamily="monospace" lineHeight={1.2} startDecorator={'Retirement Date :'} >{details?.em_retirement_date === null ? '' : format(new Date(details?.em_retirement_date), "dd-MM-yyyy")}</Typography>
                         </Box>
                     </Box>
                 </Box>
@@ -597,6 +522,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                         {
                             files !== '' &&
                             <Box
+                                // onClick={() => setOpen1(true)}
                                 sx={{
                                     display: 'flex', justifyContent: 'center', alignItems: 'end', borderBottom: '3px solid grey', mb: 0.3, ml: 5, width: '30%',
                                     cursor: 'pointer',
@@ -652,15 +578,15 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             variant='outlined'
                             sx={{ borderRadius: 5, pr: 2, py: 0.5, fontFamily: 'monospace' }}
                         >Start of Month</Typography>
-                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'}  > {format(startOfMonth(new Date(details?.relieving_date)), 'dd-MM-yyyy')}</Typography>
+                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'}  > {format(startOfMonth(new Date(details?.em_retirement_date)), 'dd-MM-yyyy')}</Typography>
                         <Typography
                             level='title-sm'
                             color='neutral'
                             startDecorator={<CalendarMonthOutlinedIcon fontSize='small' />}
                             variant='outlined'
                             sx={{ borderRadius: 5, pr: 2, py: 0.5, fontFamily: 'monospace' }}
-                        >Resignation Date</Typography>
-                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'} >{format(new Date(details?.relieving_date), 'dd-MM-yyyy')}</Typography>
+                        >Retirement Date</Typography>
+                        <Typography level='title-md' color='neutral' fontFamily="monospace" sx={{ px: 1, pr: 2 }} startDecorator={':'} >{format(new Date(details?.em_retirement_date), 'dd-MM-yyyy')}</Typography>
                         <Button
                             color="primary"
                             onClick={calculateProceeAttendence}
@@ -807,9 +733,8 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             <tr>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} >Holiday worked</td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', backgroundColor: '#D5FBDD' }} >{holidayWorked}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, }} >Refund Amount If 24 Resignation</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 900, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center', color: '#060A0F' }} >{netSalary}</td>
-                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, textAlign: 'center' }} > {netSalary}</td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
+                                <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1, backgroundColor: '#E4E5E6' }} ></td>
                                 <td style={{ height: 15, p: 0, fontSize: 11.5, fontWeight: 700, fontFamily: 'monospace', lineHeight: 1 }} ></td>
                             </tr>
                         </tbody>
@@ -826,7 +751,7 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
                             fullWidth
                             sx={{ display: "flex", flex: 1, fontFamily: 'monospace' }}
                         >
-                            Resignation Final Process
+                            Retirement Final Process
                         </Button>
                     </Box>
                 </Box>
@@ -835,4 +760,4 @@ const EndofProcess = ({ details, setFlag, setCount }) => {
     )
 }
 
-export default memo(EndofProcess) 
+export default memo(RetirementProcess) 

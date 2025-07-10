@@ -1,4 +1,4 @@
-import { FormControl, MenuItem, Select } from '@mui/material';
+import { Option, Select } from '@mui/joy';
 import React, { memo, useEffect, useState } from 'react'
 import { axioslogin } from '../Axios/Axios';
 
@@ -19,26 +19,22 @@ const BoardSelectRedux = ({ value, setValue, education, boarddisable }) => {
         getBoard()
     }, [education]);
     return (
-        <FormControl fullWidth
-            size='small'   >
-            <Select
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                size="small"
-                fullWidth
-                variant='outlined'
-                disabled={boarddisable}
-            >
-                <MenuItem value={0} >
-                    Select Board
-                </MenuItem>
-                {
-                    data && data.map((val, index) => {
-                        return <MenuItem key={index} value={val.board_slno}>{val.board_name}  </MenuItem>
-                    })
-                }
-            </Select>
-        </FormControl>
+        <Select
+            value={value}
+            onChange={(event, newValue) => {
+                setValue(newValue);
+            }}
+            size='md'
+            variant='outlined'
+            disabled={boarddisable}
+        >
+            <Option disabled value={0}> Select Board</Option>
+            {
+                data?.map((val, index) => {
+                    return <Option key={index} value={val.board_slno}>{val.board_name}</Option>
+                })
+            }
+        </Select>
     )
 }
 
