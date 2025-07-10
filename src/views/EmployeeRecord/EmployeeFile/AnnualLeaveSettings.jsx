@@ -9,7 +9,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import PageLayoutProcess from 'src/views/CommonCode/PageLayoutProcess';
 import { getProcessserialnum } from 'src/views/Constant/Constant';
-import CalculatedOffDays from './EmpFileComponent/CalculatedOffDays';
+// import CalculatedOffDays from './EmpFileComponent/CalculatedOffDays';
 import CardLeaveContainer from './EmpFileComponent/CardLeaveContainer';
 import CardLeaveContainerTwo from './EmpFileComponent/CardLeaveContainerTwo';
 import CarryForwardLeaveList from './EmpFileComponent/CarryForwardLeaveList';
@@ -406,7 +406,7 @@ const AnnualLeaveSettings = () => {
                         <CardLeaveContainer title={CalculatedLeave}  >
                             <Suspense fallback={<CircularProgress />} >
                                 <div className="card-casual-leave">
-                                    <CalculatedOffDays empid={no} />
+                                    {/* <CalculatedOffDays empid={no} /> */}
                                 </div>
                             </Suspense>
                         </CardLeaveContainer>
