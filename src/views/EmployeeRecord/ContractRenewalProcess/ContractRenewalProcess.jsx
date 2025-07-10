@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { addYears, format, lastDayOfMonth } from 'date-fns';
+import { addYears, endOfMonth, format, lastDayOfMonth } from 'date-fns';
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
@@ -199,7 +199,7 @@ const ContractRenewalProcess = () => {
     return {
       em_no: contstatus === 1 && contractrenew === true ? newempId : permanentEmpNo,
       em_category: newCatgeory,
-      em_contract_end_date: contstatus === 1 && contractrenew === true ? format(new Date(contractEnddate), 'yyyy-MM-dd') : '2000-01-31',
+      em_contract_end_date: contstatus === 1 && contractrenew === true ? format(endOfMonth(new Date(contractEnddate)), 'yyyy-MM-dd') : '2000-01-31',
       em_prob_end_date: '2000-01-31',
       em_id: no,
       probation_status: 0,

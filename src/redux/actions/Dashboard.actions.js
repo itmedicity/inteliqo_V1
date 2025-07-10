@@ -29,7 +29,8 @@ const {
     FETCH_CEO_APPRAISAL_LIST,
     FETCH_APPRAISAL_COMPLETE,
     FETCH_APPRAISAL_COMPLETE_LIST,
-    FETCH_NOTADDED_ESIEMP_LIST
+    FETCH_NOTADDED_ESIEMP_LIST,
+    FETCH_RETIREMENT_LIST
 } = Actiontypes;
 
 export const getResignCount = () => async (dispatch) => {
@@ -302,11 +303,20 @@ export const getesiNotAddedEmp = () => async (dispatch) => {
     const result = await axioslogin.get('/Count/esi/list')
     const { success, data } = result.data
     if (success === 1) {
-        // dispatch({ type: FETCH_NOTADDED_ESIEMP_LIST, payload: data, status: true })
         dispatch({ type: FETCH_NOTADDED_ESIEMP_LIST, payload: data.length, status: true })
     } else {
-        // dispatch({ type: FETCH_NOTADDED_ESIEMP_LIST, payload: [], status: false })
         dispatch({ type: FETCH_NOTADDED_ESIEMP_LIST, payload: 0, status: false })
+    }
+
+}
+
+export const getRetiredEmployees = () => async (dispatch) => {
+    const result = await axioslogin.get('/Count/retirement/list')
+    const { success, data } = result.data
+    if (success === 1) {
+        dispatch({ type: FETCH_RETIREMENT_LIST, payload: data.length, status: true })
+    } else {
+        dispatch({ type: FETCH_RETIREMENT_LIST, payload: 0, status: false })
     }
 
 }

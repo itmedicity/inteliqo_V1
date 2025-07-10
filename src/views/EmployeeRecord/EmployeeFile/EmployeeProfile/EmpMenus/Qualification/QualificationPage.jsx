@@ -1,13 +1,11 @@
-import { Button, CssVarsProvider, Typography } from '@mui/joy'
-import { Box, IconButton, Paper, TextField, Tooltip } from '@mui/material'
+import { Button, CssVarsProvider, Input, Typography } from '@mui/joy'
+import { Box, IconButton, Paper, Tooltip } from '@mui/material'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import EducationSelectRedux from 'src/views/MuiComponents/EducationSelectRedux';
 import CourseSelectRedux from 'src/views/MuiComponents/CourseSelectRedux';
 import SpecializtionSelectRedux from 'src/views/MuiComponents/SpecializtionSelectRedux';
 import UniversitySelect from 'src/views/MuiComponents/UniversitySelect';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { format } from 'date-fns'
 import BoardSelectRedux from 'src/views/MuiComponents/BoardSelectRedux';
 import CommonCheckBox from 'src/views/Component/CommonCheckBox';
@@ -22,6 +20,10 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
+import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const QualificationPage = () => {
 
@@ -59,6 +61,7 @@ const QualificationPage = () => {
     const [regTypedisable, setregTypedisable] = useState(false)
     const [regNodisable, setregNodisable] = useState(false)
     const [count, setcount] = useState(0);
+    const [reg_mandatory, setreg_mandatory] = useState(0)
 
     const em_id = useSelector((state) => state?.getProfileData?.ProfileData[0]?.em_id ?? 0, _.isEqual)
 
@@ -142,14 +145,7 @@ const QualificationPage = () => {
     const updateYear = (val) => {
         setYear(val)
     }
-    // const updateexpdate = (e) => {
-    //     var val = format(new Date(e.target.value), "yyyy-MM-dd")
-    //     setExpyear(val)
-    // }
-    // const updatechellandate = (e) => {
-    //     var val = format(new Date(e.target.value), "yyyy-MM-dd")
-    //     setChellan(val)
-    // }
+
     const qual_year = moment(year).format('YYYY')
 
     const [columnDef] = useState([
@@ -382,7 +378,11 @@ const QualificationPage = () => {
                 }
             }
         }
-        if (flag === 0) {
+
+        if (reg_mandatory === 1 && (em_reg_no === '' || em_chellan === '')) {
+            warningNofity("Registration Number || Challan Number Is Mandatory")
+        }
+        else if (flag === 0) {
             submitdata(postData5, postData, postData4)
         }
         else {
@@ -390,7 +390,7 @@ const QualificationPage = () => {
         }
 
     }, [postData5, postData, postData4, resetForm, updatepostData, updatepostdata4, updatepostdata5,
-        flag, count, education])
+        flag, count, education, reg_mandatory, em_reg_no, em_chellan])
 
     const getDataTable = useCallback((params) => {
         setflag(1)
@@ -440,7 +440,6 @@ const QualificationPage = () => {
         <Fragment>
             <Box sx={{
                 width: "100%", flex: 1, p: 1,
-                //height: { xxl: 825, xl: 680, lg: 523, md: 270, sm: 270, xs: 270 }, 
                 overflow: 'auto', '::-webkit-scrollbar': { display: "none" }
             }} >
                 <Paper variant='outlined' square elevation={0} sx={{ display: "flex", alignItems: "center", }}  >
@@ -467,7 +466,6 @@ const QualificationPage = () => {
                         </Box>
                     </Tooltip>
                 </Paper>
-
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <Box sx={{ display: "flex", flexDirection: "row", width: '100%', pt: 1 }}>
                         <Box sx={{ width: '20%' }}>
@@ -501,7 +499,7 @@ const QualificationPage = () => {
                         </Box>
                         <Box sx={{ width: '30%' }} >
                             <SpecializtionSelectRedux value={Specialization} setValue={setSpecialization}
-                                course={course} specdisable={specdisable} />
+                                course={course} specdisable={specdisable} setreg_mandatory={setreg_mandatory} />
                         </Box>
                         <Box sx={{ width: '20%', pl: 0.5 }}>
                             <CssVarsProvider>
@@ -533,22 +531,27 @@ const QualificationPage = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
                                     views={['year']}
-                                    name="year"
-                                    value={year}
                                     minDate={new Date('1960')}
                                     maxDate={new Date()}
+                                    value={year}
+                                    size="small"
+                                    disabled={regNodisable}
                                     onChange={(e) => { updateYear(e) }}
-                                    renderInput={(params) => (
-                                        <TextField {...params} fullWidth size='small' helperText={null} sx={{ display: 'flex' }} />
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} style={{ width: '100%' }} disabled={true} color='primary' />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
+                                        </Box>
                                     )}
                                 />
                             </LocalizationProvider>
                         </Box>
                     </Box>
-
                     <Box sx={{ display: "flex", flexDirection: "row", pt: 1 }}>
                         <Box sx={{ width: '20%' }} >
                             <CommonCheckBox
@@ -559,13 +562,13 @@ const QualificationPage = () => {
                             />
                         </Box>
                         <Box sx={{ width: '30%' }}>
-                            <TextField fullWidth
-                                placeholder='Mark/Grade'
-                                size="small"
-                                id='em_mark_grade'
-                                value={em_mark_grade}
+                            <InputComponent
+                                placeholder={'Mark/Grade'}
+                                type="text"
+                                size="sm"
                                 name="em_mark_grade"
-                                onChange={(e) => updateQualification(e)}
+                                value={em_mark_grade}
+                                onchange={(e) => updateQualification(e)}
                             />
                         </Box>
                         <Box sx={{ width: '20%', pl: 0.5 }}>
@@ -590,15 +593,14 @@ const QualificationPage = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-
-                            <TextField fullWidth
-                                placeholder='Registration No'
-                                size="small"
-                                id='em_reg_no'
-                                value={em_reg_no}
+                            <InputComponent
+                                placeholder={'Registration No'}
+                                type="text"
+                                size="sm"
                                 name="em_reg_no"
+                                value={em_reg_no}
                                 disabled={regNodisable}
-                                onChange={(e) => updateQualification(e)}
+                                onchange={(e) => updateQualification(e)}
                             />
                         </Box>
                         <Box sx={{ width: '20%', pl: 0.5 }}>
@@ -609,17 +611,22 @@ const QualificationPage = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
                                     views={['day']}
-                                    name="expyear"
-                                    value={expyear}
                                     minDate={new Date()}
+                                    value={expyear}
+                                    size="small"
+                                    inputFormat='dd/MM/yyyy'
                                     disabled={regNodisable}
-                                    //maxDate={new Date('2022')}
                                     onChange={setExpyear}
-                                    renderInput={(params) => (
-                                        <TextField {...params} fullWidth size='small' helperText={null} sx={{ display: 'flex' }} />
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} style={{ width: '100%' }} disabled={true} color='primary' />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
+                                        </Box>
                                     )}
                                 />
                             </LocalizationProvider>
@@ -635,15 +642,14 @@ const QualificationPage = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-
-                            <TextField fullWidth
-                                placeholder='Chellan No'
-                                size="small"
-                                id='em_chellan'
-                                value={em_chellan}
+                            <InputComponent
+                                placeholder={'Chellan No'}
+                                type="text"
+                                size="sm"
                                 name="em_chellan"
+                                value={em_chellan}
                                 disabled={regNodisable}
-                                onChange={(e) => updateQualification(e)}
+                                onchange={(e) => updateQualification(e)}
                             />
                         </Box>
                         <Box sx={{ width: '20%', pl: 0.5 }}>
@@ -654,16 +660,22 @@ const QualificationPage = () => {
                             </CssVarsProvider>
                         </Box>
                         <Box sx={{ width: '30%' }} >
-                            <LocalizationProvider dateAdapter={AdapterMoment}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
                                     views={['day']}
-                                    name="chellan"
-                                    value={chellan}
                                     minDate={new Date()}
+                                    value={chellan}
+                                    size="small"
+                                    inputFormat='dd/MM/yyyy'
                                     disabled={regNodisable}
                                     onChange={setChellan}
-                                    renderInput={(params) => (
-                                        <TextField {...params} fullWidth size='small' helperText={null} sx={{ display: 'flex' }} />
+                                    renderInput={({ inputRef, inputProps, InputProps }) => (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
+                                            <CssVarsProvider>
+                                                <Input ref={inputRef} {...inputProps} style={{ width: '100%' }} disabled={true} color='primary' />
+                                            </CssVarsProvider>
+                                            {InputProps?.endAdornment}
+                                        </Box>
                                     )}
                                 />
                             </LocalizationProvider>

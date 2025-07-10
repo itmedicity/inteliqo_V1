@@ -14,7 +14,8 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
         history.push(`/Home/ApprovalHR`)
     }
     const LeaveUser = () => {
-        history.push(`/Home/LeaveUser`)
+        //  history.push(`/Home/LeaveUser`)
+        history.push('/Home/LeaveReportEmployee')
     }
     const LeaveIncharge = () => {
         history.push(`/Home/ApprovalIncharge`)
@@ -96,13 +97,15 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
         history.push(`/Home`)
     }
 
+    const RetirementList = React.useCallback(() => {
+        history.push(`/Home/RetirementEmpLists`)
+    }, [history])
+
     const notificationListWindow = (slno) => {
 
         return slno === 133 && Leaverequest ||
             slno === 135 && LeaveIncharge ||
-
             slno === 134 && LeaveUser ||
-
             slno === 136 && LeaveHOD ||
             slno === 137 && LeaveCEO ||
 
@@ -129,7 +132,8 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
             slno === 216 && AppraisalIncharge ||
             slno === 217 && AppraisalCEO ||
             slno === 219 && HrAppraisal ||
-            slno === 238 && EsiNotAddedEmp
+            slno === 238 && EsiNotAddedEmp ||
+            slno === 341 && RetirementList
     }
 
     return (
@@ -162,14 +166,10 @@ const TestCmp = ({ widgetName, count, status, slno, indx }) => {
                     display: "flex",
                     flexDirection: "row",
                     alignItems: "center",
-                    // backgroundColor: "lightgreen",
                     justifyContent: "space-around"
                 }}>
                     <Box sx={{ px: 0.5 }} >
                         <CssVarsProvider>
-                            {/* <Typography fontWeight="md" textColor="success" mb={0.5}>
-                            Yosemite Parksdasdasdasdas
-                        </Typography> */}
                             <Typography
                                 level="body2"
                                 sx={{ alignItems: 'flex-start', wordBreak: "break-all" }}

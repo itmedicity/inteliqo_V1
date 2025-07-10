@@ -1,4 +1,5 @@
-import { Dialog, DialogContent, Typography } from '@material-ui/core'
+import { Typography } from '@mui/joy'
+import { Dialog, DialogContent } from '@mui/material'
 import React, { Fragment } from 'react'
 
 const MessageComponents = ({ open, handleClosee, msglist }) => {

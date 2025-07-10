@@ -330,6 +330,10 @@ const ShiftUpdation = () => {
     }, [emply, dept, section, value, shiftInformation, commonSetting, default_shift, em_no,
         noff, notapplicable_shift, week_off_day, doff, second_plicy])
 
+    const clearFunction = useCallback(() => {
+        setTableArray([])
+    }, [])
+
     return (
         <Fragment>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
@@ -342,8 +346,8 @@ const ShiftUpdation = () => {
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
                                             views={['year', 'month']}
-                                            minDate={subMonths(new Date(), 1)}
-                                            maxDate={addMonths(new Date(), 1)}
+                                            minDate={subMonths(new Date(), 2)}
+                                            //maxDate={addMonths(new Date(), 1)}
                                             value={value}
                                             size="small"
                                             onChange={(newValue) => {
@@ -428,6 +432,7 @@ const ShiftUpdation = () => {
                                             color="neutral"
                                             size='sm'
                                             fullWidth
+                                            onClick={clearFunction}
                                             startDecorator={<CleaningServicesOutlinedIcon />}
                                             sx={{ mx: 0.5 }}
                                         >
@@ -452,8 +457,8 @@ const ShiftUpdation = () => {
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DatePicker
                                             views={['year', 'month']}
-                                            minDate={subMonths(new Date(), 1)}
-                                            maxDate={addMonths(new Date(), 1)}
+                                            minDate={subMonths(new Date(), 2)}
+                                            // maxDate={addMonths(new Date(), 1)}
                                             value={value}
                                             size="small"
                                             onChange={(newValue) => {
@@ -558,6 +563,7 @@ const ShiftUpdation = () => {
                                             variant="outlined"
                                             color="neutral"
                                             fullWidth
+                                            onClick={clearFunction}
                                             startDecorator={<CleaningServicesOutlinedIcon />}
                                             sx={{ mx: 0.5 }}
                                         >

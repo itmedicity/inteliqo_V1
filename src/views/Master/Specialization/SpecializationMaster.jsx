@@ -28,10 +28,11 @@ const SpecializationMaster = () => {
         spec_desc: '',
         cour_slno: '',
         spec_status: false,
+        reg_mandatory: false
     })
 
     //Destucturing
-    const { spec_desc, spec_status } = type;
+    const { spec_desc, spec_status, reg_mandatory } = type;
     const updateType = useCallback((e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
         setType({ ...type, [e.target.name]: value })
@@ -43,9 +44,10 @@ const SpecializationMaster = () => {
             spec_desc,
             cour_slno: course,
             spec_status: spec_status === true ? 1 : 0,
-            create_user: employeeIdNumber()
+            create_user: employeeIdNumber(),
+            reg_mandatory: reg_mandatory === true ? 1 : 0
         }
-    }, [spec_desc, course, spec_status])
+    }, [spec_desc, course, spec_status, reg_mandatory])
 
     //Form resting
     const resetForm = useMemo(() => {
@@ -61,10 +63,11 @@ const SpecializationMaster = () => {
             spec_desc,
             cour_slno: course,
             spec_status: spec_status === true ? 1 : 0,
+            reg_mandatory: reg_mandatory === true ? 1 : 0,
             edit_user: employeeIdNumber(),
             spec_slno: slno
         }
-    }, [spec_desc, course, slno, spec_status])
+    }, [spec_desc, course, slno, spec_status, reg_mandatory])
 
     //Form Submitting
     const submitType = useCallback(async (e) => {
@@ -119,6 +122,7 @@ const SpecializationMaster = () => {
         { headerName: 'Specialization', field: 'spec_desc', filter: true, width: 250 },
         { headerName: 'Course', field: 'cour_desc', filter: true, width: 150 },
         { headerName: 'Status ', field: 'status', width: 100 },
+        { headerName: 'Mandator/Not ', field: 'mandatory', width: 100 },
         {
             headerName: 'Edit', cellRenderer: params =>
                 <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
@@ -129,10 +133,11 @@ const SpecializationMaster = () => {
 
     const getEdit = useCallback((params) => {
         setFlag(1)
-        const { spec_slno, spec_desc, cour_slno, spec_status } = params.data
+        const { spec_slno, spec_desc, cour_slno, spec_status, reg_mandatory } = params.data
         const frmdata = {
             spec_desc: spec_desc,
-            spec_status: spec_status === 1 ? true : false
+            spec_status: spec_status === 1 ? true : false,
+            reg_mandatory: reg_mandatory === 1 ? true : false
         }
         setType(frmdata)
         setCourse(cour_slno)
@@ -158,6 +163,14 @@ const SpecializationMaster = () => {
                         </Box>
                         <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
                             <CourseSelect courseValue={course} getCourse={setCourse} />
+                        </Box>
+                        <Box sx={{ pl: 1, mt: 0.5 }} >
+                            <JoyCheckbox
+                                label='Set Registration Number Mandatory'
+                                checked={reg_mandatory}
+                                name="reg_mandatory"
+                                onchange={(e) => updateType(e)}
+                            />
                         </Box>
                         <Box sx={{ pl: 1, mt: 0.5 }} >
                             <JoyCheckbox

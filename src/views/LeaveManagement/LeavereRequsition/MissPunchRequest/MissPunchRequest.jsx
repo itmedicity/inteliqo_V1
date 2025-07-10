@@ -35,6 +35,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
 
     const [disableCheck, setDisableCheck] = useState(true)
     const [disableDate, setDisableDate] = useState(false)
+    const [disableButton, setDisableButton] = useState(false)
 
     const [disableSave, setDisableSave] = useState(false)
 
@@ -199,8 +200,8 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 setCount(Math.random())
                                 setDropOpen(false)
                                 setRequestType(0)
+                                setDisableButton(true)
                                 setDisableSave(false)
-
                             } else if (success === 2) {
                                 warningNofity(message)
                                 setDropOpen(false)
@@ -239,6 +240,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 setCount(Math.random())
                                 setDropOpen(false)
                                 setRequestType(0)
+                                setDisableButton(true)
                             } else if (success === 2) {
                                 warningNofity(message)
                                 setDropOpen(false)
@@ -361,6 +363,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 size="sm"
                                 fullWidth
                                 color="primary"
+                                disabled={disableButton}
                                 onClick={handleChangeMissPunchRequest}
                             >
                                 Save Request

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Paper } from '@mui/material'
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import CommonAgGrid from 'src/views/Component/CommonAgGrid'
 import CustomDashboardPage from 'src/views/Component/MuiCustomComponent/CustomDashboardPage'
@@ -7,7 +7,6 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { IconButton as OpenIcon } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux'
 import { TrainingAttendance } from 'src/redux/actions/Training.Action'
-import { Paper } from '@material-ui/core'
 import { format } from 'date-fns'
 
 const TodayTrainings = ({ setShow, count, Setcount, todays }) => {

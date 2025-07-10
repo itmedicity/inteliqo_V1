@@ -1,9 +1,8 @@
 import React, { Fragment, memo, useCallback, useState } from 'react'
 import { Typography, Box, Button, Modal, ModalDialog } from '@mui/joy';
 import ModalClose from '@mui/joy/ModalClose';
-import { Paper } from '@material-ui/core';
 import JoyTrainingTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainingTypeSelect'
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Paper, Tooltip } from '@mui/material';
 import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';

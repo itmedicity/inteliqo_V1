@@ -1,19 +1,15 @@
+import { Checkbox } from '@mui/joy';
 import React, { Fragment } from 'react';
-import { Checkbox, FormControlLabel } from '@material-ui/core';
 const Checkboxcompnt = ({ approval, updateApproval, name, label }) => {
     return (
         <Fragment>
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        name={name}
-                        color="secondary"
-                        value={approval}
-                        checked={approval}
-                        onChange={(e) => updateApproval(e)}
-                    />
-                }
+            <Checkbox
                 label={label}
+                name={name}
+                color="secondary"
+                value={approval}
+                checked={approval}
+                onChange={(e) => updateApproval(e)}
             />
         </Fragment>
     )

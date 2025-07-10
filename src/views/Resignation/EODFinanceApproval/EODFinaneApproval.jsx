@@ -96,7 +96,7 @@ const EODFinaneApproval = () => {
         } else {
             history.push(`/Home`)
         }
-    }, [history])
+    }, [history, open])
 
     return (
         <Box sx={{ flex: 1 }} >

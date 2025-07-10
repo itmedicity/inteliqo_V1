@@ -9,7 +9,7 @@ const Reports = React.lazy(() => import('./Menus/Reports'));
 const Departmentmaster = React.lazy(() => import('./views/Master/DepartmentMaster/DepartmentMasterPage'));
 const DepartmentSectionMast = React.lazy(() => import('./views/Master/DepartmentSection/DepartmentSectionMast'));
 const EmployeeTypeMast = React.lazy(() => import('./views/Master/EmployeeType/EmployeeTypeMast'));
-const DesignatoionType = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeMast'));
+// const DesignatoionType = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeMast'));
 const Designation = React.lazy(() => import('./views/Master/Designation/DesignationMast'));
 const Qualification = React.lazy(() => import('./views/Master/Qualification/QualificationMast'));
 const Empdesignationtype = React.lazy(() => import('./views/Master/EmpDesignationType/EmpDesignationtype'))
@@ -46,22 +46,13 @@ const EducationMaster = React.lazy(() => import('./views/Master/EducationMaster/
 const CourseMaster = React.lazy(() => import('./views/Master/CourseMaster/CourseMaster'))
 const SpecializationMaster = React.lazy(() => import('./views/Master/Specialization/SpecializationMaster'))
 const RegistrationType = React.lazy(() => import('./views/Master/RegistrationType/RegistrationMaster'))
-// const EmployeeQualification = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeQualification'))
-// const EmployeeExperience = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeExperience'))
-// const EmployeeExperienceEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmployeeExperienceEdit'))
-// const StatutoryInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/StatutoryInformation'))
-// const ContractInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/ContractInformation'))
-// const EmployeeCompany = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeCompany'))
 const SalaryInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/SalaryInformation'))
 const EmployeeAllowance = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeAllowance'))
 const AnnualLeaveSettings = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/AnnualLeaveSettings'))
-// const EmployeeTraining = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeTraining'))
 const SalaryIncrement = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/SalaryIncrement'))
 const EmployeeDocumentChecklist = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeDocumentChecklist'))
-//const VaccinationInformation = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/VaccinationInformation'))
 const FineorDeduction = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/FineorDeduction'))
-// const EmployeeEndofService = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeEndofService'))
-const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
+// const DesignationTypeedit = React.lazy(() => import('./views/Master/DesignationType/DesignationTypeTableedit'))
 const EmpAllowanceTableEdit = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmployeeFileEdit/EmpAllowanceTableEdit'))
 const ShiftMaster = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMaster'))
 const ShiftMasterEdit = React.lazy(() => import('./views/Master/ShiftMaster/ShiftMasterEdit'))
@@ -97,20 +88,19 @@ const DueClearenceMaster = React.lazy(() => import('./views/Master/DueClearenceM
 const EmployeeReport = React.lazy(() => import('./views/HrReports/EmployeeReport/EmployeeReport'))
 const EmployeeReportInactive = React.lazy(() => import('./views/HrReports/EmployeeReport/EmployeeReportInactive'))
 const CarryforwardLeaveSetting = React.lazy(() => import('./views/Master/CarryforwardMaster/CarryforwardMast'))
-const AttendanceMarking = React.lazy(() => import('./views/Attendance/AttendanceMarking/AttendanceMarking'))
+// const AttendanceMarking = React.lazy(() => import('./views/Attendance/AttendanceMarking/AttendanceMarking'))
 const LeaveCarryForwad = React.lazy(() => import('./views/Attendance/LeaveCarryForwad/LeaveCarryForwardMain'))
 const Hrm_Alert = React.lazy(() => import('./views/EmployeeRecord/Hrm_Alert/Hrm_Alert'))
 const Hrm_message = React.lazy(() => import('./views/EmployeeRecord/Hrm_message/Hrm_message'))
 const NightOffRequest = React.lazy(() => import('./views/LeaveManagement/NightOff/NightOffRequest'))
 const OtUser = React.lazy(() => import('./views/LeaveManagement/OTUser/OTUser'))
 const Hrm_Announcement = React.lazy(() => import('./views/EmployeeRecord/Hrm_Announcement/Hrm_Announcement'))
-const LeaveUser = React.lazy(() => import('./views/LeaveManagement/LeaveUser/LeaveUser'))
-// const Autocompletetest = React.lazy(() => import('./views/CommonCode/Autocompletetest'))
+// const LeaveUser = React.lazy(() => import('./views/LeaveManagement/LeaveUser/LeaveUser'))
 const proTax = React.lazy(() => import('./views/Master/ProffessionalTax/ProTaxMast'))
 const proffessionalTax = React.lazy(() => import('./views/Payroll/ProffessionalTax/ProffessionalTax'))
 const DeptSecChange = React.lazy(() => import('./views/Attendance/DepartmentSecChange/DepartmentSecChange'))
 const EmployeeInactiveHR = React.lazy(() => import('./views/Resignation/EmployeeInactiveHR/EmployeeInactiveHR'))
-const RegRenew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmpFileComponent/RegistrationRenew'))
+// const RegRenew = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/EmpFileComponent/RegistrationRenew'))
 const JobDescription = React.lazy(() => import('./views/EmployeeRecord/JobDescription/JobDescription'))
 const JobDescriptionEmployee = React.lazy(() => import('./views/EmployeeRecord/EmployeeFile/JobDescriptionEmployee'))
 const EmployeeRecordVerification = React.lazy(() => import('./views/EmployeeRecord/EmployeeRecordVerification/EmployeeRecordVerification'))
@@ -180,8 +170,6 @@ const TrainingTopic = React.lazy(() => import('./views/Master/TrainingTopicMaste
 const TrainingQuestions = React.lazy(() => import('./views/Master/TrainingQuestionsMaster/TrainingQuestions'))
 const SchedulingTime = React.lazy(() => import('./views/Master/SchedulingTimeMaster/SchedulingTime'))
 const TrainingSchedule = React.lazy(() => import('./views/Master/TrainingScheduleMaster/TrainingSchedule'))
-// const DepartmentalTrainingSchedule = React.lazy(() => import('./views/TrainingDevelopment/DepartmentalTraining/DepartmentalTrainingSchedule'))
-// const TrainingProcess = React.lazy(() => import('./views/TrainingDevelopment/TrainingProcess/TrainingProcess'))
 const TrainingProcess = React.lazy(() => import('./views/TrainingDevelopment/TrainingProcess/RightBasedLogin'))
 const TrainingEmployeeSchedule = React.lazy(() => import('./views/TrainingDevelopment/TrainingEmployeeSchedule/TrainingEmployeeSchedule'))
 const AfterJoiningTraining = React.lazy(() => import('./views/TrainingDevelopment/TrainingSchedule/TrainingAfterJoining'))
@@ -303,7 +291,7 @@ const ProcessedSalaryReport = React.lazy(() => import('./views/Attendance/Salary
 const LeaveReportEmployee = React.lazy(() => import('./views/LeaveManagement/LeaveReports/LeaveReportMain'))
 const DutyplanChangeReport = React.lazy(() => import('./views/HrReports/DutyplanReport/DutyplanChangeReport'))
 const MonthlyPunchMarking = React.lazy(() => import('./views/Attendance/PunchMarkingHR/MonthlyPunchMarking'))
-
+const RetirementEmpLists = React.lazy(() => import('./views/Retirement/RetirementEmpList'))
 
 const routes = [
 
@@ -317,7 +305,7 @@ const routes = [
   { path: '/Home/DepartmentMaster', exact: true, name: 'DeptMasrter', component: Departmentmaster },
   { path: '/Home/DeptSection', exact: true, name: 'Department Section', component: DepartmentSectionMast },
   { path: '/Home/EmployeeType', exact: true, name: 'Employee Type', component: EmployeeTypeMast },
-  { path: '/Home/DesignationType', exact: true, name: 'Designation Type', component: DesignatoionType },
+  // { path: '/Home/DesignationType', exact: true, name: 'Designation Type', component: DesignatoionType },
   { path: '/Home/Designation', exact: true, name: 'Designation', component: Designation },
   { path: '/Home/Qualification', exact: true, name: 'Qualification', component: Qualification },
   { path: '/Home/University', exact: true, name: 'University', component: University },
@@ -367,7 +355,7 @@ const routes = [
   { path: '/Home/EmployeeDocumentChecklist/:id/:no', exact: true, name: 'Employee Document Checklist', component: EmployeeDocumentChecklist },
   //{ path: '/Home/VaccinationInformation/:id', exact: true, name: 'Vaccination Information', component: VaccinationInformation },
   { path: '/Home/FineorDeduction/:id/:no', exact: true, name: 'Fine or Other Deduction', component: FineorDeduction },
-  { path: '/Home/DesignationTypeedit/:id', exact: true, name: 'Branch Master Table Edit', component: DesignationTypeedit },
+  // { path: '/Home/DesignationTypeedit/:id', exact: true, name: 'Branch Master Table Edit', component: DesignationTypeedit },
   { path: '/Home/EmpAllowanceTableEdit/:slno/:id/:no', exact: true, name: 'Employee Allowance Table Edit ', component: EmpAllowanceTableEdit },
   { path: '/Home/ShiftMaster', exact: true, name: 'ShiftMaster', component: ShiftMaster },
   { path: '/Home/ShiftMasterEdit/:id', exact: true, name: 'Shift Master Edit', component: ShiftMasterEdit },
@@ -405,7 +393,7 @@ const routes = [
   { path: '/Home/EmployeeReport', exact: true, name: 'Active Employees', component: EmployeeReport },
   { path: '/Home/EmployeeReportInactive', exact: true, name: 'Employee Report Inactive', component: EmployeeReportInactive },
   { path: '/Home/CarryForwardSetting', exact: true, name: 'Carry Forward Leave Setting', component: CarryforwardLeaveSetting },//Leave carryforward
-  { path: '/Home/AttendanceMarking', exact: true, name: 'Attendance Marking', component: AttendanceMarking },
+  // { path: '/Home/AttendanceMarking', exact: true, name: 'Attendance Marking', component: AttendanceMarking },
   { path: '/Home/LeaveCarryForwad', exact: true, name: 'Leave Carry Forwad', component: LeaveCarryForwad },
   { path: '/Home/Hrm_Alert', exact: true, name: 'Hrm Alert', component: Hrm_Alert },
   { path: '/Home/Hrm_message', exact: true, name: 'Hrm message', component: Hrm_message },
@@ -413,13 +401,13 @@ const routes = [
   { path: '/Home/NightOffRequest', exact: true, name: 'Night Off Request', component: NightOffRequest },
   { path: '/Home/OtUser', exact: true, name: 'OT User View', component: OtUser },
   { path: '/Home/Hrm_Announcement', exact: true, name: 'Hrm Announcement', component: Hrm_Announcement },
-  { path: '/Home/LeaveUser', exact: true, name: 'Leave User View', component: LeaveUser },
+  // { path: '/Home/LeaveUser', exact: true, name: 'Leave User View', component: LeaveUser },
   // { path: '/Home/Autocompletetest', exact: true, name: 'Autocomplete test', component: Autocompletetest },
   { path: '/Home/ProTax', exact: true, name: 'Proffessional Tax master', component: proTax },
   { path: '/Home/ProffessionalTax', exact: true, name: 'Proffessional Tax', component: proffessionalTax },
   { path: '/Home/DeptSecChange', exact: true, name: 'Department Section Change', component: DeptSecChange },
   { path: '/Home/EmployeeInactiveHR', exact: true, name: 'Employee Inactive HR', component: EmployeeInactiveHR },
-  { path: '/Home/RegistrationRenew', exact: true, name: 'Registration renew table', component: RegRenew },
+  // { path: '/Home/RegistrationRenew', exact: true, name: 'Registration renew table', component: RegRenew },
   { path: '/Home/JobDescription', exact: true, name: 'Job Description', component: JobDescription },
   { path: '/Home/JobDescriptionEmployee/:id/:no', exact: true, name: 'Job Description Employee', component: JobDescriptionEmployee },
   { path: '/Home/EmployeeRecordVerification', exact: true, name: 'Employee Record Verification', component: EmployeeRecordVerification },
@@ -606,7 +594,7 @@ const routes = [
   { path: '/Home/LeaveReportEmployee', exact: true, name: 'Leave Report Employee', component: LeaveReportEmployee },
   { path: '/Home/DutyplanChangeReport', exact: true, name: 'Dutyplan Change Report', component: DutyplanChangeReport },
   { path: '/Home/MonthlyPunchMarking', exact: true, name: 'Monthly Punch Marking', component: MonthlyPunchMarking },
-
+  { path: '/Home/RetirementEmpLists', exact: true, name: 'Retirement Emp List', component: RetirementEmpLists }
 
 ]
 

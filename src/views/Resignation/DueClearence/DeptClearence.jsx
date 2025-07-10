@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import React, { Fragment } from 'react';
 import { SELECT_CMP_STYLE } from 'src/views/Constant/Constant';
 import DutyHandover from './DutyHandover'

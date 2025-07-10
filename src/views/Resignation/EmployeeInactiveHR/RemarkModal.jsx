@@ -1,7 +1,7 @@
 import { Box, Button, Chip, Divider, Input, Modal, ModalClose, ModalDialog, Textarea, Typography } from '@mui/joy'
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios';
-import { infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, infoNofity, succesNofity, } from 'src/views/CommonCode/Commonfunc';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -86,13 +86,12 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
                 return { deptcode: val.deptcode, deptname: val.deptdesc, emp_id: emid }
             })
             //inactive employee
-            const result = await axioslogin.patch('/Resignation/Inactiveemp', postData)
+            const result = await axioslogin.post('/dueclearence', duedeptdetl)
             const { success } = result.data
-            if (success === 2) {
-                setCount(Math.random())
-                const result = await axioslogin.post('/dueclearence', duedeptdetl)
+            if (success === 1) {
+                const result = await axioslogin.patch('/Resignation/Inactiveemp', postData)
                 const { success } = result.data
-                if (success === 1) {
+                if (success === 2) {
                     const result = await axioslogin.post('/empmast/insert/inactive', inactivedata)
                     const { success } = result.data
                     if (success === 1) {
@@ -100,12 +99,15 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
                         succesNofity("Employee Inactivated")
                         setCount(Math.random())
                     } else {
-                        warningNofity("Error while Inactive")
+                        errorNofity("Error While Inactive Log List ")
                     }
                 } else {
                     setOpen(false)
-                    warningNofity("Error while Inactive")
+                    errorNofity("Error while Inactive Employee")
                 }
+            } else {
+                setOpen(false)
+                errorNofity("Add Due Clearence Department to this Department Section")
             }
         }
     }, [emid, reason, emno, setCount, setOpen, dueDepartment, selectValue,
@@ -122,8 +124,7 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
             open={open}
             onClose={() => setOpen(false)}
             sx={{
-                display: 'flex', justifyContent: 'center', alignItems: 'center',
-                // width: '100%'
+                display: 'flex', justifyContent: 'center', alignItems: 'center'
             }}
         >
             <ModalDialog size="lg" sx={{ width: 500 }} >
@@ -173,7 +174,6 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
                         textColor="inherit"
                         fontWeight="md"
                         sx={{ px: 0, textTransform: "capitalize", color: 'neutral.400', }}
-                    // startDecorator={`Section`}
                     >
                         {section?.toLowerCase()}
                     </Typography>
@@ -183,7 +183,6 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
                         HR Use Only
                     </Chip>
                 </Divider>
-
                 <Box sx={{ display: 'flex', flex: 2 }}>
                     {
                         confirmationArray?.map((val, idx) => {
@@ -232,7 +231,6 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['day']}
-                                // minDate={subMonths(new Date(), 1)}
                                 maxDate={new Date()}
                                 value={resignDate}
                                 inputFormat="dd-MM-yyyy"
