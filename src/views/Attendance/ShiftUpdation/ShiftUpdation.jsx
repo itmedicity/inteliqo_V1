@@ -2,7 +2,7 @@ import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow }
 import React, { Fragment, useEffect } from 'react'
 import Paper from '@mui/material/Paper';
 import { useState } from 'react';
-import { addDays, addMonths, differenceInMinutes, format, formatDuration, intervalToDuration, isValid, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
+import { addDays, addMonths, differenceInMinutes, endOfMonth, format, formatDuration, intervalToDuration, isValid, lastDayOfMonth, startOfMonth, subDays, subMonths } from 'date-fns';
 import moment from 'moment';
 import { errorNofity, warningNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
@@ -347,7 +347,7 @@ const ShiftUpdation = () => {
                                         <DatePicker
                                             views={['year', 'month']}
                                             minDate={subMonths(new Date(), 2)}
-                                            //maxDate={addMonths(new Date(), 1)}
+                                            maxDate={endOfMonth(new Date())}
                                             value={value}
                                             size="small"
                                             onChange={(newValue) => {
@@ -458,7 +458,7 @@ const ShiftUpdation = () => {
                                         <DatePicker
                                             views={['year', 'month']}
                                             minDate={subMonths(new Date(), 2)}
-                                            // maxDate={addMonths(new Date(), 1)}
+                                            maxDate={endOfMonth(new Date())}
                                             value={value}
                                             size="small"
                                             onChange={(newValue) => {
