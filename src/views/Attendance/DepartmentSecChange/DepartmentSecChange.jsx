@@ -42,16 +42,14 @@ const DepartmentSecChange = () => {
     }, [dispatch])
 
     useEffect(() => {
-
-        if (emply.em_id !== 0) {
-            dispatch(setPersonalData(emply.em_id));
+        if (emply?.em_id !== 0) {
+            dispatch(setPersonalData(emply?.em_id));
         }
-
     }, [emply, dispatch])
 
     const employeeState = useSelector((state) => state?.getPrifileDateEachEmp?.empPersonalData?.personalData, _.isEqual);
     const { desg_name, em_department, em_dept_section, em_designation, em_no,
-        em_branch } = employeeState;
+        em_branch } = employeeState || {};
 
     //update Data
     const patchData = useMemo(() => {

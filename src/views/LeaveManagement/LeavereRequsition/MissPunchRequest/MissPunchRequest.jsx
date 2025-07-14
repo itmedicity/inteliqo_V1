@@ -363,7 +363,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 size="sm"
                                 fullWidth
                                 color="primary"
-                                disabled={disableButton}
+                                // disabled={disableButton}
                                 onClick={handleChangeMissPunchRequest}
                             >
                                 Save Request
