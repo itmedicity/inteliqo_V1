@@ -12,13 +12,13 @@ const JoyInstitutionSelect = ({ value, setValue }) => {
         dispatch(setInstitution());
     }, [dispatch])
 
-    const InstitutionType = useSelector((state) => state.getInstitutionType.InstitutionList, _.isEqual)
+    const InstitutionType = useSelector((state) => state?.getInstitutionType?.InstitutionList, _.isEqual)
     const instituteList = useMemo(() => InstitutionType, [InstitutionType])
 
     useEffect(() => {
         if ((value !== 0) && (flag === 0)) {
-            const array = instituteList?.find((e) => e.inst_slno === value)
-            setValue(array.inst_slno)
+            const array = instituteList?.find((e) => e?.inst_slno === value)
+            setValue(array?.inst_slno)
         }
     }, [value, setValue, flag, instituteList])
 
@@ -46,7 +46,7 @@ const JoyInstitutionSelect = ({ value, setValue }) => {
             <Option disabled value={0}>Select Institution Type</Option>
             {
                 instituteList?.map((val, index) => {
-                    return <Option key={index} value={val.inst_slno}>{val.inst_emp_type}</Option>
+                    return <Option key={index} value={val?.inst_slno}>{val?.inst_emp_type}</Option>
                 })
             }
         </Select>

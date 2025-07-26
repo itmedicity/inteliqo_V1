@@ -17,8 +17,8 @@ const JoyBranchSelect = ({ value, setValue }) => {
 
     useEffect(() => {
         if ((value !== 0) && (flag === 0)) {
-            const array = branchData.find((e) => e.branch_slno === value)
-            setValue(array.branch_slno)
+            const array = branchData?.find((e) => e?.branch_slno === value)
+            setValue(array?.branch_slno)
         }
     }, [value, setValue, flag, branchData])
 
@@ -46,7 +46,7 @@ const JoyBranchSelect = ({ value, setValue }) => {
             <Option disabled value={0}> Select Branch </Option>
             {
                 branchData?.map((val, index) => {
-                    return <Option key={val.branch_slno} value={val.branch_slno}>{val.branch_name}</Option>
+                    return <Option key={val?.branch_slno} value={val?.branch_slno}>{val?.branch_name}</Option>
                 })
             }
         </Select>

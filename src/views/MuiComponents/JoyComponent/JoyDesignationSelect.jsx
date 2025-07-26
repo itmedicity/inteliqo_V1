@@ -17,7 +17,7 @@ const JoyDesignationSelect = ({ desgValue, getDesg }) => {
 
     useEffect(() => {
         if ((desgValue !== 0) && (flag === 0)) {
-            const array = empDesignation.filter((e) => e.desg_slno === desgValue)
+            const array = empDesignation?.filter((e) => e?.desg_slno === desgValue)
             setValue(array[0]);
         }
 
