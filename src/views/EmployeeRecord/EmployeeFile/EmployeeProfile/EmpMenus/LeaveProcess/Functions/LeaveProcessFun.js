@@ -698,7 +698,6 @@ export const updateHolidayLeaves = async (lv_process_slno, em_id, em_no, em_doj)
 
   const holidayList = await axioslogin.get('/yearleaveprocess/year/holiday');
   const { success, data } = holidayList.data;
-  console.log(data);
   if (success === 2) {
     return { ...messages, status: 0 }
   } else {

@@ -292,6 +292,7 @@ const LeaveReportEmployee = React.lazy(() => import('./views/LeaveManagement/Lea
 const DutyplanChangeReport = React.lazy(() => import('./views/HrReports/DutyplanReport/DutyplanChangeReport'))
 const MonthlyPunchMarking = React.lazy(() => import('./views/Attendance/PunchMarkingHR/MonthlyPunchMarking'))
 const RetirementEmpLists = React.lazy(() => import('./views/Retirement/RetirementEmpList'))
+const ActiveDoctorsReport = React.lazy(() => import('./views/HrReports/DoctorsReport/ActiveDoctorReport'))
 
 const routes = [
 
@@ -594,7 +595,8 @@ const routes = [
   { path: '/Home/LeaveReportEmployee', exact: true, name: 'Leave Report Employee', component: LeaveReportEmployee },
   { path: '/Home/DutyplanChangeReport', exact: true, name: 'Dutyplan Change Report', component: DutyplanChangeReport },
   { path: '/Home/MonthlyPunchMarking', exact: true, name: 'Monthly Punch Marking', component: MonthlyPunchMarking },
-  { path: '/Home/RetirementEmpLists', exact: true, name: 'Retirement Emp List', component: RetirementEmpLists }
+  { path: '/Home/RetirementEmpLists', exact: true, name: 'Retirement Emp List', component: RetirementEmpLists },
+  { path: '/Home/ActiveDoctorsReport', exact: true, name: 'Active Doctors Report', component: ActiveDoctorsReport }
 
 ]
 

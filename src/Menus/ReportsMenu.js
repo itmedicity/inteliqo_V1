@@ -8,6 +8,7 @@ export const empRecord_one = [
     { to: '/Home/NoExperienceReport', name: 'Employee No Experience Report', slno: 218 },
     { to: '/Home/CategoryReport', name: 'Employee Category Report', slno: 159 },
     { to: '/Home/DesignationReport', name: 'Employee Designation Report', slno: 161 },
+    { to: '/Home/ActiveDoctorsReport', name: 'Active Doctors Report', slno: 342 },
 ]
 
 export const empRecord_two = [

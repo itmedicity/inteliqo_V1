@@ -71,11 +71,11 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
                     setOpenBkDrop(false)
                     setOpen(false)
                 } else {
-
+                    let checkout = `${format(new Date(nopunchdate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}`
 
                     const postData = {
                         preFromDate: format(subHours(new Date(nopunchdate), 8), 'yyyy-MM-dd 00:00:00'),
-                        preToDate: crossDayStat === 0 ? format(addHours(new Date(nopunchdate), 8), 'yyyy-MM-dd 23:59:59') : format(addHours(new Date(addDays(new Date(nopunchdate), 1)), 8), 'yyyy-MM-dd 23:59:59'),
+                        preToDate: crossDayStat === 0 ? format(addHours(new Date(checkout), 8), 'yyyy-MM-dd 23:59:59') : format(addHours(new Date(addDays(new Date(nopunchdate), 1)), 8), 'yyyy-MM-dd 23:59:59'),
                         empList: emno,
                     }
                     const punchmastData = {
@@ -87,9 +87,9 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
                     const { su, result_data } = punch_data.data;
                     if (su === 1) {
                         const punchaData = result_data;
+
                         const punch_master_data = await axioslogin.post("/attendCal/attendanceshiftdetl/", punchmastData); //GET PUNCH MASTER DATA
                         const { data } = punch_master_data.data;
-
 
                         let shiftIn = `${format(new Date(nopunchdate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkInTime), 'HH:mm:ss')}`;
                         let shiftOut = crossDayStat === 0 ? `${format(new Date(nopunchdate), 'yyyy-MM-dd')} ${format(new Date(crossDay?.checkOutTime), 'HH:mm:ss')}` :
@@ -185,6 +185,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                 })
                             ).then(async (element) => {
                                 const { value } = element[0];
+
                                 const resultdel = await axioslogin.patch(`/LeaveRequestApproval/HrNopunch`, value);
                                 const { success, message } = await resultdel.data;
                                 if (success === 1) {
