@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component, lazy } from 'react'
 
 const HomePage = React.lazy(() => import('./views/Home/Home'))
 const Profile = React.lazy(() => import('./views/Home/Profile'))
@@ -291,8 +291,16 @@ const ProcessedSalaryReport = React.lazy(() => import('./views/Attendance/Salary
 const LeaveReportEmployee = React.lazy(() => import('./views/LeaveManagement/LeaveReports/LeaveReportMain'))
 const DutyplanChangeReport = React.lazy(() => import('./views/HrReports/DutyplanReport/DutyplanChangeReport'))
 const MonthlyPunchMarking = React.lazy(() => import('./views/Attendance/PunchMarkingHR/MonthlyPunchMarking'))
+const ModuleMaster = React.lazy(() => import('./views/Master/ModuleGroupMaster/ModuleMaster'))
+const DoctorRegistration = React.lazy(() => import('./views/PayrollDoctors/DoctorRegister/DoctorRegistration'))
+const DoctorPlanning = React.lazy(() => import('./views/PayrollDoctors/DoctorDutyplan/DoctorDutyplanning'))
+const DoctorRegisterTable = React.lazy(() => import('./views/PayrollDoctors/DoctorRegister/DoctorRegistrationTable'))
 const RetirementEmpLists = React.lazy(() => import('./views/Retirement/RetirementEmpList'))
 const ActiveDoctorsReport = React.lazy(() => import('./views/HrReports/DoctorsReport/ActiveDoctorReport'))
+const DoctorDutyMaster = React.lazy(() => import('./views/Master/DoctorDutyMaster/Doctordutymaster'))
+const DoctorPunch = React.lazy(() => import('./views/PayrollDoctors/DoctorPunch/DoctorsPunchUpload'))
+const DoctorPunchView = React.lazy(() => import('./views/PayrollDoctors/DoctorPunch/DoctorPunchReport'))
+
 
 const routes = [
 
@@ -595,8 +603,15 @@ const routes = [
   { path: '/Home/LeaveReportEmployee', exact: true, name: 'Leave Report Employee', component: LeaveReportEmployee },
   { path: '/Home/DutyplanChangeReport', exact: true, name: 'Dutyplan Change Report', component: DutyplanChangeReport },
   { path: '/Home/MonthlyPunchMarking', exact: true, name: 'Monthly Punch Marking', component: MonthlyPunchMarking },
+  { path: '/Home/ModuleMaster', exact: true, name: 'Module Master', component: ModuleMaster },
+  { path: '/Home/DoctorRegistration', exact: true, name: ' Doctor Registration', component: DoctorRegistration },
+  { path: '/Home/DoctorPlanning', exact: true, name: 'Doctor Planning', component: DoctorPlanning },
+  { path: '/Home/DoctorRegisterTable', exact: true, name: 'Doctor Register Table', component: DoctorRegisterTable },
   { path: '/Home/RetirementEmpLists', exact: true, name: 'Retirement Emp List', component: RetirementEmpLists },
-  { path: '/Home/ActiveDoctorsReport', exact: true, name: 'Active Doctors Report', component: ActiveDoctorsReport }
+  { path: '/Home/ActiveDoctorsReport', exact: true, name: 'Active Doctors Report', component: ActiveDoctorsReport },
+  { path: '/Home/DoctorDutyMaster', exact: true, name: 'Doctor Duty Master', component: DoctorDutyMaster },
+  { path: '/Home/DoctorPunch', exact: true, name: 'Doctor Punch', component: DoctorPunch },
+  { path: '/Home/DoctorPunchView', exact: true, name: 'Doctor Punch View', component: DoctorPunchView }
 
 ]
 

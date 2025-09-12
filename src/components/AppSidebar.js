@@ -39,7 +39,8 @@ import ContractRenew from '../Menus/ContractRenewalMenu'
 import _ from 'underscore'
 import { infoNofity } from 'src/views/CommonCode/Commonfunc'
 import { useHistory } from 'react-router-dom'
-
+import MedicationIcon from '@mui/icons-material/Medication';
+import PayrollDoctors from '../Menus/Payrolldoctors'
 
 const AppSidebar = () => {
 
@@ -54,6 +55,7 @@ const AppSidebar = () => {
   const [count, setCount] = useState(0)
   const [empVaccination, setVaccination] = useState();
   const [empContractRenew, setContractRenew] = useState();
+  const [payrollDoctor, setPayrollDoctors] = useState();
 
   //SIDE NAV BAR
   const navigation = [
@@ -134,6 +136,13 @@ const AppSidebar = () => {
       icon: <NextWeekIcon className="text-light nav-icon" size={20} />,
       items: empContractRenew
     },
+    {
+      slno: 15,
+      component: CNavGroup,
+      name: 'Payroll - Doctors ',
+      icon: <MedicationIcon className="text-light nav-icon" size={20} />,
+      items: payrollDoctor
+    },
   ]
 
   const dispatch = useDispatch()
@@ -184,7 +193,8 @@ const AppSidebar = () => {
         setVaccination(newVaccination)
         const newContract = ContractRenew.filter(val => menuSlnoAry.includes(val.men_slno))
         setContractRenew(newContract)
-
+        const newPayrollDoctor = PayrollDoctors?.filter(val => menuSlnoAry.includes(val?.men_slno))
+        setPayrollDoctors(newPayrollDoctor)
         //For Rerent the Component
         setCount(1)
       }

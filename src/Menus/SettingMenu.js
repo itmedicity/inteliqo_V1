@@ -34,7 +34,6 @@ export const py_setting_two = [
     { to: '/Home/OTWageMaster', name: 'OT Wage Master', slno: 120 },
     { to: '/Home/EarnDeduct', name: 'Earning/Deduction', slno: 96 },
     { to: '/Home/EarnType', name: 'Earn Type Master', slno: 97 },
-
 ]
 
 export const py_setting_three = [
@@ -54,19 +53,16 @@ export const py_setting_three = [
     { to: '/Home/TrainingSchedule', name: 'Training Schedule Master', slno: 249 },
     { to: '/Home/TrainerName', name: 'Trainer Name Master', slno: 227 },
     { to: '/Home/SchedulingTime', name: 'Scheduling Time Master', slno: 248 },
-
-
-
-
+    { to: '/Home/DoctorDutyMaster', name: 'Doctors Duty Master', slno: 346 },
 ]
 
 export const userManagement_one = [
     { to: '/Home/menuCreation', name: 'Menu Creation', slno: 311 },
+    { to: '/Home/ModuleMaster', name: 'Module Creation', slno: 345 },
     { to: '/Home/UserGroup', name: 'User Group Master', slno: 107 },
     { to: '/Home/ModuleGroupMaster', name: 'User Group To Module Master', slno: 105 },
     { to: '/Home/ModuleUserRights', name: 'Employee User Group Rights', slno: 106 },
     { to: '/Home/GroupRights', name: 'User Group Rights', slno: 108 },
     { to: '/Home/Authorisation', name: 'Assign Authorisation', slno: 109 },
     { to: '/Home/HodMark', name: 'HOD Authorisation Mark', slno: 110 },
-    // { to: '/Home/Autocompletetest', name: 'Autocomplete test', slno: 110 },
 ]

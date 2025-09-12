@@ -58,7 +58,6 @@ const SectionBsdEmployee = ({ getEmploy }) => {
             loadingText="Loading..."
             freeSolo
             isOptionEqualToValue={(option, value) => option.em_id === value.em_name}
-            //  getOptionLabel={option => option.em_name + ' ' + '(' + option.em_no + ')' || ''}
             getOptionLabel={(option) =>
                 `${option.em_name} (${option.em_no ? option.em_no : ""})`
             }
@@ -67,5 +66,4 @@ const SectionBsdEmployee = ({ getEmploy }) => {
         />
     )
 }
-
 export default memo(SectionBsdEmployee)

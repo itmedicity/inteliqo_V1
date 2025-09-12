@@ -47,6 +47,7 @@ const EmploymentTypeEdit = () => {
     const [pf, setPf] = useState(false)
     const [wwf, setWwf] = useState(false)
     const [lwf, setLwf] = useState(false)
+    const [cate_doctor, setcate_doctor] = useState(false)
 
     const clearForm = useCallback(() => {
         setlvetype_slno_cl(false)
@@ -71,6 +72,7 @@ const EmploymentTypeEdit = () => {
         setPf(false)
         setWwf(false)
         setLwf(false)
+        setcate_doctor(false)
     }, [])
 
     useEffect(() => {
@@ -81,7 +83,7 @@ const EmploymentTypeEdit = () => {
                 ecat_cont, ecat_cont_period, ecat_doff_allow, ecat_el, ecat_el_max, ecat_esi_allow,
                 ecat_lop, ecat_lop_max, ecat_mate, ecat_mate_max, ecat_prob, ecat_prob_period, ecat_sl,
                 ecat_sl_max, ecat_status, ecat_woff_allow, ecat_holiday, ecat_training, ecat_training_max,
-                emp_type, cont_grace, ecate_pf, ecat_wwf, ecat_lwf, } = data[0]
+                emp_type, cont_grace, ecate_pf, ecat_wwf, ecat_lwf, ecat_doctor } = data[0]
             setCate_name(ecat_name)
             setlvetype_slno_cl(ecat_cl === 1 ? true : false)
             setmax_allowed_count_cl(ecat_cl_max === null ? 0 : ecat_cl_max)
@@ -112,6 +114,7 @@ const EmploymentTypeEdit = () => {
             setPf(ecate_pf === 1 ? true : false)
             setWwf(ecat_wwf === 1 ? true : false)
             setLwf(ecat_lwf === 1 ? true : false)
+            setcate_doctor(ecat_doctor === 1 ? true : false)
         }
         getyearlysettings();
     }, [id])
@@ -150,6 +153,7 @@ const EmploymentTypeEdit = () => {
             ecate_pf: pf === true ? 1 : 0,
             ecat_wwf: wwf === true ? 1 : 0,
             ecat_lwf: lwf === true ? 1 : 0,
+            ecat_doctor: cate_doctor === true ? 1 : 0,
             category_slno: slno
         }
         e.preventDefault();
@@ -177,7 +181,7 @@ const EmploymentTypeEdit = () => {
         lvetype_slno_maternity, max_allowed_count_maternity, lvetype_slno_previlage, training, clearForm,
         max_allowed_count_previlage, cont_renw, contract_perd, esi_yes, dayoff, workoff, emp_status,
         training_day_count, probation, probation_day_count, holiday, slno, cate_name, contract_grace_period,
-        pf, wwf, lwf])
+        pf, wwf, lwf, cate_doctor])
 
     // to view page 
     const viewTable = () => {
@@ -384,6 +388,16 @@ const EmploymentTypeEdit = () => {
                                             name="probation_day_count"
                                             value={probation_day_count}
                                             onchange={(e) => setprobation_day_count(e.target.value)}
+                                        />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Category for Doctors'
+                                            checked={cate_doctor}
+                                            name="cate_doctor"
+                                            onchange={(e) => setcate_doctor(e.target.checked)}
                                         />
                                     </Box>
                                 </Box>

@@ -46,6 +46,7 @@ const EmploymentTypeMast = () => {
     const [pf, setPf] = useState(false)
     const [wwf, setWwf] = useState(false)
     const [lwf, setLwf] = useState(false)
+    const [cate_doctor, setcate_doctor] = useState(false)
 
     const clearForm = useCallback(() => {
         setlvetype_slno_cl(false)
@@ -70,6 +71,7 @@ const EmploymentTypeMast = () => {
         setPf(false)
         setWwf(false)
         setLwf(false)
+        setcate_doctor(false)
     }, [])
 
     // use effect for append
@@ -129,7 +131,8 @@ const EmploymentTypeMast = () => {
             ecate_pf: pf === true ? 1 : 0,
             ecat_wwf: wwf === true ? 1 : 0,
             ecat_lwf: lwf === true ? 1 : 0,
-            create_users: employeeIdNumber()
+            create_users: employeeIdNumber(),
+            ecat_doctor: cate_doctor === true ? 1 : 0
         }
         const result = await axioslogin.post('/empcat', postData);
         const { success, message } = result.data;
@@ -150,7 +153,7 @@ const EmploymentTypeMast = () => {
         lvetype_slno_maternity, max_allowed_count_maternity, lvetype_slno_previlage, training,
         max_allowed_count_previlage, cont_renw, contract_perd, esi_yes, dayoff, workoff, emp_status,
         training_day_count, probation, probation_day_count, holiday, cate_name, contract_grace_period,
-        pf, wwf, lwf, clearForm])
+        pf, wwf, lwf, clearForm, cate_doctor])
 
 
     const viewTable = useCallback(() => {
@@ -360,6 +363,25 @@ const EmploymentTypeMast = () => {
                                             onchange={(e) => setprobation_day_count(e.target.value)}
                                         />
                                     </Box>
+                                </Box>
+                                <Box sx={{ width: "100%", p: 1, display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
+                                    <Box sx={{ flex: 1, pt: 0.5 }}>
+                                        <JoyCheckbox
+                                            label='Category for Doctors'
+                                            checked={cate_doctor}
+                                            name="cate_doctor"
+                                            onchange={(e) => setcate_doctor(e.target.checked)}
+                                        />
+                                    </Box>
+                                    {/* <Box sx={{ flex: 1 }}>
+                                        <InputComponent
+                                            type="text"
+                                            size="sm"
+                                            name="probation_day_count"
+                                            value={probation_day_count}
+                                            onchange={(e) => setprobation_day_count(e.target.value)}
+                                        />
+                                    </Box> */}
                                 </Box>
                             </Box>
                             <Box sx={{ flex: 1 }}>

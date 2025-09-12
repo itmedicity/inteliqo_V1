@@ -10,11 +10,13 @@ import {
   QueryClient,
   QueryClientProvider
 } from "react-query"
+import { ToastContainer } from 'react-toastify'
 
 const queryClient = new QueryClient()
 ReactDOM.render(
   <QueryClientProvider client={queryClient} >
     <Provider store={store}>
+      <ToastContainer />
       <App />
     </Provider>
   </QueryClientProvider>,
