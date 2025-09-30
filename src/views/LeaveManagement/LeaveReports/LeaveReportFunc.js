@@ -36,12 +36,14 @@ export const getEmployeeWiseHalfdayReport = async (postdata) => {
     let dataObj = { status: 0, data: [] }
     const result = await axioslogin.post('/LeaveReport/empHalfdayYearWise', postdata)
     const { data, success } = result.data
+  
     if (success === 1) {
         const arr = data?.map((val) => {
             return {
                 ...val,
                 lvDate: format(new Date(val.leavedate), 'dd-MM-yyyy'),
                 reqDate: format(new Date(val.requestdate), 'dd-MM-yyyy'),
+                leave_name:val?.month,
                 halfdaytime: val.halfday_status === 1 ? 'First Half' : 'Second Half',
                 incharge: val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0 ? 'Incharge Approval Pending' :
                     val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 1 ? 'Incharge Approved' :
