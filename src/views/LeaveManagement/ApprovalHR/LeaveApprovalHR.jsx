@@ -295,14 +295,15 @@ const LeaveApprovalHR = () => {
             // setLeaveData(params.data)
             const { leave_date, em_id } = params.data
             const postdata = {
-                emp_id: [em_id],
+                emp_id: em_id,
                 // emp_id: [168],
                 from: format(startOfMonth(new Date(leave_date)), 'yyyy-MM-dd'),
                 to: format(endOfMonth(new Date(leave_date)), 'yyyy-MM-dd'),
             }
-            const result = await axioslogin.post("/payrollprocess/punchbiId", postdata);
+            const result = await axioslogin.post("/payrollprocess/getOnemnothLeave", postdata);
             const { success, data: punchmast } = result.data
             if (success === 1) {
+                
                 const leaveDays = punchmast?.filter((val) => val.duty_desc === 'SL' || val.duty_desc === 'CL'
                     || val.duty_desc === 'EL' || val.duty_desc === 'HCL' || val.duty_desc === 'HDCL' || val.duty_desc === 'COFF')
                 setPreviousLeave(leaveDays)
