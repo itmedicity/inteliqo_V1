@@ -248,6 +248,7 @@ const MonthlyPunchMarking = () => {
                                             lcArray: lcData?.filter((e) => e.em_no === el)
                                                 ?.sort((a, b) => a.punch_slno - b.punch_slno)
                                                 // ?.filter((e) => e.holiday_status !== 1)
+                                                ?.filter((e) => e.lvereq_desc !== 'A')
                                                 ?.filter((e) => e.late_in <= cmmn_late_in)
                                         }
                                     })
