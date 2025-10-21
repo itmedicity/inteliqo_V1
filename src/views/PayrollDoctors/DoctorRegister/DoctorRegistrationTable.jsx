@@ -9,14 +9,14 @@ import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { CssVarsProvider, IconButton, Typography } from '@mui/joy'
 import CloseIcon from '@mui/icons-material/Close';
-import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
-import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { setDepartment } from 'src/redux/actions/Department.action'
 import SearchIcon from '@mui/icons-material/Search';
 import { ToastContainer } from 'react-toastify'
 import { useMemo } from 'react'
 import { IconButton as OpenIcon } from '@mui/material';
 import JoyBranchSelect from 'src/views/MuiComponents/JoyComponent/JoyBranchSelect'
+import DoctorDepartment from '../DoctorDutyplan/Components/DoctorDepartment'
+import DoctorDepartmentSection from '../DoctorDutyplan/Components/DoctorDepartmentSection'
 
 const DoctorRegistrationTable = () => {
     const history = useHistory()
@@ -52,7 +52,7 @@ const DoctorRegistrationTable = () => {
         const data = params.api.getSelectedRows()
         const { em_no, em_id } = data[0]
         history.push(`/Home/EmployeeRecordEdit/${em_no}/${em_id}`)
-    }, [])
+    }, [history])
 
     const postData = useMemo(() => {
         return {
@@ -82,7 +82,7 @@ const DoctorRegistrationTable = () => {
 
     const backtoEmployeeRegister = useCallback(() => {
         history.push('/Home/DoctorRegistration')
-    }, [])
+    }, [history])
 
     return (
         <>
@@ -122,10 +122,10 @@ const DoctorRegistrationTable = () => {
                                 <JoyBranchSelect value={branch} setValue={setBranch} />
                             </Box>
                             <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                                <DepartmentDropRedx getDept={setDept} />
+                                  <DoctorDepartment value={dept} setValue={setDept} />
                             </Box>
                             <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                                <DepartmentSectionRedx getSection={setDeptSect} />
+                                 <DoctorDepartmentSection value={deptSect} setValue={setDeptSect} dept={dept} />
                             </Box>
                             <Box sx={{ px: 0.5, mt: 0.9 }}>
                                 <CssVarsProvider>

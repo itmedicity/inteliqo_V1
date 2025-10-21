@@ -79,8 +79,8 @@ const DoctorRegistration = () => {
     const [cont_perioddate, setcont_perioddate] = useState(new Date())
     const [contractflag, setcontractflag] = useState(0)
     const [prob_status, setProb_status] = useState(0)
-    const [clinictype, setClinictype] = useState(1)
-    const [doctor, setDoctor] = useState(true)
+    const [clinictype, setClinictype] = useState(0)
+    // const [doctor, setDoctor] = useState(true)
     const [leaveprocesstype, setLeaveprocesstype] = useState(0)
     const [nmc_regno, setNmc_regno] = useState('')
     // usestate for age
@@ -216,7 +216,7 @@ const DoctorRegistration = () => {
         cont_gracedate, dateofjoining, category, retirementyear, cont_perioddate, permantPin, region1,
         yearage, mobileno, landphone, email, designation, bloodgrp, presentPin, mnthage, dayge, religion,
         Salary, empstatus, addressPermnt1, addressPermnt2, addressPresent1, addressPresent2, doctortype,
-        probationendDate, prob_status, contractflag, clinictype, doctor, leaveprocesstype, nmc_regno
+        probationendDate, prob_status, contractflag, clinictype,  leaveprocesstype, nmc_regno
     ])
 
     const clearForm = useCallback(() => {
@@ -254,7 +254,7 @@ const DoctorRegistration = () => {
         setretirementyear(new Date())
         setcont_gracedate(new Date())
         setClinictype(0)
-        setDoctor(false)
+        //setDoctor(false)
         setcontractflag(0)
         setProb_status(0)
     }, [])
@@ -758,7 +758,7 @@ const DoctorRegistration = () => {
                             <InputComponent
                                 type="text"
                                 size="sm"
-                                placeholder="NMC Registration No."
+                                placeholder="NMC Attendance Id"
                                 name="nmc_regno"
                                 value={nmc_regno}
                                 onchange={(e) => setNmc_regno(e.target.value)}

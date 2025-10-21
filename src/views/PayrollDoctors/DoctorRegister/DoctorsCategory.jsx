@@ -1,13 +1,12 @@
 import { Option, Select } from '@mui/joy'
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo,  useEffect, useMemo} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCategory } from 'src/redux/actions/Category.Action'
 
 const DoctorsCategory = ({ value, setValue }) => {
 
     const dispatch = useDispatch()
-    const [flag, setFlag] = useState(0)
-
+    
     useEffect(() => dispatch(setCategory()), [dispatch])
 
     const empCategory = useSelector((state) => state?.getEmployeeCategory?.empCategory)

@@ -724,7 +724,8 @@ const DoctorRegistrationEdit = () => {
     
                         <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
                             <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
-                                <JoyCategorySelect value={category} setValue={setCategory} />
+                                 <DoctorsCategory value={category} setValue={setCategory} />
+                                {/* <JoyCategorySelect value={category} setValue={setCategory} /> */}
                             </Box>
                             <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                                 <JoyClicnicalType value={clinictype} setValue={setClinictype} />

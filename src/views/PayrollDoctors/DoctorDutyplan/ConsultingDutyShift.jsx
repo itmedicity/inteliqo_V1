@@ -19,7 +19,7 @@ const ConsultingDutyShift = ({
 
     const handleModalClose = useCallback(() => {
         setOpen(false)
-    }, []);
+    }, [setOpen]);
 
     const multiShiftSubmit = async () => {
         const { formattedDate, dutySlno } = selectedData;

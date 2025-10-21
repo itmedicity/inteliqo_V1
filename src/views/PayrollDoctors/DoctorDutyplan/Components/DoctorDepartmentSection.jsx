@@ -22,7 +22,7 @@ const DoctorDepartmentSection = ({ value, setValue, dept }) => {
             variant='outlined'
             sx={{ width: '100%' }}
         >
-            <Option disabled value={0}> Select Department</Option>
+            <Option disabled value={0}> Select Section</Option>
             {
                 sectionList?.map((val, index) => {
                     return <Option key={index} value={val.sect_id}>{val.sect_name}</Option>

@@ -117,7 +117,7 @@ const DepartmentMasterPage = () => {
         { headerName: 'Department ', field: 'dept_name', filter: true, width: 250 },
         { headerName: 'Alias ', field: 'dept_alias', filter: true, width: 150 },
         { headerName: 'Type ', field: 'descrp', filter: true, width: 150 },
-        { headerName: 'Department Type ', field: 'docdept', filter: true, width: 150 },
+        { headerName: 'Department Type ', field: 'docdept', filter: true, width: 200 },
         { headerName: 'Status', field: 'status', filter: true, width: 150 },
         {
             headerName: 'Action', cellRenderer: params =>
