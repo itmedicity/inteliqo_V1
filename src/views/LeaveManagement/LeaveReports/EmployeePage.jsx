@@ -162,6 +162,7 @@ const EmployeePage = () => {
         { headerName: 'Request Date', field: 'reqDate', wrapText: true, minWidth: 200 },
         { headerName: 'Shift Desc', field: 'shft_desc', wrapText: true, minWidth: 200 },
         { headerName: 'Halfday Date', field: 'lvDate', wrapText: true, minWidth: 200 },
+        { headerName: 'Leave Name', field: 'leave_name', minWidth: 200 },
         { headerName: 'HalfdayTime', field: 'halfdaytime', minWidth: 200 },
         { headerName: 'Reason', field: 'hf_reason', minWidth: 300 },
         { headerName: 'Incharge Status', field: 'incharge', minWidth: 200 },
