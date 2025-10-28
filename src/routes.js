@@ -305,6 +305,7 @@ const DoctorPunch = React.lazy(() => import('./views/PayrollDoctors/DoctorPunch/
 const DoctorPunchView = React.lazy(() => import('./views/PayrollDoctors/DoctorPunch/DoctorPunchReport'))
 // const DoctorsdashBoard = React.lazy(() => import('./views/PayrollDoctors/DoctorDashboard/Doctordashboard'))
 const DasboardforDoctor=React.lazy(()=>import('./views/PayrollDoctors/DoctorDashboard/Doctordashboard'))
+const DoctorRecordEdit = React.lazy(() => import('./views/PayrollDoctors/DoctorRegister/DoctorRegistrationEdit'))
 
 const routes = [
 
@@ -2065,6 +2066,12 @@ const routes = [
     exact: true,
     name: 'Doctor Dashboard',
     component: DasboardforDoctor
+  },
+  {
+    path:'/Home/DoctorRecordEdit/:id/:no',
+    exact: true,
+    name: 'Doctor Registration Edit',
+    component: DoctorRecordEdit
   }
 
 ]

@@ -25,7 +25,6 @@ import CustmTypog from 'src/views/Component/MuiCustomComponent/CustmTypog'
 import JoyBranchSelect from 'src/views/MuiComponents/JoyComponent/JoyBranchSelect'
 import JoyInstitutionSelect from 'src/views/MuiComponents/JoyComponent/JoyInstitutionSelect'
 import JoyDesignationSelect from 'src/views/MuiComponents/JoyComponent/JoyDesignationSelect'
-import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategorySelect'
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import JoyDoctorTypeSelect from 'src/views/MuiComponents/JoyComponent/JoyDoctorTypeSelect'
@@ -37,6 +36,7 @@ import { setDepartment } from 'src/redux/actions/Department.action'
 import { useDispatch } from 'react-redux'
 import { getDepartmentSection } from 'src/redux/actions/Common.Action'
 import JoyClicnicalType from 'src/views/MuiComponents/JoyComponent/JoyClicnicalType'
+import DoctorsCategory from './DoctorsCategory'
 
 const DoctorRegistrationEdit = () => {
       const { id, no } = useParams();
@@ -725,7 +725,6 @@ const DoctorRegistrationEdit = () => {
                         <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
                             <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                                  <DoctorsCategory value={category} setValue={setCategory} />
-                                {/* <JoyCategorySelect value={category} setValue={setCategory} /> */}
                             </Box>
                             <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                                 <JoyClicnicalType value={clinictype} setValue={setClinictype} />
@@ -828,4 +827,4 @@ const DoctorRegistrationEdit = () => {
     )
 }
 
-export default DoctorRegistrationEdit
+export default memo(DoctorRegistrationEdit) 
