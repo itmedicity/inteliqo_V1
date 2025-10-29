@@ -1,7 +1,7 @@
 import { Box, Paper } from '@mui/material'
 import React, { memo, useCallback, useEffect } from 'react'
 import { axioslogin } from 'src/views/Axios/Axios';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+// import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 
 const ViewFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB, clrFlagC, SetclrFlagC, clrFlagD, SetclrFlagD, setDisright, incmentCount, setincmentCount, disQuestn, setDisQuestn }) => {
 
@@ -19,7 +19,8 @@ const ViewFileOptions = ({ Questn, clrFlagA, SetclrFlagA, clrFlagB, SetclrFlagB,
                 const data = response.data;
                 const fileNames = data.data
                 const fileUrls = fileNames?.map((filename) => {
-                    const url = `${PUBLIC_NAS_FOLDER}/Training/${topic_slno}/${q_slno}/${filename}`;
+                   // const url = `${PUBLIC_NAS_FOLDER}/Training/${topic_slno}/${q_slno}/${filename}`;
+                    const url = `/Training/${topic_slno}/${q_slno}/${filename}`;
                     const parts = url.split('/');
                     const fileName = parts[parts.length - 1];
                     const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, '');

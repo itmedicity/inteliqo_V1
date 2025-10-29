@@ -9,7 +9,7 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import FilePresentOutlinedIcon from '@mui/icons-material/FilePresentOutlined';
 import ImageViewer from 'src/views/Component/ImageViewer';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+// import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import Files from 'react-files'
 import { format } from 'date-fns';
 
@@ -592,7 +592,7 @@ const InchargeApprovalModal = ({ open, setOpen, data, setCount, loginEmp, slno }
                             sx={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%' }}
                         >
                             <ImageViewer
-                                fileURL={`${PUBLIC_NAS_FOLDER}/ResignationReq/${attachment}`}
+                               // fileURL={`${PUBLIC_NAS_FOLDER}/ResignationReq/${attachment}`}
                                 fileType={attachment_type}
                             />,
                         </Box>

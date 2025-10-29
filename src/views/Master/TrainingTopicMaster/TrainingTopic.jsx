@@ -13,7 +13,7 @@ import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
 import CloseIcon from '@mui/icons-material/Close'
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+// import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import JoyTrainerMultipleSelect from 'src/views/MuiComponents/JoyComponent/JoyTrainerMultipleSelect';
 import { TrainerNames, TrainingSubType } from 'src/redux/actions/Training.Action';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
@@ -248,7 +248,8 @@ const TrainingTopic = () => {
 
             if (success === 1) {
                 const fileUrls = data.map((filename) => {
-                    return `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
+                   // return `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
+                   return `/TrainingTopicUploads/${topic_slno}/${filename}`;
                 });
                 setUploads(fileUrls);
             } else {

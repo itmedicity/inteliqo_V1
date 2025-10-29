@@ -5,40 +5,29 @@ import IconButton from '@mui/joy/IconButton';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import UploadIcon from '@mui/icons-material/Upload';
 import { useParams } from 'react-router-dom';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import ProfilePicDefault from '../../../../assets/images/default.png'
-import { urlExist } from 'src/views/Constant/Constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
 import _ from 'underscore';
+import { getEmpProfileImage } from 'src/redux/reduxFun/useQueryFunctions';
+import { useQuery } from 'react-query';
 
 const ProfileCard = () => {
     const { no } = useParams()
     const dispatch = useDispatch()
 
-    const [src, setSrc] = useState(ProfilePicDefault)
-    //const profilePic = `${PUBLIC_NAS_FOLDER + no}/profilePic.jpg`;
-
-    useEffect(() => {
+     useEffect(() => {
         dispatch(setPersonalData(no))
     }, [no, dispatch])
 
     const state = useSelector((state) => state?.getPrifileDateEachEmp?.empPersonalData?.personalData, _.isEqual)
 
-    useEffect(() => {
-        const getEmpIdforProfilePic = async () => {
-            if (no > 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER}/${no}/profilePic.jpeg`);
-                urlExist(profilePic, (status) => {
-                    if (status === true) {
-                        const picUrl = JSON.parse(profilePic)
-                        setSrc(picUrl)
-                    }
-                })
-            }
-        }
-        getEmpIdforProfilePic()
-    }, [no])
+  const { data: image } = useQuery({
+      queryKey: ['profileImage', no],
+      queryFn: () => getEmpProfileImage(no),
+      enabled: !!getEmpProfileImage,
+      staleTime: Infinity,
+    })
 
     const Name = state?.em_name?.toLowerCase();
     const Designation = state?.desg_name?.toLowerCase();
@@ -51,8 +40,8 @@ const ProfileCard = () => {
                 <Box sx={{ width: 200, borderRadius: 'sm', ml: 3, bgcolor: 'yellow' }}>
                     <AspectRatio objectFit="contain">
                         <img
-                            src={src}
-                            srcSet={src}
+                            src={image===undefined?ProfilePicDefault:image}
+                            srcSet={image===undefined?ProfilePicDefault:image}
                             alt="Profile Pic"
                         />
                     </AspectRatio>

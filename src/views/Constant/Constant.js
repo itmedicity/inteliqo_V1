@@ -76,9 +76,6 @@ export const getleaverequest = async () => {
     }
 }
 
-// export const PUBLIC_NAS_FOLDER = "http://192.168.10.170/NAS/"
-
-
 //GET ASSINED MENU LIST
 
 export const getMenuSlno = async () => {

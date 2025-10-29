@@ -2,7 +2,7 @@ import React, { Fragment, memo, useCallback, useEffect, useState } from 'react'
 import { Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { Button, Paper } from '@mui/material';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+// import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
@@ -61,7 +61,8 @@ const PdfViewerQR = ({ setOpen, id, open, reset, Userdata }) => {
                     const data = response.data;
                     const fileNames = data.data
                     const fileUrls = fileNames?.map((filename) => {
-                        const url = `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
+                        //const url = `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
+                        const url = `/TrainingTopicUploads/${topic_slno}/${filename}`;
                         return setUploads(url);
                     });
                     return fileUrls
