@@ -1,5 +1,5 @@
 import { Box, Paper } from '@mui/material'
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useEffect, } from 'react'
 import { AspectRatio, CssVarsProvider, Typography } from '@mui/joy';
 import IconButton from '@mui/joy/IconButton';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';

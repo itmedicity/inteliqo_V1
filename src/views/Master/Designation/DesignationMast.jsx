@@ -136,7 +136,7 @@ const DesignationMast = () => {
             <Box sx={{ width: "100%" }} >
                 <Grid container spacing={1}>
                     <Grid item xl={3} lg={2}>
-                        <Box sx={{ width: "100%", p: 1 }}>
+                        <Box sx={{ width: "100%", mx:0.5, my:0.5}}>
                             <InputComponent
                                 placeholder={'Designation Name'}
                                 type="text"
@@ -146,7 +146,7 @@ const DesignationMast = () => {
                                 onchange={(e) => updateDesignationfld(e)}
                             />
                         </Box>
-                        <Box sx={{ width: "100%", p: 1 }}>
+                        <Box sx={{ width: "100%", mx:0.5,my:0.5 }}>
                             <InputComponent
                                 placeholder={'Notice Period'}
                                 type="text"
