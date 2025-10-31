@@ -355,7 +355,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                 </Box>
                 <Box sx={{ display: 'flex', flex: 1, alignItems: 'center', px: 1, justifyContent: "space-evenly" }}>
                     <Box sx={{ display: 'flex', flex: 1, }} >
-                        <Tooltip title="Save Compansatory Off Request" variant="outlined" color="success" placement="top" followCursor arrow>
+                        <Tooltip title="Save Miss Punch Request" variant="outlined" color="success" placement="top" followCursor arrow>
                             <Button
                                 disabled={disableSave}
                                 variant="outlined"

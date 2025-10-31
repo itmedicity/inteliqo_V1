@@ -61,7 +61,7 @@ const SalaryProcessed = () => {
     const handleChangeDate = useCallback(async (date) => {
         setValue(date)
         dispatch({ type: Actiontypes.FETCH_CHANGE_STATE, aggridstate: 0 })
-    }, [])
+    }, [dispatch])
 
 
     const onClickProcess = useCallback(async () => {
@@ -318,7 +318,7 @@ const SalaryProcessed = () => {
                 setOpenBkDrop(false)
             }
         }
-    }, [value, all, dept, deptSection, commonSettings, allDept, allSection])
+    }, [value, all, dept, deptSection, commonSettings, allDept, allSection,dispatch])
 
     const [column] = useState([
         { headerName: 'ID', field: 'em_no' },

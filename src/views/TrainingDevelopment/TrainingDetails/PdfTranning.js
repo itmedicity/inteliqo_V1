@@ -1,79 +1,12 @@
 
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { PUBLIC_NAS_FOLDER } from "src/views/Constant/Static";
+// import { PUBLIC_NAS_FOLDER } from "src/views/Constant/Static";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export const PdfTranning = (getdata, ShowData) => {
-
-
-    // const url = `${PUBLIC_NAS_FOLDER}/Log`;
-
-    // console.log(url);
-
-
     const doc = {
-        // header: {
-        //     margin: [10, 10, 10, 20],
-        //     columns: [
-        //         {
-        //             stack: [
-        //                 { image: 'logo', fit: [150, 150] }
-        //             ],
-        //             width: '*',
-        //             alignment: 'left'
-        //         }
-        //     ],
-        //     columns: [
-        //         {
-        //             stack: [
-        //                 { image: 'NABH', fit: [100, 100] }
-        //             ],
-        //             width: '*',
-        //             alignment: 'right'
-        //         }
-        //     ]
-
-        // },
-        // header: [
-
-
-        //     { image: 'logo', width: 80 },
-        //     { image: 'NABH', width: 80, },
-
-
-        // ],
-
-
-
-        // header: {
-        //     margin: [10, 10, 10, 10],
-        //     columns: [
-        //         {
-        //             image: 'logo',
-        //             fit: [80, 80],
-        //             alignment: 'left',
-        //             width: 'auto'
-        //         },
-        // {
-        //     text: 'INDUCTION TRAINING RECORD',
-        //     alignment: 'center',
-        //     fontSize: 16,
-        //     bold: true,
-        //     margin: [0, 30, 0, 0],
-        //     width: '*'
-        // },
-        //         {
-        //             image: 'NABH',
-        //             fit: [60, 60],
-        //             alignment: 'right',
-        //             width: 'auto'
-        //         }
-        //     ]
-        // }
-        // ,
-
         content: [
             {
                 columns: [
@@ -168,29 +101,10 @@ export const PdfTranning = (getdata, ShowData) => {
             }
         ],
 
-        // styles: {
-        //     header: {
-        //         fontSize: 12,
-        //         bold: true,
-
-        //     },
-        //     tableExample: {
-        //         margin: [0, 5, 0, 15]
-        //     }
+        // images: {
+        //     logo: `${PUBLIC_NAS_FOLDER}/Logo/tmc.png`,
+        //     NABH: `${PUBLIC_NAS_FOLDER}/Logo/NABH.png`
         // },
-
-        images: {
-            logo: `${PUBLIC_NAS_FOLDER}/Logo/tmc.png`,
-            NABH: `${PUBLIC_NAS_FOLDER}/Logo/NABH.png`
-        },
-
-        // footer: {
-        //     columns: [
-        //         '',
-        //         { alignment: 'right', text: '*NA: Not attended', fontSize: 9 }
-        //     ],
-        //     margin: [10, 5]
-        // }
     };
 
     pdfMake.createPdf(doc).open();
