@@ -7,21 +7,28 @@ import NABH from '../../../assets/images/NABH.png'
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 // helper: converts imported image URLs to Base64 for pdfMake
-const toDataURL = (url) => {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
-        xhr.onload = function () {
-            const reader = new FileReader()
-            reader.onloadend = function () {
-                resolve(reader.result)
-            }
-            reader.readAsDataURL(xhr.response)
+
+const toDataURL = async (url) => {
+    try {
+        const response = await fetch(url)  // Using `fetch` instead of `XMLHttpRequest` for simplicity
+        if (!response.ok) {
+            throw new Error('Network response was not ok')
         }
-        xhr.onerror = reject
-        xhr.open('GET', url)
-        xhr.responseType = 'blob'
-        xhr.send()
-    })
+        const blob = await response.blob()  // Get the Blob from the response
+        const reader = new FileReader()
+
+        return new Promise((resolve, reject) => {
+            reader.onloadend = () => {
+                resolve(reader.result)  // Resolve with the Data URL when reading is complete
+            }
+            reader.onerror = () => reject(new Error('Failed to read file as Data URL'))  // Reject if there's an error while reading
+            reader.readAsDataURL(blob)  // Convert the Blob to Data URL
+        })
+
+    } catch (error) {
+        console.error('Error:', error)  // Handle any errors that happen during the fetch or read process
+        throw error  // Re-throw the error to propagate it
+    }
 }
 
 
