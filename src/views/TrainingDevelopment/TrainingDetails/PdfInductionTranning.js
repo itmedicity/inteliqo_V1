@@ -1,10 +1,38 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 // import { PUBLIC_NAS_FOLDER } from "src/views/Constant/Static";
+import logo from '../../../assets/images/logo.png'
+import NABH from '../../../assets/images/NABH.png'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-export const PdfInductionTrannings = (selected, ShowData) => {
+// helper: converts imported image URLs to Base64 for pdfMake
+const toDataURL = (url) => {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.onload = function () {
+            const reader = new FileReader()
+            reader.onloadend = function () {
+                resolve(reader.result)
+            }
+            reader.readAsDataURL(xhr.response)
+        }
+        xhr.onerror = reject
+        xhr.open('GET', url)
+        xhr.responseType = 'blob'
+        xhr.send()
+    })
+}
+
+
+export const PdfInductionTrannings = async (selected, ShowData) => {
+    // convert all images to base64 first
+    const [base64logo, base64NABH] = await Promise.all([
+        toDataURL(logo),
+        toDataURL(NABH),
+
+    ])
+
     const doc = {
         content: [
             {
@@ -95,10 +123,10 @@ export const PdfInductionTrannings = (selected, ShowData) => {
             }
         ],
 
-        // images: {
-        //     logo: `${PUBLIC_NAS_FOLDER}/Logo/tmc.png`,
-        //     NABH: `${PUBLIC_NAS_FOLDER}/Logo/NABH.png`
-        // },
+        images: {
+            logo: base64logo,
+            NABH: base64NABH
+        },
     };
 
     pdfMake.createPdf(doc).open();
