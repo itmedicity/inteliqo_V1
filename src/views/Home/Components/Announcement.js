@@ -7,11 +7,17 @@ import { CssVarsProvider } from '@mui/joy';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import Box from '@mui/joy/Box';
 import Chip from '@mui/joy/Chip';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
+import { getHospitalImage } from 'src/redux/reduxFun/useQueryFunctions';
+import { useQuery } from 'react-query';
 
 const AnnList = React.lazy(() => import('./AnnouncementList'))
 
 const Announcement = () => {
+  
+   const { data } = useQuery({
+        queryKey: ['hospitallogoImage'],
+        queryFn: getHospitalImage
+    })
 
     return (
         <Fragment>
@@ -32,10 +38,8 @@ const Announcement = () => {
                     </CssVarsProvider>
                     <CardMedia
                         component="img"
-                        // fileURL={`${PUBLIC_NAS_FOLDER}/ResignationReq/${attachment}`}
-                        image={`${PUBLIC_NAS_FOLDER}/Logo/image.jpg`}
-                        alt="Paella dish"
-                        // className='img-fluid rounded'
+                        image={data}
+                        alt="Travancore Medicity"
                         sx={{
                             height: '30%', width: '100%', objectFit: "cover", borderRadius: 3, p: 1,
                         }}

@@ -26,13 +26,12 @@ const TrainingAndDevelopment = [
         name: 'Departmental Process',
         to: '/Home/TrainingProcess',
     },
-
-    {
-        men_slno: 57,
-        component: CNavItem,
-        name: 'Training Attendance',
-        to: '/homes',
-    },
+    // {
+    //     men_slno: 57,
+    //     component: CNavItem,
+    //     name: 'Training Attendance',
+    //     to: '/homes',
+    // },
     {
         men_slno: 58,
         component: CNavItem,

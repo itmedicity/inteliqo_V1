@@ -14,7 +14,7 @@ import JoyInput from 'src/views/MuiComponents/JoyComponent/JoyInput';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
 import CloseIcon from '@mui/icons-material/Close'
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+// import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import { DeptSectnWiseTrainerNames } from 'src/redux/actions/Training.Action';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import TopicFiles from './TopicFiles';
@@ -54,17 +54,17 @@ const TopicPage = () => {
 
     const employeeState = useSelector((state) => state.getProfileData.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_id, em_department, em_dept_section } = employeeProfileDetl;
+    const { em_id, em_department } = employeeProfileDetl;
 
 
     useEffect(() => {
         const obj = {
             em_department: em_department,
-            em_dept_section: em_dept_section
+            // em_dept_section: em_dept_section
         }
         // dispatch(TrainerNames())
         dispatch(DeptSectnWiseTrainerNames(obj))
-    }, [dispatch, em_department, em_dept_section])
+    }, [dispatch, em_department])
 
     //reset
     const reset = useCallback(() => {
@@ -227,7 +227,8 @@ const TopicPage = () => {
 
             if (success === 1) {
                 const fileUrls = data.map((filename) => {
-                    return `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
+                    return `/TrainingTopicUploads/${topic_slno}/${filename}`;
+                     //return `${PUBLIC_NAS_FOLDER}/TrainingTopicUploads/${topic_slno}/${filename}`;
                 });
 
                 setUploads(fileUrls);

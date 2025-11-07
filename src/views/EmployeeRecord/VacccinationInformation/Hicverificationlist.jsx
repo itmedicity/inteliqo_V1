@@ -102,79 +102,79 @@ const Hicverificationlist = () => {
   }, [dept, deptSection, Empno, setnameList])
 
   // for signature
-  useEffect(() => {
-    const getEmployeeSig = async () => {
-      if (hic_emid_first_verified > 0) {
-        const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + hic_emid_first_verified}/signature/signature.jpg`,
-        )
-        urlExist(profilePic, (status) => {
-          if (status === true) {
-            const picUrl = JSON.parse(profilePic)
+  // useEffect(() => {
+  //   const getEmployeeSig = async () => {
+  //     if (hic_emid_first_verified > 0) {
+  //       const profilePic = JSON.stringify(
+  //         `${PUBLIC_NAS_FOLDER + hic_emid_first_verified}/signature/signature.jpg`,
+  //       )
+  //       urlExist(profilePic, (status) => {
+  //         if (status === true) {
+  //           const picUrl = JSON.parse(profilePic)
 
-            setSrc(picUrl)
-          } else {
-            setSrc(ProfilePicDefault)
-          }
-        })
-      }
-    }
-    getEmployeeSig()
+  //           setSrc(picUrl)
+  //         } else {
+  //           setSrc(ProfilePicDefault)
+  //         }
+  //       })
+  //     }
+  //   }
+  //   getEmployeeSig()
 
-    const getEmployeeSigsecond = async () => {
-      if (hic_emid_second_verified > 0) {
-        const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + hic_emid_second_verified}/signature/signature.jpg`,
-        )
-        urlExist(profilePic, (status) => {
-          if (status === true) {
-            const picUrl = JSON.parse(profilePic)
-            setSrcsecond(picUrl)
-          } else {
-            setSrc(ProfilePicDefault)
-          }
-        })
-      }
-    }
-    getEmployeeSigsecond()
-    const getEmployeeSigthird = async () => {
-      if (hic_emid_third_verified > 0) {
-        const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + hic_emid_third_verified}/signature/signature.jpg`,
-        )
-        urlExist(profilePic, (status) => {
-          if (status === true) {
-            const picUrl = JSON.parse(profilePic)
-            setSrcthird(picUrl)
-          } else {
-            setSrc(ProfilePicDefault)
-          }
-        })
-      }
-    }
-    getEmployeeSigthird()
-    const getEmployeeSigbooster = async () => {
-      if (hic_emid_booster_verified > 0) {
-        const profilePic = JSON.stringify(
-          `${PUBLIC_NAS_FOLDER + hic_emid_booster_verified}/signature/signature.jpg`,
-        )
-        urlExist(profilePic, (status) => {
-          if (status === true) {
-            const picUrl = JSON.parse(profilePic)
-            setSrcbooster(picUrl)
-          } else {
-            setSrc(ProfilePicDefault)
-          }
-        })
-      }
-    }
-    getEmployeeSigbooster()
-  }, [
-    hic_emid_first_verified,
-    hic_emid_second_verified,
-    hic_emid_third_verified,
-    hic_emid_booster_verified,
-  ])
+  //   const getEmployeeSigsecond = async () => {
+  //     if (hic_emid_second_verified > 0) {
+  //       const profilePic = JSON.stringify(
+  //         `${PUBLIC_NAS_FOLDER + hic_emid_second_verified}/signature/signature.jpg`,
+  //       )
+  //       urlExist(profilePic, (status) => {
+  //         if (status === true) {
+  //           const picUrl = JSON.parse(profilePic)
+  //           setSrcsecond(picUrl)
+  //         } else {
+  //           setSrc(ProfilePicDefault)
+  //         }
+  //       })
+  //     }
+  //   }
+  //   getEmployeeSigsecond()
+  //   const getEmployeeSigthird = async () => {
+  //     if (hic_emid_third_verified > 0) {
+  //       const profilePic = JSON.stringify(
+  //         `${PUBLIC_NAS_FOLDER + hic_emid_third_verified}/signature/signature.jpg`,
+  //       )
+  //       urlExist(profilePic, (status) => {
+  //         if (status === true) {
+  //           const picUrl = JSON.parse(profilePic)
+  //           setSrcthird(picUrl)
+  //         } else {
+  //           setSrc(ProfilePicDefault)
+  //         }
+  //       })
+  //     }
+  //   }
+  //   getEmployeeSigthird()
+  //   const getEmployeeSigbooster = async () => {
+  //     if (hic_emid_booster_verified > 0) {
+  //       const profilePic = JSON.stringify(
+  //         `${PUBLIC_NAS_FOLDER + hic_emid_booster_verified}/signature/signature.jpg`,
+  //       )
+  //       urlExist(profilePic, (status) => {
+  //         if (status === true) {
+  //           const picUrl = JSON.parse(profilePic)
+  //           setSrcbooster(picUrl)
+  //         } else {
+  //           setSrc(ProfilePicDefault)
+  //         }
+  //       })
+  //     }
+  //   }
+  //   getEmployeeSigbooster()
+  // }, [
+  //   hic_emid_first_verified,
+  //   hic_emid_second_verified,
+  //   hic_emid_third_verified,
+  //   hic_emid_booster_verified,
+  // ])
 
   const handleIconClick = useCallback((params) => {
     setDownload(1)

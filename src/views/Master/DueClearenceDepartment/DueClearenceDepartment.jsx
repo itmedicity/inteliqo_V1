@@ -1,4 +1,4 @@
-import { Box, Button, CssVarsProvider, Tooltip } from '@mui/joy';
+import { Box, Button,  Tooltip } from '@mui/joy';
 import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import React, { memo, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
@@ -168,7 +168,6 @@ const DueClearenceDepartment = () => {
                             <Box sx={{ flex: 1, pr: 0.3 }}>
                                 <DeptSecSelectAuth sectValue={duedept} getDeptSection={setDueDept} setDeptname={setDeptname} />
                             </Box>
-                            <CssVarsProvider>
                                 <Tooltip title="Add" followCursor placement='top' arrow >
                                     <Button aria-label="Like" variant="outlined" color="primary"
                                         onClick={getDepartmentdata} sx={{
@@ -177,11 +176,9 @@ const DueClearenceDepartment = () => {
                                         <AddCircleOutlineIcon />
                                     </Button>
                                 </Tooltip>
-                            </CssVarsProvider>
                         </Box>
                         <Box sx={{ px: 0.5, mt: 0.9 }}>
                             <Tooltip title="Save" followCursor placement='top' arrow >
-                                <CssVarsProvider>
                                     <Button
                                         variant="outlined"
                                         component="label"
@@ -191,7 +188,6 @@ const DueClearenceDepartment = () => {
                                     >
                                         <SaveIcon />
                                     </Button>
-                                </CssVarsProvider>
                             </Tooltip>
                         </Box>
                         <Box sx={{ flex: 1, mt: 0.5 }}></Box>

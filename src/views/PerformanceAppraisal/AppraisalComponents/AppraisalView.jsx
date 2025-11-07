@@ -10,8 +10,8 @@ import { CheckIdExists, getexistDetails } from '../AppraisalFunctions';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { useSelector } from 'react-redux';
-import { urlExist } from 'src/views/Constant/Constant';
-import { PUBLIC_NAS_FOLDER, } from 'src/views/Constant/Static';
+// import { urlExist } from 'src/views/Constant/Constant';
+// import { PUBLIC_NAS_FOLDER, } from 'src/views/Constant/Static';
 import ProfilePicDefault from 'src/assets/images/nosigature.jpg'
 
 const Progress = () => {
@@ -196,83 +196,83 @@ const AppraisalView = ({ empno, empid, setAppraisalview, loginData }) => {
     }, [emp_no, emp_id])
 
 
-    useEffect(() => {
-        const hr_id = loginData.em_id
-        const getEmployeeSig = async () => {
-            if (emp_id > 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + emp_id}/signature/signature.jpg`);
-                urlExist(profilePic, (status) => {
-                    if (status === true) {
-                        const picUrl = JSON.parse(profilePic)
-                        setSrc(picUrl)
-                    } else {
-                        setSrc(ProfilePicDefault)
-                    }
-                })
-            }
-        }
-        getEmployeeSig()
-        const getInchargeSig = async () => {
-            if (inchargeid > 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + inchargeid}/signature/signature.jpg`);
-                urlExist(profilePic, (status) => {
-                    if (status === true) {
-                        const picUrl = JSON.parse(profilePic)
-                        setinchargesig(picUrl)
-                    }
-                    else {
-                        setinchargesig(ProfilePicDefault)
-                    }
-                })
-            }
-        }
-        getInchargeSig()
+    // useEffect(() => {
+    //     const hr_id = loginData.em_id
+    //     const getEmployeeSig = async () => {
+    //         if (emp_id > 0) {
+    //             const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + emp_id}/signature/signature.jpg`);
+    //             urlExist(profilePic, (status) => {
+    //                 if (status === true) {
+    //                     const picUrl = JSON.parse(profilePic)
+    //                     setSrc(picUrl)
+    //                 } else {
+    //                     setSrc(ProfilePicDefault)
+    //                 }
+    //             })
+    //         }
+    //     }
+    //     getEmployeeSig()
+    //     const getInchargeSig = async () => {
+    //         if (inchargeid > 0) {
+    //             const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + inchargeid}/signature/signature.jpg`);
+    //             urlExist(profilePic, (status) => {
+    //                 if (status === true) {
+    //                     const picUrl = JSON.parse(profilePic)
+    //                     setinchargesig(picUrl)
+    //                 }
+    //                 else {
+    //                     setinchargesig(ProfilePicDefault)
+    //                 }
+    //             })
+    //         }
+    //     }
+    //     getInchargeSig()
 
-        const gethodSig = async () => {
-            if (hodid > 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + hodid}/signature/signature.jpg`);
-                urlExist(profilePic, (status) => {
-                    if (status === true) {
-                        const picUrl = JSON.parse(profilePic)
-                        sethodsig(picUrl)
-                    } else {
-                        sethodsig(ProfilePicDefault)
-                    }
-                })
-            }
-        }
-        gethodSig()
+    //     const gethodSig = async () => {
+    //         if (hodid > 0) {
+    //             const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + hodid}/signature/signature.jpg`);
+    //             urlExist(profilePic, (status) => {
+    //                 if (status === true) {
+    //                     const picUrl = JSON.parse(profilePic)
+    //                     sethodsig(picUrl)
+    //                 } else {
+    //                     sethodsig(ProfilePicDefault)
+    //                 }
+    //             })
+    //         }
+    //     }
+    //     gethodSig()
 
-        const getHrdSig = async () => {
-            if (hr_id > 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + hr_id}/signature/signature.jpg`);
-                urlExist(profilePic, (status) => {
-                    if (status === true) {
-                        const picUrl = JSON.parse(profilePic)
-                        sethrSig(picUrl)
-                    } else {
-                        sethrSig(ProfilePicDefault)
-                    }
-                })
-            }
-        }
-        getHrdSig()
+    //     const getHrdSig = async () => {
+    //         if (hr_id > 0) {
+    //             const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + hr_id}/signature/signature.jpg`);
+    //             urlExist(profilePic, (status) => {
+    //                 if (status === true) {
+    //                     const picUrl = JSON.parse(profilePic)
+    //                     sethrSig(picUrl)
+    //                 } else {
+    //                     sethrSig(ProfilePicDefault)
+    //                 }
+    //             })
+    //         }
+    //     }
+    //     getHrdSig()
 
-        const getCeoSignaure = async () => {
-            if (ceoId !== 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + ceoId}/signature/signature.jpg`);
-                urlExist(profilePic, (status) => {
-                    if (status === true) {
-                        const picUrl = JSON.parse(profilePic)
-                        setceosig(picUrl)
-                    } else {
-                        setceosig(ProfilePicDefault)
-                    }
-                })
-            }
-        }
-        getCeoSignaure()
-    }, [emp_id, inchargeid, hodid, ceoId, loginData.em_id])
+    //     const getCeoSignaure = async () => {
+    //         if (ceoId !== 0) {
+    //             const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER + ceoId}/signature/signature.jpg`);
+    //             urlExist(profilePic, (status) => {
+    //                 if (status === true) {
+    //                     const picUrl = JSON.parse(profilePic)
+    //                     setceosig(picUrl)
+    //                 } else {
+    //                     setceosig(ProfilePicDefault)
+    //                 }
+    //             })
+    //         }
+    //     }
+    //     getCeoSignaure()
+    // }, [emp_id, inchargeid, hodid, ceoId, loginData.em_id])
 
     const download = async () => {
         pdfdownlod(formdata, Performance, given_score,

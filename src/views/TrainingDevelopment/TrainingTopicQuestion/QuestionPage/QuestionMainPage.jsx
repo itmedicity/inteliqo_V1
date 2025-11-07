@@ -15,7 +15,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import CloseIcon from '@mui/icons-material/Close'
 import imageCompression from 'browser-image-compression'
 import TouchAppSharpIcon from '@mui/icons-material/TouchAppSharp';
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
+// import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static';
 import ViewFileModal from './ViewFileModal';
 import JoyTopicByDeptWiseEntry from 'src/views/MuiComponents/JoyComponent/JoyTopicByDeptWiseEntry';
 
@@ -391,7 +391,7 @@ const QuestionMainPage = () => {
             const data = response.data;
             const fileNames = data.data
             const fileUrls = fileNames?.map((filename) => {
-                const url = `${PUBLIC_NAS_FOLDER}/Training/${topic_slno}/${q_slno}/${filename}`;
+                const url = `/Training/${topic_slno}/${q_slno}/${filename}`;
                 const parts = url.split('/');
                 const fileName = parts[parts.length - 1]; // Extract the file name
                 const fileNameWithoutExtension = fileName.replace(/\.[^/.]+$/, ''); // Remove extension

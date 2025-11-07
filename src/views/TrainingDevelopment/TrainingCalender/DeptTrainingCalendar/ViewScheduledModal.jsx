@@ -25,7 +25,7 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
 
     const employeeState = useSelector((state) => state?.getProfileData?.ProfileData, _.isEqual);
     const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-    const { em_id, em_dept_section, em_department } = employeeProfileDetl;
+    const { em_id, em_department } = employeeProfileDetl;
 
     const [scheduleDate, setScheduleDate] = useState(moment(new Date(modalData.training_date)).format('YYYY-MM-DD'));
     const [slno, setSlno] = useState(0);
@@ -51,10 +51,10 @@ const ViewScheduledModal = ({ Scheduledata, open, SetOpen, count, SetCount, EmpD
     useEffect(() => {
         const obj = {
             em_department: em_department,
-            em_dept_section: em_dept_section
+            // em_dept_section: em_dept_section
         }
         dispatch(DeptSectnWiseTrainerNames(obj))
-    }, [dispatch, count, em_department, em_dept_section])
+    }, [dispatch, count, em_department])
 
     useEffect(() => {
         if (Object.keys(modalData).length !== 0) {

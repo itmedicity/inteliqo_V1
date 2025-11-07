@@ -1,79 +1,40 @@
 
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { PUBLIC_NAS_FOLDER } from "src/views/Constant/Static";
+import logo from '../../../assets/images/logo.png'
+import NABH from '../../../assets/images/NABH.png'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-export const PdfTranning = (getdata, ShowData) => {
+// helper: converts imported image URLs to Base64 for pdfMake
+const toDataURL = (url) => {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.onload = function () {
+            const reader = new FileReader()
+            reader.onloadend = function () {
+                resolve(reader.result)
+            }
+            reader.readAsDataURL(xhr.response)
+        }
+        xhr.onerror = reject
+        xhr.open('GET', url)
+        xhr.responseType = 'blob'
+        xhr.send()
+    })
+}
 
 
-    // const url = `${PUBLIC_NAS_FOLDER}/Log`;
+export const PdfTranning = async (getdata, ShowData) => {
 
-    // console.log(url);
+    // convert all images to base64 first
+    const [base64logo, base64NABH] = await Promise.all([
+        toDataURL(logo),
+        toDataURL(NABH),
 
+    ])
 
     const doc = {
-        // header: {
-        //     margin: [10, 10, 10, 20],
-        //     columns: [
-        //         {
-        //             stack: [
-        //                 { image: 'logo', fit: [150, 150] }
-        //             ],
-        //             width: '*',
-        //             alignment: 'left'
-        //         }
-        //     ],
-        //     columns: [
-        //         {
-        //             stack: [
-        //                 { image: 'NABH', fit: [100, 100] }
-        //             ],
-        //             width: '*',
-        //             alignment: 'right'
-        //         }
-        //     ]
-
-        // },
-        // header: [
-
-
-        //     { image: 'logo', width: 80 },
-        //     { image: 'NABH', width: 80, },
-
-
-        // ],
-
-
-
-        // header: {
-        //     margin: [10, 10, 10, 10],
-        //     columns: [
-        //         {
-        //             image: 'logo',
-        //             fit: [80, 80],
-        //             alignment: 'left',
-        //             width: 'auto'
-        //         },
-        // {
-        //     text: 'INDUCTION TRAINING RECORD',
-        //     alignment: 'center',
-        //     fontSize: 16,
-        //     bold: true,
-        //     margin: [0, 30, 0, 0],
-        //     width: '*'
-        // },
-        //         {
-        //             image: 'NABH',
-        //             fit: [60, 60],
-        //             alignment: 'right',
-        //             width: 'auto'
-        //         }
-        //     ]
-        // }
-        // ,
-
         content: [
             {
                 columns: [
@@ -168,29 +129,10 @@ export const PdfTranning = (getdata, ShowData) => {
             }
         ],
 
-        // styles: {
-        //     header: {
-        //         fontSize: 12,
-        //         bold: true,
-
-        //     },
-        //     tableExample: {
-        //         margin: [0, 5, 0, 15]
-        //     }
-        // },
-
         images: {
-            logo: `${PUBLIC_NAS_FOLDER}/Logo/tmc.png`,
-            NABH: `${PUBLIC_NAS_FOLDER}/Logo/NABH.png`
+            logo: base64logo,
+            NABH: base64NABH
         },
-
-        // footer: {
-        //     columns: [
-        //         '',
-        //         { alignment: 'right', text: '*NA: Not attended', fontSize: 9 }
-        //     ],
-        //     margin: [10, 5]
-        // }
     };
 
     pdfMake.createPdf(doc).open();

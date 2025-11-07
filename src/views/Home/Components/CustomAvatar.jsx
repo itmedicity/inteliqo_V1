@@ -1,48 +1,45 @@
 import { CircularProgress } from '@mui/material'
 
-import React, { memo, useEffect, useState } from 'react'
-import ProfilePicDefault from 'src/assets/images/default.png'
-import { urlExist } from 'src/views/Constant/Constant'
-import { PUBLIC_NAS_FOLDER } from 'src/views/Constant/Static'
-import { Avatar } from '@mui/joy';
+import React, { memo } from 'react'
+import { Avatar } from '@mui/joy'
+import { getEmpProfileImage, getHospitalLogo } from 'src/redux/reduxFun/useQueryFunctions'
+import { useQuery } from 'react-query'
 
 const CustomAvatar = ({ id }) => {
+  const { data: image } = useQuery({
+    queryKey: ['profileImage', id],
+    queryFn: () => getEmpProfileImage(id),
+    enabled: !!getEmpProfileImage,
+    staleTime: Infinity,
+  })
 
-    const [src, setSrc] = useState(ProfilePicDefault)
-    const [val, setVal] = useState(false)
+  const { data: logo } = useQuery({
+    queryKey: ['hospitallogo'],
+    queryFn: getHospitalLogo,
+  })
 
-    useEffect(() => {
-        const getEmpIdforProfilePic = async (id) => {
-            if (id > 0) {
-                const profilePic = JSON.stringify(`${PUBLIC_NAS_FOLDER}/${id}/profilePic.jpeg`);
-                urlExist(profilePic, (status) => {
-                    if (status === true) {
-                        const picUrl = JSON.parse(profilePic)
-                        setSrc(picUrl)
-                        setVal(true)
-                    }
-                })
-            }
-        }
-        getEmpIdforProfilePic(id)
-
-    }, [id])
-
-    return (
-        <>
-            {
-                val === false ? <Avatar sx={{
-                    width: 40,  // Adjust the size of the avatar itself
-                    height: 40, // Adjust the size of the avatar itself
-                    '& img': {
-                        objectFit: 'contain', // Ensures image doesn't stretch or overflow
-                        width: '100%',  // You can adjust the size of the image within the Avatar
-                        height: '100%', // You can adjust the size of the image within the Avatar
-                    },
-                }} src={`${PUBLIC_NAS_FOLDER}/Logo/logo.png`}><CircularProgress /></Avatar> : <Avatar src={src} />
-            }
-        </>
-    )
+  return (
+    <>
+      {image === undefined ? (
+        <Avatar
+          sx={{
+            width: 40, // Adjust the size of the avatar itself
+            height: 40, // Adjust the size of the avatar itself
+            '& img': {
+              objectFit: 'contain', // Ensures image doesn't stretch or overflow
+              width: '100%', // You can adjust the size of the image within the Avatar
+              height: '100%', // You can adjust the size of the image within the Avatar
+            },
+          }}
+          src={logo}
+        >
+          <CircularProgress />
+        </Avatar>
+      ) : (
+        <Avatar src={image} />
+      )}
+    </>
+  )
 }
 
-export default memo(CustomAvatar) 
+export default memo(CustomAvatar)
