@@ -115,7 +115,6 @@ const ShiftPlanningModal = ({
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
                         width: 500,
-                        //borderRadius: 'md',
                         boxShadow: 'lg',
                         bgcolor: 'background.body',
                         minHeight: 400
