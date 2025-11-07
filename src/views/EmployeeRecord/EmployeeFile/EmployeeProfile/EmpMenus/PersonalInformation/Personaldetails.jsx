@@ -251,7 +251,7 @@ const Personaldetails = () => {
     }, [bankBranch])
 
     const getFamilyDetails = async () => {
-        let uppercasetext = mrdnumber.toUpperCase();
+        let uppercasetext = mrdnumber.toUpperCase(); //MRD number in uppercase
         if (relation === 0 || uppercasetext === '') {
             warningNofity('Please Select Relation & MRD Number')
         } else {

@@ -35,7 +35,8 @@ const ModuleGroupMast = () => {
     module_dashboard: false,
     module_reports: false,
     module_vaccination: false,
-    module_contractRenew: false
+    module_contractRenew: false,
+    module_payrollDoctor: false
   })
 
   // destructuring the form element vlaues
@@ -52,7 +53,8 @@ const ModuleGroupMast = () => {
     module_dashboard,
     module_reports,
     module_vaccination,
-    module_contractRenew
+    module_contractRenew,
+    module_payrollDoctor
   } = formData
 
   // Get the value from the element to variables
@@ -78,12 +80,14 @@ const ModuleGroupMast = () => {
         module_dashboard: module_dashboard === true ? 11 : 0,
         module_reports: module_reports === true ? 12 : 0,
         module_vaccination: module_vaccination === true ? 13 : 0,
-        module_contractRenew: module_contractRenew === true ? 14 : 0
+        module_contractRenew: module_contractRenew === true ? 14 : 0,
+        module_payrollDoctor: module_payrollDoctor === true ? 15 : 0
       },
     }
   }, [module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
     module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation,
-    module_dashboard, module_reports, module_vaccination, module_contractRenew, groupname])
+    module_dashboard, module_reports, module_vaccination, module_contractRenew, groupname,
+    module_payrollDoctor])
 
   const postEditData = useMemo(() => {
     return {
@@ -101,13 +105,15 @@ const ModuleGroupMast = () => {
         module_dashboard: module_dashboard === true ? 11 : 0,
         module_reports: module_reports === true ? 12 : 0,
         module_vaccination: module_vaccination === true ? 13 : 0,
-        module_contractRenew: module_contractRenew === true ? 14 : 0
+        module_contractRenew: module_contractRenew === true ? 14 : 0,
+        module_payrollDoctor: module_payrollDoctor === true ? 15 : 0
       },
       mdgrp_slno: slno,
     }
   }, [module_recruitment, module_emprecord, module_attenmangemnt, module_leavemangment,
     module_payroll, module_performanceApp, module_trainAndDevolp, module_resignation, slno,
-    module_dashboard, module_reports, module_vaccination, module_contractRenew, groupname])
+    module_dashboard, module_reports, module_vaccination, module_contractRenew, groupname,
+    module_payrollDoctor])
 
   const resetForm = useMemo(() => {
     return {
@@ -123,12 +129,15 @@ const ModuleGroupMast = () => {
       module_dashboard: false,
       module_reports: false,
       module_vaccination: false,
-      module_contractRenew: false
+      module_contractRenew: false,
+      module_payrollDoctor: false
     }
   }, [])
 
   const submitModuleGroupMast = useCallback(async (e) => {
     e.preventDefault()
+
+    console.log(postEditData);
 
     if (flag === 1) {
       const result = await axioslogin.patch('/modulegroup', postEditData)
@@ -205,7 +214,8 @@ const ModuleGroupMast = () => {
       module_dashboard: module_status.module_dashboard === 0 ? false : true,
       module_reports: module_status.module_reports === 0 ? false : true,
       module_vaccination: module_status.module_vaccination === 0 ? false : true,
-      module_contractRenew: module_status.module_contractRenew === 0 ? false : true
+      module_contractRenew: module_status.module_contractRenew === 0 ? false : true,
+      module_payrollDoctor: module_status.module_payrollDoctor === 0 ? false : true
     }
     setFormData(form_dis_data)
     setSlno(mdgrp_slno)
@@ -325,6 +335,14 @@ const ModuleGroupMast = () => {
                 label='Contract Renewal'
                 checked={module_contractRenew}
                 name="module_contractRenew"
+                onchange={(e) => getModuleGroupFormData(e)}
+              />
+            </Box>
+            <Box sx={{ pl: 1, mt: 0.5 }} >
+              <JoyCheckbox
+                label='Payroll- Doctors'
+                checked={module_payrollDoctor}
+                name="module_payrollDoctor"
                 onchange={(e) => getModuleGroupFormData(e)}
               />
             </Box>

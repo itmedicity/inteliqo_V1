@@ -22,6 +22,7 @@ const DepartmentMasterPage = () => {
     const [data, setData] = useState([]);
     const [id, setId] = useState(0)
     const [flag, setFlag] = useState(0)
+    const [doctorDepartment, setDoctorDepartment] = useState(false)
 
     const typeArray = [
         { typeNo: 1, name: 'Clinical' },
@@ -34,6 +35,7 @@ const DepartmentMasterPage = () => {
         setDeptalias('');
         setDeptstatus(false);
         setType(0)
+        setDoctorDepartment(false)
     }
 
     const submitDeptForm = useCallback((e) => {
@@ -46,6 +48,7 @@ const DepartmentMasterPage = () => {
                 dept_status: dept_status === true ? 1 : 0,
                 create_user: employeeIdNumber(),
                 dept_type: type,
+                doctor_department: doctorDepartment === true ? 1 : 0
             }
             const result = await axioslogin.post('/department', formData).then((response) => {
                 return response;
@@ -76,7 +79,8 @@ const DepartmentMasterPage = () => {
                 dept_alias: dept_alias,
                 edit_user: employeeIdNumber(),
                 dept_type: type,
-                dept_id: id
+                dept_id: id,
+                doctor_department: doctorDepartment === true ? 1 : 0
             }
             axioslogin.patch('/department', newDeptDetail)
                 .then((response) => {
@@ -106,13 +110,14 @@ const DepartmentMasterPage = () => {
         } else {
             submitFun()
         }
-    }, [dept_name, dept_alias, dept_status, type, id, flag, count])
+    }, [dept_name, dept_alias, dept_status, type, id, flag, count, doctorDepartment])
 
     const [columnDef] = useState([
         { headerName: 'ID', field: 'dept_id' },
         { headerName: 'Department ', field: 'dept_name', filter: true, width: 250 },
         { headerName: 'Alias ', field: 'dept_alias', filter: true, width: 150 },
         { headerName: 'Type ', field: 'descrp', filter: true, width: 150 },
+        { headerName: 'Department Type ', field: 'docdept', filter: true, width: 200 },
         { headerName: 'Status', field: 'status', filter: true, width: 150 },
         {
             headerName: 'Action', cellRenderer: params =>
@@ -191,6 +196,14 @@ const DepartmentMasterPage = () => {
                                         })
                                     }
                                 </Select>
+                            </Box>
+                            <Box sx={{ width: "100%", pt: 1 }}>
+                                <JoyCheckbox
+                                    label='Check If Doctor Department'
+                                    checked={doctorDepartment}
+                                    name="doctorDepartment"
+                                    onchange={(e) => setDoctorDepartment(e.target.checked)}
+                                />
                             </Box>
                             <Box sx={{ width: "100%", pt: 1 }}>
                                 <JoyCheckbox

@@ -1,5 +1,5 @@
-import { Box, IconButton, CssVarsProvider, Typography, Input, Button } from '@mui/joy'
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Box, Button } from '@mui/joy'
+import React, { memo, useCallback, useState } from 'react'
 import { ToastContainer } from 'react-toastify';
 import ReportLayout from '../ReportComponent/ReportLayout';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
@@ -10,13 +10,8 @@ import { axioslogin } from 'src/views/Axios/Axios';
 import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
 
 const ActiveDoctorReport = () => {
-    // const [deptName, setDepartmentName] = useState(0)
-    // const [deptSecName, setDepartSecName] = useState(0)
-    // const [Empno, setEmpNo] = useState({})
-    const [branch, setBranch] = useState(0)
 
-    //const [fromdate, Setfromdate] = useState(moment(new Date()));
-    //const [todate, Settodate] = useState(moment(new Date()));
+    const [branch, setBranch] = useState(0)
     const [tableData, setTableData] = useState([])
     const [openBkDrop, setOpenBkDrop] = useState(false)
     const [all, setAll] = useState(false)
@@ -52,7 +47,6 @@ const ActiveDoctorReport = () => {
     const getemployeedetails = useCallback(async () => {
         setOpenBkDrop(true)
         if (all === true) {
-            const branch_slno = [branch]
             const result = await axioslogin.get('/ActiveEmpReport/allactive/doctors')
             const { success, data } = result.data;
 
@@ -92,11 +86,6 @@ const ActiveDoctorReport = () => {
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
                             <BranchSelectRedux value={branch} setValue={setBranch} />
                         </Box>
-                        {/* <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-                        <DeptSelectByRedux value={dept} setValue={setDept} />
-                    </Box>*/}
-
-                        {/* <DeptSecSelectByRedux dept={dept} value={deptSect} setValue={setDeptSect} /> */}
                         <Box sx={{ px: 0.3, mt: 1 }} >
                             <JoyCheckbox
                                 label='All'
@@ -134,4 +123,4 @@ const ActiveDoctorReport = () => {
     )
 }
 
-export default ActiveDoctorReport
+export default memo(ActiveDoctorReport) 

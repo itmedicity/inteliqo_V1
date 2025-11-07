@@ -318,7 +318,7 @@ const SalaryProcessed = () => {
                 setOpenBkDrop(false)
             }
         }
-    }, [value, all, dept, deptSection, commonSettings, allDept, allSection,dispatch])
+    }, [value, all, dept, deptSection, commonSettings, allDept, allSection, dispatch])
 
     const [column] = useState([
         { headerName: 'ID', field: 'em_no' },
