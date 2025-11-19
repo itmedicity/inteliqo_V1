@@ -303,9 +303,11 @@ const ActiveDoctorsReport = React.lazy(() => import('./views/HrReports/DoctorsRe
 const DoctorDutyMaster = React.lazy(() => import('./views/Master/DoctorDutyMaster/Doctordutymaster'))
 const DoctorPunch = React.lazy(() => import('./views/PayrollDoctors/DoctorPunch/DoctorsPunchUpload'))
 const DoctorPunchView = React.lazy(() => import('./views/PayrollDoctors/DoctorPunch/DoctorPunchReport'))
-// const DoctorsdashBoard = React.lazy(() => import('./views/PayrollDoctors/DoctorDashboard/Doctordashboard'))
-const DasboardforDoctor=React.lazy(()=>import('./views/PayrollDoctors/DoctorDashboard/Doctordashboard'))
+const DasboardforDoctor = React.lazy(() => import('./views/PayrollDoctors/DoctorDashboard/Doctordashboard'))
 const DoctorRecordEdit = React.lazy(() => import('./views/PayrollDoctors/DoctorRegister/DoctorRegistrationEdit'))
+const DoctorDutyplanReport = React.lazy(() => import('./views/HrReports/DoctorsReport/DoctorDutyplanReport'))
+const DoctorCategoryReport = React.lazy(() => import('./views/HrReports/DoctorsReport/DoctorCategoryReport'))
+const InactiveDoctorReport = React.lazy(() => import('./views/HrReports/DoctorsReport/InactiveDoctorreport'))
 
 const routes = [
 
@@ -2068,10 +2070,28 @@ const routes = [
     component: DasboardforDoctor
   },
   {
-    path:'/Home/DoctorRecordEdit/:id/:no',
+    path: '/Home/DoctorRecordEdit/:id/:no',
     exact: true,
     name: 'Doctor Registration Edit',
     component: DoctorRecordEdit
+  },
+  {
+    path: '/Home/DoctorDutyplanReport',
+    exact: true,
+    name: 'Doctor Dutyplan Report',
+    component: DoctorDutyplanReport
+  },
+  {
+    path: '/Home/DoctorCategoryReport',
+    exact: true,
+    name: 'Doctor Category Report',
+    component: DoctorCategoryReport
+  },
+  {
+    path: '/Home/InactiveDoctorReport',
+    exact: true,
+    name: 'Inactive Doctor Report',
+    component: InactiveDoctorReport
   }
 
 ]

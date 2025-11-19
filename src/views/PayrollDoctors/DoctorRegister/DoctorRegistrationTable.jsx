@@ -51,7 +51,7 @@ const DoctorRegistrationTable = () => {
     const ToProfile = useCallback(async (params) => {
         const data = params.api.getSelectedRows()
         const { em_no, em_id } = data[0]
-        history.push(`/Home/EmployeeRecordEdit/${em_no}/${em_id}`)
+        history.push(`/Home/DoctorRecordEdit/${em_no}/${em_id}`)
     }, [history])
 
     const postData = useMemo(() => {

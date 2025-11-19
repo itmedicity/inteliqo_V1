@@ -215,21 +215,20 @@ const ResignationMainPage = () => {
         })
         const { success, message } = result.data;
         if (success === 1) {
-            // setProgress(100)
             succesNofity(message)
             setresignation_type(0)
             setrequest_date(new Date())
             setresignation_reason('')
             setRelivingdate(new Date())
         } else if (success === 2) {
+            warningNofity("Error Occured!!!!! Please Contact IT")
             setProgress(0)
-            warningNofity(message)
         } else if (success === 0) {
+            infoNofity("Duplicate Entry Against This Employee ")
             setProgress(0)
-            infoNofity(message)
         } else {
-            setProgress(0)
             errorNofity("Error Occured!!!!! Please Contact IT")
+            setProgress(0)
         }
 
     }, [resignation_type, resignation_reason, hod, incharge, authorization_incharge,

@@ -1,6 +1,5 @@
 import { Box, Button } from '@mui/joy'
 import React, { memo, useCallback, useState } from 'react'
-import { ToastContainer } from 'react-toastify';
 import ReportLayout from '../ReportComponent/ReportLayout';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 import BranchSelectRedux from 'src/views/MuiComponents/BranchSelectRedux'
@@ -73,12 +72,10 @@ const ActiveDoctorReport = () => {
                 setOpenBkDrop(false)
             }
         }
-
     }, [branch, all])
 
     return (
-        <Box sx={{ display: "flex", flexGrow: 1, width: "100%", }} >
-            <ToastContainer />
+     <>
             <CustomBackDrop open={openBkDrop} text="Please wait !.. Processing Data... " />
             <ReportLayout title="Active Doctors Report" displayClose={true} data={tableData} >
                 <Box sx={{ width: '100%', p: 0.5, display: 'flex', flexDirection: 'column' }}  >
@@ -119,7 +116,7 @@ const ActiveDoctorReport = () => {
                     </Box>
                 </Box>
             </ReportLayout >
-        </Box >
+       </>
     )
 }
 
