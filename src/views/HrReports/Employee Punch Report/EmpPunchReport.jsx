@@ -16,6 +16,7 @@ import JoyDepartment from 'src/views/MuiComponents/JoyComponent/JoyDepartment';
 import JoyDepartmentSection from 'src/views/MuiComponents/JoyComponent/JoyDepartmentSection';
 import { getDepartmentSection } from 'src/redux/actions/Common.Action';
 import ReportWithoutDownload from '../ReportComponent/ReportWithoutDownload'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 
 const PunchTable = lazy(() => import('./PunchTable'))
@@ -27,6 +28,7 @@ const EmpPunchReport = () => {
     const [fromdate, Setfromdate] = useState('')
     const [todate, Settodate] = useState('')
     const [tableData, setTableData] = useState([])
+    const [drop, setDropOpen] = useState(false)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -56,6 +58,7 @@ const EmpPunchReport = () => {
 
     const getData = useCallback(async (e) => {
         e.preventDefault();
+        setDropOpen(true)
         if (Empno !== 0 && fromdate !== '' && todate !== '') {
             const result = await axioslogin.post(`/ReligionReport/punchReport`, postData)
             const { data: firstApiData, success } = result.data
@@ -102,7 +105,7 @@ const EmpPunchReport = () => {
                     const array = updatedSecondApiData.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
 
                     setTableData(array)
-
+                    setDropOpen(false)
                 }
             }
         }
@@ -154,7 +157,7 @@ const EmpPunchReport = () => {
 
                     setTableData(array)
                     // setTableData(updatedSecondApiData)
-
+                    setDropOpen(false)
                 }
             }
 
@@ -165,6 +168,7 @@ const EmpPunchReport = () => {
             setEmpNo(0)
             setTableData([])
             warningNofity("Please Enter from date and to date")
+            setDropOpen(false)
         }
     }, [Empno, fromdate, todate, postData, postDataDep, dept, deptSect])
 
@@ -181,6 +185,7 @@ const EmpPunchReport = () => {
     return (
         <Box sx={{ display: "flex", flexGrow: 1, width: "100%", }} >
             <ToastContainer />
+            <CustomBackDrop open={drop} text="Your Request Is Processing. Please Wait..." />
             <ReportWithoutDownload title="Employee Wise Punching Reports" displayClose={true} >
                 <Paper sx={{ display: 'flex', flex: 1, flexDirection: 'column', }}>
 

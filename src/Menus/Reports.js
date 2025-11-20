@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import {
     empRecord_one, empRecord_two, empRecord_three,
     attednane_one, attednane_two, attednane_three,
     leave_One, leave_two, leave_three,
-    training_one, tarning_two, traning_three
+    training_one, tarning_two, traning_three,
+    doctor_one,doctor_two,doctor_three
 } from './ReportsMenu'
 import { getMenuSlno } from '../views/Constant/Constant'
 import { Link } from 'react-router-dom'
-import { Card, CardContent } from '@mui/material'
+import { Card, CardContent, CardHeader } from '@mui/material'
+import { Box } from '@mui/joy'
 
 const Reports = () => {
     const [emprecordOne, setemprecordOne] = useState()
@@ -25,6 +27,10 @@ const Reports = () => {
     const [trainingOne, setTrainingOne] = useState()
     const [trainingTwo, setTrainingTwo] = useState()
     const [trainingThree, setTrainingThree] = useState()
+
+    const [doctorOne,setDoctorOne]=useState()
+    const [doctorTwo,setDoctorTwo]=useState()
+    const [doctorThree,setDoctorThree]=useState()
 
     const [count, setCount] = useState(0)
     useEffect(() => {
@@ -60,172 +66,387 @@ const Reports = () => {
             const training = traning_three?.filter(val => menuSlnoArray.includes(val.slno));
             setTrainingThree(training)
 
+            const doctorlist = doctor_one?.filter(val => menuSlnoArray.includes(val.slno));
+            setDoctorOne(doctorlist)
+
+             const doctorlist1 = doctor_two?.filter(val => menuSlnoArray.includes(val.slno));
+            setDoctorTwo(doctorlist1)
+
+             const doctorlist2 = doctor_three?.filter(val => menuSlnoArray.includes(val.slno));
+            setDoctorThree(doctorlist2)
+
             setCount(1)
         })
     }, [count])
     return (
         <Card>
-            {/* <CardHeader title={"Employee Record"}
-                titleTypographyProps={{ variant: "subtitle1", color: '#FFFFFF' }}
-                sx={{
-                    paddingY: 0.5,
-                    bgcolor: '#7FA1C3'
-                }} /> */}
-            <div className="card-header bg-dark pb-0 border border-secondary text-white" >
-                <h6 >Employee Record</h6>
-            </div>
-            <CardContent>
-                <div className="row" >
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                emprecordOne?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                emprecordTwo?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                emprecordThree?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </CardContent>
-            {/* <CardHeader title={"Attendance Management"}
-                titleTypographyProps={{ variant: "subtitle1", color: '#FFFFFF' }}
-                sx={{
-                    bgcolor: '#7FA1C3',
-                    paddingY: 0.5,
-                }} /> */}
-            <div className="card-header bg-dark pb-0 border border-secondary text-white" >
-                <h6 >Attendance Management</h6>
-            </div>
-            <CardContent>
-                <div className="row" >
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                attendanceOne?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                attendanceTwo?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                attendanceThree?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </CardContent>
-            {/* <CardHeader title={"Leave Management"}
-                titleTypographyProps={{ variant: "subtitle1", color: '#FFFFFF' }}
-                sx={{
-                    bgcolor: '#7FA1C3',
-                    paddingY: 0.5,
-                }} /> */}
-            <div className="card-header bg-dark pb-0 border border-secondary text-white" >
-                <h6 >Leave Managment</h6>
-            </div>
-            <CardContent>
-                <div className="row" >
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                leaveOne?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                leaveTwo?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                leaveThree?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </CardContent>
-            {/* <CardHeader title={"Trainig & Development"}
-                titleTypographyProps={{ variant: "subtitle1", color: '#FFFFFF' }}
-                sx={{
-                    bgcolor: '#7FA1C3',
-                    paddingY: 0.5,
-                }} /> */}
-            <div className="card-header bg-dark pb-0 border border-secondary text-white" >
-                <h6 >Training and Development</h6>
-            </div>
-            <CardContent>
-                <div className="row" >
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                trainingOne?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                trainingTwo?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                    <div className="col-4">
-                        <ul className="list-group list-group-flush">
-                            {
-                                trainingThree?.map((val) => {
-                                    return <Link to={val.to} className="list-group-item pt-1 pb-1" key={val.slno}  >{val.name}</Link>;
-                                })
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
+        <CardHeader
+        title={'Employee Record'}
+        titleTypographyProps={{ variant: 'subtitle1', color: '#ffffffff' }}
+        sx={{
+          backgroundColor:  '#4f5d73',
+          paddingY: 0.5
+        }}
+      />
+        <CardContent>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: "space-around"
+          }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { emprecordOne?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+         <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { emprecordTwo?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { emprecordThree?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+        </Box>
+      </CardContent>
+
+      <CardHeader
+        title={'Attendance Management'}
+        titleTypographyProps={{ variant: 'subtitle1', color: '#ffffffff' }}
+        sx={{
+          backgroundColor:  '#4f5d73',
+          paddingY: 0.5
+        }}
+      />
+        <CardContent>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: "space-around"
+          }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { attendanceOne?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+         <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { attendanceTwo?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { attendanceThree?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+        </Box>
+      </CardContent>
+    
+    <CardHeader
+        title={'Leave Management'}
+        titleTypographyProps={{ variant: 'subtitle1', color: '#ffffffff' }}
+        sx={{
+          backgroundColor: '#4f5d73',
+          paddingY: 0.5
+        }}
+      />
+        <CardContent>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: "space-around"
+          }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { leaveOne?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+         <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { leaveTwo?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { leaveThree?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+        </Box>
+      </CardContent>
+
+     <CardHeader
+        title={'Trainig & Development'}
+        titleTypographyProps={{ variant: 'subtitle1', color: '#ffffffff' }}
+        sx={{
+          backgroundColor: '#4f5d73',
+          paddingY: 0.5
+        }}
+      />
+        <CardContent>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: "space-around"
+          }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { trainingOne?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+         <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { trainingTwo?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { trainingThree?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+        </Box>
+      </CardContent>
+
+      <CardHeader
+        title={'Doctor Reports'}
+        titleTypographyProps={{ variant: 'subtitle1', color: '#ffffffff' }}
+        sx={{
+          backgroundColor: '#4f5d73',
+          paddingY: 0.5
+        }}
+      />
+      
+       <CardContent>
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: "space-around"
+          }}
+        >
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { doctorOne?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+          
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { doctorTwo?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            { doctorThree?.map(val => {
+                return (
+                  <Link to={val.to} 
+                    className="list-group-item pb-0"
+                    key={val?.slno} 
+                    style={{
+                    borderTop: "none",
+                    borderLeft: "none",
+                    borderRight: "none",
+                    borderBottom: "1px solid #ddd", // light gray bottom border
+                    }}
+                  >
+                    {val?.name}
+                  </Link>
+                )
+              })}
+          </Box>
+        </Box>
+    </CardContent>
+    </Card>       
     )
 }
 

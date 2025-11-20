@@ -184,7 +184,7 @@ const DutyPlanReport = () => {
     }, [clickFlag, tableArray, daysNum, daysStr])
 
     return (
-        <CustomLayout title="Dutyplan Report" displayClose={true} >
+        <CustomLayout title="Employee Dutyplan Report" displayClose={true} >
             <CustomBackDrop open={openBkDrop} text="Please wait !.. Processing Data... " />
             <ToastContainer />
             <Paper sx={{ display: 'flex', height: screenInnerHeight * 83 / 100, flexDirection: 'column', width: '100%' }}>

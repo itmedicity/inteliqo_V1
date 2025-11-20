@@ -8,7 +8,7 @@ export const empRecord_one = [
     { to: '/Home/NoExperienceReport', name: 'Employee No Experience Report', slno: 218 },
     { to: '/Home/CategoryReport', name: 'Employee Category Report', slno: 159 },
     { to: '/Home/DesignationReport', name: 'Employee Designation Report', slno: 161 },
-    { to: '/Home/ActiveDoctorsReport', name: 'Active Doctors Report', slno: 342 },
+   
 ]
 
 export const empRecord_two = [
@@ -92,5 +92,18 @@ export const traning_three = [
     // { to: '/Home/InductionCalenderReport', name: 'Induction Calender Report', slno: 277 }, 
     // { to: '/Home/TrainingAllotedEmpReport', name: 'Departmentat Wise Training Alloted Employee Report', slno: 267 },
     // { to: '/Home/TrainingRetestEmpReport', name: 'Departmentat Wise Training Retest Employee Report', slno: 269 },
+]
+
+export const doctor_one = [
+    { to: '/Home/ActiveDoctorsReport', name: 'Active Doctors Report', slno: 342 },
+    { to: '/Home/InactiveDoctorReport', name: 'Inactive Doctors Report', slno: 352 },
+]
+
+export const doctor_two = [
+     { to: '/Home/DoctorDutyplanReport', name: 'Doctors Dutyplan Report', slno: 350 },
+]
+
+export const doctor_three = [
+   { to: '/Home/DoctorCategoryReport', name: 'Doctors Category Report', slno: 351 },
 ]
 
