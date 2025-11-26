@@ -35,7 +35,6 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
 
     const [disableCheck, setDisableCheck] = useState(true)
     const [disableDate, setDisableDate] = useState(false)
-    const [disableButton, setDisableButton] = useState(false)
 
     const [disableSave, setDisableSave] = useState(false)
 
@@ -64,6 +63,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
     const { holiday_leave_request, week_off_day } = commonStates;
 
     const handleChangeDate = useCallback(async (date) => {
+         setDropOpen(true)
         setFromDate(date)
         setCheckInCheck(false)
         setCheckOutCheck(false)
@@ -78,8 +78,10 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
             const { plan_slno, shift_id, shft_desc, shft_chkin_time, shft_chkout_time, holiday, } = data[0];
             if (holiday === 1 && holiday_leave_request === 1) {
                 warningNofity("Cannot Apply for No punch request on Holiday")
+                setDropOpen(false)
             } else if (week_off_day === shift_id) {
                 warningNofity("Cannot Apply Miss Punch Request on Week Off")
+                setDropOpen(false)
             } else {
                 setDisableCheck(false)
                 setDisableDate(true)
@@ -90,11 +92,13 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                 setShiftId(shift_id)
                 setshft_chkin_time(shft_chkin_time)
                 setshft_chkout_time(shft_chkout_time)
+                setDropOpen(false)
             }
         } else {
             warningNofity("Duty Not Planned For the Selected Date")
             setPlanSlno(0)
             setShiftId(0)
+            setDropOpen(false)
         }
     }, [em_id, holiday_leave_request, week_off_day])
 
@@ -158,7 +162,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
         } else if (reason === '') {
             warningNofity("Reason Is Mandatory")
         } else {
-            //  setDropOpen(true)
+             setDropOpen(true)
             const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
             const postData = {
                 month: monthStartDate,
@@ -179,12 +183,12 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                         const outTime = format(new Date(first_half_out), 'HH:mm');
                         const chekIn = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${inTime}`;
                         const chekOut = `${format(new Date(fromDate), 'yyyy-MM-dd')} ${outTime}`;
-
+                        
                         //TO FETCH PUNCH DATA FROM TABLE
                         const postDataForpunchMaster = {
                             date1: format(new Date(chekOut), 'yyyy-MM-dd H:mm:ss'),
                             date2: format(subHours(new Date(chekIn), 2), 'yyyy-MM-dd H:mm:ss'),
-                            em_no: em_no
+                            em_no: String(em_no)
                         }
                         //FETCH THE PUNCH TIME FROM PUNCH DATA
                         const result = await axioslogin.post('common/getShiftdata/', postDataForpunchMaster)
@@ -192,7 +196,7 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
 
                         if (success === 1) {
                             warningNofity("Cannot Apply No Punch Request, There Exist A Punch!")
-                        } else {
+                        } else {         
                             const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
                             const { success, message } = result.data;
                             if (success === 1) {
@@ -200,7 +204,6 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 setCount(Math.random())
                                 setDropOpen(false)
                                 setRequestType(0)
-                                setDisableButton(true)
                                 setDisableSave(false)
                             } else if (success === 2) {
                                 warningNofity(message)
@@ -235,12 +238,10 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                             const result = await axioslogin.post('/LeaveRequest/insertnopunchrequest', misspunchReqPostData)
                             const { success, message } = result.data;
                             if (success === 1) {
-
                                 succesNofity(message)
                                 setCount(Math.random())
                                 setDropOpen(false)
                                 setRequestType(0)
-                                setDisableButton(true)
                             } else if (success === 2) {
                                 warningNofity(message)
                                 setDropOpen(false)
@@ -363,7 +364,6 @@ const MissPunchRequest = ({ setRequestType, setCount }) => {
                                 size="sm"
                                 fullWidth
                                 color="primary"
-                                // disabled={disableButton}
                                 onClick={handleChangeMissPunchRequest}
                             >
                                 Save Request
