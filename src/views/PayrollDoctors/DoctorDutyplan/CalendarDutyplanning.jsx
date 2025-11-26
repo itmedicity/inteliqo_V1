@@ -34,9 +34,9 @@ import { employeeIdNumber } from 'src/views/Constant/Constant'
 import SaveIcon from '@mui/icons-material/Save'
 import { getDoctordutyList } from 'src/views/Master/MenuCreationMaster/FuncLis'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
-import DoctorDepartment from './Components/DoctorDepartment'
 import DoctorDepartmentSection from './Components/DoctorDepartmentSection'
 import SectionBasedDoctors from './Components/SectionBasedDoctors'
+import EmployeeRightsDepartment from './Components/EmployeeRightsDepartment'
 
 const ConsultingShift = lazy(() => import('./ConsultingDutyShift'))
 
@@ -95,6 +95,8 @@ const CalendarDutyplanning = () => {
     staleTime: Infinity,
   })
 
+  // const departmentList=getEmployeeRightsbasedDepartments(em_id)
+
   const handlePrevMonth = () => setCurrentMonth((prev) => subMonths(prev, 1))
   const handleNextMonth = () => setCurrentMonth((prev) => addMonths(prev, 1))
 
@@ -126,7 +128,6 @@ const CalendarDutyplanning = () => {
       return acc
     }, {})
   }, [saveData])
-
 
   const onClickDutyPlanButton = useCallback(async () => {
     setBackdropOpen(true)
@@ -226,7 +227,7 @@ const CalendarDutyplanning = () => {
           }
 
           // after the holiday inserted duty day array
-          const insertDutyPlanArray = await fullShiftDutyDay.map(fullholidayFilterFun)    
+          const insertDutyPlanArray = await fullShiftDutyDay.map(fullholidayFilterFun)
 
           // duty plan inserting function
           const insertDutyPlainIntDB = await axioslogin.post(
@@ -261,7 +262,7 @@ const CalendarDutyplanning = () => {
       setViewCalendar(0)
       setBackdropOpen(false)
     }
-  }, [dept, section, emply, monthStart, monthEnd, holidayList,commonSettingData])
+  }, [dept, section, emply, monthStart, monthEnd, holidayList, commonSettingData])
 
   const handleBoxClick = (event, date) => {
     event.stopPropagation() // Prevent bubbling to parent click handler
@@ -316,7 +317,6 @@ const CalendarDutyplanning = () => {
   if (iscommonSettingLoading || isholidayLoading || isdoctorDutyLoading) return <p>Loading...</p>
   if (commonSettingError || holidayError || doctorDutyError) return <p>Error occurred.</p>
 
-
   return (
     <>
       <ConsultingShift
@@ -363,7 +363,7 @@ const CalendarDutyplanning = () => {
             </LocalizationProvider>
           </Box>
           <Box sx={{ flex: 1, px: 0.5 }}>
-            <DoctorDepartment value={dept} setValue={changeDept} />
+            <EmployeeRightsDepartment value={dept} setValue={changeDept}/>
           </Box>
           <Box sx={{ flex: 1, px: 0.5 }}>
             <DoctorDepartmentSection value={section} setValue={changeSection} dept={dept} />
@@ -454,14 +454,14 @@ const CalendarDutyplanning = () => {
 
                   // Priority: dutyAssignments > saveData
                   const dutySlno = assignment?.dutySlno ?? saved?.doctor_dutyslno ?? null
-             
+
                   const shiftName = assignment?.shiftName ?? saved?.shiftName ?? null
-                
+
                   const dutyLabel =
                     dutySlno === 0
                       ? 'NIL'
                       : dutyList?.find((opt) => opt?.dutyslno === dutySlno)?.duty_name
-                 
+
                   const holidayName = saved?.holiday === 1 ? saved?.holiday_name : null
 
                   return (

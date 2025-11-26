@@ -12,9 +12,6 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt'
 import DoctorDepartment from 'src/views/PayrollDoctors/DoctorDutyplan/Components/DoctorDepartment'
 import DoctorDepartmentSection from 'src/views/PayrollDoctors/DoctorDutyplan/Components/DoctorDepartmentSection'
 import { format, lastDayOfMonth, eachDayOfInterval, isValid } from 'date-fns'
-// import { getAllDeptList } from 'src/redux/actions/Department.action'
-// import { getAllDeptSectList } from 'src/redux/actions/DepartmentSection.Action'
-// import { useQuery } from 'react-query'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { ExporttoExcel } from '../DayWiseAttendence/ExportToExcel'
@@ -31,19 +28,6 @@ const DoctorDutyplanReport = () => {
   const [openBkDrop, setOpenBkDrop] = useState(false)
   const [tableArray, settableArray] = useState([])
 
-  // const { data: deptartments } = useQuery({
-  //   queryKey: ['departmentList'],
-  //   queryFn: getAllDeptList,
-  //   staleTime: Infinity,
-  // })
-
-  // const { data: deptartmentSection } = useQuery({
-  //   queryKey: ['departmentSectionList'],
-  //   queryFn: getAllDeptSectList,
-  //   staleTime: Infinity,
-  // })
-
-  // const getDutyplanData = async () => {
   //   setClickFlag(1)
   //   const dateRange = eachDayOfInterval({ start: new Date(value), end: new Date(toDate) })?.map(
   //     (e) => format(new Date(e), 'yyyy-MM-dd'),

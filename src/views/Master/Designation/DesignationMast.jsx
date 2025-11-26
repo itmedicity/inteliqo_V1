@@ -107,7 +107,7 @@ const DesignationMast = () => {
 
     const [columnDef] = useState([
         { headerName: 'Sl No', field: 'desg_slno' },
-        { headerName: 'Designation', field: 'desg_name', filter: true, width: 150 },
+        { headerName: 'Designation', field: 'desg_name', filter: true,   wrapText: true },
         { headerName: 'Period ', field: 'desg_notice_prd', width: 100 },
         { headerName: 'Status ', field: 'status', width: 100 },
         {

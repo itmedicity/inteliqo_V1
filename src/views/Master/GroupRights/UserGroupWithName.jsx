@@ -28,10 +28,10 @@ const UserGroupWithName = ({ value, setValue, setuserName }) => {
             size='md'
             variant='outlined'
         >
-            <Option disabled value={0}>Select Group Name</Option>
+            <Option disabled value={0}>Select User Group Name</Option>
             {
                 groupName?.map((val, index) => {
-                    return <Option key={index} value={val.user_grp_slno}>{val.user_group_name}</Option>
+                    return <Option key={index} value={val?.user_grp_slno}>{val?.user_group_name}</Option>
                 })
             }
         </Select>

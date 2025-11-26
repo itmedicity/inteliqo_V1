@@ -308,6 +308,9 @@ const DoctorRecordEdit = React.lazy(() => import('./views/PayrollDoctors/DoctorR
 const DoctorDutyplanReport = React.lazy(() => import('./views/HrReports/DoctorsReport/DoctorDutyplanReport'))
 const DoctorCategoryReport = React.lazy(() => import('./views/HrReports/DoctorsReport/DoctorCategoryReport'))
 const InactiveDoctorReport = React.lazy(() => import('./views/HrReports/DoctorsReport/InactiveDoctorreport'))
+const DoctorPunchReport = React.lazy(() => import('./views/HrReports/DoctorsReport/DoctorPunchReport'))
+const DoctoropdList = React.lazy(() => import('./views/HrReports/DoctorsReport/DoctorsOPDList'))
+const PayrollDoctorRight = React.lazy(() => import('./views/Master/DoctorPayrollRights/DoctorPayrollRight'))
 
 const routes = [
 
@@ -2092,6 +2095,24 @@ const routes = [
     exact: true,
     name: 'Inactive Doctor Report',
     component: InactiveDoctorReport
+  },
+  {
+    path: '/Home/DoctorPunchReport',
+    exact: true,
+    name: 'Doctor Punch Report',
+    component: DoctorPunchReport
+  },
+  {
+    path: '/Home/DoctoropdList',
+    exact: true,
+    name: 'Doctors OPD List',
+    component: DoctoropdList
+  },
+  {
+    path: '/Home/PayrollDoctorRight',
+    exact: true,
+    name: 'EMployee Rights to Doctor',
+    component: PayrollDoctorRight
   }
 
 ]

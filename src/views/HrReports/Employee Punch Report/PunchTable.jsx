@@ -13,16 +13,16 @@ const PunchTable = ({ tableData }) => {
                         {/* Define your table headers based on your data structure */}
                         <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >Id</TableCell>
                         <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >Name</TableCell>
-                        <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >dep name</TableCell>
-                        <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >sec name</TableCell>
-                        <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >shift in</TableCell>
-                        <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >shift out</TableCell>
+                        <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >Dept name</TableCell>
+                        <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >Section name</TableCell>
+                        <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >Shift in</TableCell>
+                        <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >Shift out</TableCell>
                         <TableCell sx={{ color: 'black', fontSize: 16, }} size='small' >Punch</TableCell>
                         {/* Add more headers as needed */}
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {tableData.map((row, index) => (
+                    {tableData?.map((row, index) => (
                         <TableRow key={index}>
                             <TableCell>{row?.em_no}</TableCell>
                             <TableCell>{row?.em_name}</TableCell>
