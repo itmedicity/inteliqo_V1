@@ -9,14 +9,8 @@ import CommonAgGrid from 'src/views/Component/CommonAgGrid';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import { getCommonSettings, getEmployeeInformationLimited, getEmployeeLeaveRs } from 'src/redux/reduxFun/reduxHelperFun';
 import { getDepartmentSectionBasedHod } from './LeaveFunction';
-// import { getEmployeeLeaveRequest } from 'src/redux/actions/LeaveReqst.action';
 
 const RequestedLeaveTable = ({ setCount }) => {
-
-    // const dispatch = useDispatch()
-
-    // const [tableData, settableData] = useState([])
-
 
     //MODAL STATES FOR RENDERING OPEN MODAL & UPDATE DATA
     const [leaveReqModal, setleaveReqModal] = useState(false);
@@ -30,10 +24,8 @@ const RequestedLeaveTable = ({ setCount }) => {
     const [halfData, sethalfData] = useState({});
     const [noPunchData, setnoPunchData] = useState({});
 
-
     const [masterGroupStatus, setMasterGroupStatus] = useState(false);
     const [checkStatus, setCheckStatus] = useState(false)
-
 
     //LOGGED EMPLOYEE INFORMATION
     const empInform = useSelector((state) => getEmployeeInformationLimited(state))
@@ -46,7 +38,6 @@ const RequestedLeaveTable = ({ setCount }) => {
         setMasterGroupStatus(groupStatus)
     }, [groupStatus])
 
-
     useEffect(() => {
         getDepartmentSectionBasedHod(em_id).then((hodSection) => {
 
@@ -56,43 +47,7 @@ const RequestedLeaveTable = ({ setCount }) => {
         })
     }, [em_dept_section, em_id])
 
-    // const sectionWiseLeaveRequest = state?.getSectLeaveRequests?.sectLeaves
-    // const sectionWisehalfdayRequest = state?.getSectHalfdayRequests?.sectHalfday
-    // const sectionWiseMisspunchRequest = state?.getSectMisspunchRequests?.sectMisspunch
-
-    // const leaveRequest = useSelector((state) => state?.getSectLeaveRequests?.sectLeaves)
-    // const misspunch = useSelector((state) => state?.getSectHalfdayRequests?.sectHalfday)
-    // const halfday = useSelector((state) => state?.getSectMisspunchRequests?.sectMisspunch)
-
-    //const empData = useSelector((state) => getEmployeeLeaveRequest(state))
-
-    const empData = useSelector((state) => getEmployeeLeaveRs(state, hod, incharge, masterGroupStatus, em_id, em_dept_section, checkStatus))
-
-
-    // useEffect(() => {
-    //     const getLeaveReqInfo = async (leaveRequest, misspunch, halfday, hod, incharge, masterGroupStatus, em_id, em_dept_section) => {
-    //         const result = await getEmployeeRequests(leaveRequest, misspunch, halfday, hod, incharge, masterGroupStatus, em_id, em_dept_section)
-
-    //         //const data = result?.flat();
-
-    //         //settableData(data)
-    //     }
-    //     getLeaveReqInfo(leaveRequest, misspunch, halfday, hod, incharge, masterGroupStatus, em_id, em_dept_section)
-
-
-    // }, [leaveRequest, misspunch, halfday, hod, incharge, masterGroupStatus, em_id, em_dept_section])
-
-    // const employeeLeaveRequest = useSelector((state) => getEmployeeRequests(state, hod, incharge, masterGroupStatus, em_id, em_dept_section))
-    // const empdata = useMemo(() => employeeLeaveRequest, [employeeLeaveRequest])
-
-
-    // empdata.then((e) => {
-    //     const data = e.flat();
-
-    //     settableData(data)
-    // })
-
-
+      const empData = useSelector((state) => getEmployeeLeaveRs(state, hod, incharge, masterGroupStatus, em_id, em_dept_section, checkStatus))
 
     const LeaveCancel = useCallback(async (params) => {
         const { code } = params?.data
@@ -132,8 +87,6 @@ const RequestedLeaveTable = ({ setCount }) => {
             }
         },
     ])
-
-
 
     return (
         <Fragment>

@@ -23,7 +23,6 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
     //DISPLAY THE DATA 
     const { slno, emno, name, section, reqDate, fromDate, toDate, leaveid } = data;
 
-
     useEffect(() => {
         //GET THE DETAILED TABLE DATA USING API
         const getLeaveReqDetl = async (slno) => {
@@ -54,7 +53,10 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
     const Cancelrequest = useCallback(async () => {
         //CASUAL LEAVE 
         const casualLev = reqDetl?.filter(val => val.leave_typeid === 1)?.map(val => {
-            return { ...val, emno: emno }
+            return { ...val,
+                cl_lv_taken:val?.leaveCount===0.5?0.5:0,
+                cl_bal_leave:val?.leaveCount===0.5?0.5:0, 
+                emno: emno }
         });
         //NATIONAL HOLIDAY
         const Holiday = reqDetl?.filter(val => val.leave_typeid === 3 || val.leave_typeid === 4)?.map(val => {
@@ -204,11 +206,6 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
         }
     }, [Canceldata, emno, reason, setOpen, setCount, reqDetl])
 
-    const handleClose = () => {
-        setOpen(false)
-        setOpenBkDrop(false)
-    }
-
     return (
         <Fragment>
             <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
@@ -336,11 +333,8 @@ const LeaveCancelEmp = ({ open, setOpen, data, setCount }) => {
                     <Box sx={{ pt: 0.5 }} >
                         <Textarea name="Outlined" placeholder="Reason For Cancel The Request here…" variant="outlined" onChange={(e) => setReason(e.target.value)} />
                         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
-                            <Button variant="solid" color="success" onClick={Cancelrequest}>
-                                Leave request cancel
-                            </Button>
-                            <Button variant="solid" color="danger" onClick={handleClose}>
-                                Leave request Close
+                            <Button variant="solid" color="danger" onClick={Cancelrequest}>
+                                Leave Request Cancel
                             </Button>
                         </Box>
                     </Box>

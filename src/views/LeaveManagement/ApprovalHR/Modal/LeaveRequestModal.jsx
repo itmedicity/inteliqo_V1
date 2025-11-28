@@ -278,7 +278,10 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount, previousLeave }) => 
     const handleRejectRequest = useCallback(async () => {
         //CASUAL LEAVE 
         const casualLev = reqDetl?.filter(val => val.leave_typeid === 1)?.map(val => {
-            return { ...val, emno: emno }
+            return { ...val,
+                cl_lv_taken:val?.leaveCount===0.5?0.5:0,
+                cl_bal_leave:val?.leaveCount===0.5?0.5:0, 
+                emno: emno }
         });
         //NATIONAL HOLIDAY
         const Holiday = reqDetl?.filter(val => val.leave_typeid === 3 || val.leave_typeid === 4)?.map(val => {
