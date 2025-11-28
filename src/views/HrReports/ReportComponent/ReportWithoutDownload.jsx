@@ -20,7 +20,7 @@ const ReportWithoutDownload = ({ children, title, displayClose }) => {
                     <Box sx={{ display: "flex", flex: 1, height: 30, }} >
                         <Paper square sx={{
                             display: "flex", flex: 1, height: 30,
-                            alignItems: 'center', backgroundColor: '#f0f3f5'
+                            alignItems: 'center', 
                         }} >
                             <Box sx={{ display: "flex", flex: 1 }}>
                                 <DragIndicatorOutlinedIcon />

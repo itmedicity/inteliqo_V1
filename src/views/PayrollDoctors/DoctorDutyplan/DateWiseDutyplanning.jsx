@@ -13,8 +13,8 @@ import HourglassEmptyOutlinedIcon from '@mui/icons-material/HourglassEmptyOutlin
 import { axioslogin } from 'src/views/Axios/Axios';
 import { getCommonSettingData, getHolidayListAll } from 'src/redux/reduxFun/useQueryFunctions';
 import { useQuery } from 'react-query';
-import DoctorDepartment from './Components/DoctorDepartment';
 import DoctorDepartmentSection from './Components/DoctorDepartmentSection';
+import EmployeeRightsDepartment from './Components/EmployeeRightsDepartment';
 
 const DateWiseDutyplanning = () => {
     const dispatch = useDispatch();
@@ -356,7 +356,7 @@ const DateWiseDutyplanning = () => {
                         </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', px: 0.5 }} >
-                        <DoctorDepartment value={dept} setValue={changeDept} />
+                          <EmployeeRightsDepartment value={dept} setValue={changeDept}/>
                     </Box>
                     <Box sx={{ display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', px: 0.5 }} >
                         <DoctorDepartmentSection value={section} setValue={changeSection} dept={dept} />

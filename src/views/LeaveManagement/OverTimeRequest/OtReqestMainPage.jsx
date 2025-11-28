@@ -155,7 +155,7 @@ const OtReqestMainPage = () => {
                     const postDataForpunchMaster = {
                         date1: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
                         date2: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
-                        em_no: em_no
+                        em_no: String(em_no)
                     }
                     //FETCH THE PUNCH TIME FROM PUNCH DATA
                     const result = await axioslogin.post('overtimerequest/punchdatabydate/', postDataForpunchMaster)

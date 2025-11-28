@@ -54,3 +54,20 @@ export const getDoctordutyList = async () => {
         }
     })
 }
+
+export const getemployeeRightsList = async () => {
+    return await axioslogin.get('/DoctorsProcess/employee/rights').then((res) => {
+        const { success, data } = res.data
+        if (success === 1) {
+            const arr = data?.map((val) => {
+                const obj = {
+                    showStatus: val?.right_status === 1 ? 'Yes' : 'No'
+                }
+                return { ...val, ...obj }
+            })
+            return arr
+        } else {
+            return []
+        }
+    })
+}

@@ -250,7 +250,7 @@ const InchargeHodPage = ({ em_id, em_department }) => {
                     const postDataForpunchMaster = {
                         date1: format(subHours(new Date(chekIn), 6), 'yyyy-MM-dd H:mm:ss'),
                         date2: format(addHours(new Date(chekOut), 6), 'yyyy-MM-dd H:mm:ss'),
-                        em_no: employee
+                        em_no: String(employee)
                     }
                     //FETCH THE PUNCH TIME FROM PUNCH DATA
                     const result = await axioslogin.post('overtimerequest/punchdatabydate/', postDataForpunchMaster)

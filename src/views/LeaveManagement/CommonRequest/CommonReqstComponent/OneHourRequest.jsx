@@ -150,7 +150,7 @@ const OneHourRequest = () => {
                 const postDataForpunchMaster = {
                     date1: format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd HH:mm:ss'),
                     date2: format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd HH:mm:ss'),
-                    em_no: em_no
+                    em_no: String(em_no)
                 }
 
                 //FETCH THE PUNCH TIME FROM PUNCH DATA

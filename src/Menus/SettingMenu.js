@@ -60,9 +60,14 @@ export const userManagement_one = [
     { to: '/Home/menuCreation', name: 'Menu Creation', slno: 311 },
     { to: '/Home/ModuleMaster', name: 'Module Creation', slno: 345 },
     { to: '/Home/UserGroup', name: 'User Group Master', slno: 107 },
-    { to: '/Home/ModuleGroupMaster', name: 'User Group To Module Master', slno: 105 },
+]
+export const userManagement_two = [
+    { to: '/Home/ModuleGroupMaster', name: 'User Group To Module Mapping', slno: 105 },
     { to: '/Home/ModuleUserRights', name: 'Employee User Group Rights', slno: 106 },
     { to: '/Home/GroupRights', name: 'User Group Rights', slno: 108 },
+]
+export const userManagement_three = [
     { to: '/Home/Authorisation', name: 'Assign Authorisation', slno: 109 },
     { to: '/Home/HodMark', name: 'HOD Authorisation Mark', slno: 110 },
+    { to: '/Home/PayrollDoctorRight', name: 'Employee to Doctor Rights', slno: 356 },
 ]

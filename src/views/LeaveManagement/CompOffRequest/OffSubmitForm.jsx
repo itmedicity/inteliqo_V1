@@ -143,7 +143,7 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
                     const postDataForpunchMaster = {
                         date1: shft_cross_day === 0 ? format(addHours(new Date(chekOut), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(addHours(new Date(addDays(new Date(fromDate), 1)), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
                         date2: shft_cross_day === 0 ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss') : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
-                        em_no: empData?.emNo
+                        em_no: String(empData?.emNo)
                     }
 
                     //FETCH THE PUNCH TIME FROM PUNCH DATA

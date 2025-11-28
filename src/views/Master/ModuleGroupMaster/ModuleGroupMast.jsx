@@ -222,7 +222,7 @@ const ModuleGroupMast = () => {
   }, [])
 
   return (
-    <MasterLayout title="Module Group Master" displayClose={true} >
+    <MasterLayout title="User Group To Module Mapping" displayClose={true} >
       <ToastContainer />
       <SessionCheck />
       <Box sx={{ width: "100%" }} >

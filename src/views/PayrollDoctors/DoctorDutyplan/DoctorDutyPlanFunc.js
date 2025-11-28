@@ -11,3 +11,8 @@ export const getDoctorList = async (postData) => {
         return { ...dataObj, status: 0, data: [] }
     }
 }
+
+export const getEmployeeRightsbasedDepartments = (em_id) => {
+console.log(em_id);
+
+}

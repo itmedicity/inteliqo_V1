@@ -103,7 +103,7 @@ const HalfDayLeaveRequest = ({ setRequestType, setCount }) => {
             shft_cross_day === 0
               ? format(subHours(new Date(chekIn), comp_hour_count), 'yyyy-MM-dd H:mm:ss')
               : format(subHours(new Date(fromDate), comp_hour_count), 'yyyy-MM-dd H:mm:ss'),
-          em_no: em_no,
+          em_no: String(em_no),
         }
 
         //FETCH THE PUNCH TIME FROM PUNCH DATA
