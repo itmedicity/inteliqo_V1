@@ -14,7 +14,6 @@ import { format, lastDayOfMonth, startOfMonth } from 'date-fns';
 
 const LeaveRqModal = ({ open, setOpen, empData, setCount }) => {
 
-
     const [reason, setReason] = useState('');
     const [reqDetl, setReqDetl] = useState([]);
 
@@ -42,10 +41,16 @@ const LeaveRqModal = ({ open, setOpen, empData, setCount }) => {
     }, [setOpen])
 
     const handleApproverequest = useCallback(async () => {
+         
         //CASUAL LEAVE 
         const casualLev = reqDetl?.filter(val => val.leave_typeid === 1)?.map(val => {
-            return { ...val, emno: empData?.em_no }
+            return { 
+                ...val, 
+                cl_lv_taken:val?.leaveCount===0.5?0.5:0,
+                cl_bal_leave:val?.leaveCount===0.5?0.5:0,
+                emno: empData?.em_no }
         });
+     
         //EARN LEAVE
         const earnLeave = reqDetl?.filter(val => val.leave_typeid === 8)?.map(val => {
             return { ...val, emno: empData?.em_no }

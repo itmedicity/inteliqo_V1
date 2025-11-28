@@ -137,7 +137,10 @@ const LeavRqModel = ({ setOpen, open, authority, empData, setcount }) => {
     const handleRegectRequest = useCallback(async () => {
         //CASUAL LEAVE 
         const casualLev = details?.filter(val => val.leave_typeid === 1)?.map(val => {
-            return { ...val, emno: em_no }
+            return { ...val,
+                cl_lv_taken:val?.leaveCount===0.5?0.5:0,
+                cl_bal_leave:val?.leaveCount===0.5?0.5:0, 
+                emno: em_no }
         });
         //EARN LEAVE
         const earnLeave = details?.filter(val => val.leave_typeid === 8)?.map(val => {
