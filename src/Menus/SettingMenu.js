@@ -7,8 +7,6 @@ export const py_setting_one = [
     { to: '/Home/Specialization', name: 'Specialization Master', slno: 86 },
     { to: '/Home/University', name: 'University Master', slno: 85 },
     { to: '/Home/CourseMaster', name: 'Course Master', slno: 93 },
-    //{ to: '/Home/DesignationType', name: 'Designation Type', slno: 78 },
-    // { to: '/Home/Qualification', name: 'Qualification', slno: 80 },
     { to: '/Home/Region', name: 'Region Master', slno: 90 },
     { to: '/Home/District', name: 'District Master', slno: 81 },
     { to: '/Home/State', name: 'State Master', slno: 100 },
@@ -67,7 +65,7 @@ export const userManagement_two = [
     { to: '/Home/GroupRights', name: 'User Group Rights', slno: 108 },
 ]
 export const userManagement_three = [
-    { to: '/Home/Authorisation', name: 'Assign Authorisation', slno: 109 },
+    { to: '/Home/Authorisation', name: 'Incharge/HOD Authorization Assign', slno: 109 },
     { to: '/Home/HodMark', name: 'HOD Authorisation Mark', slno: 110 },
     { to: '/Home/PayrollDoctorRight', name: 'Employee to Doctor Rights', slno: 356 },
 ]

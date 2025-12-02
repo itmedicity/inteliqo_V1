@@ -103,9 +103,9 @@ const MdleUserRightMast = () => {
     }, [count])
 
     const [columnDef] = useState([
-        { headerName: 'Sl No', field: 'mdrte_slno' },
+       // { headerName: 'Sl No', field: 'mdrte_slno' },
         { headerName: 'EMP No', field: 'em_no', filter: true, width: 150 },
-        { headerName: 'Name', field: 'em_name', filter: true, width: 150 },
+        { headerName: 'Name', field: 'em_name', filter: true, width: 150 ,wrapText: true },
         { headerName: 'Module Group', field: 'module_group_name', filter: true, width: 150 },
         { headerName: 'User Group', field: 'user_group_name', filter: true, width: 150 },
         { headerName: 'Status ', field: 'showstatus', width: 100 },
@@ -120,7 +120,6 @@ const MdleUserRightMast = () => {
     const getEdit = useCallback((params) => {
         setFlag(1)
         const { emp_slno, mdgrp_slno, status, user_grp_slno, em_dept_section, mdrte_slno } = params.data
-        //const mdlStatsus = status === 1 ? true : false;
         setmdlstatus(status === 1 ? true : false)
         setEmpno(emp_slno)
         setDeptSect(em_dept_section)
@@ -140,7 +139,7 @@ const MdleUserRightMast = () => {
                             <DeptSectionOnlySelect sectValue={deptSect} getDeptSection={setDeptSect} />
                         </Box>
                         <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
-                            <JoySectionEmployee value={empno} setValue={setEmpno} deptSect={deptSect} />
+                            <JoySectionEmployee value={empno} setValue={setEmpno} />
                         </Box>
                         <Box sx={{ width: "100%", px: 1, mt: 0.5 }}>
                             <GroupSelection value={groupName} setValue={setGroupName} />
