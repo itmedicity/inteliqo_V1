@@ -179,18 +179,20 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
 
         const { em_no, em_id, em_department, em_dept_section, } = selectedEmpInform;
 
-        const checkFromDate = format(new Date(fromDate), 'yyyy-MM-dd 00:00:00');
-        const checkToDate = format(new Date(toDate), 'yyyy-MM-dd 23:59:59');
-        const checkPostData = {
-            fromDate: checkFromDate,
-            toDate: checkToDate,
-            em_no: em_no
-        }
-        const checkDutyPlan = await axioslogin.post('/LeaveRequest/getLeaveExcistOrNot', checkPostData);
-        const { success, data } = checkDutyPlan.data;
-        if (success === 1) {
-            const count = data[0]?.count
-            if (count === 0) {
+        // const checkFromDate = format(new Date(fromDate), 'yyyy-MM-dd 00:00:00');
+        // const checkToDate = format(new Date(toDate), 'yyyy-MM-dd 23:59:59');
+        // const checkPostData = {
+        //     fromDate: checkFromDate,
+        //     toDate: checkToDate,
+        //     em_no: em_no
+        // }
+        // const checkDutyPlan = await axioslogin.post('/LeaveRequest/getLeaveExcistOrNot', checkPostData);
+        // const { success, data } = checkDutyPlan.data;
+        // if (success === 1) {
+        //     console.log(data);
+            
+            // const count = data[0]?.count
+            // if (count === 0) {
 
                 //FIRST CHECK THE ALL LEAVE ARE ENTERD IN THE CORRECTED DATE
                 const nulCheckForEnterdLeaves = table?.filter((e) => e.leavetype === 0 || e.selectedLveSlno === 0)?.length;
@@ -340,12 +342,12 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         warningNofity("Please Check Selected Leaves , No Leaves Selected OR Duplicate Leaves Found !!!")
                     }
                 }
-            } else {
-                warningNofity("The selected date has already been requested.")
-            }
-        } else {
-            errorNofity("Error Getting leave request Data")
-        }
+            // } else {
+            //     warningNofity("The selected date has already been requested.")
+            // }
+        // } else {
+        //     errorNofity("Error Getting leave request Data")
+        // }
 
 
     }, [table, selectedEmpInform, fromDate, toDate, reson, loginHod, loginIncharge, loginEmno,
