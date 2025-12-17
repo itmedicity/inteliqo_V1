@@ -116,7 +116,6 @@ const LeaveTableContainer = ({ count, setCount }) => {
             dispatch(getEmployeeHalfdayRequest(em_id))
             dispatch(getEmployeeMisspunchRequest(em_id))
             setCount(0)
-            // dispatch(getEmployeeCoffRequest(em_id))
         }
     }, [dispatch, hod, incharge, em_id, em_dept_section, masterGroupStatus, count, setCount])
 

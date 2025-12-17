@@ -92,7 +92,7 @@ const LeaveRequestTable = ({ leaveArray, value, seletedLveDates }) => {
                     onChange={handleChangeLeaveName}
                 // disabled={disabled}
                 >
-                    <Option value={0} >Select Leaves ....</Option>
+                    <Option value={0} disabled>Select Leaves ....</Option>
                     {
                         leaveArray?.filter((e) => e.leavetype === selectedLeave)
                             ?.filter(el => el.cmn === 0 ? !leveSlno.includes(el.slno) : el.cmn === 1)

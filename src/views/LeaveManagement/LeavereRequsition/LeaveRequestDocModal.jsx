@@ -92,32 +92,6 @@ const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setReq
                         </Typography>
                     </Box>
                 </Box>
-                {/* <Box sx={{ display: 'flex', flexDirection: 'row', flex: 1, pt: 1 }} >
-                    <Box sx={{ display: 'flex', flex: 1, pr: 1, justifyContent: 'space-between' }} >
-                        <Typography
-                            //level="body1"
-                            fontSize="sm"
-                            justifyContent="center"
-                        >
-                            Leave From
-                        </Typography>
-                        <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
-                            {isValid(new Date(masterPostData?.leavefrom_date)) === true ? format(new Date(masterPostData?.leavefrom_date), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')}
-                        </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', flex: 1, pr: 1, justifyContent: 'space-between' }} >
-                        <Typography
-                            fontSize="sm"
-                            // level="body1"
-                            justifyContent="center"
-                        >
-                            Leave To
-                        </Typography>
-                        <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg">
-                            {isValid(new Date(masterPostData?.leavetodate)) === true ? format(new Date(masterPostData?.leavetodate), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')}
-                        </Typography>
-                    </Box>
-                </Box> */}
                 <Box sx={{ flex: 1, py: 1 }}>
                     <Typography
                         level="body2"
