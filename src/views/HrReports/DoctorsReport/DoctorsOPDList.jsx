@@ -1,7 +1,7 @@
 import React, { Fragment, memo, useState } from 'react'
 import ReportWithoutDownload from '../ReportComponent/ReportWithoutDownload'
 import { Paper } from '@mui/material'
-import { Box, Button, Divider, Input, Sheet, Table, Typography } from '@mui/joy'
+import { Box, Button, Divider, IconButton, Input, Sheet, Table, Tooltip, Typography } from '@mui/joy'
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import SearchIcon from '@mui/icons-material/Search'
@@ -9,6 +9,8 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { format, isValid } from 'date-fns'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { screenInnerHeight } from 'src/views/Constant/Constant'
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import { pdfDoctordownlod } from './PDFViewDoctorDutyList'
 
 const DoctorsOPDList = () => {
   const [fromdate, Setfromdate] = useState(new Date())
@@ -63,6 +65,12 @@ const DoctorsOPDList = () => {
 
   console.log(tableArray)
 
+  const download=async()=>{
+    console.log("ffnmcbv");
+    pdfDoctordownlod()
+    
+  }
+
   return (
     <div>
       <ReportWithoutDownload title="Doctor OPD Report" displayClose={true}>
@@ -114,9 +122,19 @@ const DoctorsOPDList = () => {
                 Search
               </Button>
             </Box>
-            <Box sx={{ flex: 1, px: 0.5, display: 'flex' }}></Box>
-            <Box sx={{ flex: 1, px: 0.5, display: 'flex' }}></Box>
-            <Box sx={{ flex: 1, px: 0.5, display: 'flex' }}></Box>
+            <Box sx={{ flex: 1, px: 0.5, display: 'flex'}}>
+              <Tooltip title="Download as PDF" followCursor placement='top' arrow >
+                <IconButton variant="outlined" size='lg' sx={{ color: 'blue' }}
+                  onClick={download}
+                >
+                  <DownloadForOfflineIcon />
+                </IconButton>
+
+
+              </Tooltip >
+            </Box>
+            {/* <Box sx={{ flex: 1, px: 0.5, display: 'flex' }}></Box> */}
+            {/* <Box sx={{ flex: 1, px: 0.5, display: 'flex' }}></Box> */}
           </Box>
 
           <Box
@@ -182,17 +200,17 @@ const DoctorsOPDList = () => {
                         <td style={{ zIndex: 4, backgroundColor: '#f4f6f8' }}>
                           <Box sx={{ width: 200 }}> {row?.dept_name}</Box>
                         </td>
-                        <td style={{ textAlign: 'center', zIndex: 4, backgroundColor: '#f4f6f8'}}>
+                        <td style={{ textAlign: 'center', zIndex: 4, backgroundColor: '#f4f6f8' }}>
                           {row?.doctors?.map((val, ind) => (
                             <tr key={ind} >
-                              <td  style={{width:'300px',zIndex: 4, backgroundColor: '#f4f6f8'}}> {val?.em_name}</td>
+                              <td style={{ width: '300px', zIndex: 4, backgroundColor: '#f4f6f8' }}> {val?.em_name}</td>
                             </tr>
                           ))}
                         </td>
-                         <td style={{ textAlign: 'center',  zIndex: 4, backgroundColor: '#f4f6f8'}}>
+                        <td style={{ textAlign: 'center', zIndex: 4, backgroundColor: '#f4f6f8' }}>
                           {row?.doctors?.map((val, ind) => (
                             <tr key={ind}>
-                              <td  style={{width:'300px',zIndex: 4, backgroundColor: '#f4f6f8'}}> {val?.shiftName}</td>
+                              <td style={{ width: '300px', zIndex: 4, backgroundColor: '#f4f6f8' }}> {val?.shiftName}</td>
                             </tr>
                           ))}
                         </td>

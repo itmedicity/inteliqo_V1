@@ -13,11 +13,7 @@ import {
 } from 'src/redux/actions/LeaveReqst.action'
 import { getannualleave } from 'src/redux/actions/Profile.action'
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
-// import LinearProgreeBar from 'src/views/Component/MuiCustomComponent/LinearProgreeBar'
 import LeaveTableContainer from './LeaveTableContainer'
-// import { Actiontypes } from 'src/redux/constants/action.type'
-// import MissPunchRequest from './MissPunchRequest/MissPunchRequest'
-// import CompansatoryOffMast from './CompansatoryOff/CompansatoryOffMast'
 import { setCommonSetting } from 'src/redux/actions/Common.Action'
 import { setDept } from 'src/redux/actions/Dept.Action'
 import { setdeptSection } from 'src/redux/actions/DeptSection.action'
@@ -27,12 +23,7 @@ import CircularProgress from '@mui/joy/CircularProgress';
 const LeaveRequestEmployeeSelection = lazy(() => import('./LeaveRequestEmployeeSelection'));
 const LeaveRequestFormNew = lazy(() => import('./LeaveRequestFormNew'))
 const HalfDayLeaveRequest = lazy(() => import('./HalfdayRequest/HalfDayLeaveRequest'))
-
-
-// const LeaveRequestFormPage = lazy(() => import('./LeaveRequestForm'));
 const MissPunchRequest = lazy(() => import('./MissPunchRequest/MissPunchRequest'))
-//const CompansatoryOffMast = lazy(() => import('./CompansatoryOff/CompansatoryOffMast'))
-
 
 const LeaveRequestMainCard = () => {
 
@@ -40,7 +31,6 @@ const LeaveRequestMainCard = () => {
 
     const [requestType, setRequestType] = useState(0)
     const [count, setCount] = useState(0)
-    // const { LEAVE_REQ_DEFAULT } = Actiontypes;
 
     //get the employee details for taking the HOd and Incharge Details
     const empInform = useSelector((state) => getEmployeeInformationLimited(state))
@@ -48,17 +38,8 @@ const LeaveRequestMainCard = () => {
     const { hod, incharge, em_id, } = employeeInform;
 
     /***************************************************************** */
-    // const state = useSelector((state) => state.getLeaveRequestInfom.empDetl);
-    // const { requestType } = state;
 
     useEffect(() => {
-        // if (hod === 1 || incharge === 1) {
-        //     dispatch(getHodBasedDeptSectionName(em_id));
-        //     dispatch(getEmpNameHodSectionBased(em_id));
-        // } else {
-        //     dispatch(getannualleave(em_id))
-        //     dispatch(getEmployeeInformation(em_id))
-        // }
         dispatch(getHodBasedDeptSectionName(em_id));
         dispatch(getEmployeeApprovalLevel(em_id))
         dispatch(setCommonSetting());
@@ -68,14 +49,9 @@ const LeaveRequestMainCard = () => {
     }, [hod, incharge, em_id, dispatch])
 
     useEffect(() => {
-        // return () => {
-        //     dispatch({ type: LEAVE_REQ_DEFAULT })
-        //     dispatch(getHodBasedDeptSectionName());
-        //     dispatch(getEmpNameHodSectionBased());
         dispatch(getannualleave())
         dispatch(getEmployeeInformation())
         dispatch(getEmployeeApprovalLevel(0))
-        // }
     }, [dispatch])
 
     //Leave Request in HOD/INcharge Selected employes Empid get Reducer function
@@ -98,7 +74,6 @@ const LeaveRequestMainCard = () => {
                     <LeaveRequestEmployeeSelection setRequestType={setRequestType} />
                     {
                         requestType === 1 ? <LeaveRequestFormNew setRequestType={setRequestType} /> :
-                            // requestType === 1 ? <LeaveRequestFormPage em_id={{}} /> : 
                             requestType === 2 ? <HalfDayLeaveRequest setRequestType={setRequestType} setCount={setCount} /> :
                                 requestType === 3 ? <MissPunchRequest setRequestType={setRequestType} setCount={setCount} /> : null
                     }

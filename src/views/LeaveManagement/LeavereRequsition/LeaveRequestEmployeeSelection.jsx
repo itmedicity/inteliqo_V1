@@ -19,7 +19,6 @@ import LinearProgress from '@mui/joy/LinearProgress';
 import {
     getEmployeeInformation,
     getCreditedCasualLeave, getCreitedCommonLeave, getCreitedHolidayLeave,
-    // getCreitedCompansatoryOffLeave,
     getCreditedEarnLeave,
 } from 'src/redux/actions/LeaveReqst.action';
 import { getannualleave } from 'src/redux/actions/Profile.action'
@@ -29,8 +28,6 @@ const HrRoleBasedDepartmentAndSection = lazy(() => import('./Func/DepartmentBase
 
 const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
     const dispatch = useDispatch()
-
-    // const { FETCH_LEAVE_REQUEST, LEAVE_REQ_DEFAULT } = Actiontypes;
 
     const [levReq, setLevReq] = useState(0); //LEAVE REQUEST TYPE SELECTION STATE
 
@@ -100,66 +97,6 @@ const LeaveRequestEmployeeSelection = ({ setRequestType }) => {
 
 
     /****************************** */
-
-
-
-    // //get the employee details for taking the HOd and Incharge Details
-    // const employeeState = useSelector((state) => state.getProfileData.ProfileData,);
-    // const singleLeaveTypeFormData = useSelector((state) => state.singleLeaveRequestFormState.leaveReqState);
-
-    // const commonSettings = useSelector((state) => state?.getCommonSettings)
-    // const { group_slno } = commonSettings;
-
-
-    // const singleLevFormData = useMemo(() => singleLeaveTypeFormData, [singleLeaveTypeFormData])
-    // const employeeProfileDetl = useMemo(() => employeeState[0], [employeeState]);
-
-    // const { formSubmit } = singleLevFormData;
-    // const { hod, incharge, em_no, em_name, sect_name, em_dept_section } = employeeProfileDetl;
-
-
-    // const onSubmitLeaveRequestEntry = (e) => {
-
-    //     if (hod === 1 || incharge === 1) {
-    //         // this employee is a hod or incharge
-    //         if (deptSection === 0) {
-    //             warningNofity("Section Not Selected")
-    //         } else if (employeeID === 0) {
-    //             warningNofity("Employee Not Selected")
-    //         } else if (levReq === 0) {
-    //             warningNofity("Request Type Not Selected")
-    //         } else {
-    //             let empDetl = {
-    //                 deptSection: deptSection,
-    //                 empNo: employeeID,
-    //                 requestType: levReq
-    //             }
-    //             dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl });
-    //             // dispatch(getCommonLeaveData(em_no));
-    //         }
-
-    //     } else {
-    //         // normal employee
-    //         if (levReq === 0) {
-    //             warningNofity("Request Type Not Selected")
-    //         } else {
-    //             let empDetl = {
-    //                 deptSection: em_dept_section,
-    //                 empNo: em_no,
-    //                 requestType: levReq
-    //             }
-    //             dispatch({ type: FETCH_LEAVE_REQUEST, payload: empDetl })
-    //             dispatch(getCommonLeaveData(em_no));
-    //         }
-    //     }
-    // }
-
-    // const changeForm = () => {
-    //     let requestType = { requestType: 0 };
-    //     dispatch({ type: FETCH_LEAVE_REQUEST, payload: requestType })
-    //     dispatch({ type: LEAVE_REQ_DEFAULT })
-    // }
-
 
     return (
         <Paper variant="outlined" sx={{ display: "flex", alignItems: 'center', flexWrap: 'wrap' }} >

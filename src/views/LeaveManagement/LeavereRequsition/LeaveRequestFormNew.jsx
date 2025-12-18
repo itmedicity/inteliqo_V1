@@ -173,26 +173,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
     /************************************************************************************************************************************* */
     //SAVE LEAVE REQUEST FUNCTION
     const handleProcessLeaveRequest = useCallback(async () => {
-
-        // console.log(masterGroupStatus)
-        // console.log(loginHod, loginIncharge)
-
         const { em_no, em_id, em_department, em_dept_section, } = selectedEmpInform;
-
-        // const checkFromDate = format(new Date(fromDate), 'yyyy-MM-dd 00:00:00');
-        // const checkToDate = format(new Date(toDate), 'yyyy-MM-dd 23:59:59');
-        // const checkPostData = {
-        //     fromDate: checkFromDate,
-        //     toDate: checkToDate,
-        //     em_no: em_no
-        // }
-        // const checkDutyPlan = await axioslogin.post('/LeaveRequest/getLeaveExcistOrNot', checkPostData);
-        // const { success, data } = checkDutyPlan.data;
-        // if (success === 1) {
-        //     console.log(data);
-            
-            // const count = data[0]?.count
-            // if (count === 0) {
 
                 //FIRST CHECK THE ALL LEAVE ARE ENTERD IN THE CORRECTED DATE
                 const nulCheckForEnterdLeaves = table?.filter((e) => e.leavetype === 0 || e.selectedLveSlno === 0)?.length;
@@ -212,7 +193,6 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                     // FILTER AND REMOVE THE COMMON LEAVES
                     const commonLeaveFilterArray = table?.filter((e) => !commonLeave?.includes(e.leavetype))?.map((el) => { return { type: el.leavetype, typeslno: el.selectedLveSlno } })
                     const allLeavetypes = [...new Set(commonLeaveFilterArray?.map((e) => e.type))]
-                    // console.log(allLeavetypes)
                     // FIND THE DUPLICATE LEAVES 
                     const checkDuplicateLeaves = allLeavetypes?.map((el) => {
                         return {
@@ -220,22 +200,15 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                             status: commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno).length === [...new Set(commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno))].length
                         }
                     })?.find((e) => e.status === false)
-                    //?.find((e) => e.status === false)
-
+                    
                     //DUPLICATE CHECKING RESULTS
                     if (checkDuplicateLeaves === undefined) {
                         //REQUEST SEND TO DATABASE FOR SAVING
 
-                        // const { em_no, em_id, em_department, em_dept_section, hod, incharge } = selectedEmpInform;
-
                         const requestFromDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s');
                         const requestToDate = format(new Date(toDate), 'yyyy-MM-dd H:m:s');
 
-
                         const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmno)
-
-                        //console.log(approveStatus)
-                        // console.log(em_no, em_id, em_department, em_dept_section, hod, incharge)
 
                         //TOTAL LEAVES REQUIRED COUNT
                         const numberOfDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1
@@ -268,7 +241,6 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         }
 
                         //POST DATA FOR DETAILS TABLE
-
                         const postDataForDetlTable = table?.map((e) => {
                             return {
                                 leaveid: 0,
@@ -283,10 +255,7 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                                 singleleave: 1
                             }
                         })
-
                         //POST DATA TO BACKEND 
-
-                        // console.log(postDataForDetlTable)
 
                         const findNotMoreThanBalaLve = commonLeave?.map((type) => {
                             return type === 7 ? {
@@ -297,9 +266,6 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                                 leaveCount: postDataForDetlTable?.filter((e) => e.leave_typeid === type).length
                             }
                         })?.filter(e => e.leaveCount !== 0)?.map((el) => comnLeaveBalCount?.find((val) => val.type === el.type)?.balance - el.leaveCount < 0)?.filter(e => e === true).length
-
-                        // console.log(findNotMoreThanBalaLve)
-                        // console.log(comnLeaveBalCount)
 
                         if (reson === '') {
                             warningNofity("The explanation must consist of more than 10 characters.")
@@ -313,43 +279,16 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                                 }
                                 setModalOpen(true)
                                 setLeaveDetails(modifiedLveReq)
-                                // console.log(modifiedLveReq);
-                                // const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', modifiedLveReq);
-                                // const { success } = submitLeaveRequet.data;
-                                // if (success === 1) {
-                                //     setDropOpen(false)
-                                //     setTable([])
-                                //     setReason('')
-                                //     setRequestType(0)
-                                //     succesNofity("Leave request submited Successfully")
-                                //     // console.log(submitLeaveRequet)
-                                // } else {
-                                //     setDropOpen(false)
-                                //     setTable([])
-                                //     setReason('')
-                                //     setRequestType(0)
-                                //     errorNofity('Error Submitting Leave Request')
-                                // }
                             } else {
                                 warningNofity("One of the selected common leave counts is greater than the credited count.")
                                 setDropOpen(false)
                             }
-
                         }
-
                     } else {
                         // YES DUPLICATE LEAVE FOUND ERROR THROW
                         warningNofity("Please Check Selected Leaves , No Leaves Selected OR Duplicate Leaves Found !!!")
                     }
                 }
-            // } else {
-            //     warningNofity("The selected date has already been requested.")
-            // }
-        // } else {
-        //     errorNofity("Error Getting leave request Data")
-        // }
-
-
     }, [table, selectedEmpInform, fromDate, toDate, reson, loginHod, loginIncharge, loginEmno,
         masterGroupStatus, comnLeaveBalCount, deptApprovalLevel])
 
@@ -365,7 +304,6 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 views={['day']}
-                                //minDate={startOfMonth(new Date())}
                                 inputFormat="dd-MM-yyyy"
                                 value={fromDate}
                                 size="small"
@@ -420,8 +358,6 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                                 </Button>
                             </Tooltip>
                         </CssVarsProvider>
-                        {/* </Box>
-                    <Box sx={{ display: "flex", flex: 1, px: 0.3, pl: 5 }} > */}
                         <CssVarsProvider>
                             <Tooltip title="Click Here to Save Leave Request" followCursor placement='top' arrow variant='outlined' color='danger' >
                                 <Button
@@ -445,7 +381,6 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                                     onClick={handleRefreshButton}
                                     size='sm'
                                     sx={{ px: 1, py: 0.5 }}
-                                // endDecorator={<Box>Save Request</Box>}
                                 >
                                     <CachedIcon fontSize='large' />
                                 </Button>
@@ -456,7 +391,6 @@ const LeaveRequestFormNew = ({ setRequestType }) => {
                 <Paper variant="outlined" sx={{ maxHeight: screenInnerHeight * 40 / 100, p: 1, m: 0.3, overflow: 'auto' }} >
                     <Table
                         aria-label="basic table"
-                        // borderAxis="xBetween"
                         color="neutral"
                         size="sm"
                         variant="plain"

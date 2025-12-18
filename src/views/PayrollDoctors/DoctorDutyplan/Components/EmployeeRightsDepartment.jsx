@@ -39,6 +39,7 @@ const EmployeeRightsDepartment = ({ value, setValue }) => {
       size="md"
       variant="outlined"
       sx={{ width: '100%' }}
+      color='primary'
     >
       <Option disabled value={0}>
         Select Department

@@ -311,6 +311,8 @@ const InactiveDoctorReport = React.lazy(() => import('./views/HrReports/DoctorsR
 const DoctorPunchReport = React.lazy(() => import('./views/HrReports/DoctorsReport/DoctorPunchReport'))
 const DoctoropdList = React.lazy(() => import('./views/HrReports/DoctorsReport/DoctorsOPDList'))
 const PayrollDoctorRight = React.lazy(() => import('./views/Master/DoctorPayrollRights/DoctorPayrollRight'))
+const DoctorLeaveRequest = React.lazy(() => import('./views/PayrollDoctors/DoctorLeaveRequest/LeaveRequest'))
+
 
 const routes = [
 
@@ -2113,6 +2115,12 @@ const routes = [
     exact: true,
     name: 'EMployee Rights to Doctor',
     component: PayrollDoctorRight
+  },
+  {
+    path: '/Home/DoctorLeaveRequest',
+    exact: true,
+    name: 'Doctor Leave Request',
+    component: DoctorLeaveRequest
   }
 
 ]

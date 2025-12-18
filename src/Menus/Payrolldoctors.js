@@ -30,6 +30,12 @@ const PayrollDoctors = [
         name: 'Doctor Punch View',
         to: '/Home/DoctorPunchView',
     },
+      {
+        men_slno: 357,
+        component: CNavItem,
+        name: 'Doctor Leave Request',
+        to: '/Home/DoctorLeaveRequest',
+    },
 
 ]
 
