@@ -136,15 +136,15 @@ const YearlyLeaveCalendarMast = () => {
     }, [count])
 
     const [columnDef] = useState([
-        { headerName: 'Sl No', field: 'hld_slno' },
-        { headerName: 'Leave Type', field: 'lvetype_desc', filter: true, width: 150 },
-        { headerName: 'Holiday Name', field: 'hld_desc', filter: true, width: 150 },
-        { headerName: 'Holiday Date', field: 'hld_date', filter: true, width: 150 },
-        { headerName: 'Year', field: 'hld_year', filter: true, width: 150 },
-        { headerName: 'Type', field: 'typename', filter: true, width: 150 },
-        { headerName: 'Status ', field: 'status', width: 100 },
+        { headerName: 'Sl No', field: 'hld_slno', minWidth: 100 },
+        { headerName: 'Leave Type', field: 'lvetype_desc', filter: true, minWidth: 250 },
+        { headerName: 'Holiday Name', field: 'hld_desc', filter: true, minWidth: 250 },
+        { headerName: 'Holiday Date', field: 'hld_date', filter: true, minWidth: 150 },
+        { headerName: 'Year', field: 'hld_year', filter: true, minWidth: 100 },
+        { headerName: 'Type', field: 'typename', filter: true, minWidth: 150 },
+        { headerName: 'Status ', field: 'status', minWidth: 100 },
         {
-            headerName: 'Edit', cellRenderer: params =>
+            headerName: 'Edit', minWidth: 100, cellRenderer: params =>
                 <IconButton sx={{ paddingY: 0.5 }} onClick={() => getEdit(params)} >
                     <EditIcon color='primary' />
                 </IconButton>
@@ -153,7 +153,9 @@ const YearlyLeaveCalendarMast = () => {
 
     const getEdit = useCallback((params) => {
         setFlag(1)
-        const { hld_slno, lvetype_slno, hld_desc, hld_date, hld_status } = params.data
+        console.log(params.data);
+
+        const { hld_slno, lvetype_slno, hld_desc, hld_date, hld_status, special_type } = params.data
         const frmData = {
             calendar_leave: hld_desc,
             status: hld_status === 1 ? true : false
@@ -162,6 +164,7 @@ const YearlyLeaveCalendarMast = () => {
         setValue(format(new Date(hld_date), "yyyy-MM-dd"))
         setformData(frmData)
         setSlno(hld_slno)
+        setType(special_type)
     }, [])
 
     const type = [
@@ -232,28 +235,6 @@ const YearlyLeaveCalendarMast = () => {
                                     })
                                 }
                             </Select>
-                            {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    views={["year"]}
-                                    minDate={new Date()}
-                                    value={year}
-                                    size="small"
-                                    onChange={(newValue) => {
-                                        setYear(newValue);
-                                    }}
-                                    renderInput={({ inputRef, inputProps, InputProps }) => (
-                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                            <CssVarsProvider>
-                                                <Input
-                                                    placeholder="Year"
-                                                    ref={inputRef}
-                                                    {...inputProps} style={{ width: '100%' }} />
-                                            </CssVarsProvider>
-                                            {InputProps?.endAdornment}
-                                        </Box>
-                                    )}
-                                />
-                            </LocalizationProvider> */}
                         </Box>
                         <Box sx={{ mt: 1, ml: 2 }}>
                             <JoyCheckbox
