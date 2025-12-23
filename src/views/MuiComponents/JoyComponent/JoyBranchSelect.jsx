@@ -42,6 +42,7 @@ const JoyBranchSelect = ({ value, setValue }) => {
             }}
             size='md'
             variant='outlined'
+            color='primary'
         >
             <Option disabled value={0}> Select Branch </Option>
             {

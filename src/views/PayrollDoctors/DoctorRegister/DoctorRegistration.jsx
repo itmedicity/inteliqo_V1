@@ -732,18 +732,6 @@ const DoctorRegistration = () => {
                                 <Option value={2}>Accademic</Option>
                             </Select>
                         </Box>
-                        {/* <Box sx={{
-                            display: 'flex',
-                            mt: 1.5, px: 0.3,
-                        }} >
-                            <JoyCheckbox
-                                label='Check If Doctor'
-                                name="doctor"
-                                checked={doctor}
-                                disabled={clinictype === 1 ? false : true}
-                                onchange={(e) => setDoctor(e.target.checked)}
-                            />
-                        </Box> */}
                         <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
                             <InputComponent
                                 type="text"
