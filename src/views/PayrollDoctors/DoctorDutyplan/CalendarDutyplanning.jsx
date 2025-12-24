@@ -137,6 +137,8 @@ const CalendarDutyplanning = () => {
       const result = await axioslogin.get(`/DoctorsProcess/getdoctor/${emply}`)
       const { success, data: employeeData } = result.data
       if (success === 1) {
+        setSaveData([])
+        setDutyAssignments([])
         //checking wheher duty plan is already inserted in these dates
         const postDate = {
           start_date: format(new Date(monthStart), 'yyyy-MM-dd'),
@@ -156,6 +158,7 @@ const CalendarDutyplanning = () => {
             setBackdropOpen(false)
           } else {
             setSaveData([])
+            setDutyAssignments([])
             setBackdropOpen(false)
             warningNofity('Error While Getting Dutyplan data')
           }
@@ -244,11 +247,13 @@ const CalendarDutyplanning = () => {
               setBackdropOpen(false)
             } else {
               setSaveData([])
+              setDutyAssignments([])
               setBackdropOpen(false)
               warningNofity('Error While Getting Doctor data')
             }
           } else {
             setSaveData([])
+            setDutyAssignments([])
             setBackdropOpen(false)
             warningNofity('Error While Inserting Doctor Dutyplan')
           }
@@ -256,11 +261,15 @@ const CalendarDutyplanning = () => {
       } else {
         infoNofity("Doctor data doesn't found ")
         setBackdropOpen(false)
+        setSaveData([])
+        setDutyAssignments([])
       }
     } else {
       warningNofity('Select All Option')
       setViewCalendar(0)
       setBackdropOpen(false)
+      setSaveData([])
+      setDutyAssignments([])
     }
   }, [dept, section, emply, monthStart, monthEnd, holidayList, commonSettingData])
 
@@ -295,6 +304,7 @@ const CalendarDutyplanning = () => {
   }
 
   const saveAllDuties = useCallback(async () => {
+    setBackdropOpen(true)
     const updateData = dutyAssignments
       ?.filter((i) => saveData?.some((j) => i?.date === j?.duty_day))
       ?.map((i) => {
@@ -309,8 +319,10 @@ const CalendarDutyplanning = () => {
     const { success } = result.data
     if (success === 1) {
       succesNofity('Dutyplan Inserted Successfully')
+      setBackdropOpen(false)
     } else {
       errorNofity('Error While Inserting Dutyplan')
+      setBackdropOpen(false)
     }
   }, [dutyAssignments, saveData])
 

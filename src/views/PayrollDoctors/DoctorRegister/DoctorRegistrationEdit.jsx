@@ -95,6 +95,7 @@ const DoctorRegistrationEdit = () => {
   const [clinictype, setClinictype] = useState(0)
   const [doctor, setDoctor] = useState(false)
   const [leaveprocesstype, setLeaveprocesstype] = useState(0)
+  const [nmc_regno, setNmc_regno] = useState('')
 
   useEffect(() => {
     dispatch(setDepartment())
@@ -233,12 +234,14 @@ const DoctorRegistrationEdit = () => {
           gross_salary,
           doctor_status,
           holiday_type,
+          nmc_regno,
         } = data[0]
         const age = {
           yearage: em_age_year,
           mnthage: em_age_month,
           dayge: em_age_day,
         }
+        setNmc_regno(nmc_regno===null?0:nmc_regno)
         setEmpno(em_no)
         setEmpname(em_name)
         setGender(em_gender)
@@ -287,7 +290,7 @@ const DoctorRegistrationEdit = () => {
   }, [id])
 
   const toTable = useCallback(() => {
-     history.push('/Home/DoctorRegisterTable')
+    history.push('/Home/DoctorRegisterTable')
   }, [history])
 
   // data for sumbimssion
@@ -336,6 +339,7 @@ const DoctorRegistrationEdit = () => {
       em_no: parseInt(empno),
       holiday_type: leaveprocesstype,
       actual_doj: oldDoj === dateofjoining ? oldDoj : dateofjoining,
+      nmc_regno: nmc_regno
     }
   }, [
     empno,
@@ -380,6 +384,7 @@ const DoctorRegistrationEdit = () => {
     doctor,
     leaveprocesstype,
     oldDoj,
+    nmc_regno
   ])
 
   const clearForm = useCallback(() => {
@@ -893,6 +898,16 @@ const DoctorRegistrationEdit = () => {
                 name="Salary"
                 value={Salary}
                 onchange={(e) => setSalary(e.target.value)}
+              />
+            </Box>
+            <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
+              <InputComponent
+                type="text"
+                size="sm"
+                placeholder="NMC Attendance Id"
+                name="nmc_regno"
+                value={nmc_regno}
+                onchange={(e) => setNmc_regno(e.target.value)}
               />
             </Box>
             <Box sx={{ mt: 1.5, pl: 0.5 }}>
