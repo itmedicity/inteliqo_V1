@@ -1,15 +1,18 @@
-import React, { memo, useState,lazy } from 'react'
+import React, { memo, useState, lazy, useMemo } from 'react'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 import ReportWithoutDownload from '../ReportComponent/ReportWithoutDownload'
 import { Paper } from '@mui/material'
-import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges'
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline'
-import { Box, IconButton, Tooltip, Typography } from '@mui/joy'
+import { Box, IconButton, Input, Tooltip, Typography } from '@mui/joy'
 import { pdfdownlod } from '../Employee Punch Report/PunchReport'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import DoctorDepartmentSection from 'src/views/PayrollDoctors/DoctorDutyplan/Components/DoctorDepartmentSection'
 import DoctorDepartment from 'src/views/PayrollDoctors/DoctorDutyplan/Components/DoctorDepartment'
+import { axioslogin } from 'src/views/Axios/Axios'
+import { addDays, format } from 'date-fns'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 
 const PunchTable = lazy(() => import('../Employee Punch Report/PunchTable'))
 
@@ -22,7 +25,131 @@ const DoctorPunchReport = () => {
   const [drop, setDropOpen] = useState(false)
   const [deptSect, setDepartSection] = useState(0)
 
-  const getData = async () => {}
+  const postData = useMemo(() => {
+    return {
+      empno: parseInt(Empno),
+      fromdate: format(new Date(fromdate), 'yyyy-MM-dd'),
+      todate: format(new Date(todate), 'yyyy-MM-dd')
+    }
+  }, [Empno, fromdate, todate])
+
+  const postDataDep = useMemo(() => {
+    return {
+      deptno: dept,
+      deptsec: deptSect,
+      fromdate: format(new Date(fromdate), 'yyyy-MM-dd'),
+      todate: format(new Date(todate), 'yyyy-MM-dd')
+    }
+  }, [dept, deptSect, fromdate, todate])
+
+  const getData = async () => {
+    setDropOpen(true)
+    if (Empno !== 0 && fromdate !== '' && todate !== '') {
+      const result = await axioslogin.post(`/DoctorsProcess/single/doctorPunch`, postData)
+      const { data: firstApiData, success } = result.data
+      if (success === 1) {
+       
+        const result = await axioslogin.post(`/DoctorsProcess/punchReport/singledoctor`, postData)
+        const { data, success } = result.data
+       
+        if (success === 1) {
+          const setData = data?.map((data) => {
+            let shiftIn = `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_in), 'HH:mm')}`;
+            let shiftOut = data.shft_cross_day === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}` :
+              `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}`;
+            return {
+
+              dept_name: data?.dept_name,
+              duty_day: data?.duty_day,
+              em_name: data?.em_name,
+              em_no: data?.em_no,
+              sect_name: data?.sect_name,
+              shft_cross_day: data?.shft_cross_day,
+              shift_id: data?.shift_id,
+              shift_in: shiftIn,
+              shift_out: shiftOut
+
+            }
+          })
+
+          const updatedSecondApiData = setData.map(data => {
+            const correspondingFirstData = firstApiData.filter(firstApiData => {
+              return (
+                parseInt(firstApiData.emp_code) === data.em_no &&
+                new Date(firstApiData.punch_time).toDateString() === new Date(data.duty_day).toDateString()
+              );
+            });
+            return {
+              ...data,
+              new_field: correspondingFirstData.map(data => data.punch_time)
+            };
+          });
+          const array = updatedSecondApiData.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+          setDropOpen(false)
+          setTableData(array)
+         
+        }
+      }
+    }
+    else if (dept !== 0 && deptSect !== 0 && fromdate !== '' && todate !== '') {
+      const result = await axioslogin.post(`/DoctorsProcess/doctorPunch/dept`, postDataDep)
+      const { data: firstApiData, success } = result.data
+      if (success === 1) {
+        
+        const result = await axioslogin.post(`/DoctorsProcess/doctorPunchmast`, postDataDep)
+        const { data, success } = result.data
+        if (success === 1) {
+          const setData = data?.map((data) => {
+            let shiftIn = `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_in), 'HH:mm')}`;
+            let shiftOut = data.shft_cross_day === 0 ? `${format(new Date(data.duty_day), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}` :
+              `${format(addDays(new Date(data.duty_day), 1), 'yyyy-MM-dd')} ${format(new Date(data.shift_out), 'HH:mm')}`;
+            return {
+
+              dept_name: data?.dept_name,
+              duty_day: data?.duty_day,
+              em_name: data?.em_name,
+              em_no: data?.em_no,
+              sect_name: data?.sect_name,
+              shft_cross_day: data?.shft_cross_day,
+              shift_id: data?.shift_id,
+              shift_in: shiftIn,
+              shift_out: shiftOut
+
+            }
+          })
+
+
+          const updatedSecondApiData = setData.map(data => {
+            const correspondingFirstData = firstApiData.filter(firstApiData => {
+              return (
+                parseInt(firstApiData.emp_code) === data.em_no &&
+                new Date(firstApiData.punch_time).toDateString() === new Date(data.duty_day).toDateString()
+              );
+            });
+            return {
+              ...data,
+              new_field: correspondingFirstData.map(data => data.punch_time)
+            };
+          });
+          const array = updatedSecondApiData.sort((a, b) => new Date(a.duty_day) - new Date(b.duty_day));
+
+          setTableData(array)
+          // setTableData(updatedSecondApiData)
+          setDropOpen(false)
+          
+        }
+      }
+
+    }
+    else {
+      setDept(0)
+      setDepartSection(0)
+      setEmpNo(0)
+      setTableData([])
+      warningNofity("Please Enter from date and to date")
+      setDropOpen(false)
+    }
+  };
 
   const handleIconClick = () => {
     if (tableData.length > 0) {
@@ -47,50 +174,74 @@ const DoctorPunchReport = () => {
             }}
           >
             <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-             <DoctorDepartment value={dept} setValue={setDept} />
-              {/* <JoyDepartment deptValue={dept} getDept={setDept} /> */}
+              <DoctorDepartment value={dept} setValue={setDept} />
             </Box>
             <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
               <DoctorDepartmentSection
-                            value={deptSect}
-                            setValue={setDepartSection}
-                            dept={dept}
-                          />
-              {/* <JoyDepartmentSection sectValues={deptSect} getSection={setDepartSection} dept={dept} /> */}
+                value={deptSect}
+                setValue={setDepartSection}
+                dept={dept}
+              />
             </Box>
             <Tooltip title="Employee Number" followCursor placement="top" arrow>
               <Box sx={{ flex: 1, mt: 0.5, px: 0.3 }}>
-                <InputComponent
+                <Input
                   type="number"
-                  size="sm"
+                  size="md"
                   placeholder="Employee Number"
                   name="Empno"
                   value={Empno}
-                  onchange={(e) => setEmpNo(e.target.value)}
+                  onChange={(e) => setEmpNo(e.target.value)}
                 />
               </Box>
             </Tooltip>
             <Box sx={{ flex: 1, mt: 0.5, px: 0.3, display: 'flex', flexDirection: 'row' }}>
               <Typography sx={{ p: 1 }}>From:</Typography>
-              <InputComponent
-                type="date"
-                size="sm"
-                placeholder="From Date"
-                name="Fromdate"
-                value={fromdate}
-                onchange={(e) => Setfromdate(e.target.value)}
-              />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  views={['day']}
+                  value={fromdate}
+                  inputFormat="dd/MM/yyyy"
+                  onChange={(newValue) => {
+                    Setfromdate(newValue)
+                  }}
+                  renderInput={({ inputRef, inputProps, InputProps }) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Input
+                        ref={inputRef}
+                        {...inputProps}
+                        style={{ width: '80%' }}
+                        disabled={true}
+                      />
+                      {InputProps?.endAdornment}
+                    </Box>
+                  )}
+                />
+              </LocalizationProvider>
             </Box>
             <Box sx={{ flex: 1, mt: 0.5, px: 0.3, display: 'flex', flexDirection: 'row' }}>
               <Typography sx={{ p: 1 }}>To:</Typography>
-              <InputComponent
-                type="date"
-                size="sm"
-                placeholder="ToDate"
-                name="Todate"
-                value={todate}
-                onchange={(e) => Settodate(e.target.value)}
-              />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  views={['day']}
+                  value={todate}
+                  inputFormat="dd/MM/yyyy"
+                  onChange={(newValue) => {
+                    Settodate(newValue)
+                  }}
+                  renderInput={({ inputRef, inputProps, InputProps }) => (
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Input
+                        ref={inputRef}
+                        {...inputProps}
+                        style={{ width: '80%' }}
+                        disabled={true}
+                      />
+                      {InputProps?.endAdornment}
+                    </Box>
+                  )}
+                />
+              </LocalizationProvider>
             </Box>
             <Box sx={{ ml: 1 }}>
               <IconButton variant="outlined" size="lg" color="primary" onClick={getData}>
