@@ -30,21 +30,15 @@ export const pdfDoctordownlod = () => {
                         body: [
                             [
                                 // {
-                                //     image: 'snow', fit: [150, 150],
-
-                                //     margin: [25, 20, 10, 15],
-
-                                // },
-                                {
-                                    margin: [5, 25, 10, 15],
-                                    table: {
-                                        headerRows: 1,
-                                        body: [
-                                            [{ text: 'A unit of Quilon Medical Trust', italics: true }],
-                                        ]
-                                    },
-                                    layout: 'noBorders'
-                                }
+                                //     margin: [5, 25, 10, 15],
+                                //     table: {
+                                //         headerRows: 1,
+                                //         body: [
+                                //             [{ text: 'A unit of Quilon Medical Trust', italics: true }],
+                                //         ]
+                                //     },
+                                //     layout: 'noBorders'
+                                // }
                             ]
                         ]
                     },
