@@ -88,7 +88,7 @@ const DoctorPunchReport = () => {
   }, [dept, section, selectedMonth])
 
   return (
-    <CustomLayout title="Doctor Punch View" displayClose={true}>
+    <CustomLayout title="Doctors Punch Report" displayClose={true}>
       <CustomBackDrop open={openBkDrop} text="Please wait !. " />
       <Box
         sx={{ display: 'flex', flex: 1, px: 0.8, mt: 0.3, flexDirection: 'column', width: '100%' }}
