@@ -312,7 +312,8 @@ const DoctorPunchReport = React.lazy(() => import('./views/HrReports/DoctorsRepo
 const DoctoropdList = React.lazy(() => import('./views/HrReports/DoctorsReport/DoctorsOPDList'))
 const PayrollDoctorRight = React.lazy(() => import('./views/Master/DoctorPayrollRights/DoctorPayrollRight'))
 const DoctorLeaveRequest = React.lazy(() => import('./views/PayrollDoctors/DoctorLeaveRequest/LeaveRequest'))
-
+const DeleteDocLeaveReq = React.lazy(() => import('./views/PayrollDoctors/DoctorLeaveRequest/DeleteRequest'))
+const DeptWisePunchView = React.lazy(() => import('./views/PayrollDoctors/DoctorPunch/DepartmentWisePunchView'))
 
 const routes = [
 
@@ -2121,6 +2122,18 @@ const routes = [
     exact: true,
     name: 'Doctor Leave Request',
     component: DoctorLeaveRequest
+  },
+  {
+    path: '/Home/DeleteDocLeaveReq',
+    exact: true,
+    name: 'Delete Doctor Leave Request',
+    component: DeleteDocLeaveReq
+  },
+  {
+    path: '/Home/DeptWisePunchView',
+    exact: true,
+    name: 'Punch View',
+    component: DeptWisePunchView
   }
 
 ]

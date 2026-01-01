@@ -58,6 +58,7 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
         const newCasualLeavesAttay = casualLeaves?.map((e) => {
             let leveCount = e.cl_lv_taken === 0 ? 1 : e.cl_lv_taken;
             const leaveYear = format(new Date(e.cl_lv_year), 'yyyy');
+            
             return {
                 type: 'CL',
                 name: 'Casual Leave',
@@ -70,8 +71,9 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
                 cmn: 0,
                 leaveMonth: e.cl_lv_year
             }
-            // })?.filter((e) => e.lveRequest === 0)
-        })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+            
+           })?.filter((e) => e.lveRequest === 0 && new Date(e.leaveMonth) <=new Date())
+       // })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
 
         // Sort the array by year in ascending order
         const sortedLeavesByYear = newCasualLeavesAttay.sort((a, b) => {
