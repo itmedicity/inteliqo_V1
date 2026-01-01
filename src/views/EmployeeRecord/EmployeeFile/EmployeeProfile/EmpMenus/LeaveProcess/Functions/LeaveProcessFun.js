@@ -706,7 +706,8 @@ export const updateHolidayLeaves = async (lv_process_slno, em_id, em_no, em_doj)
       const today = moment().format('YYYY-MM-DD');
       const holidayDate = moment(val.hld_date).format('YYYY-MM-DD');
 
-      return (holidayDate >= today && holidayDate >= em_doj) ? {
+      // return (holidayDate >= today && holidayDate >= em_doj) ? {
+      return ( holidayDate >= em_doj) ? {
         em_no: em_no,
         hd_slno: val.hld_slno,
         hl_lv_year: val.hld_date,

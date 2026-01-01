@@ -252,7 +252,7 @@ export const getCaualLeaveDetl = (state) => {
             leaveMonth: e.cl_lv_year
         }
         //})?.filter(e => e.status === 0)
-    })?.filter(e => e.status === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date()))
+    })?.filter(e => e.status === 0 && new Date(e.leaveMonth) <= new Date())
 }
 
 
