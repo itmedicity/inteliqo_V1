@@ -136,9 +136,6 @@ const ModuleGroupMast = () => {
 
   const submitModuleGroupMast = useCallback(async (e) => {
     e.preventDefault()
-
-    console.log(postEditData);
-
     if (flag === 1) {
       const result = await axioslogin.patch('/modulegroup', postEditData)
       const { success, message } = result.data

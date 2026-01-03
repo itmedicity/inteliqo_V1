@@ -153,7 +153,6 @@ const YearlyLeaveCalendarMast = () => {
 
     const getEdit = useCallback((params) => {
         setFlag(1)
-        console.log(params.data);
 
         const { hld_slno, lvetype_slno, hld_desc, hld_date, hld_status, special_type } = params.data
         const frmData = {
