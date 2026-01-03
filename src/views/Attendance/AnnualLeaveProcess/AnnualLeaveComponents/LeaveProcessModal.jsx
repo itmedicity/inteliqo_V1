@@ -131,7 +131,7 @@ const LeaveProcessModal = ({ open, setOpen, empdata, empCategory, newLeaveData }
                 }
                 else if (leave === 4) {
                     // National And Festival Holiday
-                    updateHolidayLeaves(calulatedProcessDate, lv_process_slno, em_id, em_no, date_of_join).then((value) => {
+                    updateHolidayLeaves(lv_process_slno, em_id, em_no, date_of_join).then((value) => {
                         //insert function holiday
                         let { status, data } = value;
 

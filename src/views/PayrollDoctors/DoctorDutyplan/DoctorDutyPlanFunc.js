@@ -13,6 +13,6 @@ export const getDoctorList = async (postData) => {
 }
 
 export const getEmployeeRightsbasedDepartments = (em_id) => {
-console.log(em_id);
+
 
 }
