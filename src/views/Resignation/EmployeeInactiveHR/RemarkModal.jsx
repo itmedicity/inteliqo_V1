@@ -98,16 +98,28 @@ const RemarkModal = ({ open, setOpen, data, setCount, dueDepartment }) => {
                         setOpen(false)
                         succesNofity("Employee Inactivated")
                         setCount(Math.random())
+                        setSelectValue(0)
+                        setResigndate(new Date())
+                        setAbsentDate(new Date())
                     } else {
                         errorNofity("Error While Inactive Log List ")
+                        setSelectValue(0)
+                        setResigndate(new Date())
+                        setAbsentDate(new Date())
                     }
                 } else {
                     setOpen(false)
                     errorNofity("Error while Inactive Employee")
+                    setSelectValue(0)
+                    setResigndate(new Date())
+                    setAbsentDate(new Date())
                 }
             } else {
                 setOpen(false)
                 errorNofity("Add Due Clearence Department to this Department Section")
+                setSelectValue(0)
+                setResigndate(new Date())
+                setAbsentDate(new Date())
             }
         }
     }, [emid, reason, emno, setCount, setOpen, dueDepartment, selectValue,

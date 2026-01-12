@@ -56,7 +56,7 @@ const OneHourRequest = () => {
     const groupStatus = useMemo(() => getcommonSettings, [getcommonSettings])
 
     const state = useSelector((state) => state?.getCommonSettings,)
-    const { cmmn_grace_period, comp_hour_count, default_shift, notapplicable_shift, week_off_day } = state;
+    const { cmmn_grace_period, comp_hour_count, default_shift, notapplicable_shift, week_off_day, onehour_rqst_count } = state;
 
     useEffect(() => {
         setMasterGroupStatus(groupStatus)
@@ -185,164 +185,210 @@ const OneHourRequest = () => {
     }, [])
 
     const submitRequest = useCallback(async () => {
-        setOpenBkDrop(true)
+        setOpenBkDrop(true);
 
-        const approveStatus = await getInchargeHodAuthorization(masterGroupStatus, deptApprovalLevel, loginHod, loginIncharge, loginEmid)
+        try {
+            /* ---------------------------------------------------------
+               1. GET APPROVAL STATUS (Incharge / HOD)
+            ---------------------------------------------------------- */
+            const approveStatus = await getInchargeHodAuthorization(
+                masterGroupStatus,
+                deptApprovalLevel,
+                loginHod,
+                loginIncharge,
+                loginEmid
+            );
 
-        if (checkinBox === false && checkoutBox === false) {
-            setOpenBkDrop(false)
-            warningNofity("Check In || Check Out Needs To Check")
-        } else if (reason === '') {
-            setOpenBkDrop(false)
-            warningNofity("Reason Is Mandatory")
-        }
-        else {
+            /* ---------------------------------------------------------
+               2. BASIC VALIDATIONS
+            ---------------------------------------------------------- */
+            if (!checkinBox && !checkoutBox) {
+                warningNofity("Check In || Check Out Needs To Check");
+                setOpenBkDrop(false);
+                return;
+            }
+
+            if (reason === '') {
+                warningNofity("Reason Is Mandatory");
+                setOpenBkDrop(false);
+                return;
+            }
+
+            /* ---------------------------------------------------------
+               3. PREPARE POST DATA
+            ---------------------------------------------------------- */
+            const requestDate = format(new Date(), 'yyyy-MM-dd H:m:s');
+            const dutyDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s');
+            const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd');
+
             const postData = {
-                em_id: em_id,
-                em_no: em_no,
+                em_id,
+                em_no,
                 dept_id: em_department,
                 dept_sect_id: em_dept_section,
-                request_date: format(new Date(), 'yyyy-MM-dd H:m:s'),
-                one_hour_duty_day: format(new Date(fromDate), 'yyyy-MM-dd H:m:s'),
-                checkin_flag: checkinBox === true ? 1 : 0,
-                checkout_flag: checkoutBox === true ? 1 : 0,
+                request_date: requestDate,
+                one_hour_duty_day: dutyDate,
+
+                checkin_flag: checkinBox ? 1 : 0,
+                checkout_flag: checkoutBox ? 1 : 0,
                 check_in: punchInTime,
                 check_out: punchOutTime,
                 shift_id: selectedShift,
-                reason: reason,
-                attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
+                reason,
+
+                attendance_marking_month: monthStartDate,
+
+                // Incharge Approval
                 incharge_req_status: approveStatus.inc_apr,
                 incharge_approval_status: approveStatus.inc_stat,
                 incharge_approval_comment: approveStatus.inc_cmnt,
                 incharge_approval_date: approveStatus.inc_apr_time,
+
+                // HOD Approval
                 hod_req_status: approveStatus.hod_apr,
                 hod_approval_status: approveStatus.hod_stat,
                 hod_approval_comment: approveStatus.hod_cmnt,
                 hod_approval_date: approveStatus.hod_apr_time,
+
+                // Others
                 ceo_req_status: 0,
                 hr_req_status: 1,
                 incharge_empid: approveStatus.usCode_inch,
                 hod_empid: approveStatus.usCode_hod,
-                plan_slno: plan_slno
-            }
-            const monthStartDate = format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
+                plan_slno,
+                onehour_rqst_count
+            };
+
+            /* ---------------------------------------------------------
+               4. CHECK PUNCH MARKING HR STATUS
+            ---------------------------------------------------------- */
             const dateCheck = {
                 month: monthStartDate,
                 section: em_dept_section
+            };
+
+            const punchMarkingRes = await axioslogin.post(
+                "/attendCal/checkPunchMarkingHR/",
+                dateCheck
+            );
+
+            const { success, data } = punchMarkingRes.data;
+
+            if (success !== 0 && success !== 1) {
+                errorNofity("Error getting PunchMarkingHR");
+                setOpenBkDrop(false);
+                return;
             }
-            const checkPunchMarkingHr = await axioslogin.post("/attendCal/checkPunchMarkingHR/", dateCheck);
-            const { success, data } = checkPunchMarkingHr.data
-            if (success === 0 || success === 1) {
-                const lastUpdateDate = data?.length === 0 ? format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd') : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd')
-                const lastDay_month = format(lastDayOfMonth(new Date(fromDate)), 'yyyy-MM-dd')
 
-                if ((lastUpdateDate === lastDay_month) || (lastUpdateDate > lastDay_month)) {
-                    setOpenBkDrop(false)
-                    warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
-                } else {
-                    //check in time correct
-                    if (checkinBox === true) {
-                        const intime = format(addHours(new Date(punchInTime), 1), 'yyyy-MM-dd HH:mm')
+            const lastUpdateDate = data?.length === 0
+                ? monthStartDate
+                : format(new Date(data[0]?.last_update_date), 'yyyy-MM-dd');
 
-                        const relaxTime = format(addMinutes(new Date(intime), cmmn_grace_period), 'yyyy-MM-dd HH:mm')
-                        const result = punchData.find((val) => val)
-                        const dd = isBefore(new Date(result.punch_time), new Date(relaxTime))
-                            && isAfter(new Date(result.punch_time), new Date(punchInTime))
-                            || isEqual(new Date(result.punch_time), new Date(punchInTime))
-                            || isEqual(new Date(result.punch_time), new Date(relaxTime)) ? 1 : 0
+            const lastDayOfMonthDate = format(
+                lastDayOfMonth(new Date(fromDate)),
+                'yyyy-MM-dd'
+            );
 
-                        if (dd === 0) {
-                            setOpenBkDrop(false)
-                            warningNofity("Can't Apply For One Hour Request!!");
-                            setSelectedShift(0)
-                            setFromDate(new Date())
-                            setReason('')
-                            setPunchInTime(0)
-                            setPunchOutTime(0)
-                            setCheckInCheck(false)
-                            setCheckOutCheck(false)
-                        } else {
-                            const result = await axioslogin.post('/CommonReqst', postData)
-                            const { message, success } = result.data;
-                            if (success === 1) {
-                                succesNofity(message)
-                                setCount(Math.random())
-                                setSelectedShift(0)
-                                setFromDate(new Date())
-                                setReason('')
-                                setPunchInTime(0)
-                                setPunchOutTime(0)
-                                setCheckInCheck(false)
-                                setCheckOutCheck(false)
-                                setOpenBkDrop(false)
-                            } else {
-                                setOpenBkDrop(false)
-                                warningNofity(message)
-                                setSelectedShift(0)
-                                setFromDate(new Date())
-                                setReason('')
-                                setPunchInTime(0)
-                                setPunchOutTime(0)
-                                setCheckInCheck(false)
-                                setCheckOutCheck(false)
-                            }
-                        }
-                    } else {
-                        const outtime = format(subHours(new Date(punchOutTime), 1), 'yyyy-MM-dd HH:mm')
-                        const result = punchData.findLast((val) => val)
-                        const dd = isBefore(new Date(result.punch_time), new Date(punchOutTime))
-                            && isAfter(new Date(result.punch_time), new Date(outtime))
-                            || isEqual(new Date(result.punch_time), new Date(outtime)) ? 1
-                            : 0
+            if (lastUpdateDate >= lastDayOfMonthDate) {
+                warningNofity(
+                    "Punch Marking Monthly Process Done !! Can't Apply No punch Request!!"
+                );
+                setOpenBkDrop(false);
+                return;
+            }
 
-                        if (dd === 0) {
-                            warningNofity("Can't Apply For One Hour Request!!");
-                            setSelectedShift(0)
-                            setFromDate(new Date())
-                            setReason('')
-                            setPunchInTime(0)
-                            setPunchOutTime(0)
-                            setCheckInCheck(false)
-                            setCheckOutCheck(false)
-                            setOpenBkDrop(false)
-                        } else {
+            /* ---------------------------------------------------------
+               5. CHECK IN / CHECK OUT TIME VALIDATION
+            ---------------------------------------------------------- */
+            let isValidPunch = false;
 
-                            const result = await axioslogin.post('/CommonReqst', postData)
-                            const { message, success } = result.data;
-                            if (success === 1) {
-                                succesNofity(message)
-                                setCount(Math.random())
-                                setSelectedShift(0)
-                                setFromDate(new Date())
-                                setReason('')
-                                setPunchInTime(0)
-                                setPunchOutTime(0)
-                                setCheckInCheck(false)
-                                setCheckOutCheck(false)
-                                setOpenBkDrop(false)
-                            } else {
-                                warningNofity(message)
-                                setSelectedShift(0)
-                                setFromDate(new Date())
-                                setReason('')
-                                setPunchInTime(0)
-                                setPunchOutTime(0)
-                                setCheckInCheck(false)
-                                setCheckOutCheck(false)
-                                setOpenBkDrop(false)
-                            }
+            if (checkinBox) {
+                // CHECK-IN VALIDATION
+                const intimePlusOneHr = addHours(new Date(punchInTime), 1);
+                const relaxTime = addMinutes(intimePlusOneHr, cmmn_grace_period);
 
-                        }
-                    }
-                }
+                const firstPunch = punchData.find(val => val);
+
+                isValidPunch =
+                    (isBefore(new Date(firstPunch.punch_time), relaxTime) &&
+                        isAfter(new Date(firstPunch.punch_time), new Date(punchInTime))) ||
+                    isEqual(new Date(firstPunch.punch_time), new Date(punchInTime)) ||
+                    isEqual(new Date(firstPunch.punch_time), relaxTime);
             } else {
-                setOpenBkDrop(false)
-                errorNofity("Error getting PunchMarkingHR ")
+                // CHECK-OUT VALIDATION
+                const outTimeMinusOneHr = subHours(new Date(punchOutTime), 1);
+                const lastPunch = punchData.findLast(val => val);
+
+                isValidPunch =
+                    (isBefore(new Date(lastPunch.punch_time), new Date(punchOutTime)) &&
+                        isAfter(new Date(lastPunch.punch_time), outTimeMinusOneHr)) ||
+                    isEqual(new Date(lastPunch.punch_time), outTimeMinusOneHr);
             }
+
+            if (!isValidPunch) {
+                warningNofity("Can't Apply For One Hour Request!!");
+                resetForm();
+                setOpenBkDrop(false);
+                return;
+            }
+
+            /* ---------------------------------------------------------
+               6. SUBMIT REQUEST
+            ---------------------------------------------------------- */
+
+                const response = await axioslogin.post('/CommonReqst', postData);
+                const { message, success: submitSuccess } = response.data;
+
+                if (submitSuccess === 1) {
+                    succesNofity(message);
+                    setCount(Math.random());
+                } else {
+                    warningNofity(message);
+                }
+
+                resetForm();
+                setOpenBkDrop(false);
+        } catch (error) {
+            console.error(error);
+            errorNofity("Something went wrong");
+            setOpenBkDrop(false);
         }
-    }, [checkinBox, checkoutBox, cmmn_grace_period, em_dept_section, fromDate, deptApprovalLevel,
-        punchData, punchInTime, punchOutTime, reason, em_department, em_id, em_no, loginEmid, loginHod,
-        loginIncharge, masterGroupStatus, selectedShift, plan_slno])
+
+    }, [
+        checkinBox,
+        checkoutBox,
+        cmmn_grace_period,
+        em_dept_section,
+        fromDate,
+        deptApprovalLevel,
+        punchData,
+        punchInTime,
+        punchOutTime,
+        reason,
+        em_department,
+        em_id,
+        em_no,
+        loginEmid,
+        loginHod,
+        loginIncharge,
+        masterGroupStatus,
+        selectedShift,
+        plan_slno,
+        onehour_rqst_count
+    ]);
+
+    /* ---------------------------------------------------------
+       HELPER FUNCTION TO RESET FORM
+    ---------------------------------------------------------- */
+    const resetForm = () => {
+        setSelectedShift(0);
+        setFromDate(new Date());
+        setReason('');
+        setPunchInTime(0);
+        setPunchOutTime(0);
+        setCheckInCheck(false);
+        setCheckOutCheck(false);
+    };
 
 
     const [columndef] = useState([
@@ -432,7 +478,6 @@ const OneHourRequest = () => {
                                 paddingX: 2,
                                 paddingY: 1.15,
                                 borderRadius: 5,
-                                // height: 10,
                                 '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
                             }}>
                                 <Checkbox
@@ -455,9 +500,7 @@ const OneHourRequest = () => {
                                 paddingX: 2,
                                 paddingY: 1.15,
                                 borderRadius: 5,
-                                // height: 10,
                                 '& > div': { p: 2, boxShadow: 'sm', borderRadius: 'xs', display: 'flex' },
-                                // backgroundColor: 'green'
                             }}>
                                 <Checkbox
                                     overlay

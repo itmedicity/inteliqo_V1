@@ -32,7 +32,8 @@ const commonSetting = {
     pf_employee_amount: 0,
     pf_employer_amount: 0,
     noff_count: 0,
-    onehour_rqst_count: 0
+    onehour_rqst_count: 0,
+    leavetype_multiple:null
 
 }
 
