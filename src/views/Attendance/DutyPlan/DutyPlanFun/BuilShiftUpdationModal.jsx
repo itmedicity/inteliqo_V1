@@ -43,39 +43,75 @@ const BuilShiftUpdationModal = ({ open, handleChange, emNo, updation }) => {
     }, [])
 
     const multiShiftSubmit = async () => {
-        const empPlanDetl = shiftPlanData.filter((val) => val.em_no === emNo);
-        const oldPlanArray = empPlanDetl[0].plan[0];
-        let newPlanUpdate = oldPlanArray.map((val) => {
-            const sunday = moment(val.duty_day).format('d');
+
+        // 1. Validation: Ensure a shift is selected
+        if (shift === 0) {
+            warningNofity("Must Select Any Shift!");
+            return;
+        }
+
+        // 2. Get employee plan details
+        const empPlanDetl = shiftPlanData?.filter(
+            (val) => val?.em_no === emNo
+        );
+
+        // Safety check: Ensure plan exists
+        if (!empPlanDetl.length || !empPlanDetl[0]?.plan?.length) {
+            warningNofity("No shift plan found!");
+            return;
+        }
+
+        // 3. Extract old plan array
+        const oldPlanArray = empPlanDetl[0]?.plan[0];
+
+        // 4. Prepare updated plan
+        const newPlanUpdate = oldPlanArray?.map((val) => {
+            const sunday = moment(val.duty_day).format('d'); // 0 = Sunday
+
             return {
                 ...val,
-                shift_id: checked === true && sunday === '0' ? week_off_day : shift,
+                shift_id:
+                    checked === true && sunday === '0'
+                        ? week_off_day
+                        : shift,
                 edit_user: employeeIdNumber()
-            }
-        })
+            };
+        });
 
+        // 5. Prepare API payload
         const postData = {
             newPlan: newPlanUpdate,
             naShift: notapplicable_shift
-        }
-        const result = await axioslogin.patch('/plan/multiShift', postData);
-        const { success } = result.data;
-        if (success === 1) {
-            handleChange(false)
-            const newPlanState = {
-                em_no: emNo,
-                plan: newPlanUpdate,
-                notApplicableShift: notapplicable_shift
+        };
+
+        try {
+            // 6. API call to update multiple shifts
+            const result = await axioslogin.patch('/plan/multiShift', postData);
+            const { success } = result.data;
+
+            if (success === 1) {
+                // 7. Update UI state on success
+                handleChange(false);
+
+                const newPlanState = {
+                    em_no: emNo,
+                    plan: newPlanUpdate,
+                    notApplicableShift: notapplicable_shift
+                };
+
+                updation(newPlanState);
+            } else {
+                warningNofity("Error updating shift plan!");
             }
-            updation(newPlanState);
-        }
-        else {
-            warningNofity("Error updating ")
+        } catch (error) {
+            console.error("Multi-shift update failed:", error);
+            warningNofity("Server error occurred!");
         }
 
+        // 8. Reset form states
         setShift(0);
         setChecked(false);
-    }
+    };
 
     return (
         <Dialog
