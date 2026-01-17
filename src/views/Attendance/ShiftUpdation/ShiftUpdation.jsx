@@ -565,7 +565,7 @@ const ShiftUpdation = () => {
     <Fragment>
       <CustomBackDrop
         open={openBkDrop}
-        text="Please wait !. Leave Detailed information Updation In Process"
+        text="Please wait !. Punch Detail information Updation In Process"
       />
       <CustomLayout title="Punch In/Out Marking" displayClose={true}>
         <Box sx={{ width: '100%' }}>

@@ -18,6 +18,7 @@ import { getStatutoryInfo } from 'src/redux/actions/LeaveProcess.action';
 import { setPersonalData } from 'src/redux/actions/Profile.action';
 import { setEmployeeProcessDetail } from 'src/redux/actions/EmployeeLeaveProcessDetl';
 import { ToastContainer } from 'react-toastify';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
 
 const LeaveProcess = lazy(() => import('./AnnualLeaveComponents/LeaveProcessModal'))
 
@@ -38,6 +39,7 @@ const EmployeeAnnualLeaveProcess = () => {
     const [empCategory, setEmpCategory] = useState({})
     const [newLeaveData, setNewLeaveData] = useState({})
     const [update, setUpdate] = useState(0)
+    const [openBkDrop, setOpenBkDrop] = useState(false)
 
     useEffect(() => {
         //new process serial number
@@ -65,180 +67,194 @@ const EmployeeAnnualLeaveProcess = () => {
 
     const handleFunction = useCallback(async (e, val) => {
 
-        const { lv_process_slno, em_no, em_id,
-            contract_status, em_prob_end_date, ecat_prob, ecat_training,
-            em_cont_end, probation_status } = val
+        setOpenBkDrop(true)
 
-        const contractStatus = await checkContractStatus(em_cont_end, contract_status,
-            em_prob_end_date, ecat_prob, ecat_training, probation_status)
+        /* ------------------------------------------------------------------
+           Destructure required values from selected employee
+        ------------------------------------------------------------------ */
+        const {
+            lv_process_slno,
+            em_no,
+            em_id,
+            contract_status,
+            em_prob_end_date,
+            ecat_prob,
+            ecat_training,
+            em_cont_end,
+            probation_status
+        } = val
 
+        /* ------------------------------------------------------------------
+           Check employee contract status
+        ------------------------------------------------------------------ */
+        const contractStatus = await checkContractStatus(
+            em_cont_end,
+            contract_status,
+            em_prob_end_date,
+            ecat_prob,
+            ecat_training,
+            probation_status
+        )
 
+        if (contractStatus.status !== true) {
+            warningNofity(contractStatus.message)
+            setOpenBkDrop(false)
+            return
+        }
 
-        let employeeIDs = {
+        /* ------------------------------------------------------------------
+           Employee ID mapping (used by leave processing)
+        ------------------------------------------------------------------ */
+        const employeeIDs = {
             em_no: em_id,
             em_id: em_no,
         }
 
-        if (contractStatus.status === true) {
+        try {
+
+            /* ==============================================================
+               CASE 1: No previous leave process (Fresh leave processing)
+            ============================================================== */
             if (lv_process_slno === null) {
-                getEmployeeCurrentCategoryInfom(em_id)
-                    .then((value) => {
-                        const { success, data } = value.data
-                        if (success === 1) {
-                            setEmpCategory(data[0])
-                            newProcessedEmployeeData(data[0], processSlno, employeeIDs)
-                                .then(async (newEmployeeObj) => {
-                                    insertNewLeaveProcessData(newEmployeeObj)
-                                        .then((insertMessage) => {
-                                            let { success, message } = insertMessage
-                                            if (success === 1) {
-                                                succesNofity("Employee Leave Deactivated ")
-                                                getEmpdata(deptartment, section)
-                                                setUpdate(Math.random())
-                                            } else {
-                                                warningNofity(
-                                                    `error ! ${message} , EmployeeAnnualLeaveProcess line # 108, Contact Information Technology`,
-                                                )
-                                            }
-                                        })
-                                        .catch((error) =>
-                                            warningNofity(
-                                                `error ! ${error} ,EmployeeAnnualLeaveProcess  line # 114, Contact Information Technology`,
-                                            ),
-                                        )
-                                })
-                                .catch((error) =>
-                                    warningNofity(
-                                        `error ! ${error},EmployeeAnnualLeaveProcess  line # 120, Contact Information Technology `,
-                                    ),
-                                )
-                        } else {
-                            warningNofity("Error While getting Employee Current Leave")
-                        }
-                    })
 
-            } else {
+                const empCategoryRes = await getEmployeeCurrentCategoryInfom(em_id)
+                const { success, data } = empCategoryRes.data
 
-                const leaveProcessSlnoObj = {
-                    oldprocessslno: lv_process_slno,
-                    lv_process_slno: lv_process_slno,
+                if (success !== 1) {
+                    warningNofity("Error While getting Employee Current Leave")
+                    setOpenBkDrop(false)
+                    return
                 }
 
-                const inactiveLv = {
-                    em_no: em_no,
-                    lastYear: getYear(subYears(new Date(), 2))
+                setEmpCategory(data[0])
+
+                const newEmployeeObj = await newProcessedEmployeeData(
+                    data[0],
+                    processSlno,
+                    employeeIDs
+                )
+
+                const insertMessage = await insertNewLeaveProcessData(newEmployeeObj)
+                const { success: insertSuccess, message } = insertMessage
+
+                if (insertSuccess === 1) {
+                    succesNofity("Employee Leave Deactivated")
+                    getEmpdata(deptartment, section)
+                    setUpdate(Math.random())
+                    setOpenBkDrop(false)
+                } else {
+                    warningNofity(
+                        `error ! ${message}, EmployeeAnnualLeaveProcess line #108`
+                    )
+                    setOpenBkDrop(false)
                 }
 
-                //to inactive employee casual leave
-                const inctiveCasual = new Promise(async (resolve, reject) => {
-                    let casualLeaveUpdation = await axioslogin.post(
-                        '/yearleaveprocess/updatecasualleaveupdateslno',
-                        leaveProcessSlnoObj,
-                    )
-                    const { success, message } = casualLeaveUpdation.data
-                    if (success === 2 || success === 1) {
-                        resolve('Casual Leave Deactivated')
-                    } else {
-                        reject(`CL Updation ! Error ${message}`)
-                    }
-                })
-
-                // to inactive employee earnleave
-                const inactiveEarn = new Promise(async (resolve, reject) => {
-                    const earnLeaveUpdation = await axioslogin.post(
-                        '/yearleaveprocess/inactiveEarnLeave',
-                        inactiveLv,
-                    )
-                    const { success, message } = earnLeaveUpdation.data
-                    if (success === 2 || success === 1) {
-                        resolve('Earn Leave Deactivated')
-                    } else {
-                        reject(`EL Updation ! Error ${message}`)
-                    }
-                })
-
-                //to inactive employee common leave
-                const inactiveCommon = new Promise(async (resolve, reject) => {
-                    const commonleave = await axioslogin.post(
-                        '/yearleaveprocess/updateCommonUpdateSlno',
-                        leaveProcessSlnoObj,
-                    )
-                    const { success, message } = commonleave.data
-                    if (success === 2 || success === 1) {
-                        resolve('Common Leave Deactivated')
-                    } else {
-                        reject(`Common Leave Updation ! Error ${message}`)
-                    }
-                })
-
-                Promise.all([
-                    inctiveCasual,
-                    inactiveEarn,
-                    inactiveCommon,
-                ]).then(async (result) => {
-                    //update status as 'N'
-                    const inactiveLastYearProcessData = await axioslogin.post('/yearleaveprocess/inactiveLastYearProcessData', leaveProcessSlnoObj);
-                    const { success, updateMessage } = inactiveLastYearProcessData.data;
-                    if (success === 1) {
-                        let employeeIDs = {
-                            em_no: em_id,
-                            em_id: em_no,
-                        }
-
-                        getEmployeeCurrentCategoryInfom(em_id)
-                            .then((value) => {
-                                const { success, data } = value.data
-                                if (success === 1) {
-                                    setEmpCategory(data[0])
-                                    newProcessedEmployeeData(data[0], processSlno, employeeIDs)
-                                        .then(async (newEmployeeObj) => {
-                                            insertNewLeaveProcessData(newEmployeeObj)
-                                                .then((insertMessage) => {
-                                                    let { success, message } = insertMessage
-                                                    if (success === 1) {
-                                                        succesNofity("Employee Leave Deactivated ")
-                                                        getEmpdata(deptartment, section)
-                                                        setUpdate(Math.random())
-                                                    } else {
-                                                        warningNofity(
-                                                            `error ! ${message} , EmployeeAnnualLeaveProcess line # 212, Contact Information Technology`,
-                                                        )
-                                                    }
-                                                })
-                                                .catch((error) =>
-                                                    warningNofity(
-                                                        `error ! ${error} ,EmployeeAnnualLeaveProcess  line # 218, Contact Information Technology`,
-                                                    ),
-                                                )
-                                        })
-                                        .catch((error) =>
-                                            warningNofity(
-                                                `error ! ${error} `,
-                                            ),
-                                        )
-                                } else {
-                                    warningNofity("Error While getting Employee Current Leave")
-                                }
-                            })
-                    } else {
-                        errorNofity(updateMessage)
-                    }
-                }).catch(error => {
-                    errorNofity('Error Updating Leave Request')
-                    const errorLog = {
-                        error_log_table: 'punch_master,leave_request,leave_reqdetl',
-                        error_log: error,
-                        em_no: empdata?.em_no,
-                        formName: 'Leave Approval Modal Approval HR Page'
-                    }
-                    axioslogin.post(`/common/errorLog`, errorLog);
-                })
+                return
             }
-        } else {
-            warningNofity(contractStatus.message)
+
+            /* ==============================================================
+               CASE 2: Existing leave process (Deactivate old & create new)
+            ============================================================== */
+
+            /* ---------- Common Objects ---------- */
+            const leaveProcessSlnoObj = {
+                oldprocessslno: lv_process_slno,
+                lv_process_slno: lv_process_slno,
+            }
+
+            const inactiveLv = {
+                em_no: em_no,
+                lastYear: getYear(subYears(new Date(), 2)),
+            }
+
+            /* ---------- Deactivate Leave Types ---------- */
+            const inctiveCasual = axioslogin.post(
+                '/yearleaveprocess/updatecasualleaveupdateslno',
+                leaveProcessSlnoObj
+            )
+
+            const inactiveEarn = axioslogin.post(
+                '/yearleaveprocess/inactiveEarnLeave',
+                inactiveLv
+            )
+
+            const inactiveCommon = axioslogin.post(
+                '/yearleaveprocess/updateCommonUpdateSlno',
+                leaveProcessSlnoObj
+            )
+
+            /* ---------- Execute all deactivation calls ---------- */
+            await Promise.all([
+                inctiveCasual,
+                inactiveEarn,
+                inactiveCommon,
+            ])
+
+            /* ---------- Mark previous year process inactive ---------- */
+            const inactiveLastYearProcessData = await axioslogin.post(
+                '/yearleaveprocess/inactiveLastYearProcessData',
+                leaveProcessSlnoObj
+            )
+
+            if (inactiveLastYearProcessData.data.success !== 1) {
+                errorNofity(inactiveLastYearProcessData.data.updateMessage)
+                setOpenBkDrop(false)
+                return
+            }
+
+            /* ---------- Create new leave process ---------- */
+            const empCategoryRes = await getEmployeeCurrentCategoryInfom(em_id)
+            const { success, data } = empCategoryRes.data
+
+            if (success !== 1) {
+                warningNofity("Error While getting Employee Current Leave")
+                setOpenBkDrop(false)
+                return
+            }
+
+            setEmpCategory(data[0])
+
+            const newEmployeeObj = await newProcessedEmployeeData(
+                data[0],
+                processSlno,
+                employeeIDs
+            )
+
+            const insertMessage = await insertNewLeaveProcessData(newEmployeeObj)
+            const { success: insertSuccess, message } = insertMessage
+
+            if (insertSuccess === 1) {
+                succesNofity("Employee Leave Deactivated")
+                getEmpdata(deptartment, section)
+                setUpdate(Math.random())
+                setOpenBkDrop(false)
+            } else {
+                warningNofity(
+                    `error ! ${message}, EmployeeAnnualLeaveProcess line #212`
+                )
+                setOpenBkDrop(false)
+            }
+
+        } catch (error) {
+
+            /* ------------------------------------------------------------------
+               Global error handler + logging
+            ------------------------------------------------------------------ */
+            errorNofity('Error Updating Leave Request')
+
+            const errorLog = {
+                error_log_table: 'punch_master,leave_request,leave_reqdetl',
+                error_log: error,
+                em_no: empdata?.em_no,
+                formName: 'Leave Approval Modal Approval HR Page',
+            }
+
+            axioslogin.post('/common/errorLog', errorLog)
+            setOpenBkDrop(false)
         }
 
     }, [deptartment, processSlno, section, empdata, getEmpdata])
+
 
     const activeNewLeave = useCallback(async (e, val) => {
 
@@ -289,6 +305,10 @@ const EmployeeAnnualLeaveProcess = () => {
 
     return (
         <CustomLayout title="Annual Leave Process" displayClose={true} >
+            <CustomBackDrop
+                open={openBkDrop}
+                text="Please wait !. Punch Detail information Updation In Process"
+            />
             <ToastContainer />
             <LeaveProcess open={open} setOpen={setopen} empdata={empdata} empCategory={empCategory} newLeaveData={newLeaveData} />
             <Paper sx={{ display: 'flex', height: screenInnerHeight * 83 / 100, flexDirection: 'column', width: '100%' }}>
