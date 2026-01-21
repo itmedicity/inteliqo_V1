@@ -20,6 +20,7 @@ import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox'
 import GroupMultiSelect from './GroupMultiSelect'
 import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategorySelect'
 import CategoryMultipleSelect from 'src/views/MuiComponents/JoyComponent/CategoryMultipleSelect'
+import DutyTypeMultiSelect from './DutyTypeMultiSelect'
 
 const CommonSettingNew = () => {
 
@@ -97,6 +98,7 @@ const CommonSettingNew = () => {
     const [holidayLeave, setHolidayLeave] = useState(false)
     const [category, setCategory] = useState(0)
     const [earnlvCategory, setEarnlvCategory] = useState([])
+    const [opdduty, setopdduty] = useState([])
 
     useEffect(() => {
         const getemptypedata = async () => {
@@ -151,7 +153,8 @@ const CommonSettingNew = () => {
                     comp_hour_count, training_mastergroup, holiday_policy_count, weekoff_policy_max_count,
                     weekoff_policy_min_count, coff_min_working_hour, onobservation_days, hod_leave_day_count,
                     holiday_leave_request, halfday_time_count, punch_taken_hour_count, external_trainee,
-                    earnlvCategory, monthly_late_time_count, first_policy, second_plicy, holiday_min_working } = data[0]
+                    earnlvCategory, monthly_late_time_count, first_policy, second_plicy, holiday_min_working,
+                    opdduty } = data[0]
 
                 const frmData = {
                     slno: setting_slno,
@@ -216,6 +219,7 @@ const CommonSettingNew = () => {
                 setEarnlvCategory(earnlvCategory === null ? [] : JSON.parse(earnlvCategory))
                 setfirst_policy(first_policy === 1 ? true : false)
                 setsecond_plicy(second_plicy === 1 ? true : false)
+                setopdduty(opdduty === null ? [] : opdduty)
             }
             else if (success === 0) {
                 setValue(0)
@@ -282,7 +286,8 @@ const CommonSettingNew = () => {
             monthly_late_time_count: monthly_late_time_count,
             first_policy: first_policy === true ? 1 : 0,
             second_plicy: second_plicy === true ? 1 : 0,
-            holiday_min_working: holiday_min_working === true ? 1 : 0
+            holiday_min_working: holiday_min_working === true ? 1 : 0,
+            opdduty: opdduty
         }
     }, [commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -292,7 +297,7 @@ const CommonSettingNew = () => {
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
         holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory, monthly_late_time_count,
-        first_policy, second_plicy, holiday_min_working])
+        first_policy, second_plicy, holiday_min_working, opdduty])
 
     //data to edit
     const postDataEdit = useMemo(() => {
@@ -350,7 +355,8 @@ const CommonSettingNew = () => {
             monthly_late_time_count: monthly_late_time_count,
             first_policy: first_policy === true ? 1 : 0,
             second_plicy: second_plicy === true ? 1 : 0,
-            holiday_min_working: holiday_min_working === true ? 1 : 0
+            holiday_min_working: holiday_min_working === true ? 1 : 0,
+            opdduty: opdduty
         }
     }, [slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -360,7 +366,7 @@ const CommonSettingNew = () => {
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
         holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory,
-        monthly_late_time_count, first_policy, second_plicy, holiday_min_working])
+        monthly_late_time_count, first_policy, second_plicy, holiday_min_working, opdduty])
 
     //save
     const submitFormData = useCallback(async (e) => {
@@ -1134,6 +1140,22 @@ const CommonSettingNew = () => {
                                         </Box>
                                     </Box>
                                 </Box>
+                            </Paper>
+                            <Paper square variant="outlined" sx={{ p: 0.5, mt: 0.5, display: 'flex', alignItems: "center", flexDirection: { xl: "column", lg: "column", md: "column", sm: 'column', xs: "column" } }} >
+                                <Paper variant="outlined" sx={{ width: '100%', pl: 0.5, bgcolor: 'lightgrey' }}>
+                                    <Typography level="body1" sx={{ fontWeight: 500, color: '#4f5d73' }}> Doctors Settings</Typography>
+                                </Paper>
+
+
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1">OPD Duty Type</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <DutyTypeMultiSelect value={opdduty} setValue={setopdduty} />
+                                    </Box>
+                                </Box>
+
                             </Paper>
                         </Box>
                     </Box>

@@ -4,8 +4,6 @@ import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import DoctorDepartmentSection from '../DoctorDutyplan/Components/DoctorDepartmentSection'
 import EmployeeRightsDepartment from '../DoctorDutyplan/Components/EmployeeRightsDepartment'
 import SectionBasedDoctors from '../DoctorDutyplan/Components/SectionBasedDoctors'
-import Select from '@mui/joy/Select'
-import Option from '@mui/joy/Option'
 import RefreshIcon from '@mui/icons-material/Refresh'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import { useDispatch } from 'react-redux';
@@ -15,6 +13,7 @@ import {
 } from 'src/redux/actions/LeaveReqst.action';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
+import DoctorLeaveTypeSelect from './DoctorLeaveTypeSelect'
 
 const COFFSelectComponent = lazy(() => import('./COFFSelectComponent'))
 const LeaveSelectComponent = lazy(() => import('./LeaveSelectComponent'))
@@ -27,11 +26,6 @@ const LeaveRequest = () => {
     const [leaveType, setLeaveType] = useState(0)
     const [requestType, setRequestType] = useState(0)
 
-    const leaveRequestType = [
-        { lrequest_slno: 1, lrequest_type: 'Leave Request' },
-        { lrequest_slno: 2, lrequest_type: 'Compensatory OFF' },
-    ]
-
     const handleProcessLeveRequest = async () => {
         setRequestType(leaveType);
         dispatch(getEmployeeInformation(emply))
@@ -41,8 +35,6 @@ const LeaveRequest = () => {
             const {em_no}=data[0]
             dispatch(getCreditedCasualLeave(em_no)); //GET ALL CASUAL LEAVES 
             dispatch(getCreitedCommonLeave(em_no)); //GET COMMON LEAVES
-            //dispatch(getCreitedHolidayLeave(em_no)); // GET ALL HOLIDAYS LEAVES
-            //dispatch(getCreditedEarnLeave(em_no)); // GET ALL EARN LEAVES
         } else {
             warningNofity("There Is No Employee Exist!")
         }
@@ -76,26 +68,7 @@ const LeaveRequest = () => {
                         <SectionBasedDoctors value={emply} setValue={getEmployee} sect={section} />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', width: '20%', px: 0.3 }}>
-                        <Select
-                            defaultValue={leaveType}
-                            onChange={(event, newValue) => { setLeaveType(newValue) }}
-                            size="md"
-                            sx={{ width: '100%' }}
-                            variant="outlined"
-                            color="primary"
-                        >
-                            <Option value={0} disabled>
-                                Leave Request Type ...
-                            </Option>
-                            {leaveRequestType &&
-                                leaveRequestType.map((val, index) => {
-                                    return (
-                                        <Option key={index} value={val.lrequest_slno}>
-                                            {val.lrequest_type}
-                                        </Option>
-                                    )
-                                })}
-                        </Select>
+                        <DoctorLeaveTypeSelect value={leaveType} setValue={setLeaveType}/>
                     </Box>
                     <Box sx={{ display: 'flex', px: 0.3 }}>
                         <Tooltip title="Process" followCursor placement="top" arrow>
