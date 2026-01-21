@@ -51,7 +51,10 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
     const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
 
     const result = differenceInDays(new Date(), new Date(actual_doj))
-
+    const monthOrder = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
 
     // Push casual leaves to the array if available
     if (casualLeaves?.length > 0) {
@@ -188,22 +191,59 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
     }
 
     if (commonLeaves?.length > 0) {
-        const findSickLeave = commonLeaves.find((e) => e.llvetype_slno === 5);
-        if (findSickLeave !== undefined) {
-            const array = [{
-                type: 'LWP',
-                name: 'LWP',
-                leavetype: 5,
-                slno: 1,
-                month: `LWP`,
-                count: findSickLeave?.cmn_lv_allowed,
-                taken: findSickLeave?.cmn_lv_taken,
-                common_slno: findSickLeave?.hrm_lv_cmn,
-                cmn: 1
-            }]
+        const findLWPLeave = commonLeaves.find((e) => e.llvetype_slno === 5);
+        if (findLWPLeave !== undefined) {
+            let count = findLWPLeave?.cmn_lv_balance;
 
-            creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
+            const integerPart = Math.floor(count);
+            console.log(integerPart);
+            
+            const fractionalPart = count - integerPart;
+            console.log(fractionalPart);
+            
+            const resultArray = Array(integerPart).fill(1);
+            console.log(resultArray);
+            
+            const LWPLeave = fractionalPart > 0 ? [...resultArray, fractionalPart] : resultArray;
+            console.log(LWPLeave);
+            
+
+            const LWPLeaveArray = LWPLeave?.map((e, index) => {
+
+                return {
+                    type: 'LWP',
+                    name: 'LWP',
+                    leavetype: 5,
+                    slno: index + 1,
+                    month: format(subMonths(endOfYear(new Date()), index), 'MMMM') + ' ' + e,
+                    count: e,
+                    taken: 0,
+                    common_slno: findLWPLeave?.hrm_lv_cmn,
+                    cmn: 1
+                }
+            })?.sort((a, b) => {
+              const monthA = a.month.split(" ")[0];
+              const monthB = b.month.split(" ")[0];
+              return monthOrder.indexOf(monthA) - monthOrder.indexOf(monthB);
+            });
+              console.log(LWPLeaveArray);
+            // creditedLeavesArray.data.push(...sickLeaveArray); // Push the newly created array to creditedLeavesArray
         }
+        // if (findSickLeave !== undefined) {
+        //     const array = [{
+        //         type: 'LWP',
+        //         name: 'LWP',
+        //         leavetype: 5,
+        //         slno: 1,
+        //         month: `LWP`,
+        //         count: findSickLeave?.cmn_lv_allowed,
+        //         taken: findSickLeave?.cmn_lv_taken,
+        //         common_slno: findSickLeave?.hrm_lv_cmn,
+        //         cmn: 1
+        //     }]
+
+        //     creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
+        // }
     }
 
     if (commonLeaves?.length > 0) {
