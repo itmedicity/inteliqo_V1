@@ -11,15 +11,17 @@ import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { screenInnerHeight } from 'src/views/Constant/Constant'
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { pdfDoctordownlod } from './PDFViewDoctorDutyList'
+import "./DoctorSchedule.css";
 
 const DoctorsOPDList = () => {
   const [fromdate, Setfromdate] = useState(new Date())
   const [openBkDrop, setOpenBkDrop] = useState(false)
   const [tableArray, setTableArray] = useState([])
+  const [clickSearch, setClickSearch] = useState(false)
 
   const getEmpdata = async () => {
     // Fetch all active doctors
-    const result = await axioslogin.get('/ActiveEmpReport/allactive/doctors')
+    const result = await axioslogin.get('/ActiveEmpReport/allOPD/doctors')
     const { success, data: employeeData } = result.data
     if (success !== 1 || !isValid(fromdate)) {
       warningNofity('There Is No Doctors Data!')
@@ -44,18 +46,19 @@ const DoctorsOPDList = () => {
     const { success: dutySuccess, data: dutyData } = dutyResponse.data
 
     if (dutySuccess === 1) {
-      const merged = employeeData.map((item) => {
-        const match = dutyData.find((i) => i.emp_id === item.em_id)
+      const merged = employeeData?.map((item) => {
+        const match = dutyData?.find((i) => i?.emp_id === item?.em_id)
         return { ...item, ...match }
       })
 
       const filteredArray = uniqueDept?.map((k) => {
         return {
           ...k,
-          doctors: merged?.filter((j) => j.dept_name === k.dept_name),
+          doctors: merged?.filter((j) => j?.dept_name === k?.dept_name),
         }
       })
       setTableArray(filteredArray)
+      setClickSearch(true)
     } else {
       warningNofity('No Dutyplan Updated')
     }
@@ -63,12 +66,12 @@ const DoctorsOPDList = () => {
     return
   }
 
-  console.log(tableArray)
+  const download = async () => {
+    if (clickSearch === false) { warningNofity("Click Search Button!!") }
+    else {
+      pdfDoctordownlod(tableArray, fromdate)
+    }
 
-  const download=async()=>{
-    console.log("ffnmcbv");
-    pdfDoctordownlod()
-    
   }
 
   return (
@@ -82,7 +85,6 @@ const DoctorsOPDList = () => {
                 <DatePicker
                   views={['day']}
                   value={fromdate}
-                  //maxDate={new Date()}
                   inputFormat="dd-MM-yyyy"
                   size="small"
                   onChange={(newValue) => {
@@ -122,19 +124,15 @@ const DoctorsOPDList = () => {
                 Search
               </Button>
             </Box>
-            <Box sx={{ flex: 1, px: 0.5, display: 'flex'}}>
+            <Box sx={{ flex: 1, px: 0.5, display: 'flex' }}>
               <Tooltip title="Download as PDF" followCursor placement='top' arrow >
                 <IconButton variant="outlined" size='lg' sx={{ color: 'blue' }}
                   onClick={download}
                 >
                   <DownloadForOfflineIcon />
                 </IconButton>
-
-
               </Tooltip >
             </Box>
-            {/* <Box sx={{ flex: 1, px: 0.5, display: 'flex' }}></Box> */}
-            {/* <Box sx={{ flex: 1, px: 0.5, display: 'flex' }}></Box> */}
           </Box>
 
           <Box
@@ -159,66 +157,37 @@ const DoctorsOPDList = () => {
                 width: '100%',
               }}
             >
-              <Table
-                borderAxis="bothBetween"
-                stripe="odd"
-                hoverRow
-                stickyHeader
-                size="sm"
-                sx={{
-                  '& tr > *:first-of-type': {
-                    position: 'sticky',
-                    left: 0,
-                    boxShadow: '1px 0 var(--TableCell-borderColor)',
-                    bgcolor: 'background.surface',
-                    zIndex: 4,
-                    width: '100%',
-                  },
-                }}
-              >
-                <thead>
-                  <tr style={{ backgroundColor: '#f9fafb' }}>
-                    <th style={{ width: 200, zIndex: 5, backgroundColor: '#f9fafb' }}>
-                      Department
-                    </th>
-                    <th style={{ width: 100, zIndex: 2, backgroundColor: '#f9fafb' }}>
-                      Doctor Name
-                    </th>
-                    <th style={{ width: 150, zIndex: 2, backgroundColor: '#f9fafb' }}>
-                      Shift Name
-                    </th>
-                    {/* <th style={{ width: 150, zIndex: 2, backgroundColor: '#f9fafb' }}>
-                      Present/Absent
-                    </th>
-                    <th style={{ width: 100, zIndex: 2, backgroundColor: '#f9fafb' }}>Sign</th> */}
-                  </tr>
-                </thead>
-                <tbody>
-                  {tableArray?.map((row, index) => (
-                    <Fragment key={index}>
+
+              {tableArray.map((dept, index) => (
+                <div key={index} className="department">
+                  <div className="department-header">
+                    {dept.dept_name}
+                  </div>
+
+                  <table>
+                    <thead>
                       <tr>
-                        <td style={{ zIndex: 4, backgroundColor: '#f4f6f8' }}>
-                          <Box sx={{ width: 200 }}> {row?.dept_name}</Box>
-                        </td>
-                        <td style={{ textAlign: 'center', zIndex: 4, backgroundColor: '#f4f6f8' }}>
-                          {row?.doctors?.map((val, ind) => (
-                            <tr key={ind} >
-                              <td style={{ width: '300px', zIndex: 4, backgroundColor: '#f4f6f8' }}> {val?.em_name}</td>
-                            </tr>
-                          ))}
-                        </td>
-                        <td style={{ textAlign: 'center', zIndex: 4, backgroundColor: '#f4f6f8' }}>
-                          {row?.doctors?.map((val, ind) => (
-                            <tr key={ind}>
-                              <td style={{ width: '300px', zIndex: 4, backgroundColor: '#f4f6f8' }}> {val?.shiftName}</td>
-                            </tr>
-                          ))}
-                        </td>
+                        <th>Doctor Name</th>
+                        <th>Consultation Days</th>
+                        {/* <th>Time</th>
+                <th>Status</th>
+                <th>Remarks</th> */}
                       </tr>
-                    </Fragment>
-                  ))}
-                </tbody>
-              </Table>
+                    </thead>
+                    <tbody>
+                      {dept.doctors.map((doc, i) => (
+                        <tr key={i}>
+                          <td>{doc.em_name}</td>
+                          <td>{doc.shiftName}</td>
+                          {/* <td>{doc.time}</td>
+                  <td><StatusIcon status={doc.status} /></td>
+                  <td>{doc.remarks}</td> */}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
             </Sheet>
           </Box>
         </Paper>
