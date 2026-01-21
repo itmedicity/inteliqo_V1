@@ -1,5 +1,5 @@
 import { Box, Paper } from '@mui/material'
-import React, { Fragment, memo, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { errorNofity, infoNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
@@ -12,7 +12,6 @@ import JoyGradeSelect from 'src/views/MuiComponents/JoyComponent/JoyGradeSelect'
 import SaveIcon from '@mui/icons-material/Save';
 import { differenceInDays, differenceInMonths, endOfYear, startOfYear } from 'date-fns';
 
-
 const StatutoryInformation = () => {
 
     const { id, no } = useParams()
@@ -20,7 +19,6 @@ const StatutoryInformation = () => {
     const [selectGrade, UpdateGrade] = useState(0)//for grade select
     const [enable, Setenable] = useState(true)//use state for enable fields on clicking edit button
     const [value, setValue] = useState(1) //use state for setting serail no for edit
-
     const [leaveProcessdata, setleaveProcessdata] = useState({})
     const [esidata, setEsidata] = useState({})
 
@@ -53,7 +51,7 @@ const StatutoryInformation = () => {
             const result = await axioslogin.get(`/empesipf/esiallow/${no}`)
             const { success, data } = result.data
             if (success === 1) {
-                setEsiallowed(data[0].ecat_esi_allow === 0 ? 2 : data[0].ecat_esi_allow)
+                setEsiallowed(data[0]?.ecat_esi_allow === 0 ? 2 : data[0]?.ecat_esi_allow)
             } else {
                 setEsiallowed(2)
             }
@@ -66,10 +64,10 @@ const StatutoryInformation = () => {
             const result = await axioslogin.get(`/yearleaveprocess/leaveproccess/data/${id}`)
             const { data, success } = result.data
             if (success === 0) {
-                const arr = data.find((val) => val.llvetype_slno === 7)
-                const arr2 = data.find((val) => val.llvetype_slno === 6)
+                const arr = data?.find((val) => val?.llvetype_slno === 7)
+                const arr2 = data?.find((val) => val?.llvetype_slno === 6)
                 setEsidata(arr2)
-                setleaveProcessdata(arr)
+                setleaveProcessdata(arr === undefined ? arr2 : arr)
             } else {
                 setleaveProcessdata({})
             }
@@ -115,6 +113,7 @@ const StatutoryInformation = () => {
                 }
             }
             else if (Esiallowed === 2) {
+
                 infoNofity("Esi Is Not Allowed For This Employee")
                 const result = await axioslogin.get(`/empesipf/${id}`)
                 const { success, data } = result.data
@@ -250,18 +249,17 @@ const StatutoryInformation = () => {
         nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
 
     //saving form data
-    const submitFormData = async (e) => {
+    const submitFormData = useCallback(async (e) => {
         e.preventDefault()
         if (value === 0 && Esiallowed === 1) {
-
             const { hrm_lv_cmn, em_no,
                 cmn_lv_allowedflag,
                 Iv_process_slno,
                 update_user,
                 em_id,
                 cmn_lv_year } = leaveProcessdata
-            const startMonth = startOfYear(new Date())
-            const daycount = differenceInDays(new Date(), startMonth)
+            const lastYear = endOfYear(new Date())
+            const daycount = differenceInDays(lastYear, new Date())
             const postdata = {
                 em_no: em_no,
                 llvetype_slno: 6,
@@ -290,10 +288,47 @@ const StatutoryInformation = () => {
                 errorNofity(message)
             }
         } else if (value === 1 && Esiallowed === 2) {
+
             const result = await axioslogin.post('/empesipf/create', postNps)
             const { success, message } = result.data
             if (success === 1) {
                 succesNofity(message)
+            } else {
+                errorNofity(message)
+            }
+        } else if (esi === true && Esiallowed === 1) {
+          
+            const { hrm_lv_cmn, em_no,
+                cmn_lv_allowedflag,
+                Iv_process_slno,
+                update_user,
+                em_id,
+                cmn_lv_year } = leaveProcessdata
+            const lastYear = endOfYear(new Date())
+            const daycount = differenceInDays(lastYear, new Date())
+            const postdata = {
+                em_no: em_no,
+                llvetype_slno: 6,
+                cmn_lv_allowedflag,
+                cmn_lv_allowed: daycount,
+                cmn_lv_taken: 0,
+                cmn_lv_balance: daycount,
+                Iv_process_slno: Iv_process_slno,
+                update_user: update_user,
+                em_id: em_id,
+                cmn_lv_year: cmn_lv_year,
+                hrm_lv_cmn: hrm_lv_cmn
+            }
+            const result = await axioslogin.post('/empesipf', postData)
+            const { success, message } = result.data
+            if (success === 1) {
+                const result = await axioslogin.patch('/yearleaveprocess/inactive/sick', postdata)
+                const { success, message } = result.data
+                if (success === 1) {
+                    succesNofity(message)
+                } else {
+                    errorNofity(message)
+                }
             } else {
                 errorNofity(message)
             }
@@ -314,7 +349,6 @@ const StatutoryInformation = () => {
                 }
 
             } else {
-
                 const { hrm_lv_cmn, em_no,
                     cmn_lv_allowedflag,
                     Iv_process_slno,
@@ -366,11 +400,9 @@ const StatutoryInformation = () => {
                         errorNofity(message)
                     }
                 }
-
-
             }
         }
-    }
+    }, [leaveProcessdata, Esiallowed, esi, value])
 
     return (
         <Fragment>
