@@ -3,19 +3,19 @@ import React, { memo } from 'react'
 import { useQuery } from 'react-query';
 import { getDoctordutyList } from '../MenuCreationMaster/FuncLis';
 
-const DutyTypeMultiSelect = ({value,setValue}) => {
+const DutyTypeMultiSelect = ({ value, setValue }) => {
 
-      const {
+    const {
         data: dutyList,
         isLoading: isdoctorDutyLoading,
         error: doctorDutyError,
-      } = useQuery({
+    } = useQuery({
         queryKey: ['doctorDutyList'],
         queryFn: getDoctordutyList,
-      })
-    
-  return (
-    <Select
+    })
+
+    return (
+        <Select
             defaultValue={[]}
             value={value}
             onChange={(event, newValue) => {
@@ -33,7 +33,7 @@ const DutyTypeMultiSelect = ({value,setValue}) => {
                 })
             }
         </Select>
-  )
+    )
 }
 
 export default memo(DutyTypeMultiSelect) 

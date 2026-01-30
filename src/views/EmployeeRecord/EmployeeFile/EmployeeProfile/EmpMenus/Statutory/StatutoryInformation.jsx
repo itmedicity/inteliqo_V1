@@ -151,28 +151,14 @@ const StatutoryInformation = () => {
         getpfesi()
     }, [id, Esiallowed])
 
+
     //postData
-    const postData = useMemo(() => {
-        return {
-            em_no: id,
-            em_id: no,
-            em_pf_status: pf === false ? 0 : 1,
-            em_pf_no: pfno,
-            em_uan_no: uanno,
-            em_esi_status: esi === false ? 0 : 1,
-            em_esi_no: esino,
-            em_grade: selectGrade,
-            create_user: employeeIdNumber(),
-            edit_user: employeeIdNumber(),
-            nps: nps === false ? 0 : 1,
-            npsnumber: npsnumber,
-            npsamount: npsamount,
-            lwf_status: lwf === false ? 0 : 1,
-            lwfnumber: lwfnumber,
-            lwfamount: lwfamount
-        }
-    }, [id, no, pf, pfno, uanno, esi, esino, selectGrade,
-        nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
+    // const postData = useMemo(() => {
+    //     return {
+            
+    //     }
+    // }, [id, no, pf, pfno, uanno, esi, esino, selectGrade,
+    //     nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
     //editing esi pf
     const postDataEdit = useMemo(() => {
         return {
@@ -251,7 +237,27 @@ const StatutoryInformation = () => {
     //saving form data
     const submitFormData = useCallback(async (e) => {
         e.preventDefault()
+        const postData={
+            em_no: id,
+            em_id: no,
+            em_pf_status: pf === false ? 0 : 1,
+            em_pf_no: pfno,
+            em_uan_no: uanno,
+            em_esi_status: esi === false ? 0 : 1,
+            em_esi_no: esino,
+            em_grade: selectGrade,
+            create_user: employeeIdNumber(),
+            edit_user: employeeIdNumber(),
+            nps: nps === false ? 0 : 1,
+            npsnumber: npsnumber,
+            npsamount: npsamount,
+            lwf_status: lwf === false ? 0 : 1,
+            lwfnumber: lwfnumber,
+            lwfamount: lwfamount,
+            esi_slno: value,
+        }
         if (value === 0 && Esiallowed === 1) {
+       
             const { hrm_lv_cmn, em_no,
                 cmn_lv_allowedflag,
                 Iv_process_slno,
@@ -288,7 +294,6 @@ const StatutoryInformation = () => {
                 errorNofity(message)
             }
         } else if (value === 1 && Esiallowed === 2) {
-
             const result = await axioslogin.post('/empesipf/create', postNps)
             const { success, message } = result.data
             if (success === 1) {
@@ -297,7 +302,6 @@ const StatutoryInformation = () => {
                 errorNofity(message)
             }
         } else if (esi === true && Esiallowed === 1) {
-          
             const { hrm_lv_cmn, em_no,
                 cmn_lv_allowedflag,
                 Iv_process_slno,
@@ -306,7 +310,7 @@ const StatutoryInformation = () => {
                 cmn_lv_year } = leaveProcessdata
             const lastYear = endOfYear(new Date())
             const daycount = differenceInDays(lastYear, new Date())
-            const postdata = {
+            const postesi = {
                 em_no: em_no,
                 llvetype_slno: 6,
                 cmn_lv_allowedflag,
@@ -322,7 +326,7 @@ const StatutoryInformation = () => {
             const result = await axioslogin.post('/empesipf', postData)
             const { success, message } = result.data
             if (success === 1) {
-                const result = await axioslogin.patch('/yearleaveprocess/inactive/sick', postdata)
+                const result = await axioslogin.patch('/yearleaveprocess/inactive/sick', postesi)
                 const { success, message } = result.data
                 if (success === 1) {
                     succesNofity(message)
@@ -402,7 +406,8 @@ const StatutoryInformation = () => {
                 }
             }
         }
-    }, [leaveProcessdata, Esiallowed, esi, value])
+    }, [leaveProcessdata, Esiallowed, esi, value,id, no, pf, pfno, uanno,  esino, selectGrade,
+      nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
 
     return (
         <Fragment>
