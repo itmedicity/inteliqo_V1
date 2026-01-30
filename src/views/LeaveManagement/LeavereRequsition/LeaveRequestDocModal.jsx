@@ -5,47 +5,87 @@ import ModalDialog from '@mui/joy/ModalDialog';
 import { memo } from 'react';
 import { Button, ModalClose, Typography } from '@mui/joy';
 import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
-import { format } from 'date-fns';
+import { format, startOfMonth, lastDayOfMonth } from 'date-fns';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { Paper } from '@mui/material';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setRequestType, setDropOpen }) => {
     const { detlPostSata, masterPostData } = data;
 
     const submitRequest = useCallback(async () => {
-        const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', data);
-        const { success, message } = submitLeaveRequet.data;
-        if (success === 1) {
+        const LWPCount = detlPostSata?.filter((k) => k?.leave_typeid === 5)
+        if (LWPCount?.length > 1) {
+            warningNofity("Can't Apply Two or More LWP Leaves")
             setDropOpen(false)
             setOpen(false)
-            setTable([])
-            setReason('')
-            setRequestType(0)
-            succesNofity("Leave request submited Successfully")
+        } else if (LWPCount?.length !== 0) {
+            const checkLWp = {
+                em_no: masterPostData?.em_no,
+                fromDate: format(startOfMonth(new Date(masterPostData?.leavefrom_date)), 'yyyy-MM-dd'),
+                toDate: format(lastDayOfMonth(new Date(masterPostData?.leavefrom_date)), 'yyyy-MM-dd')
+            }
+            const result = await axioslogin.post('/LeaveRequest/getLWPLeave/Inamonth', checkLWp);
+            const { success: lwpsucc, data } = result.data;
+            if (lwpsucc === 1) {
+                warningNofity("A LWP Leave Exist In This Month!")
+                setDropOpen(false)
+                setOpen(false)
+            } else {
+                const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', data);
+                const { success, message } = submitLeaveRequet.data;
+                if (success === 1) {
+                    setDropOpen(false)
+                    setOpen(false)
+                    setTable([])
+                    setReason('')
+                    setRequestType(0)
+                    succesNofity("Leave request submited Successfully")
+
+                } else {
+                    setDropOpen(false)
+                    setTable([])
+                    setReason('')
+                    setRequestType(0)
+                    errorNofity(message)
+                    setOpen(false)
+                }
+            }
 
         } else {
-            setDropOpen(false)
-            setTable([])
-            setReason('')
-            setRequestType(0)
-            errorNofity(message)
-            setOpen(false)
+            const submitLeaveRequet = await axioslogin.post('/LeaveRequest/modifiedLeaveRequest', data);
+            const { success, message } = submitLeaveRequet.data;
+            if (success === 1) {
+                setDropOpen(false)
+                setOpen(false)
+                setTable([])
+                setReason('')
+                setRequestType(0)
+                succesNofity("Leave request submited Successfully")
+
+            } else {
+                setDropOpen(false)
+                setTable([])
+                setReason('')
+                setRequestType(0)
+                errorNofity(message)
+                setOpen(false)
+            }
         }
-    }, [data, setOpen, setTable, setReason, setRequestType, setDropOpen])
+    }, [data, setOpen, setTable, setReason, setRequestType, setDropOpen, detlPostSata, masterPostData])
 
     const closeRequest = useCallback(() => {
         setOpen(false)
-    }, [setOpen])
+        setDropOpen(false)
+    }, [setOpen, setDropOpen])
 
     return (
         <Modal
             aria-labelledby="modal-title"
             aria-describedby="modal-desc"
-
             open={open}
-            onClose={() => setOpen(false)}
+            onClose={closeRequest}
             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}
 
         >
