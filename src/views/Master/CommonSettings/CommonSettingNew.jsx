@@ -144,6 +144,7 @@ const CommonSettingNew = () => {
         const getCommonSettings = async () => {
             const result = await axioslogin.get('/commonsettings')
             const { success, data } = result.data
+            
             if (success === 1) {
                 const { setting_slno, cmmn_grace_period, cmmn_late_in, cmmn_early_out, cmmn_early_out_grace,
                     cmmn_late_in_grace, carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit,
@@ -219,7 +220,7 @@ const CommonSettingNew = () => {
                 setEarnlvCategory(earnlvCategory === null ? [] : JSON.parse(earnlvCategory))
                 setfirst_policy(first_policy === 1 ? true : false)
                 setsecond_plicy(second_plicy === 1 ? true : false)
-                setopdduty(opdduty === null ? [] : opdduty)
+                setopdduty(opdduty === null ? [] : JSON.parse(opdduty) )
             }
             else if (success === 0) {
                 setValue(0)
