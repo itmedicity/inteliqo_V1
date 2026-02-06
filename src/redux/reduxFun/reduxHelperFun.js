@@ -150,7 +150,7 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
             const resultArray = Array(integerPart).fill(1);
             const sickLeave = fractionalPart > 0 ? [...resultArray, fractionalPart] : resultArray;
 
-            const sickLeaveArray = sickLeave?.map((e, index) => {
+            const sickLeaveArray = result > 365? sickLeave?.map((e, index) => {
 
                 return {
                     type: 'SL',
@@ -163,7 +163,7 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
                     common_slno: findSickLeave?.hrm_lv_cmn,
                     cmn: 1
                 }
-            })
+            }):[]
             creditedLeavesArray.data.push(...sickLeaveArray); // Push the newly created array to creditedLeavesArray
         }
     }
