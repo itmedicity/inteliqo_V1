@@ -66,14 +66,14 @@ const BuilShiftUpdationModal = ({ open, handleChange, emNo, updation }) => {
 
         // 4. Prepare updated plan
         const newPlanUpdate = oldPlanArray?.map((val) => {
-            const sunday = moment(val.duty_day).format('d'); // 0 = Sunday
+            const sunday = moment(val?.duty_day).format('d'); // 0 = Sunday
 
             return {
                 ...val,
                 shift_id:
                     checked === true && sunday === '0'
                         ? week_off_day
-                        : shift,
+                        : val?.doff_updation_flag === 1 ? val?.shift_id : shift,
                 edit_user: employeeIdNumber()
             };
         });
