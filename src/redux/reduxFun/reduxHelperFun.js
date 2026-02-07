@@ -51,7 +51,10 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
     const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
 
     const result = differenceInDays(new Date(), new Date(actual_doj))
-
+    const monthOrder = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
 
     // Push casual leaves to the array if available
     if (casualLeaves?.length > 0) {
@@ -188,22 +191,49 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
     }
 
     if (commonLeaves?.length > 0) {
-        const findSickLeave = commonLeaves.find((e) => e.llvetype_slno === 5);
-        if (findSickLeave !== undefined) {
-            const array = [{
-                type: 'LWP',
-                name: 'LWP',
-                leavetype: 5,
-                slno: 1,
-                month: `LWP`,
-                count: findSickLeave?.cmn_lv_allowed,
-                taken: findSickLeave?.cmn_lv_taken,
-                common_slno: findSickLeave?.hrm_lv_cmn,
-                cmn: 1
-            }]
+        const findLWPLeave = commonLeaves.find((e) => e.llvetype_slno === 5);
+        if (findLWPLeave !== undefined) {
+            let count = findLWPLeave?.cmn_lv_balance;
 
-            creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
+            const integerPart = Math.floor(count);
+            const fractionalPart = count - integerPart;
+            const resultArray = Array(integerPart).fill(1);
+            const LWPLeave = fractionalPart > 0 ? [...resultArray, fractionalPart] : resultArray;
+            const LWPLeaveArray = LWPLeave?.map((e, index) => {
+
+                return {
+                    type: 'LWP',
+                    name: 'LWP',
+                    leavetype: 5,
+                    slno: index + 1,
+                    month: format(subMonths(endOfYear(new Date()), index), 'MMMM') + ' ' + e,
+                    count: e,
+                    taken: 0,
+                    common_slno: findLWPLeave?.hrm_lv_cmn,
+                    cmn: 1
+                }
+            })?.sort((a, b) => {
+              const monthA = a.month.split(" ")[0];
+              const monthB = b.month.split(" ")[0];
+              return monthOrder.indexOf(monthA) - monthOrder.indexOf(monthB);
+            });
+            creditedLeavesArray.data.push(...LWPLeaveArray); // Push the newly created array to creditedLeavesArray
         }
+        // if (findSickLeave !== undefined) {
+        //     const array = [{
+        //         type: 'LWP',
+        //         name: 'LWP',
+        //         leavetype: 5,
+        //         slno: 1,
+        //         month: `LWP`,
+        //         count: findSickLeave?.cmn_lv_allowed,
+        //         taken: findSickLeave?.cmn_lv_taken,
+        //         common_slno: findSickLeave?.hrm_lv_cmn,
+        //         cmn: 1
+        //     }]
+
+        //     creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
+        // }
     }
 
     if (commonLeaves?.length > 0) {
@@ -601,116 +631,6 @@ export const getEmployeeRequests = async (leaveRequest, misspunch, halfday, hod,
 
             }
         })
-
-
-
-
-        // const Halfdayarr = sectionWisehalfdayRequest
-        //     ?.filter(val => val.dept_section !== em_dept_section)
-        //     ?.concat(sectionWisehalfdayRequest?.filter(e => e.emp_id === em_id))
-
-
-        // const Nopuncharr = sectionWiseMisspunchRequest
-        //     ?.filter(val => val.dept_section !== em_dept_section)
-        //     ?.concat(sectionWiseMisspunchRequest?.filter(e => e.em_id === em_id))
-
-        // const newList = Leavearr?.map((val) => {
-        //     return {
-        //         leaveid: val.lve_uniq_no,
-        //         type: "Leave Request",
-        //         reason: val.leave_reason,
-        //         slno: val.leave_slno,
-        //         emno: val.em_no,
-        //         name: val.em_name,
-        //         section: val.sect_name,
-        //         inchargestatus: val.incapprv_status,
-        //         hodstatus: val.hod_apprv_status,
-        //         hrstatus: val.hr_apprv_status,
-        //         status:
-        //             (val.inc_apprv_req === 1 && val.incapprv_status === 0) ? 'Incharge Approval Pending' :
-        //                 (val.inc_apprv_req === 1 && val.incapprv_status === 2) ? 'Incharge Rejected' :
-        //                     (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0) ? 'HOD Approval Pending' :
-        //                         (val.inc_apprv_req === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_apprv_status === 0) ? 'HOD Approval Pending' :
-        //                             (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1) ? 'HOD Approved' :
-        //                                 (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_apprv_status === 0) ? 'HOD Approved' :
-        //                                     (val.inc_apprv_req === 0 && val.incapprv_status === 0 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
-        //                                         (val.incapprv_status === 1 && val.incapprv_status === 1 && val.hod_apprv_req === 1 && val.hod_apprv_status === 2) ? 'HOD Rejected' :
-        //                                             (val.hod_apprv_req === 1 && val.hod_apprv_status === 0 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
-        //                                                 (val.hod_apprv_req === 1 && val.hod_apprv_status === 1 && val.hr_aprrv_requ === 1 && val.hr_apprv_status === 1) ? 'HR Approved' :
-        //                                                     (val.hr_aprrv_requ === 1 && val.hr_apprv_status === 2 && val.hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
-        //         code: 1,
-        //         reqDate: val.request_date,
-        //         fromDate: moment(new Date(val.leave_date)).format('DD-MM-YYYY'),
-        //         toDate: val.leavetodate
-        //     }
-        // })
-
-        // const newHalfday = Halfdayarr?.map((val) => {
-        //     return {
-        //         type: "Halfday Request",
-        //         reason: val.hf_reason,
-        //         slno: val.half_slno,
-        //         emno: val.em_no,
-        //         name: val.em_name,
-        //         section: val.sect_name,
-        //         status: (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 0) ? 'Incharge Approval Pending' :
-        //             (val.hf_inc_apprv_req === 1 && val.hf_incapprv_status === 2) ? 'Incharge Rejected' :
-        //                 (val.hf_inc_apprv_req === 0 && val.hf_incapprv_status === 0 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-        //                     (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-        //                         (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 1 && val.hf_hr_apprv_status === 0) ? 'HOD Approved' :
-        //                             (val.hf_incapprv_status === 1 && val.hf_hod_apprv_req === 1 && val.hf_hod_apprv_status === 2) ? 'HOD Rejected ' :
-        //                                 (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 1 && val.hf_hod_apprv_status === 1) ? 'HR Approved' :
-        //                                     (val.hf_hr_aprrv_requ === 1 && val.hf_hr_apprv_status === 2 && val.hf_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
-        //         inchargestatus: val.hf_incapprv_status,
-        //         hodstatus: val.hf_hod_apprv_status,
-        //         hrstatus: val.hf_hr_apprv_status,
-        //         code: 2,
-        //         reqDate: val.requestdate,
-        //         leaveDate: val.leavedate,
-        //         fromDate: moment(new Date(val.leavedate)).format('DD-MM-YYYY'),
-
-        //     }
-        // })
-
-        // const newNopunch = Nopuncharr?.map((val) => {
-        //     return {
-        //         type: "Miss Punch Request",
-        //         reason: val.np_reason,
-        //         slno: val.nopunch_slno,
-        //         emno: val.em_no,
-        //         name: val.em_name,
-        //         section: val.sect_name,
-        //         inchargestatus: val.np_incapprv_status,
-        //         hodstatus: val.np_hod_apprv_status,
-        //         hrstatus: val.np_hr_apprv_status,
-        //         status: (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0) ? 'Incharge Approval Pending' :
-        //             (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 2) ? 'Incharge Rejected' :
-        //                 (val.np_inc_apprv_req === 0 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-        //                     (val.np_inc_apprv_req === 1 && val.np_incapprv_status === 0 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 0) ? 'HOD Approval Pending' :
-        //                         (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 1 && val.np_hr_apprv_status === 0) ? 'HOD Approved' :
-        //                             (val.np_incapprv_status === 1 && val.np_hod_apprv_req === 1 && val.np_hod_apprv_status === 2) ? 'HOD Rejected ' :
-        //                                 (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 1 && val.np_hod_apprv_status === 1) ? 'HR Approved' :
-        //                                     (val.np_hr_aprrv_requ === 1 && val.np_hr_apprv_status === 2 && val.np_hod_apprv_status === 1) ? 'HR Rejected' : 'HR Pending',
-        //         code: 3,
-        //         reqDate: val.creteddate,
-        //         fromDate: moment(new Date(val.nopunchdate)).format('DD-MM-YYYY'),
-        //         toDate: val.nopunchdate
-        //     }
-        // })
-
-
-        // const newArray = [...newList, ...newHalfday, ...newNopunch]
-
-        // return ([...newList, ...newHalfday, ...newNopunch])
-        // } else {
-
-        // }
-        // }).catch(error => {
-
-        //     return []
-        // })
-
-
     } else {
 
 
