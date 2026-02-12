@@ -4,7 +4,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
 import { employeeIdNumber } from 'src/views/Constant/Constant';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 
 const BulkDoctordutyModal = ({
     open,
@@ -35,7 +35,7 @@ const BulkDoctordutyModal = ({
     }, [setOpen, setSelectValue, setSelectedDuty]);
 
     const multiShiftSubmit = async () => {
-
+        if(Shift===0)  warningNofity('Must Select A Shift')
         const { arr } = selecteedEmployee;
 
         const obj = {

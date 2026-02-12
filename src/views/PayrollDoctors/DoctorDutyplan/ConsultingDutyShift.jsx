@@ -2,6 +2,12 @@ import { Box, Button, Modal, ModalClose, Option, Select, Typography } from '@mui
 import React, { memo, useCallback, useState } from 'react'
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import LibraryAddCheckIcon from '@mui/icons-material/LibraryAddCheck';
+import {
+  errorNofity,
+  infoNofity,
+  succesNofity,
+  warningNofity,
+} from 'src/views/CommonCode/Commonfunc'
 
 const ConsultingDutyShift = ({
     open,
@@ -22,6 +28,8 @@ const ConsultingDutyShift = ({
     }, [setOpen]);
 
     const multiShiftSubmit = async () => {
+        if(Shift===0)  warningNofity('Must Select A Shift')
+     
         const { formattedDate, dutySlno } = selectedData;
 
         const obj = {
