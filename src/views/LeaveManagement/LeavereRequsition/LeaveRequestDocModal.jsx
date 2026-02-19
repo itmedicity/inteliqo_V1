@@ -27,7 +27,7 @@ const LeaveRequestDocModal = ({ open, data, setOpen, setTable, setReason, setReq
                 toDate: format(lastDayOfMonth(new Date(masterPostData?.leavefrom_date)), 'yyyy-MM-dd')
             }
             const result = await axioslogin.post('/LeaveRequest/getLWPLeave/Inamonth', checkLWp);
-            const { success: lwpsucc, data } = result.data;
+            const { success: lwpsucc } = result.data;
             if (lwpsucc === 1) {
                 warningNofity("A LWP Leave Exist In This Month!")
                 setDropOpen(false)
