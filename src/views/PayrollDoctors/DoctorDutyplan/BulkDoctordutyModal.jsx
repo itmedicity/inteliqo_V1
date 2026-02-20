@@ -35,7 +35,7 @@ const BulkDoctordutyModal = ({
     }, [setOpen, setSelectValue, setSelectedDuty]);
 
     const multiShiftSubmit = async () => {
-        if(Shift===0)  warningNofity('Must Select A Shift')
+        if(Shift===0) return warningNofity('Must Select A Shift')
         const { arr } = selecteedEmployee;
 
         const obj = {
@@ -66,7 +66,7 @@ const BulkDoctordutyModal = ({
                     plan_update_user: employeeIdNumber()
                 };
             });
-
+            
         const result = await axioslogin.patch('/DoctorsProcess/update/calendarduty', updateData);
         const { success } = result.data;
         if (success === 1) {
@@ -76,9 +76,9 @@ const BulkDoctordutyModal = ({
             if (success === 1) {
                 const mainArray = sectionEmployee?.map((k) => {
                     return {
-                        em_no: k.em_no,
-                        em_name: k.emp_name,
-                        arr: data.filter((val) => val.emp_id === k.em_id ? val : null)
+                        em_no: k?.em_no,
+                        em_name: k?.emp_name,
+                        arr: data?.filter((val) => val?.emp_id === k?.em_id ? val : null)
 
                     }
                 })
