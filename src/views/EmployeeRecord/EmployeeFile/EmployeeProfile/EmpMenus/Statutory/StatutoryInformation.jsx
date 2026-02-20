@@ -21,6 +21,7 @@ const StatutoryInformation = () => {
     const [value, setValue] = useState(1) //use state for setting serail no for edit
     const [leaveProcessdata, setleaveProcessdata] = useState({})
     const [esidata, setEsidata] = useState({})
+    const [leavecommondata, setleavecommondata] = useState({})
 
     //setting initial state
     const [formData, SetformData] = useState({
@@ -67,7 +68,9 @@ const StatutoryInformation = () => {
                 const arr = data?.find((val) => val?.llvetype_slno === 7)
                 const arr2 = data?.find((val) => val?.llvetype_slno === 6)
                 setEsidata(arr2)
+                const commondata = data[0]
                 setleaveProcessdata(arr === undefined ? arr2 : arr)
+                setleavecommondata(commondata)
             } else {
                 setleaveProcessdata({})
             }
@@ -151,14 +154,6 @@ const StatutoryInformation = () => {
         getpfesi()
     }, [id, Esiallowed])
 
-
-    //postData
-    // const postData = useMemo(() => {
-    //     return {
-            
-    //     }
-    // }, [id, no, pf, pfno, uanno, esi, esino, selectGrade,
-    //     nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
     //editing esi pf
     const postDataEdit = useMemo(() => {
         return {
@@ -237,7 +232,7 @@ const StatutoryInformation = () => {
     //saving form data
     const submitFormData = useCallback(async (e) => {
         e.preventDefault()
-        const postData={
+        const postData = {
             em_no: id,
             em_id: no,
             em_pf_status: pf === false ? 0 : 1,
@@ -257,41 +252,81 @@ const StatutoryInformation = () => {
             esi_slno: value,
         }
         if (value === 0 && Esiallowed === 1) {
-       
-            const { hrm_lv_cmn, em_no,
-                cmn_lv_allowedflag,
-                Iv_process_slno,
-                update_user,
-                em_id,
-                cmn_lv_year } = leaveProcessdata
-            const lastYear = endOfYear(new Date())
-            const daycount = differenceInDays(lastYear, new Date())
-            const postdata = {
-                em_no: em_no,
-                llvetype_slno: 6,
-                cmn_lv_allowedflag,
-                cmn_lv_allowed: daycount,
-                cmn_lv_taken: 0,
-                cmn_lv_balance: daycount,
-                Iv_process_slno: Iv_process_slno,
-                update_user: update_user,
-                em_id: em_id,
-                cmn_lv_year: cmn_lv_year,
-                hrm_lv_cmn: hrm_lv_cmn
-            }
-
-            const result = await axioslogin.post('/empesipf', postData)
-            const { success, message } = result.data
-            if (success === 1) {
-                const result = await axioslogin.patch('/yearleaveprocess/inactive/sick', postdata)
+            console.log(leaveProcessdata);
+            
+            if (leaveProcessdata === undefined) {
+                //probation category
+                const { hrm_lv_cmn, em_no,
+                    cmn_lv_allowedflag,
+                    Iv_process_slno,
+                    update_user,
+                    em_id,
+                    cmn_lv_year } = leavecommondata
+                const lastYear = endOfYear(new Date())
+                const daycount = differenceInDays(lastYear, new Date())
+                const postdata = {
+                    em_no: em_no,
+                    llvetype_slno: 6,
+                    cmn_lv_allowedflag,
+                    cmn_lv_allowed: daycount,
+                    cmn_lv_taken: 0,
+                    cmn_lv_balance: daycount,
+                    Iv_process_slno: Iv_process_slno,
+                    update_user: employeeIdNumber(),
+                    em_id: em_id,
+                    cmn_lv_year: cmn_lv_year,
+                    hrm_lv_cmn: hrm_lv_cmn
+                }
+                const result = await axioslogin.post('/empesipf', postData)
                 const { success, message } = result.data
                 if (success === 1) {
-                    succesNofity(message)
+                    const result = await axioslogin.post('/yearleaveprocess/insert/esileave', postdata)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        succesNofity(message)
+                    } else {
+                        errorNofity(message)
+                    }
                 } else {
                     errorNofity(message)
                 }
+
             } else {
-                errorNofity(message)
+                const { hrm_lv_cmn, em_no,
+                    cmn_lv_allowedflag,
+                    Iv_process_slno,
+                    update_user,
+                    em_id,
+                    cmn_lv_year } = leaveProcessdata
+                const lastYear = endOfYear(new Date())
+                const daycount = differenceInDays(lastYear, new Date())
+                const postdata = {
+                    em_no: em_no,
+                    llvetype_slno: 6,
+                    cmn_lv_allowedflag,
+                    cmn_lv_allowed: daycount,
+                    cmn_lv_taken: 0,
+                    cmn_lv_balance: daycount,
+                    Iv_process_slno: Iv_process_slno,
+                    update_user: employeeIdNumber(),
+                    em_id: em_id,
+                    cmn_lv_year: cmn_lv_year,
+                    hrm_lv_cmn: hrm_lv_cmn
+                }
+
+                const result = await axioslogin.post('/empesipf', postData)
+                const { success, message } = result.data
+                if (success === 1) {
+                    const result = await axioslogin.patch('/yearleaveprocess/inactive/sick', postdata)
+                    const { success, message } = result.data
+                    if (success === 1) {
+                        succesNofity(message)
+                    } else {
+                        errorNofity(message)
+                    }
+                } else {
+                    errorNofity(message)
+                }
             }
         } else if (value === 1 && Esiallowed === 2) {
             const result = await axioslogin.post('/empesipf/create', postNps)
@@ -318,7 +353,7 @@ const StatutoryInformation = () => {
                 cmn_lv_taken: 0,
                 cmn_lv_balance: daycount,
                 Iv_process_slno: Iv_process_slno,
-                update_user: update_user,
+                update_user: employeeIdNumber(),
                 em_id: em_id,
                 cmn_lv_year: cmn_lv_year,
                 hrm_lv_cmn: hrm_lv_cmn
@@ -351,7 +386,6 @@ const StatutoryInformation = () => {
                 else {
                     errorNofity(message)
                 }
-
             } else {
                 const { hrm_lv_cmn, em_no,
                     cmn_lv_allowedflag,
@@ -370,7 +404,7 @@ const StatutoryInformation = () => {
                     cmn_lv_taken: 0,
                     cmn_lv_balance: sickCount + 1,
                     Iv_process_slno: Iv_process_slno,
-                    update_user: update_user,
+                    update_user: employeeIdNumber(),
                     em_id: em_id,
                     cmn_lv_year: cmn_lv_year,
                     hrm_lv_cmn: hrm_lv_cmn
@@ -406,8 +440,8 @@ const StatutoryInformation = () => {
                 }
             }
         }
-    }, [leaveProcessdata, Esiallowed, esi, value,id, no, pf, pfno, uanno,  esino, selectGrade,
-      nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount])
+    }, [leaveProcessdata, Esiallowed, esi, value, id, no, pf, pfno, uanno, esino, selectGrade,
+        nps, npsnumber, npsamount, lwf, lwfnumber, lwfamount, leavecommondata])
 
     return (
         <Fragment>
