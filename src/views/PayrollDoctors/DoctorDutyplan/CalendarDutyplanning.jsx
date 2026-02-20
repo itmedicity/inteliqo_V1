@@ -304,6 +304,7 @@ const CalendarDutyplanning = () => {
   }
 
   const saveAllDuties = useCallback(async () => {
+    if(dutyAssignments?.length===0)return infoNofity("No Shift Selected")
     setBackdropOpen(true)
     const updateData = dutyAssignments
       ?.filter((i) => saveData?.some((j) => i?.date === j?.duty_day))
