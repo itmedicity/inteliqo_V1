@@ -61,6 +61,8 @@ const ShiftPlanningModal = ({
     // Function to handleModal close
     const handleModalClose = useCallback(() => {
         setOpen(false)
+        setSelectValue(0)
+        setSelectedDuty(0)
     }, [setOpen]);
 
     const handleWeeksFunc = useCallback((val) => {
