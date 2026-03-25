@@ -4,12 +4,25 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { Box, Button, Input, Table, Textarea, Tooltip, Typography } from '@mui/joy'
-import { addDays, differenceInCalendarDays, eachDayOfInterval, endOfMonth, format, isValid, startOfMonth } from 'date-fns'
+import {
+  addDays,
+  differenceInCalendarDays,
+  eachDayOfInterval,
+  endOfMonth,
+  format,
+  isValid,
+  startOfMonth,
+} from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
 import { screenInnerHeight } from 'src/views/Constant/Constant'
 import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
-import { allLeavesConvertAnArray, getSelectedEmpInformation, findBalanceCommonLeveCount } from 'src/redux/reduxFun/reduxHelperFun'
+import {
+  getSelectedEmpInformation,
+  findBalanceCommonLeveCount,
+  doctorsallLeavesConvertAnArray,
+  allLeavesConvertAnArray,
+} from 'src/redux/reduxFun/reduxHelperFun'
 import { useSelector } from 'react-redux'
 import LeaveRequestTable from 'src/views/LeaveManagement/LeavereRequsition/Func/LeaveRequestTable'
 
@@ -21,10 +34,12 @@ const LeaveSelectComponent = ({ emply }) => {
   const [leaveArray, setLeaveArray] = useState([])
 
   const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
-  const { em_no, em_department, em_id, em_dept_section, actual_doj } = selectedEmpInform ?? {};
+  const { em_no, em_department, em_id, em_dept_section, actual_doj } = selectedEmpInform ?? {}
 
-  const allLeavesArray = useSelector((state) => allLeavesConvertAnArray(state, actual_doj))
-  const filterdArray = useMemo(() => allLeavesArray, [allLeavesArray]);
+  // const allLeavesArray = useSelector((state) => allLeavesConvertAnArray(state, actual_doj))
+  const allLeavesArray = useSelector((state) => doctorsallLeavesConvertAnArray(state, actual_doj))
+
+  const filterdArray = useMemo(() => allLeavesArray, [allLeavesArray])
 
   //FIND COMMON LEAVE BALANCE COUNT EM_NO WISE
   const findBalanceCountCmnLeave = useSelector((state) => findBalanceCommonLeveCount(state))
@@ -70,7 +85,6 @@ const LeaveSelectComponent = ({ emply }) => {
         setTable(modifiedTable)
         const { status, data } = filterdArray
         status === true && data?.length > 0 && setLeaveArray(data)
-
       } else {
         warningNofity('Duty Plan Not Done Against This Department! ')
         return
@@ -81,11 +95,12 @@ const LeaveSelectComponent = ({ emply }) => {
   }
 
   const handleProcessLeaveRequest = async () => {
-
     //FIRST CHECK THE ALL LEAVE ARE ENTERD IN THE CORRECTED DATE
-    const nulCheckForEnterdLeaves = table?.filter((e) => e.leavetype === 0 || e.selectedLveSlno === 0)?.length;
+    const nulCheckForEnterdLeaves = table?.filter(
+      (e) => e.leavetype === 0 || e.selectedLveSlno === 0,
+    )?.length
     if (table?.length === 0 || nulCheckForEnterdLeaves !== 0) {
-      warningNofity("Requested Leave Data Not Enterd Correctly ,Please Check")
+      warningNofity('Requested Leave Data Not Enterd Correctly ,Please Check')
     } else {
       //LEAVE TYPES
       /***
@@ -96,22 +111,35 @@ const LeaveSelectComponent = ({ emply }) => {
        */
       const commonLeave = [6, 5, 2]
       // FILTER AND REMOVE THE COMMON LEAVES
-      const commonLeaveFilterArray = table?.filter((e) => !commonLeave?.includes(e.leavetype))?.map((el) => { return { type: el.leavetype, typeslno: el.selectedLveSlno } })
+      const commonLeaveFilterArray = table
+        ?.filter((e) => !commonLeave?.includes(e.leavetype))
+        ?.map((el) => {
+          return { type: el.leavetype, typeslno: el.selectedLveSlno }
+        })
       const allLeavetypes = [...new Set(commonLeaveFilterArray?.map((e) => e.type))]
-      // FIND THE DUPLICATE LEAVES 
-      const checkDuplicateLeaves = allLeavetypes?.map((el) => {
-        return {
-          type: el,
-          status: commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno).length === [...new Set(commonLeaveFilterArray?.filter((e) => e.type === el)?.map(e => e.typeslno))].length
-        }
-      })?.find((e) => e.status === false)
+      // FIND THE DUPLICATE LEAVES
+      const checkDuplicateLeaves = allLeavetypes
+        ?.map((el) => {
+          return {
+            type: el,
+            status:
+              commonLeaveFilterArray?.filter((e) => e.type === el)?.map((e) => e.typeslno)
+                .length ===
+              [
+                ...new Set(
+                  commonLeaveFilterArray?.filter((e) => e.type === el)?.map((e) => e.typeslno),
+                ),
+              ].length,
+          }
+        })
+        ?.find((e) => e.status === false)
 
       //DUPLICATE CHECKING RESULTS
       if (checkDuplicateLeaves === undefined) {
         //REQUEST SEND TO DATABASE FOR SAVING
 
-        const requestFromDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s');
-        const requestToDate = format(new Date(toDate), 'yyyy-MM-dd H:m:s');
+        const requestFromDate = format(new Date(fromDate), 'yyyy-MM-dd H:m:s')
+        const requestToDate = format(new Date(toDate), 'yyyy-MM-dd H:m:s')
 
         //TOTAL LEAVES REQUIRED COUNT
         const numberOfDays = differenceInCalendarDays(new Date(toDate), new Date(fromDate)) + 1
@@ -124,11 +152,11 @@ const LeaveSelectComponent = ({ emply }) => {
           em_dept_section: em_dept_section,
           leavefrom_date: requestFromDate,
           leavetodate: requestToDate,
-          attendance_marking_month: format(startOfMonth(new Date(fromDate)), "yyyy-MM-dd"),
-          rejoin_date: format(addDays(new Date(toDate), 1), "yyyy-MM-dd"),
+          attendance_marking_month: format(startOfMonth(new Date(fromDate)), 'yyyy-MM-dd'),
+          rejoin_date: format(addDays(new Date(toDate), 1), 'yyyy-MM-dd'),
           request_status: 1,
           resonforleave: reson,
-          no_of_leave: numberOfDays
+          no_of_leave: numberOfDays,
         }
 
         //POST DATA FOR DETAILS TABLE
@@ -145,53 +173,82 @@ const LeaveSelectComponent = ({ emply }) => {
             empNo: em_no,
             singleleave: 1,
             lvereq_desc: e.selectedLvType,
-            duty_desc:e.selectedLvType,
-            emno:em_no,
-            leave_dates:format(new Date(e.date), 'yyyy-MM-dd')
+            duty_desc: e.selectedLvType,
+            emno: em_no,
+            leave_dates: format(new Date(e.date), 'yyyy-MM-dd'),
           }
         })
-        //POST DATA TO BACKEND 
+        //POST DATA TO BACKEND
 
-        const findNotMoreThanBalaLve = commonLeave?.map((type) => {
-          return type === 7 ? {
-            type: 7,
-            leaveCount: postDataForDetlTable?.filter((e) => e.leave_typeid === 7)?.map(e => e.leaveCount)?.reduce((acc, curr) => acc + curr, 0)
-          } : {
-            type: type,
-            leaveCount: postDataForDetlTable?.filter((e) => e.leave_typeid === type).length
-          }
-        })?.filter(e => e.leaveCount !== 0)?.map((el) => comnLeaveBalCount?.find((val) => val.type === el.type)?.balance - el.leaveCount < 0)?.filter(e => e === true).length
+        const findNotMoreThanBalaLve = commonLeave
+          ?.map((type) => {
+            return type === 7
+              ? {
+                  type: 7,
+                  leaveCount: postDataForDetlTable
+                    ?.filter((e) => e.leave_typeid === 7)
+                    ?.map((e) => e.leaveCount)
+                    ?.reduce((acc, curr) => acc + curr, 0),
+                }
+              : {
+                  type: type,
+                  leaveCount: postDataForDetlTable?.filter((e) => e.leave_typeid === type).length,
+                }
+          })
+          ?.filter((e) => e.leaveCount !== 0)
+          ?.map(
+            (el) =>
+              comnLeaveBalCount?.find((val) => val.type === el.type)?.balance - el.leaveCount < 0,
+          )
+          ?.filter((e) => e === true).length
 
         if (reson === '') {
-          warningNofity("The explanation must consist of more than 10 characters.")
+          warningNofity('The explanation must consist of more than 10 characters.')
         } else {
           if (findNotMoreThanBalaLve === 0) {
             const modifiedLveReq = {
               masterPostData: postDataMasterTable,
-              detlPostSata: postDataForDetlTable
+              detlPostSata: postDataForDetlTable,
             }
-            const submitLeaveRequet = await  axioslogin.post('/LeaveRequest/insert/doctorleave', modifiedLveReq);
-            const { success, message } = submitLeaveRequet.data;
-            if (success === 1) {
-              succesNofity("Leave request submited Successfully");
+            const reset = () => {
               setTable([])
               setReason('')
               setFromDate(new Date())
               setToDate(new Date())
+            }
+            const submitLeaveRequet = await axioslogin.post(
+              '/LeaveRequest/insert/doctorleave',
+              modifiedLveReq,
+            )
+            const { success, message } = submitLeaveRequet.data
+            if (success === 1) {
+              succesNofity('Leave request submited Successfully')
+              reset()
+              // setTable([])
+              // // setReason('')
+              // setFromDate(new Date())
+              // setToDate(new Date())
             } else {
               errorNofity(message)
-              setTable([])
-              setReason('')
-              setFromDate(new Date())
-              setToDate(new Date())
+              // setTable([])
+              // // setReason('')
+              // setFromDate(new Date())
+              // setToDate(new Date())
+              
+              reset()
             }
+            // setReason('')
           } else {
-            warningNofity("One of the selected common leave counts is greater than the credited count.")
+            warningNofity(
+              'One of the selected common leave counts is greater than the credited count.',
+            )
           }
         }
       } else {
         // YES DUPLICATE LEAVE FOUND ERROR THROW
-        warningNofity("Please Check Selected Leaves , No Leaves Selected OR Duplicate Leaves Found !!!")
+        warningNofity(
+          'Please Check Selected Leaves , No Leaves Selected OR Duplicate Leaves Found !!!',
+        )
       }
     }
   }
@@ -282,12 +339,7 @@ const LeaveSelectComponent = ({ emply }) => {
         variant="outlined"
         sx={{ maxHeight: (screenInnerHeight * 40) / 100, p: 1, m: 0.3, overflow: 'auto' }}
       >
-        <Table
-          aria-label="basic table"
-          color="neutral"
-          size="sm"
-          variant="plain"
-        >
+        <Table aria-label="basic table" color="neutral" size="sm" variant="plain">
           <thead>
             <tr>
               <th style={{ width: '20%' }}>Requested Leave Date</th>
@@ -309,8 +361,15 @@ const LeaveSelectComponent = ({ emply }) => {
         </Table>
       </Paper>
       <Box sx={{ display: 'flex', p: 0.5 }}>
-        <Tooltip title="reason" followCursor placement='top' arrow variant='outlined' color='success'  >
-          <Box sx={{ p: 1, flex: 1 }} >
+        <Tooltip
+          title="reason"
+          followCursor
+          placement="top"
+          arrow
+          variant="outlined"
+          color="success"
+        >
+          <Box sx={{ p: 1, flex: 1 }}>
             <Textarea
               color="primary"
               minRows={2}
@@ -322,8 +381,15 @@ const LeaveSelectComponent = ({ emply }) => {
             />
           </Box>
         </Tooltip>
-        <Box sx={{ display: 'flex', }} >
-          <Tooltip title="Save Request" variant="outlined" color="success" placement="top" followCursor arrow>
+        <Box sx={{ display: 'flex' }}>
+          <Tooltip
+            title="Save Request"
+            variant="outlined"
+            color="success"
+            placement="top"
+            followCursor
+            arrow
+          >
             <Button
               variant="outlined"
               component="label"
@@ -338,7 +404,6 @@ const LeaveSelectComponent = ({ emply }) => {
           </Tooltip>
         </Box>
       </Box>
-
     </Paper>
   )
 }
