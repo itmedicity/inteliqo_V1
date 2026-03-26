@@ -262,6 +262,229 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
 
 }
 
+//get doctors leave
+export const doctorsallLeavesConvertAnArray = (state, actual_doj) => {
+    let creditedLeavesArray = {
+        status: false,
+        data: []
+    }
+    const casualLeaves = state?.getCreditedCasualLeave?.casualLeave;
+    const earnLeaves = state?.getCreditedEarnLeave?.earnLeave;
+    // const compansatoryOff = state?.getCreitedCompansatoryOffLeave?.compansatory;
+    const compansatoryOff = state?.getEmpCoffData?.coffData;
+    const commonLeaves = state?.getCreitedCommonLeave?.commonLerave;
+
+    const result = differenceInDays(new Date(), new Date(actual_doj))
+    const monthOrder = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Push casual leaves to the array if available
+    if (casualLeaves?.length > 0) {
+        const newCasualLeavesAttay = casualLeaves?.map((e) => {
+            let leveCount = e.cl_lv_taken === 0 ? 1 : e.cl_lv_taken;
+            const leaveYear = format(new Date(e.cl_lv_year), 'yyyy');
+            
+            return {
+                type: 'CL',
+                name: 'Casual Leave',
+                leavetype: 1,
+                slno: e.hrm_cl_slno,
+                month: e.cl_lv_mnth + '-' + leveCount + '-' + leaveYear,
+                count: leveCount,
+                lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
+                common_slno: 0,
+                cmn: 0,
+                leaveMonth: e.cl_lv_year
+            }
+            
+           })?.filter((e) => e.lveRequest === 0 && new Date(e.leaveMonth) <=new Date())
+       // })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+
+        // Sort the array by year in ascending order
+        const sortedLeavesByYear = newCasualLeavesAttay.sort((a, b) => {
+            // Extract year from the month string
+            const yearA = parseInt(a.month.split('-')[2]);
+            const yearB = parseInt(b.month.split('-')[2]);
+
+            // Compare the years
+            return yearA - yearB;
+        });
+
+        creditedLeavesArray.data.push(...sortedLeavesByYear)
+    }
+
+    // Push earned leaves to the array if available
+    if (earnLeaves?.length > 0) {
+        const newErnLeaves = earnLeaves?.map((e) => {
+            let leveCount = e.ernlv_taken === 0 ? 1 : e.ernlv_taken;
+            const leaveYear = format(new Date(addYears(new Date(e.ernlv_year), 1)), 'yyyy');
+            return {
+                type: 'EL',
+                name: 'Earn Leave',
+                leavetype: 8,
+                slno: e.hrm_ernlv_slno,
+                month: e.ernlv_mnth + '-' + leveCount + '-' + leaveYear,
+                count: leveCount,
+                lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status
+                common_slno: 0,
+                cmn: 0
+            }
+        })?.filter((e) => e.lveRequest === 0 && result > 365) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+
+        // Sort the array by year in ascending order
+        const sortedLeavesByYear = newErnLeaves.sort((a, b) => {
+            // Extract year from the month string
+            const yearA = parseInt(a.month.split('-')[2]);
+            const yearB = parseInt(b.month.split('-')[2]);
+
+            // Compare the years
+            return yearA - yearB;
+        });
+        creditedLeavesArray.data.push(...sortedLeavesByYear)
+    }
+
+    // Push compensatory off leaves to the array if available
+    if (compansatoryOff?.length > 0) {
+        const newCompanSatoryLeaves = compansatoryOff?.map((e) => {
+            return {
+                type: 'COFF',
+                name: 'Compansatory Off',
+                leavetype: 11,
+                slno: e.hrm_calc_holiday,
+                month: e.calculated_date,
+                count: e.credited,
+                taken: e.taken,
+                credited: e.credited_date,
+                remark: e.specail_remark,
+                lveRequest: e.hl_lv_tkn_status, // Leave requested status not approved status,
+                common_slno: 0,
+                cmn: 0
+            }
+        })?.filter((e) => e.lveRequest === 0)//REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+        creditedLeavesArray.data.push(...newCompanSatoryLeaves)
+    }
+
+    // Push common leaves to the array if available
+    if (commonLeaves?.length > 0) {
+        const findSickLeave = commonLeaves.find((e) => e.llvetype_slno === 7);
+        if (findSickLeave !== undefined) {
+            let count = findSickLeave.cmn_lv_balance;
+
+            const integerPart = Math.floor(count);
+            const fractionalPart = count - integerPart;
+            const resultArray = Array(integerPart).fill(1);
+            const sickLeave = fractionalPart > 0 ? [...resultArray, fractionalPart] : resultArray;
+
+            const sickLeaveArray = result > 365? sickLeave?.map((e, index) => {
+
+                return {
+                    type: 'SL',
+                    name: 'Sick Leave',
+                    leavetype: 7,
+                    slno: index + 1,
+                    month: format(subMonths(endOfYear(new Date()), index), 'MMMM') + ' ' + e,
+                    count: e,
+                    taken: 0,
+                    common_slno: findSickLeave?.hrm_lv_cmn,
+                    cmn: 1
+                }
+            }):[]
+            creditedLeavesArray.data.push(...sickLeaveArray); // Push the newly created array to creditedLeavesArray
+        }
+    }
+
+    if (commonLeaves?.length > 0) {
+        const findSickLeave = commonLeaves.find((e) => e.llvetype_slno === 2);
+        if (findSickLeave !== undefined) {
+            const array = [{
+                type: 'ML',
+                name: 'Maternity Leave',
+                leavetype: 2,
+                slno: 1,
+                month: `MATERNITY LEAVE`,
+                count: findSickLeave?.cmn_lv_allowed,
+                taken: findSickLeave?.cmn_lv_taken,
+                common_slno: findSickLeave?.hrm_lv_cmn,
+                cmn: 1
+            }]
+
+            creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
+        }
+    }
+
+    if (commonLeaves?.length > 0) {
+        const findLWPLeave = commonLeaves.find((e) => e.llvetype_slno === 5);
+        // if (findLWPLeave !== undefined) {
+        //     let count = findLWPLeave?.cmn_lv_balance;
+
+        //     const integerPart = Math.floor(count);
+        //     const fractionalPart = count - integerPart;
+        //     const resultArray = Array(integerPart).fill(1);
+        //     const LWPLeave = fractionalPart > 0 ? [...resultArray, fractionalPart] : resultArray;
+        //     const LWPLeaveArray = LWPLeave?.map((e, index) => {
+
+        //         return {
+        //             type: 'LWP',
+        //             name: 'LWP',
+        //             leavetype: 5,
+        //             slno: index + 1,
+        //             month: format(subMonths(endOfYear(new Date()), index), 'MMMM') + ' ' + e,
+        //             count: e,
+        //             taken: 0,
+        //             common_slno: findLWPLeave?.hrm_lv_cmn,
+        //             cmn: 1
+        //         }
+        //     })?.sort((a, b) => {
+        //       const monthA = a.month.split(" ")[0];
+        //       const monthB = b.month.split(" ")[0];
+        //       return monthOrder.indexOf(monthA) - monthOrder.indexOf(monthB);
+        //     });
+        //     creditedLeavesArray.data.push(...LWPLeaveArray); // Push the newly created array to creditedLeavesArray
+        // }
+        if (findLWPLeave !== undefined) {
+            const array = [{
+                type: 'LWP',
+                name: 'LWP',
+                leavetype: 5,
+                slno: 1,
+                month: `LWP`,
+                count: findLWPLeave?.cmn_lv_allowed,
+                taken: findLWPLeave?.cmn_lv_taken,
+                common_slno: findLWPLeave?.hrm_lv_cmn,
+                cmn: 1
+            }]
+
+            creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
+        }
+    }
+
+    if (commonLeaves?.length > 0) {
+        const findSickLeave = commonLeaves.find((e) => e.llvetype_slno === 6);
+        if (findSickLeave !== undefined) {
+            const array = [{
+                type: 'ESI',
+                name: 'ESI',
+                leavetype: 6,
+                slno: 1,
+                month: `ESI`,
+                count: findSickLeave?.cmn_lv_allowed,
+                taken: findSickLeave?.cmn_lv_taken,
+                common_slno: findSickLeave?.hrm_lv_cmn,
+                cmn: 1
+            }]
+
+            creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
+        }
+    }
+
+    creditedLeavesArray.status = true
+
+    // Return the array with all credited leaves
+    return creditedLeavesArray;
+
+}
 
 // AANUAL LEAVES INFORMATIOM COUNT FOR SHOWING IN THE TABLE
 
