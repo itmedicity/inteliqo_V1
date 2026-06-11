@@ -84,12 +84,12 @@ const MonthlyPunchMarking = () => {
         const result = await axioslogin.get('/payrollprocess/getAcriveDepartmentSection/');
         const { success, data } = result.data;
         const deptSectionData = data;
-
         if (success === 1) {
             //GET PUNCHMARKING DATA FROM table 
             const getPunchMarkingHr_table = await axioslogin.post('/payrollprocess/getPunchMarkingHrFull/', getPunchMarkTablePostData);
             const { succ, data } = getPunchMarkingHr_table.data;
-            if (succ === 1) {
+
+            if (succ === 1 && deptSectionData?.length === data?.length) {
                 // IF DATA
                 const punchMarkingTableData = data;
                 const findDept = [...new Set(deptSectionData?.map(e => e.dept_id))]?.map((dept) => {
@@ -103,6 +103,42 @@ const MonthlyPunchMarking = () => {
                 })
                 setDeptList(findDept)
                 setOpenBkDrop(false)
+            } else if (succ === 1 && deptSectionData?.length !== data?.length) {
+                // ALREADY INSERTED BUT NEW SECTIONS ADDED
+                const uniqueObjects = deptSectionData.filter(
+                    obj1 => !data.some(obj2 => obj2.deptsec_slno === obj1.sect_id)
+                );
+                const postData_PunchMarkHR = uniqueObjects?.map((e) => {
+                    return [
+                        format(startOfMonth(new Date(value)), 'yyyy-MM-dd'),
+                        e.dept_id,
+                        e.sect_id,
+                        1,
+                        em_no,
+                        em_no,
+                        format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
+                    ]
+                })
+
+                const insertPunchMarkTable = await axioslogin.post('/payrollprocess/Insert/PunchInOutHr', postData_PunchMarkHR)
+                const { success } = insertPunchMarkTable.data
+                if (success === 1) {
+                    const findDept = [...new Set(deptSectionData?.map(e => e.dept_id))]?.map((dept) => {
+                        return {
+                            "dept_id": dept,
+                            "dept_name": deptSectionData?.find(e => e.dept_id === dept)?.dept_name,
+                            "section": deptSectionData?.filter((val) => val.dept_id === dept).map((v) => {
+                                return { ...v, "updated": moment(startOfMonths).format('YYYY-MM-DD') }
+                            }),
+                        }
+                    })
+                    setDeptList(findDept)
+                    setOpenBkDrop(false)
+                } else {
+                    warningNofity("Error Updating the Punchmarking HR Data ! contact IT")
+                    setOpenBkDrop(false)
+                }
+
             } else if (succ === 2) {
                 // IF NO DATA -> INSERT IN TO punchmarking_hr table
                 const postData_PunchMarkHR = deptSectionData?.map((e) => {
@@ -111,8 +147,6 @@ const MonthlyPunchMarking = () => {
                         e.dept_id,
                         e.sect_id,
                         1,
-                        null,
-                        null,
                         em_no,
                         em_no,
                         format(startOfMonth(new Date(value)), 'yyyy-MM-dd')
