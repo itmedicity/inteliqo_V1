@@ -113,47 +113,86 @@ const LeaveProcessCard = ({ data, category }) => {
                 }
                 else if (leaveName === 2) {
 
-                    // Calculate the difference in days between the current date and the actual date of joining (DOJ)
-                    const result = differenceInDays(new Date(), new Date(actual_doj))
-                    // Check if the category status is true and the difference in days is greater than 365
-                    if (cateStatus === true && result > 365) {
-                        updateCommonLeaveAfterRenewal(lv_process_slno, em_id, em_no, em_gender, statutory_esi, category).then((values) => {
-                            const { status, data } = values;
-                            //insert Common Leaves
+                    // // Calculate the difference in days between the current date and the actual date of joining (DOJ)
+                    // const result = differenceInDays(new Date(), new Date(actual_doj))
+                    // // Check if the category status is true and the difference in days is greater than 365
+                    // if (cateStatus === true && result > 365) {
+                    //     updateCommonLeaveAfterRenewal(lv_process_slno, em_id, em_no, em_gender, statutory_esi, category).then((values) => {
+                    //         const { status, data } = values;
+                    //         //insert Common Leaves
+                    //         if (status === 1) {
+                    //             insertCommonLeaves(data, lv_process_slno).then((messages) => {
+                    //                 let { status, message } = messages;
+                    //                 if (status === 1) {
+                    //                     infoNofity(message)
+                    //                     dispatch({ type: UPDATE_CASUAL_LEAVE })
+                    //                 } else {
+                    //                     warningNofity(message)
+                    //                 }
+                    //             }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 133' + err) })
+                    //         } else {
+                    //             warningNofity('Error ! ,Contact IT !!! line - 135')
+                    //         }
+                    //     })
+                    // } else {
+                    //     //Common Off days Leave Credit option
+                    //     updateCommonLeaves(lv_process_slno, em_id, em_no, em_gender, statutory_esi, category).then((values) => {
+                    //         const { status, data } = values;
+                    //         console.log(data)
+                    //         //insert Common Leaves
+                    //         if (status === 1) {
+                    //             insertCommonLeaves(data, lv_process_slno).then((messages) => {
+                    //                 let { status, message } = messages;
+                    //                 if (status === 1) {
+                    //                     infoNofity(message)
+                    //                     dispatch({ type: UPDATE_CASUAL_LEAVE })
+                    //                 } else {
+                    //                     warningNofity(message)
+                    //                 }
+                    //             }).catch((err) => { warningNofity('Error In Inserting Common Leaves, Contact IT!' + err) })
+                    //         } else {
+                    //             warningNofity('No Data Found In Common Leaves ! ,Contact IT !!!')
+                    //         }
+                    //     }).catch((err) => { warningNofity('Error In Getting Common Leaves !!! ' + err) })
+                    // }
+
+                    const dojDays = differenceInDays(new Date(), new Date(actual_doj));
+
+                    const leaveFunction =
+                        cateStatus && dojDays > 365
+                            ? updateCommonLeaveAfterRenewal
+                            : updateCommonLeaves;
+                    
+                    leaveFunction(
+                        lv_process_slno,
+                        em_id,
+                        em_no,
+                        em_gender,
+                        statutory_esi,
+                        category
+                    )
+                        .then(({ status, data }) => {
+                            if (status !== 1) {
+                                return warningNofity('No Data Found In Common Leaves!');
+                            }
+                    
+                            return insertCommonLeaves(data, lv_process_slno);
+                        })
+                        .then((res) => {
+                            if (!res) return;
+                    
+                            const { status, message } = res;
+                    
                             if (status === 1) {
-                                insertCommonLeaves(data, lv_process_slno).then((messages) => {
-                                    let { status, message } = messages;
-                                    if (status === 1) {
-                                        infoNofity(message)
-                                        dispatch({ type: UPDATE_CASUAL_LEAVE })
-                                    } else {
-                                        warningNofity(message)
-                                    }
-                                }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 133' + err) })
+                                infoNofity(message);
+                                dispatch({ type: UPDATE_CASUAL_LEAVE });
                             } else {
-                                warningNofity('Error ! ,Contact IT !!! line - 135')
+                                warningNofity(message);
                             }
                         })
-                    } else {
-                        //Common Off days Leave Credit option
-                        updateCommonLeaves(lv_process_slno, em_id, em_no, em_gender, statutory_esi, category).then((values) => {
-                            const { status, data } = values;
-                            //insert Common Leaves
-                            if (status === 1) {
-                                insertCommonLeaves(data, lv_process_slno).then((messages) => {
-                                    let { status, message } = messages;
-                                    if (status === 1) {
-                                        infoNofity(message)
-                                        dispatch({ type: UPDATE_CASUAL_LEAVE })
-                                    } else {
-                                        warningNofity(message)
-                                    }
-                                }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 152' + err) })
-                            } else {
-                                warningNofity('Error ! ,Contact IT !!! line - 154')
-                            }
-                        }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 156' + err) })
-                    }
+                        .catch((err) => {
+                            warningNofity(`Error Processing Common Leaves: ${err}`);
+                        });
                 }
                 else if (leaveName === 3) {
 
@@ -227,7 +266,7 @@ const LeaveProcessCard = ({ data, category }) => {
                                 }
                             }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line -229' + err) })
                         }).catch((err) => { warningNofity('Error ! ,Contact IT !!! line - 230' + err) })
-                    }
+                    } 
                 }
                 else if (leaveName === 4) {
                     // National And Festival Holiday
