@@ -11,8 +11,10 @@ import { axioslogin } from 'src/views/Axios/Axios'
 import { eachDayOfInterval, endOfMonth, format, startOfMonth } from 'date-fns'
 import Preview from './Preview'
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import EmployeeRightsDepartment from '../DoctorDutyplan/Components/EmployeeRightsDepartment'
 
 const DoctorPunchReport = () => {
+
   const [selectedMonth, setSelectedMonth] = useState(new Date())
   const [dept, changeDept] = useState(0)
   const [section, changeSection] = useState(0)
@@ -117,7 +119,8 @@ const DoctorPunchReport = () => {
             </LocalizationProvider>
           </Box>
           <Box sx={{ flex: 1, px: 0.5 }}>
-            <DoctorDepartment value={dept} setValue={changeDept} />
+             <EmployeeRightsDepartment value={dept} setValue={changeDept}/>
+            {/* <DoctorDepartment value={dept} setValue={changeDept} /> */}
           </Box>
           <Box sx={{ flex: 1, px: 0.5 }}>
             <DoctorDepartmentSection value={section} setValue={changeSection} dept={dept} />

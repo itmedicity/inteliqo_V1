@@ -756,57 +756,181 @@ export const insertHolidayFun = async (data, lv_process_slno) => {
 }
 
 //Update Common Leaves 
-export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, statutory_esi, category) => {
-  const { ecat_sl } = category;
-  // to get common leaves from leavetype master where common_leave=1
-  const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
-  const { successcommonleave, messagecommonleave } = result.data;
-  let commonLeaveMessage = { status: 0, data: [] }
-  if (successcommonleave === 1) {
-    //start of the year 2025-01-01
-    const result = startOfYear(new Date())
-    const res = differenceInDays(new Date(), result)
-    const obj = {
-      leave_credit_policy_count: 365 - res
+// export const updateCommonLeaves = async (lv_process_slno, em_id, em_no, em_gender, statutory_esi, category) => {
+
+//   const { ecat_sl, ecat_confere,ecat_doctor} = category;
+//   // to get common leaves from leavetype master where common_leave=1
+//   const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
+//   const { successcommonleave, messagecommonleave } = result.data;
+//   let commonLeaveMessage = { status: 0, data: [] }
+//   if (successcommonleave === 1) {
+//     //start of the year 2025-01-01
+//     const result = startOfYear(new Date())
+//     const res = differenceInDays(new Date(), result)
+//     const obj = {
+//       leave_credit_policy_count: 365 - res
+//     }
+
+//     const esiArray = messagecommonleave?.map((item) => item?.lvetype_slno === 6 ? { ...item, ...obj } : item);
+  
+//     // Filter the Maternity For the Male Employee
+//     const endMonth = endOfYear(new Date())
+//     const sickCount = differenceInMonths(endMonth, new Date()) + 1
+//     const sickObj = { leave_credit_policy_count: sickCount }
+
+//   const lopArray = esiArray?.map((item) => item.lvetype_slno === 5 ? { ...item, ...sickObj } : item);
+
+//     //  const lopArray = esiArray?.map((item) => item.lvetype_slno === 5 && ecat_doctor===1 ? { ...item, ...obj } : item.lvetype_slno === 5 && ecat_doctor===0? { ...item, ...sickObj }:item);
+
+
+//     const sickArray = lopArray?.map((item) => item.lvetype_slno === 7 ? { ...item, ...sickObj } : item);
+
+//     const filterCommonArray = sickArray?.filter((val) => val?.lvetype_slno !== 2);
+//     const newCommonArray = em_gender === 1 ? filterCommonArray : sickArray;
+//     let commondata = newCommonArray?.map((val) => {
+//       const commonleave = {
+//         em_no: em_no,
+//         llvetype_slno: val?.lvetype_slno,
+//         cmn_lv_allowedflag: statutory_esi === 1 ? 1 : 0,
+//         cmn_lv_allowed: val?.leave_credit_policy_count,
+//         cmn_lv_taken: 0,
+//         cmn_lv_balance: val?.leave_credit_policy_count,
+//         Iv_process_slno: lv_process_slno,
+//         update_user: loggerUser,
+//         em_id: em_id,
+//         cmn_lv_year: moment().format('YYYY-MM-DD')
+//       }
+//       return commonleave
+//     }).filter((val) => statutory_esi === 0 && val.llvetype_slno !== 6 ||
+//       statutory_esi === 1 && val.llvetype_slno !== 7)
+//     if (ecat_sl === 0) {
+//       const list = commondata.filter((val) => val.llvetype_slno !== 7)
+//       return { ...commonLeaveMessage, status: 1, data: list }
+//     } else if (ecat_confere===0){
+//       const list = commondata.filter((val) => val.llvetype_slno !== 9)
+//       return { ...commonLeaveMessage, status: 1, data: list }
+//     }else if(ecat_doctor===1){
+//       const list = commondata.filter((val) => val.llvetype_slno !== 2)
+//       const lopArray = list?.map((item) => {
+//       return item.llvetype_slno === 5
+//         ? {
+//         ...item,
+//         cmn_lv_allowed: 365 - res,
+//         cmn_lv_balance: 365 - res
+//       }
+//     : { ...item };
+// });
+//       return { ...commonLeaveMessage, status: 1, data: lopArray }
+//     }
+//     else {
+//       return { ...commonLeaveMessage, status: 1, data: commondata }
+//     }
+//   } else {
+//     return { ...commonLeaveMessage, status: 0, data: [] }
+//   }
+// }
+
+export const updateCommonLeaves = async (
+  lv_process_slno,
+  em_id,
+  em_no,
+  em_gender,
+  statutory_esi,
+  category
+) => {
+  try {
+    const { ecat_sl, ecat_confere, ecat_doctor } = category;
+
+    // Get all common leave types
+    const { data } = await axioslogin.get(
+      '/yearlyleaves/get/getcommonleave'
+    );
+
+    // Return empty data if API call fails
+    if (data.successcommonleave !== 1) {
+      return { status: 0, data: [] };
     }
 
-    const arr = messagecommonleave.map((item) => item.lvetype_slno === 6 ? { ...item, ...obj } : item);
-    const newArr = arr.map((item) => item.lvetype_slno === 5 ? { ...item, ...obj } : item);
-    // Filter the Maternity For the Male Employee
-    const endMonth = endOfYear(new Date())
-    const sickCount = differenceInMonths(endMonth, new Date()) + 1
-    const sickObj = { leave_credit_policy_count: sickCount }
+    // Calculate remaining days in the current year
+    const remainingDays =
+      365 - differenceInDays(new Date(), startOfYear(new Date()));
 
-    const sickArray = newArr.map((item) => item.lvetype_slno === 7 ? { ...item, ...sickObj } : item);
+    // Calculate remaining months in the current year
+    const remainingMonths =
+      differenceInMonths(endOfYear(new Date()), new Date()) + 1;
 
-    const filterCommonArray = sickArray.filter((val) => val.lvetype_slno !== 2);
-    const newCommonArray = em_gender === 1 ? filterCommonArray : sickArray;
-    let commondata = newCommonArray.map((val) => {
-      const commonleave = {
-        em_no: em_no,
-        llvetype_slno: val.lvetype_slno,
-        cmn_lv_allowedflag: statutory_esi === 1 ? 1 : 0,
-        cmn_lv_allowed: val.leave_credit_policy_count,
-        cmn_lv_taken: 0,
-        cmn_lv_balance: val.leave_credit_policy_count,
-        Iv_process_slno: lv_process_slno,
-        update_user: loggerUser,
-        em_id: em_id,
-        cmn_lv_year: moment().format('YYYY-MM-DD')
-      }
-      return commonleave
-    }).filter((val) => statutory_esi === 0 && val.llvetype_slno !== 6 ||
-      statutory_esi === 1 && val.llvetype_slno !== 7)
+    // Prepare common leave records
+    let commondata = data.messagecommonleave
+      ?.filter(
+        ({ lvetype_slno }) =>
+          // Exclude maternity leave for male employees
+          !(em_gender === 1 && lvetype_slno === 2) &&
+
+          // Exclude ESI leave for non-ESI employees
+          !(statutory_esi === 0 && lvetype_slno === 6) &&
+
+          // Exclude Sick Leave for ESI employees
+          !(statutory_esi === 1 && lvetype_slno === 7)
+      )
+      .map(({ lvetype_slno, leave_credit_policy_count }) => {
+
+        // Determine leave count based on leave type
+        const count =
+          lvetype_slno === 6
+            ? remainingDays // ESI Leave
+            : lvetype_slno === 7
+            ? remainingMonths // Sick Leave
+            : lvetype_slno === 5
+            ? ecat_doctor === 1
+              ? remainingDays // Doctor category
+              : remainingMonths // Non-doctor category
+            : leave_credit_policy_count;
+
+        return {
+          em_no,
+          llvetype_slno: lvetype_slno,
+          cmn_lv_allowedflag: statutory_esi,
+          cmn_lv_allowed: count,
+          cmn_lv_taken: 0,
+          cmn_lv_balance: count,
+          Iv_process_slno: lv_process_slno,
+          update_user: loggerUser,
+          em_id,
+          cmn_lv_year: moment().format('YYYY-MM-DD')
+        };
+      });
+
+    // Remove Sick Leave for categories not eligible
     if (ecat_sl === 0) {
-      const list = commondata.filter((val) => val.llvetype_slno !== 7)
-      return { ...commonLeaveMessage, status: 1, data: list }
-    } else {
-      return { ...commonLeaveMessage, status: 1, data: commondata }
+      commondata = commondata.filter(
+        ({ llvetype_slno }) => llvetype_slno !== 7
+      );
     }
-  } else {
-    return { ...commonLeaveMessage, status: 0, data: [] }
+
+    // Remove Conference Leave for categories not eligible
+    if (ecat_confere === 0) {
+      commondata = commondata.filter(
+        ({ llvetype_slno }) => llvetype_slno !== 9
+      );
+    }
+
+    // Remove Maternity Leave for Doctor category
+    if (ecat_doctor === 1) {
+      commondata = commondata.filter(
+        ({ llvetype_slno }) => llvetype_slno !== 2
+      );
+    }
+
+    // Return generated leave records
+    return { status: 1, data: commondata };
+
+  } catch (error) {
+    console.error(error);
+
+    // Return empty data on exception
+    return { status: 0, data: [] };
   }
-}
+};
 
 //insert Common Leaves
 
@@ -1087,48 +1211,104 @@ export const insertAnnualEarnLeaves = async (dateRange, lv_process_slno, em_doj,
 
 
 //Update Common Leaves 
-export const updateCommonLeaveAfterRenewal = async (lv_process_slno, em_id, em_no, em_gender, statutory_esi, category) => {
-  // to get common leaves from leavetype master where common_leave=1
-  const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
-  const { successcommonleave, messagecommonleave } = result.data;
-  let commonLeaveMessage = { status: 0, data: [] }
-  if (successcommonleave === 1) {
-    //start of the year 2025-01-01
-    const result = startOfYear(new Date())
-    const res = differenceInDays(new Date(), result)
-    const obj = {
-      leave_credit_policy_count: 365 - res
-    }
+// export const updateCommonLeaveAfterRenewal = async (lv_process_slno, em_id, em_no, em_gender, statutory_esi, category) => {
+//   // to get common leaves from leavetype master where common_leave=1
+//   const result = await axioslogin.get('/yearlyleaves/get/getcommonleave');
+//   const { successcommonleave, messagecommonleave } = result.data;
+//   let commonLeaveMessage = { status: 0, data: [] }
+//   if (successcommonleave === 1) {
+//     //start of the year 2025-01-01
+//     const result = startOfYear(new Date())
+//     const res = differenceInDays(new Date(), result)
+//     const obj = {
+//       leave_credit_policy_count: 365 - res
+//     }
 
-    const arr = messagecommonleave.map((item) => item.lvetype_slno === 6 ? { ...item, ...obj } : item);
-    const newArr = arr.map((item) => item.lvetype_slno === 5 ? { ...item, ...obj } : item);
-    // Filter the Maternity For the Male Employee
-    const endMonth = endOfYear(new Date())
-    const sickCount = differenceInMonths(endMonth, new Date()) + 1
-    const sickObj = { leave_credit_policy_count: sickCount }
+//     const arr = messagecommonleave.map((item) => item.lvetype_slno === 6 ? { ...item, ...obj } : item);
+//     const newArr = arr.map((item) => item.lvetype_slno === 5 ? { ...item, ...obj } : item);
+//     // Filter the Maternity For the Male Employee
+//     const endMonth = endOfYear(new Date())
+//     const sickCount = differenceInMonths(endMonth, new Date()) + 1
+//     const sickObj = { leave_credit_policy_count: sickCount }
 
-    const sickArray = newArr.map((item) => item.lvetype_slno === 7 ? { ...item, ...sickObj } : item);
+//     const sickArray = newArr.map((item) => item.lvetype_slno === 7 ? { ...item, ...sickObj } : item);
 
-    const filterCommonArray = sickArray.filter((val) => val.lvetype_slno !== 2);
-    const newCommonArray = em_gender === 1 ? filterCommonArray : sickArray;
-    let commondata = newCommonArray.map((val) => {
-      const commonleave = {
-        em_no: em_no,
-        llvetype_slno: val.lvetype_slno,
-        cmn_lv_allowedflag: statutory_esi === 1 ? 1 : 0,
-        cmn_lv_allowed: val.leave_credit_policy_count,
+//     const filterCommonArray = sickArray.filter((val) => val.lvetype_slno !== 2);
+//     const newCommonArray = em_gender === 1 ? filterCommonArray : sickArray;
+//     let commondata = newCommonArray.map((val) => {
+//       const commonleave = {
+//         em_no: em_no,
+//         llvetype_slno: val.lvetype_slno,
+//         cmn_lv_allowedflag: statutory_esi === 1 ? 1 : 0,
+//         cmn_lv_allowed: val.leave_credit_policy_count,
+//         cmn_lv_taken: 0,
+//         cmn_lv_balance: val.leave_credit_policy_count,
+//         Iv_process_slno: lv_process_slno,
+//         update_user: loggerUser,
+//         em_id: em_id,
+//         cmn_lv_year: moment().format('YYYY-MM-DD')
+//       }
+//       return commonleave
+//     }).filter((val) => statutory_esi === 0 && val.llvetype_slno !== 6 ||
+//       statutory_esi === 1 && val.llvetype_slno !== 7)
+//     return { ...commonLeaveMessage, status: 1, data: commondata }
+//   } else {
+//     return { ...commonLeaveMessage, status: 0, data: [] }
+//   }
+// }
+
+
+export const updateCommonLeaveAfterRenewal = async (
+  lv_process_slno,
+  em_id,
+  em_no,
+  em_gender,
+  statutory_esi
+) => {
+  const { data } = await axioslogin.get('/yearlyleaves/get/getcommonleave');
+
+  if (data?.successcommonleave !== 1) {
+    return { status: 0, data: [] };
+  }
+
+  const currentDate = new Date();
+  const remainingDays =
+    365 - differenceInDays(currentDate, startOfYear(currentDate));
+
+  const sickLeaveCount =
+    differenceInMonths(endOfYear(currentDate), currentDate) + 1;
+
+  const commonLeaves = data?.messagecommonleave
+    ?.filter(
+      ({ lvetype_slno }) =>
+        !(em_gender === 1 && lvetype_slno === 2) && // Maternity leave for male
+        !(statutory_esi === 0 && lvetype_slno === 6) && // for esi leave
+        !(statutory_esi === 1 && lvetype_slno === 7) //for sick leave
+    )
+    ?.map(({ lvetype_slno, leave_credit_policy_count }) => {
+      const leaveCount =
+        lvetype_slno === 6
+          ? remainingDays
+          : [5, 7].includes(lvetype_slno) 
+            ? sickLeaveCount
+            : leave_credit_policy_count;
+
+      return {
+        em_no,
+        llvetype_slno: lvetype_slno,
+        cmn_lv_allowedflag: statutory_esi ? 1 : 0,
+        cmn_lv_allowed: leaveCount,
         cmn_lv_taken: 0,
-        cmn_lv_balance: val.leave_credit_policy_count,
+        cmn_lv_balance: leaveCount,
         Iv_process_slno: lv_process_slno,
         update_user: loggerUser,
-        em_id: em_id,
+        em_id,
         cmn_lv_year: moment().format('YYYY-MM-DD')
-      }
-      return commonleave
-    }).filter((val) => statutory_esi === 0 && val.llvetype_slno !== 6 ||
-      statutory_esi === 1 && val.llvetype_slno !== 7)
-    return { ...commonLeaveMessage, status: 1, data: commondata }
-  } else {
-    return { ...commonLeaveMessage, status: 0, data: [] }
-  }
-}
+      };
+    });
+
+  return {
+    status: 1,
+    data: commonLeaves
+  };
+};
