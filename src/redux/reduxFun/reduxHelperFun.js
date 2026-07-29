@@ -52,8 +52,8 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
 
     const result = differenceInDays(new Date(), new Date(actual_doj))
     const monthOrder = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
     ];
 
     // Push casual leaves to the array if available
@@ -61,7 +61,7 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
         const newCasualLeavesAttay = casualLeaves?.map((e) => {
             let leveCount = e.cl_lv_taken === 0 ? 1 : e.cl_lv_taken;
             const leaveYear = format(new Date(e.cl_lv_year), 'yyyy');
-            
+
             return {
                 type: 'CL',
                 name: 'Casual Leave',
@@ -74,9 +74,9 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
                 cmn: 0,
                 leaveMonth: e.cl_lv_year
             }
-            
-           })?.filter((e) => e.lveRequest === 0 && new Date(e.leaveMonth) <=new Date())
-       // })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+
+        })?.filter((e) => e.lveRequest === 0 && new Date(e.leaveMonth) <= new Date())
+        // })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
 
         // Sort the array by year in ascending order
         const sortedLeavesByYear = newCasualLeavesAttay.sort((a, b) => {
@@ -153,7 +153,7 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
             const resultArray = Array(integerPart).fill(1);
             const sickLeave = fractionalPart > 0 ? [...resultArray, fractionalPart] : resultArray;
 
-            const sickLeaveArray = result > 365? sickLeave?.map((e, index) => {
+            const sickLeaveArray = result > 365 ? sickLeave?.map((e, index) => {
 
                 return {
                     type: 'SL',
@@ -166,7 +166,7 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
                     common_slno: findSickLeave?.hrm_lv_cmn,
                     cmn: 1
                 }
-            }):[]
+            }) : []
             creditedLeavesArray.data.push(...sickLeaveArray); // Push the newly created array to creditedLeavesArray
         }
     }
@@ -213,9 +213,9 @@ export const allLeavesConvertAnArray = (state, actual_doj) => {
                     cmn: 1
                 }
             })?.sort((a, b) => {
-              const monthA = a.month.split(" ")[0];
-              const monthB = b.month.split(" ")[0];
-              return monthOrder.indexOf(monthA) - monthOrder.indexOf(monthB);
+                const monthA = a.month.split(" ")[0];
+                const monthB = b.month.split(" ")[0];
+                return monthOrder.indexOf(monthA) - monthOrder.indexOf(monthB);
             });
             creditedLeavesArray.data.push(...LWPLeaveArray); // Push the newly created array to creditedLeavesArray
         }
@@ -276,8 +276,8 @@ export const doctorsallLeavesConvertAnArray = (state, actual_doj) => {
 
     const result = differenceInDays(new Date(), new Date(actual_doj))
     const monthOrder = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
     ];
 
     // Push casual leaves to the array if available
@@ -285,7 +285,7 @@ export const doctorsallLeavesConvertAnArray = (state, actual_doj) => {
         const newCasualLeavesAttay = casualLeaves?.map((e) => {
             let leveCount = e.cl_lv_taken === 0 ? 1 : e.cl_lv_taken;
             const leaveYear = format(new Date(e.cl_lv_year), 'yyyy');
-            
+
             return {
                 type: 'CL',
                 name: 'Casual Leave',
@@ -298,9 +298,9 @@ export const doctorsallLeavesConvertAnArray = (state, actual_doj) => {
                 cmn: 0,
                 leaveMonth: e.cl_lv_year
             }
-            
-           })?.filter((e) => e.lveRequest === 0 && new Date(e.leaveMonth) <=new Date())
-       // })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
+
+        })?.filter((e) => e.lveRequest === 0 && new Date(e.leaveMonth) <= new Date())
+        // })?.filter((e) => e.lveRequest === 0 && getMonth(new Date(e.leaveMonth)) <= getMonth(new Date())) //REQUESTED LEAVE STATUS CHANGED TO 1 AFTER APPROVAL IT BECOME 1
 
         // Sort the array by year in ascending order
         const sortedLeavesByYear = newCasualLeavesAttay.sort((a, b) => {
@@ -377,7 +377,7 @@ export const doctorsallLeavesConvertAnArray = (state, actual_doj) => {
             const resultArray = Array(integerPart).fill(1);
             const sickLeave = fractionalPart > 0 ? [...resultArray, fractionalPart] : resultArray;
 
-            const sickLeaveArray = result > 365? sickLeave?.map((e, index) => {
+            const sickLeaveArray = result > 365 ? sickLeave?.map((e, index) => {
 
                 return {
                     type: 'SL',
@@ -390,7 +390,7 @@ export const doctorsallLeavesConvertAnArray = (state, actual_doj) => {
                     common_slno: findSickLeave?.hrm_lv_cmn,
                     cmn: 1
                 }
-            }):[]
+            }) : []
             creditedLeavesArray.data.push(...sickLeaveArray); // Push the newly created array to creditedLeavesArray
         }
     }
@@ -472,6 +472,25 @@ export const doctorsallLeavesConvertAnArray = (state, actual_doj) => {
                 count: findSickLeave?.cmn_lv_allowed,
                 taken: findSickLeave?.cmn_lv_taken,
                 common_slno: findSickLeave?.hrm_lv_cmn,
+                cmn: 1
+            }]
+
+            creditedLeavesArray.data.push(...array); // Push the newly created array to creditedLeavesArray
+        }
+    }
+    //for conference leave
+    if (commonLeaves?.length > 0) {
+        const findConfSLeave = commonLeaves.find((e) => e.llvetype_slno === 9);
+        if (findConfSLeave !== undefined) {
+            const array = [{
+                type: 'CNFL',
+                name: 'Conference Leave',
+                leavetype: 9,
+                slno: 1,
+                month: `CONFERENCE LEAVE`,
+                count: findConfSLeave?.cmn_lv_allowed,
+                taken: findConfSLeave?.cmn_lv_taken,
+                common_slno: findConfSLeave?.hrm_lv_cmn,
                 cmn: 1
             }]
 

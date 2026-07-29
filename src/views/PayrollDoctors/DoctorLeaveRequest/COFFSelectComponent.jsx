@@ -6,7 +6,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import moment from 'moment';
 import { infoNofity, warningNofity, succesNofity, errorNofity } from 'src/views/CommonCode/Commonfunc';
-import { addDays, format, subHours, addHours } from 'date-fns'
+import { addDays, format, subHours, addHours, isSunday } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios';
 import { getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import { useSelector } from 'react-redux'
@@ -51,10 +51,12 @@ const COFFSelectComponent = () => {
         shft_chkin_time, shft_chkout_time
       } = data[0];
       if (coff_flag === 1) {
-        infoNofity("This Date Is Already Used For COFF Request")
+        infoNofity("This Date Is Already Used For OFF Request")
         setFromDate(moment(new Date()))
-      } else if (night_off_flag === 0) {
+      } else if (dutyday === 1 && night_off_flag === 0) {
         infoNofity("This Shift Must Be Night Shift!")
+      } else if (dutyday === 3 && !(isSunday(new Date(date)))) {
+        infoNofity("The Selected Date Must Be Sunday!")
       } else {
         setShiftId(shift_id)
         setShiftDesc(shft_desc)
@@ -111,15 +113,26 @@ const COFFSelectComponent = () => {
         em_dept_section: em_dept_section,
         shift_id: 1,
         cf_reason: reson,
-        leave_date:format(new Date(requiredDate), 'yyyy-MM-dd'),
-        duty_taken_date:format(new Date(fromDate), 'yyyy-MM-dd'),
-        duty_shift:shiftId
+        leave_date: format(new Date(requiredDate), 'yyyy-MM-dd'),
+        duty_taken_date: format(new Date(fromDate), 'yyyy-MM-dd'),
+        duty_shift: shiftId,
+        lvereq_desc: dutyday === 1
+          ? 'DOFF'
+          : dutyday === 2 || dutyday === 3
+            ? 'COFF'
+            : 'A',
+
+        duty_desc: dutyday === 1
+          ? 'DOFF'
+          : dutyday === 2 || dutyday === 3
+            ? 'COFF'
+            : 'A',
       }
 
       const result = await axioslogin.post('/DoctorsProcess/insert/coff', postData)
       const { success, message } = result.data;
       if (success === 2) {
-        succesNofity('C-OFF Credited SuccessFully')
+        succesNofity('OFF Credited SuccessFully')
         setOpenBkDrop(false)
         setRequiredDate(new Date())
         setSpecialdutyType(0)
@@ -148,10 +161,11 @@ const COFFSelectComponent = () => {
             color="primary"
           >
             <Option value={0} disabled>
-              Duty Day Type
+              Select Duty Type
             </Option>
             <Option value={1}>Night Duty</Option>
             <Option value={2}>Special Duty</Option>
+            <Option value={3}>Sunday Duty</Option>
           </Select>
         </Box>
         {
@@ -197,86 +211,7 @@ const COFFSelectComponent = () => {
             disabled
           />
         </Box>
-
       </Box>
-      {/* <Box sx={{ display: 'flex', flexDirection: 'row', p: 0.5 }}>
-        <Box sx={{ display: "flex", mx: 2, alignItems: 'center', }} >
-          <Checkbox
-            label={`Check In`}
-            variant="outlined"
-            color='danger'
-            size="lg"
-            disabled={disableCheck}
-            onChange={(e) => handleChangeCheckInCheck(e)}
-            checked={checkinBox}
-          />
-        </Box>
-        <Box sx={{ display: 'flex', flex: 1, p: 0.2, }} >
-          <Select
-            value={punchInTime}
-            onChange={(event, newValue) => {
-              setPunchInTime(newValue);
-            }}
-            sx={{ width: '100%' }}
-            size='md'
-            variant='outlined'
-            disabled={disableIn}
-          >
-            <Option disabled value={0}>Select Check In Time</Option>
-            {
-              punchDetl?.map((val, index) => {
-                return <Option key={index} value={val.punch_time}>{val.punch_time}</Option>
-              })
-            }
-          </Select>
-        </Box>
-        <Box sx={{ display: "flex", mx: 2, alignItems: 'center', }} >
-          <Checkbox
-            label={`Check Out`}
-            variant="outlined"
-            color='danger'
-            size="lg"
-            disabled={disableCheck}
-            onChange={(e) => handleChangeCheckOutCheck(e)}
-            checked={checkoutBox}
-          />
-
-        </Box>
-        <Box sx={{ display: 'flex', flex: 1, p: 0.2, }} >
-          <Select
-            value={punchOutTime}
-            onChange={(event, newValue) => {
-              setPunchOutTime(newValue);
-            }}
-            sx={{ width: '100%' }}
-            size='md'
-            variant='outlined'
-            disabled={disableOut}
-          >
-            <Option disabled value={0}>Select Check Out Time</Option>
-            {
-              punchDetl?.map((val, index) => {
-                return <Option key={index} value={val.punch_time}>{val.punch_time}</Option>
-              })
-            }
-          </Select>
-        </Box>
-        <Box sx={{ px: 0.5, mt: 0.5 }}>
-          <Tooltip title="Process" followCursor placement='top' arrow variant='outlined' color='success'  >
-            <Button
-              aria-label="Like"
-              variant="outlined"
-              color="success"
-              onClick={processPunchData}
-              size='sm'
-              sx={{ width: '100%' }}
-              endDecorator={<Box>Process</Box>}
-            >
-              <ExitToAppOutlinedIcon fontSize='medium' />
-            </Button>
-          </Tooltip>
-        </Box>
-      </Box> */}
       <Box sx={{ display: "flex", flex: 1, px: 0.5, alignItems: 'center', }} >
         <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }} >
           <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2} >OFF Required Date</Typography>
@@ -286,7 +221,7 @@ const COFFSelectComponent = () => {
               inputFormat="dd-MM-yyyy"
               value={requiredDate}
               minDate={new Date(fromDate)}
-              maxDate={addDays(new Date(fromDate), 30)}
+              maxDate={addDays(new Date(fromDate), 14)}
               size="small"
               disabled={disableCheck}
               onChange={(newValue) => {
@@ -307,7 +242,7 @@ const COFFSelectComponent = () => {
               <Textarea
                 color="warning"
                 defaultValue=''
-                placeholder="COFF Request Reason ..."
+                placeholder="OFF Request Reason ..."
                 size="md"
                 variant="outlined"
                 disabled={disableCheck}
