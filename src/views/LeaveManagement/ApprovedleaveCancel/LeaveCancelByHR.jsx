@@ -9,6 +9,7 @@ import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout'
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { format } from 'date-fns';
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
 
 const HalfdayModal = lazy(() => import('./ModalComponents/HalfdayModal'))
 const MisspunchModal = lazy(() => import('./ModalComponents/MisspunchModal'))
@@ -20,7 +21,7 @@ const LeaveCancelByHR = () => {
     const [leaverequesttype, setleaverequesttype] = useState([]);
     const [value, setValue] = useState(1);
     const [tableData, setTableData] = useState([])
-
+    const [openBkDrop, setOpenBkDrop] = useState(false)
     const [count, setCount] = useState(0)
 
     const [ondutyOpen, setOndutyOpen] = useState(false)
@@ -199,7 +200,7 @@ const LeaveCancelByHR = () => {
         { headerName: 'Name ', field: 'name', filter: true, minWidth: 200 },
         { headerName: 'Department ', field: 'department', minWidth: 200, filter: true },
         { headerName: 'Section', field: 'section', filter: true, minWidth: 200 },
-        { headerName: 'Request Date', field: 'requestDate', filter: true, minWidth: 200 },
+        // { headerName: 'Request Date', field: 'requestDate', filter: true, minWidth: 200 },
         {
             headerName: 'Action',
             cellRenderer: params => {
@@ -245,6 +246,7 @@ const LeaveCancelByHR = () => {
 
     return (
         <CustomLayout title="Approved Leave Cancel By HR" displayClose={true} >
+        <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
             <OneHourModal open={onhourOpen} setOpen={setOneHourOpen} onhourdata={oneHourData} setCount={setCount} />
             <OnDutyModal open={ondutyOpen} setOpen={setOndutyOpen} ondutyData={ondutyData} setCount={setCount} />
             <MisspunchModal open={misspunchOpen} setOpen={setMisspunchOpen} missData={misspunchData} setCount={setCount} />
