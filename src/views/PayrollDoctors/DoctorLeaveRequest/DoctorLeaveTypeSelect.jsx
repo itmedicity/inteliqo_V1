@@ -4,7 +4,8 @@ import React, { memo } from 'react'
 const DoctorLeaveTypeSelect = ({ value, setValue }) => {
     const leaveRequestType = [
         { lrequest_slno: 1, lrequest_type: 'Leave Request' },
-        { lrequest_slno: 2, lrequest_type: 'Compensatory OFF' },
+        { lrequest_slno: 2, lrequest_type: 'OFF Request' },
+        { lrequest_slno: 3, lrequest_type: 'Accademic/Exam Leave Request' },
     ]
 
     return (

@@ -902,21 +902,21 @@ export const updateCommonLeaves = async (
 
     // Remove Sick Leave for categories not eligible
     if (ecat_sl === 0) {
-      commondata = commondata.filter(
+      commondata = commondata?.filter(
         ({ llvetype_slno }) => llvetype_slno !== 7
       );
     }
 
     // Remove Conference Leave for categories not eligible
     if (ecat_confere === 0) {
-      commondata = commondata.filter(
+      commondata = commondata?.filter(
         ({ llvetype_slno }) => llvetype_slno !== 9
       );
     }
 
     // Remove Maternity Leave for Doctor category
     if (ecat_doctor === 1) {
-      commondata = commondata.filter(
+      commondata = commondata?.filter(
         ({ llvetype_slno }) => llvetype_slno !== 2
       );
     }
@@ -1263,8 +1263,12 @@ export const updateCommonLeaveAfterRenewal = async (
   em_id,
   em_no,
   em_gender,
-  statutory_esi
+  statutory_esi,
+  category
 ) => {
+
+  const { ecat_sl, ecat_confere, ecat_doctor } = category;
+
   const { data } = await axioslogin.get('/yearlyleaves/get/getcommonleave');
 
   if (data?.successcommonleave !== 1) {
@@ -1272,13 +1276,13 @@ export const updateCommonLeaveAfterRenewal = async (
   }
 
   const currentDate = new Date();
-  const remainingDays =
-    365 - differenceInDays(currentDate, startOfYear(currentDate));
+ const remainingDays =
+      365 - differenceInDays(new Date(), startOfYear(new Date()));
 
-  const sickLeaveCount =
-    differenceInMonths(endOfYear(currentDate), currentDate) + 1;
+    const remainingMonths =
+      differenceInMonths(endOfYear(new Date()), new Date()) + 1;
 
-  const commonLeaves = data?.messagecommonleave
+  let commonLeaves = data?.messagecommonleave
     ?.filter(
       ({ lvetype_slno }) =>
         !(em_gender === 1 && lvetype_slno === 2) && // Maternity leave for male
@@ -1286,26 +1290,53 @@ export const updateCommonLeaveAfterRenewal = async (
         !(statutory_esi === 1 && lvetype_slno === 7) //for sick leave
     )
     ?.map(({ lvetype_slno, leave_credit_policy_count }) => {
-      const leaveCount =
-        lvetype_slno === 6
-          ? remainingDays
-          : [5, 7].includes(lvetype_slno) 
-            ? sickLeaveCount
+      // Determine leave count based on leave type
+        const count =
+          lvetype_slno === 6
+            ? remainingDays // ESI Leave
+            : lvetype_slno === 7
+            ? remainingMonths // Sick Leave
+            : lvetype_slno === 5
+            ? ecat_doctor === 1
+              ? remainingDays // Doctor category
+              : remainingMonths // Non-doctor category
             : leave_credit_policy_count;
 
       return {
         em_no,
         llvetype_slno: lvetype_slno,
-        cmn_lv_allowedflag: statutory_esi ? 1 : 0,
-        cmn_lv_allowed: leaveCount,
+        cmn_lv_allowedflag: statutory_esi,
+        cmn_lv_allowed: count,
         cmn_lv_taken: 0,
-        cmn_lv_balance: leaveCount,
+        cmn_lv_balance: count,
         Iv_process_slno: lv_process_slno,
         update_user: loggerUser,
         em_id,
         cmn_lv_year: moment().format('YYYY-MM-DD')
       };
     });
+
+    // Remove Sick Leave for categories not eligible
+    if (ecat_sl === 0) {
+      commonLeaves = commonLeaves?.filter(
+        ({ llvetype_slno }) => llvetype_slno !== 7
+      );
+    }
+
+    // Remove Conference Leave for categories not eligible
+    if (ecat_confere === 0) {
+      commonLeaves = commonLeaves?.filter(
+        ({ llvetype_slno }) => llvetype_slno !== 9
+      );
+      
+    }
+
+    // Remove Maternity Leave for Doctor category
+    if (ecat_doctor === 1) {
+      commonLeaves = commonLeaves?.filter(
+        ({ llvetype_slno }) => llvetype_slno !== 2
+      );
+    }
 
   return {
     status: 1,

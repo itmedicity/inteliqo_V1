@@ -17,6 +17,7 @@ import DoctorLeaveTypeSelect from './DoctorLeaveTypeSelect'
 
 const COFFSelectComponent = lazy(() => import('./COFFSelectComponent'))
 const LeaveSelectComponent = lazy(() => import('./LeaveSelectComponent'))
+const ExaminLeave=lazy(()=>import('./ExaminationLeave'))
 
 const LeaveRequest = () => {
     const dispatch = useDispatch()
@@ -98,7 +99,8 @@ const LeaveRequest = () => {
                 </Box>
                 {
                     requestType === 1 ? <LeaveSelectComponent emply={emply} /> :
-                        requestType === 2 ? <COFFSelectComponent /> : null
+                        requestType === 2 ? <COFFSelectComponent /> : 
+                        requestType === 3?<ExaminLeave/>: null
                 }
             </Box>
         </CustomLayout>

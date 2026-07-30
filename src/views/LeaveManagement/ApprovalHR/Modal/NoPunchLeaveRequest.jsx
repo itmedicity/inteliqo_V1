@@ -85,7 +85,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
 
                     const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData);
                     const { su, result_data } = punch_data.data;
-                    if (su === 1) {
+                    if (su === 1 && result_data?.length!==0) {
                         const punchaData = result_data;
 
                         const punch_master_data = await axioslogin.post("/attendCal/attendanceshiftdetl/", punchmastData); //GET PUNCH MASTER DATA
@@ -196,13 +196,24 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                 }
                                 else {
                                     errorNofity(message)
+                                    setOpenBkDrop(false)
+                                    setCount(Math.random())
+                                    setOpen(false)
                                 }
                             })
                         })
+                    }else{
+                        warningNofity("There Is No Punch Data Against this Employee Numbner!")
+                        setOpenBkDrop(false)
+                        setCount(Math.random())
+                        setOpen(false)
                     }
                 }
             } else {
                 errorNofity("Error getting PunchMarkingHR ")
+                setOpenBkDrop(false)
+                setCount(Math.random())
+                setOpen(false)
             }
         }
     }, [reason, setCount, setOpen, slno, dept_section, nopunchdate, crossDay, cmmn_early_out,

@@ -88,7 +88,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
 
                     const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData);
                     const { su, result_data } = punch_data.data;
-                    if (su === 1) {
+                    if (su === 1 && result_data?.length!==0) {
                         const punchaData = result_data;
                         const punch_master_data = await axioslogin.post("/attendCal/attendanceshiftdetl/", punchmastData); //GET PUNCH MASTER DATA
                         const { success, data } = punch_master_data.data;
@@ -196,15 +196,31 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                         setOpen(false)
                                     }
                                     else {
-                                        succesNofity(message)
+                                        errorNofity(message)
+                                        setOpenBkDrop(false)
+                                        setCount(Math.random())
+                                        setOpen(false)
                                     }
                                 })
                             })
+                        }else{
+                        warningNofity("There Is No Attendance Data!")
+                        setOpenBkDrop(false)
+                        setCount(Math.random())
+                        setOpen(false)
                         }
+                    }else{
+                        warningNofity("There Is No Punch Data Against this Employee Numbner!")
+                        setOpenBkDrop(false)
+                        setCount(Math.random())
+                        setOpen(false)
                     }
                 }
             } else {
                 errorNofity("Error getting PunchMarkingHR ")
+                setOpenBkDrop(false)
+                setCount(Math.random())
+                setOpen(false)
             }
         }
     }, [setCount, setOpen, reason, slno, leavedate, emno, dept_section, crossDay, cmmn_early_out, cmmn_grace_period,

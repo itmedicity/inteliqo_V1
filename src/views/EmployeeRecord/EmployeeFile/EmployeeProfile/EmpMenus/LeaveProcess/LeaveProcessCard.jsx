@@ -191,6 +191,7 @@ const LeaveProcessCard = ({ data, category }) => {
                             }
                         })
                         .catch((err) => {
+                            console.log(err)
                             warningNofity(`Error Processing Common Leaves: ${err}`);
                         });
                 }

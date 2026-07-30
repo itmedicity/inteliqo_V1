@@ -167,7 +167,7 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                     }
                     const punch_data = await axioslogin.post("/attendCal/getPunchDataEmCodeWiseDateWise/", postData);
                     const { su, result_data } = punch_data.data;
-                    if (su === 1) {
+                    if (su === 1 && result_data?.length!==0) {
                         const punchaData = result_data;
                         const punch_master_data = await axioslogin.post("/attendCal/attendanceshiftdetl/", punchmastData); //GET PUNCH MASTER DATA
                         const { success, data } = punch_master_data.data;
@@ -283,10 +283,17 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
                             })
 
                         } else {
-                            warningNofity("There Is No Punchmast Data!")
+                            warningNofity("There Is No Attendance Data!")
+                            setOpenBkDrop(false)
+                            setOpen(false)
+                            setCount(Math.random())
                         }
                     } else {
-                        warningNofity("There Is No Punch Data!")
+                        warningNofity("There Is No Punch Data Against this Employee Numbner!")
+                        setOpenBkDrop(false)
+                        setOpen(false)
+                        setCount(Math.random())
+
                     }
                 }
             } else {

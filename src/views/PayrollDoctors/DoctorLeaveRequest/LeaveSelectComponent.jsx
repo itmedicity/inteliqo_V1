@@ -108,8 +108,9 @@ const LeaveSelectComponent = ({ emply }) => {
        * LWP -> 5
        * ML -> 2
        * SL -> 7
+       * CFNL -> 9
        */
-      const commonLeave = [6, 5, 2]
+      const commonLeave = [6, 5, 2, 9]
       // FILTER AND REMOVE THE COMMON LEAVES
       const commonLeaveFilterArray = table
         ?.filter((e) => !commonLeave?.includes(e.leavetype))
@@ -216,6 +217,7 @@ const LeaveSelectComponent = ({ emply }) => {
               setFromDate(new Date())
               setToDate(new Date())
             }
+        
             const submitLeaveRequet = await axioslogin.post(
               '/LeaveRequest/insert/doctorleave',
               modifiedLveReq,
@@ -223,21 +225,19 @@ const LeaveSelectComponent = ({ emply }) => {
             const { success, message } = submitLeaveRequet.data
             if (success === 1) {
               succesNofity('Leave request submited Successfully')
+              setTable([])
+              setReason('')
+              setFromDate(new Date())
+              setToDate(new Date())
               reset()
-              // setTable([])
-              // // setReason('')
-              // setFromDate(new Date())
-              // setToDate(new Date())
             } else {
               errorNofity(message)
-              // setTable([])
-              // // setReason('')
-              // setFromDate(new Date())
-              // setToDate(new Date())
-              
+              setTable([])
+              setReason('')
+              setFromDate(new Date())
+              setToDate(new Date())
               reset()
             }
-            // setReason('')
           } else {
             warningNofity(
               'One of the selected common leave counts is greater than the credited count.',
@@ -396,7 +396,6 @@ const LeaveSelectComponent = ({ emply }) => {
               size="sm"
               fullWidth
               color="primary"
-              // disabled={disablesave}
               onClick={handleProcessLeaveRequest}
             >
               Save Request
