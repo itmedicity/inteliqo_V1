@@ -8,6 +8,7 @@ import ArrowRightOutlinedIcon from '@mui/icons-material/ArrowRightOutlined';
 import { axioslogin } from 'src/views/Axios/Axios';
 import { succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const OneHourCancelModal = ({ open, setOpen, empData, setCount }) => {
 
@@ -22,7 +23,9 @@ const OneHourCancelModal = ({ open, setOpen, empData, setCount }) => {
         const postData = {
             cancel_comment: reason,
             cancel_user: em_id,
-            slno: empData?.request_slno
+            slno: empData?.request_slno,
+            em_no: empData?.em_no,
+            duty_day:moment(empData?.one_hour_duty_day).format('YYYY-MM-DD')
         }
 
         const result = await axioslogin.patch('/CommonReqst/cancel/onhour', postData)

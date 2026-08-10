@@ -137,15 +137,21 @@ const ShiftModal = ({ open, setOpen, data, punchData, punchMast, setTableArray, 
                     lvereq_desc: getAttendance?.lvereq_desc,
                     punch_slno: data?.punch_slno,
                 }
-                let result = await axioslogin.post("/attendCal/updatePunchMasterSingleRow", postData);
-                const { success } = result.data;
-                if (success === 1) {
-                    setTableArray([])
-                    succesNofity('Punch Data Updated')
+
+                if (inTime === null || outTime === null) {
+                    warningNofity("In / Out Punch Is Missing!")
                     setOpen(false)
                 } else {
-                    errorNofity('Punch Data Not Updated ! Contact HR/IT')
-                    setOpen(false)
+                    let result = await axioslogin.post("/attendCal/updatePunchMasterSingleRow", postData);
+                    const { success } = result.data;
+                    if (success === 1) {
+                        setTableArray([])
+                        succesNofity('Punch Data Updated')
+                        setOpen(false)
+                    } else {
+                        errorNofity('Punch Data Not Updated ! Contact HR/IT')
+                        setOpen(false)
+                    }
                 }
             } else {
                 //one of the date or both dates are not a valid dates

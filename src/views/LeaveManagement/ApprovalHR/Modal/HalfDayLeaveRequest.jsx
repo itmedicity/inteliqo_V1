@@ -180,7 +180,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                             em_no: emno,
                                             hf_hr_apprv_cmnt: reason,
                                             planSlno: planslno,
-                                            hf_hr_apprv_date: format(new Date(), 'yyyy-MM-dd '),
+                                            hf_hr_apprv_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                                             hf_hr_uscode: loginem_id,
                                             half_slno: slno
                                         }
@@ -231,7 +231,7 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
         return {
             hf_hr_apprv_status: 2,
             hf_hr_apprv_cmnt: reason,
-            hf_hr_apprv_date: moment().format('YYYY-MM-DD HH:mm'),
+            hf_hr_apprv_date: moment().format('YYYY-MM-DD HH:mm:ss'),
             hf_hr_uscode: loginem_id,
             half_slno: slno,
             hrm_cl_slno: planslno,

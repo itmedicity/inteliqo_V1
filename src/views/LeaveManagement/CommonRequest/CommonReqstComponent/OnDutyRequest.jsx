@@ -6,7 +6,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useSelector } from 'react-redux';
 import { getCommonSettings, getEmployeeInformationLimited, getInchargeHodAuthorization, getLeaveReqApprovalLevel, getSelectedEmpInformation } from 'src/redux/reduxFun/reduxHelperFun';
 import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
+import { errorNofity, succesNofity, warningNofity, infoNofity } from 'src/views/CommonCode/Commonfunc';
 import { addDays, eachDayOfInterval, format, lastDayOfMonth, startOfMonth } from 'date-fns';
 import { Paper } from '@mui/material';
 import { screenInnerHeight } from 'src/views/Constant/Constant';
@@ -206,34 +206,43 @@ const OnDutyRequest = () => {
                 if (lastUpdateDate === lastDay_month) {
                     warningNofity("Punch Marking Monthly Process Done !! Can't Apply No punch Request!!  ")
                 } else {
-                    const postdata = {
+                   
+                    const unTickedArray = postArray?.filter(k => k.out_time === 1)
+                    if (unTickedArray?.length === 0) {
+                        infoNofity("Select The Check Option!")
+                    } else {
+
+                         const postdata = {
                         fromDate: format(new Date(fromDate), 'yyyy-MM-dd'),
                         toDate: format(new Date(toDate), 'yyyy-MM-dd'),
                         em_no: em_no,
-                        postArray: postArray
+                        postArray: unTickedArray
                     }
-                    const result = await axioslogin.post('/CommonReqst/onduty/create', postdata)
-                    const { message, success } = result.data;
-                    if (success === 3) {
-                        succesNofity(message)
-                        setFromDate(new Date())
-                        setToDate(new Date())
-                        setRemark('')
-                        setDates([])
-                        setCount(Math.random())
-                    } else if (success === 2) {
-                        warningNofity(message)
-                        setFromDate(new Date())
-                        setToDate(new Date())
-                        setRemark('')
-                        setDates([])
-                    } else {
-                        errorNofity(message)
-                        setFromDate(new Date())
-                        setToDate(new Date())
-                        setRemark('')
-                        setDates([])
+
+                        const result = await axioslogin.post('/CommonReqst/onduty/create', postdata)
+                        const { message, success } = result.data;
+                        if (success === 3) {
+                            succesNofity(message)
+                            setFromDate(new Date())
+                            setToDate(new Date())
+                            setRemark('')
+                            setDates([])
+                            setCount(Math.random())
+                        } else if (success === 2) {
+                            warningNofity(message)
+                            setFromDate(new Date())
+                            setToDate(new Date())
+                            setRemark('')
+                            setDates([])
+                        } else {
+                            errorNofity(message)
+                            setFromDate(new Date())
+                            setToDate(new Date())
+                            setRemark('')
+                            setDates([])
+                        }
                     }
+
                 }
             } else {
                 errorNofity("Error getting PunchMarkingHR ")
