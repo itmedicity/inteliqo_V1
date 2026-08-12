@@ -1,23 +1,26 @@
 import React, { Fragment, useCallback, memo, useMemo } from 'react'
-import Button from '@mui/joy/Button';
-import Modal from '@mui/joy/Modal';
-import ModalClose from '@mui/joy/ModalClose';
-import Typography from '@mui/joy/Typography';
-import { useState } from 'react';
-import { Chip, Divider, ModalDialog, Textarea } from '@mui/joy';
-import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
-import { Box, } from '@mui/material';
-import moment from 'moment';
-import { axioslogin } from 'src/views/Axios/Axios';
-import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import { addDays, addHours, format, lastDayOfMonth, startOfMonth, subHours } from 'date-fns';
-import { useSelector } from 'react-redux';
-import { getAttendanceCalculation, getLateInTimeIntervel, punchInOutChecking } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc';
+import Button from '@mui/joy/Button'
+import Modal from '@mui/joy/Modal'
+import ModalClose from '@mui/joy/ModalClose'
+import Typography from '@mui/joy/Typography'
+import { useState } from 'react'
+import { Chip, Divider, ModalDialog, Textarea } from '@mui/joy'
+import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined'
+import { Box } from '@mui/material'
+import moment from 'moment'
+import { axioslogin } from 'src/views/Axios/Axios'
+import { errorNofity, succesNofity, warningNofity } from 'src/views/CommonCode/Commonfunc'
+import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import { addDays, addHours, format, lastDayOfMonth, startOfMonth, subHours } from 'date-fns'
+import { useSelector } from 'react-redux'
+import {
+  getAttendanceCalculation,
+  getLateInTimeIntervel,
+  punchInOutChecking,
+} from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc'
 
 const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
-
-    const halfdayDta = useMemo(() => data, [data])
+ const halfdayDta = useMemo(() => data, [data])
 
     const [reason, setReason] = useState('');
     const [openBkDrop, setOpenBkDrop] = useState(false)
@@ -257,188 +260,293 @@ const HalfDayLeaveRequest = ({ open, setOpen, data, setCount }) => {
         }
     }, [LeaveRejectdata, setOpen, setCount])
 
-    return (
-        <Fragment>
-            <CustomBackDrop open={openBkDrop} text="Please wait !. Leave Detailed information Updation In Process" />
-            <Modal
-                aria-labelledby="modal-title"
-                aria-describedby="modal-desc"
-                open={open}
-                onClose={() => setOpen(false)}
-                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+  return (
+    <Fragment>
+      <CustomBackDrop
+        open={openBkDrop}
+        text="Please wait !. Leave Detailed information Updation In Process"
+      />
+      <Modal
+        aria-labelledby="modal-title"
+        aria-describedby="modal-desc"
+        open={open}
+        onClose={() => setOpen(false)}
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+      >
+        <ModalDialog size="lg">
+          <ModalClose
+            variant="outlined"
+            sx={{
+              top: 'calc(-1/4 * var(--IconButton-size))',
+              right: 'calc(-1/4 * var(--IconButton-size))',
+              boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
+              borderRadius: '50%',
+              bgcolor: 'background.body',
+            }}
+          />
+          <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center' }}>
+            <Typography
+              fontSize="xl2"
+              lineHeight={1}
+              startDecorator={<EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />}
+              sx={{ display: 'flex', alignItems: 'flex-start', mr: 2 }}
             >
-                <ModalDialog size="lg"  >
-                    <ModalClose
-                        variant="outlined"
-                        sx={{
-                            top: 'calc(-1/4 * var(--IconButton-size))',
-                            right: 'calc(-1/4 * var(--IconButton-size))',
-                            boxShadow: '0 2px 12px 0 rgba(0 0 0 / 0.2)',
-                            borderRadius: '50%',
-                            bgcolor: 'background.body',
-                        }}
-                    />
-                    <Box sx={{ display: 'flex', flex: 1, alignContent: 'center', alignItems: 'center', }} >
-                        <Typography
-                            fontSize="xl2"
-                            lineHeight={1}
-                            startDecorator={
-                                <EmojiEmotionsOutlinedIcon sx={{ color: 'green' }} />
-                            }
-                            sx={{ display: 'flex', alignItems: 'flex-start', mr: 2, }}
-                        >
-                            {name}
-                        </Typography>
-                        <Typography
-                            lineHeight={1}
-                            component="h3"
-                            id="modal-title"
-                            level="h5"
-                            textColor="inherit"
-                            fontWeight="md"
-                            // mb={1}
-                            endDecorator={<Typography
-                                level="h6"
-                                justifyContent="center"
-                                alignItems="center"
-                                alignContent='center'
-                                lineHeight={1}
-                            >
-                                {emno}
-                            </Typography>}
-                            sx={{ color: 'neutral.400', display: 'flex', }}
-                        >
-                            {`employee #`}
-                        </Typography>
-                        <Typography level="body1" sx={{ px: 1, textTransform: "lowercase" }} >{section}</Typography>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex', justifyContent: 'center',
-                            alignItems: 'center', px: 1, borderBlockStyle: 'outset',
-                            flexDirection: 'column',
-                        }} >
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
-                            <Box sx={{ flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Request Date
-                                </Typography>
-                            </Box>
-                            <Box sx={{ flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{requestDate}
-                                </Typography>
-                            </Box>
-                        </Box>
+              {name}
+            </Typography>
+            <Typography
+              lineHeight={1}
+              component="h3"
+              id="modal-title"
+              level="h5"
+              textColor="inherit"
+              fontWeight="md"
+              // mb={1}
+              endDecorator={
+                <Typography
+                  level="h6"
+                  justifyContent="center"
+                  alignItems="center"
+                  alignContent="center"
+                  lineHeight={1}
+                >
+                  {emno}
+                </Typography>
+              }
+              sx={{ color: 'neutral.400', display: 'flex' }}
+            >
+              {`employee #`}
+            </Typography>
+            <Typography level="body1" sx={{ px: 1, textTransform: 'lowercase' }}>
+              {section}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              px: 1,
+              borderBlockStyle: 'outset',
+              flexDirection: 'column',
+            }}
+          >
+            <Box sx={{ flex: 1, display: 'flex', width: '100%' }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography fontSize="sm" fontWeight="lg">
+                  Request Date
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }}>
+                  :{requestDate}
+                </Typography>
+              </Box>
+            </Box>
 
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
-                            <Box sx={{ flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Shift
-                                </Typography>
-                            </Box>
-                            <Box sx={{ flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{shft_desc}
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Halfday Taken Date
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{halfday_date}
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Halfday Taken Time
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{halfday_status === 1 ? 'First Half' : 'Second Half'}
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Month of Leave
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{month}
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }} >
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Reason
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{hf_reason}
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Incharge Comment
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{hf_inc_apprv_cmnt === null ? 'NIL' : hf_inc_apprv_cmnt === '' ? 'NIL' : hf_inc_apprv_cmnt}
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <Box sx={{ flex: 1, display: 'flex', width: '100%', }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg"  >
-                                    Hod Comment
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                    :{hf_hod_apprv_cmnt === null ? 'NIL' : hf_hod_apprv_cmnt === '' ? 'NIL' : hf_hod_apprv_cmnt}
-                                </Typography>
-                            </Box>
-                        </Box>
-                    </Box>
-                    <Divider>
-                        <Chip variant="outlined" color="info" size="sm">
-                            HR Use Only
-                        </Chip>
-                    </Divider>
-                    <Box sx={{ pt: 0.5 }} >
-                        <Textarea name="Outlined" placeholder="Reason For Approve/Reject The Request here…"
-                            variant="outlined" onChange={(e) => setReason(e.target.value)} />
-                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
-                            <Button variant="solid" color="success" onClick={handleApproverequest}>
-                                Leave Request Approve
-                            </Button>
-                            <Button variant="solid" color="danger" onClick={handleRegectRequest}>
-                                Leave Request Reject
-                            </Button>
-                        </Box>
-                    </Box>
-                </ModalDialog>
-            </Modal>
-        </Fragment>
-
-    )
+            <Box sx={{ flex: 1, display: 'flex', width: '100%' }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography fontSize="sm" fontWeight="lg">
+                  Shift
+                </Typography>
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }}>
+                  :{shft_desc}
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ flex: 1, display: 'flex', width: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg">
+                  Halfday Taken Date
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }}>
+                  :{halfday_date}
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ flex: 1, display: 'flex', width: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg">
+                  Halfday Taken Time
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }}>
+                  :{halfday_status === 1 ? 'First Half' : 'Second Half'}
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ flex: 1, display: 'flex', width: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg">
+                  Month of Leave
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }}>
+                  :{month}
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ flex: 1, display: 'flex', width: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg">
+                  Reason
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }}>
+                  :{hf_reason}
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ flex: 1, display: 'flex', width: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg">
+                  Incharge Comment
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }}>
+                  :
+                  {hf_inc_apprv_cmnt === null
+                    ? 'NIL'
+                    : hf_inc_apprv_cmnt === ''
+                    ? 'NIL'
+                    : hf_inc_apprv_cmnt}
+                </Typography>
+              </Box>
+            </Box>
+            <Box sx={{ flex: 1, display: 'flex', width: '100%' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg">
+                  Hod Comment
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  flex: 1,
+                }}
+              >
+                <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }}>
+                  :
+                  {hf_hod_apprv_cmnt === null
+                    ? 'NIL'
+                    : hf_hod_apprv_cmnt === ''
+                    ? 'NIL'
+                    : hf_hod_apprv_cmnt}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+          <Divider>
+            <Chip variant="outlined" color="info" size="sm">
+              HR Use Only
+            </Chip>
+          </Divider>
+          <Box sx={{ pt: 0.5 }}>
+            <Textarea
+              name="Outlined"
+              placeholder="Reason For Approve/Reject The Request here…"
+              variant="outlined"
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', pt: 2 }}>
+              <Button variant="solid" color="success" onClick={handleApproverequest}>
+                Leave Request Approve
+              </Button>
+              <Button variant="solid" color="danger" onClick={handleRegectRequest}>
+                Leave Request Reject
+              </Button>
+            </Box>
+          </Box>
+        </ModalDialog>
+      </Modal>
+    </Fragment>
+  )
 }
 
 export default memo(HalfDayLeaveRequest)
-
