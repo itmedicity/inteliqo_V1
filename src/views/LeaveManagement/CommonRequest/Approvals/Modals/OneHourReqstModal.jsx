@@ -107,7 +107,7 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
         return {
             hr_approval_status: 2,
             hr_approval_comment: remark,
-            hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
+            hr_approval_date: moment().format('YYYY-MM-DD HH:mm:ss'),
             hr_empId: loginem_id,
             request_slno: slno,
             em_no: emno,
@@ -258,7 +258,7 @@ const OneHourReqstModal = ({ open, setOpen, data, setCount }) => {
 
                                             hr_approval_status: 1,
                                             hr_approval_comment: remark,
-                                            hr_approval_date: moment().format('YYYY-MM-DD HH:mm'),
+                                            hr_approval_date: moment().format('YYYY-MM-DD HH:mm:ss'),
                                             hr_empId: loginem_id,
                                             request_slno: slno,
                                             em_no: emno,

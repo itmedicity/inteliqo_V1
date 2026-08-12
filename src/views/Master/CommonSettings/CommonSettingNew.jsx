@@ -21,6 +21,7 @@ import GroupMultiSelect from './GroupMultiSelect'
 import JoyCategorySelect from 'src/views/MuiComponents/JoyComponent/JoyCategorySelect'
 import CategoryMultipleSelect from 'src/views/MuiComponents/JoyComponent/CategoryMultipleSelect'
 import DutyTypeMultiSelect from './DutyTypeMultiSelect'
+import JoyWageSelect from 'src/views/MuiComponents/JoyComponent/JoyWageSelect';
 
 const CommonSettingNew = () => {
 
@@ -99,6 +100,7 @@ const CommonSettingNew = () => {
     const [category, setCategory] = useState(0)
     const [earnlvCategory, setEarnlvCategory] = useState([])
     const [opdduty, setopdduty] = useState([])
+    const [apprenticeship_type,setapprenticeship_type]=useState(0)
 
     useEffect(() => {
         const getemptypedata = async () => {
@@ -155,7 +157,7 @@ const CommonSettingNew = () => {
                     weekoff_policy_min_count, coff_min_working_hour, onobservation_days, hod_leave_day_count,
                     holiday_leave_request, halfday_time_count, punch_taken_hour_count, external_trainee,
                     earnlvCategory, monthly_late_time_count, first_policy, second_plicy, holiday_min_working,
-                    opdduty } = data[0]
+                    opdduty,apprenticeship_type } = data[0]
 
                 const frmData = {
                     slno: setting_slno,
@@ -221,6 +223,7 @@ const CommonSettingNew = () => {
                 setfirst_policy(first_policy === 1 ? true : false)
                 setsecond_plicy(second_plicy === 1 ? true : false)
                 setopdduty(opdduty === null ? [] : JSON.parse(opdduty) )
+                setapprenticeship_type(apprenticeship_type)
             }
             else if (success === 0) {
                 setValue(0)
@@ -288,7 +291,8 @@ const CommonSettingNew = () => {
             first_policy: first_policy === true ? 1 : 0,
             second_plicy: second_plicy === true ? 1 : 0,
             holiday_min_working: holiday_min_working === true ? 1 : 0,
-            opdduty: opdduty
+            opdduty: opdduty,
+            apprenticeship_type:apprenticeship_type
         }
     }, [commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -298,7 +302,7 @@ const CommonSettingNew = () => {
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
         holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory, monthly_late_time_count,
-        first_policy, second_plicy, holiday_min_working, opdduty])
+        first_policy, second_plicy, holiday_min_working, opdduty,apprenticeship_type])
 
     //data to edit
     const postDataEdit = useMemo(() => {
@@ -357,7 +361,8 @@ const CommonSettingNew = () => {
             first_policy: first_policy === true ? 1 : 0,
             second_plicy: second_plicy === true ? 1 : 0,
             holiday_min_working: holiday_min_working === true ? 1 : 0,
-            opdduty: opdduty
+            opdduty: opdduty,
+            apprenticeship_type:apprenticeship_type
         }
     }, [slno, commn_grace, commn_latein, commn_earlyout, commn_latein_grace, commn_earlyout_grace,
         carry_hl, carry_el, carry_cl, carry_sl, esi_employer, esi_employee, esi_limit, pf_employer,
@@ -367,7 +372,8 @@ const CommonSettingNew = () => {
         weekoff_policy_max_count, weekoff_policy_min_count, areartype, defshift, em_id, doff, group_slno,
         levaetype, noff, notappshift, workoff, training_group_slno, onobservation_days, hod_leave_day_count,
         holidayLeave, halfday_time_count, punch_taken_hour_count, category, earnlvCategory,
-        monthly_late_time_count, first_policy, second_plicy, holiday_min_working, opdduty])
+        monthly_late_time_count, first_policy, second_plicy, holiday_min_working, opdduty,
+        apprenticeship_type])
 
     //save
     const submitFormData = useCallback(async (e) => {
@@ -991,6 +997,14 @@ const CommonSettingNew = () => {
                                             value={pf_employer_amount}
                                             changeTextValue={(e) => updateCommonSettings(e)}
                                         />
+                                    </Box>
+                                </Box>
+                                <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', px: 10, mt: 0.5 }}>
+                                    <Box sx={{ flex: 1, px: 0.5 }} >
+                                        <Typography level="body1"> Apprenticeship Govt Portion</Typography>
+                                    </Box>
+                                    <Box sx={{ flex: 1, px: 0.5, pt: 0.5 }} >
+                                         <JoyWageSelect wagevalue={apprenticeship_type} setWage={setapprenticeship_type} />
                                     </Box>
                                 </Box>
                             </Paper>
