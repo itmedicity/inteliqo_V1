@@ -66,6 +66,21 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
         }
     }, [empData])
 
+    
+    const refresh = useCallback(() => {
+        setDisableDate(false)
+        setInactiveShift(false)
+        setFromDate(moment(new Date()))
+        setSelectedShift(0)
+        setPunchInTime(0)
+        setPunchOutTime(0)
+        setDisableIn(false)
+        setDisableOut(false)
+        setCheckIn(false)
+        setCheckOut(false)
+        setReason('')
+    }, [])
+
     const handleChangeDate = useCallback(async (date) => {
         setOpenBkDrop(true)
         setFromDate(date)
@@ -210,82 +225,149 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
     //submit coff request 
     const handleChangeSubmitCoffRequest = useCallback(async () => {
-
         const { inCheck, outCheck } = selectedShiftTiming;
-        const checkinlate = addMinutes(new Date(inCheck), cmmn_late_in)
 
-        if (holiday_min_working === 1 && (differenceInHours(new Date(punchOutTime), new Date(punchInTime)) < coff_min_working_hour)) {
-            warningNofity("Can't Apply for COFF request, minimum hours work needed")
-        } else if (isBefore(new Date(punchInTime), new Date(checkinlate)) === false && isAfter(new Date(punchOutTime), new Date(outCheck)) === false && isEqual(new Date(punchOutTime), new Date(outCheck)) === false) {
-            warningNofity("Can't Apply COFF on Holiday While Attendnace is HD")
-            setDisableCheck(true)
-            setOpenBkDrop(false)
+        const checkinLate = addMinutes(new Date(inCheck), cmmn_late_in);
+        const punchIn = new Date(punchInTime);
+        const punchOut = new Date(punchOutTime);
+
+        // Minimum working hour validation
+        if (
+            holiday_min_working === 1 &&
+            differenceInHours(punchOut, punchIn) < coff_min_working_hour
+        ) {
+            warningNofity(
+                "Can't Apply for COFF request, minimum hours work needed"
+            );
+            return;
         }
-        else if (holiday_status === 0 && (punchInTime === 0 || punchOutTime === 0)) {
-            warningNofity('Please Select In and Out Punch')
-        } else if (reason === '') {
-            warningNofity('Request Reason Is Mandatory')
-        } else {
-            setOpenBkDrop(true)
+
+        // Half-day attendance validation
+        if (
+            holiday_status === 0 &&
+            (
+                isBefore(punchOut, new Date(outCheck)) ||
+                isAfter(punchIn, checkinLate)
+            )
+        ) {
+            warningNofity("Can't Apply COFF While Attendance is HD");
+            setDisableCheck(true);
+            setOpenBkDrop(false);
+            return;
+        }
+
+        // Reason validation
+        if (!reason?.trim()) {
+            warningNofity("Request Reason Is Mandatory");
+            return;
+        }
+
+        try {
+            const currentDateTime = format(
+                new Date(),
+                "yyyy-MM-dd HH:mm:ss"
+            );
+
             const coffPostData = {
-                startdate: format(new Date(fromDate), 'yyyy-MM-dd'),
+                startdate: format(new Date(fromDate), "yyyy-MM-dd"),
                 punchindata: punchInTime,
                 punchoutdata: punchOutTime,
+
                 req_type: 1,
                 reqtype_name: "C Off",
-                shiftduration: differenceInMinutes(new Date(outCheck), new Date(inCheck)),
-                durationpunch: differenceInMinutes(new Date(punchOutTime), new Date(punchInTime)),
-                extratime: differenceInMinutes(new Date(outCheck), new Date(inCheck)),
+
+                shiftduration: differenceInMinutes(
+                    new Date(outCheck),
+                    new Date(inCheck)
+                ),
+
+                durationpunch: differenceInMinutes(
+                    punchOut,
+                    punchIn
+                ),
+
+                extratime: differenceInMinutes(
+                    new Date(outCheck),
+                    new Date(inCheck)
+                ),
+
                 em_id: empData?.emID,
                 em_no: empData?.emNo,
                 em_department: empData?.deptID,
                 em_dept_section: empData?.sectionID,
+
                 inc_apprv_req: 1,
                 incapprv_status: 1,
                 inc_apprv_cmnt: "DIRECT",
-                inc_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                inc_apprv_time: currentDateTime,
+
                 hod_apprv_req: 1,
                 hod_apprv_status: 1,
                 hod_apprv_cmnt: "DIRECT",
-                hod_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                hod_apprv_time: currentDateTime,
+
                 hr_aprrv_requ: 1,
                 hr_apprv_status: 1,
                 hr_apprv_cmnt: "DIRECT",
                 hr_user: empData?.emNo,
-                hr_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                hr_apprv_time: currentDateTime,
+
                 ceo_req_status: 1,
+
                 resonforleave: reason,
                 shift_id: selectedShift,
-                punchSlno: punchSlno,
-                calculated_date: format(new Date(fromDate), 'yyyy-MM-dd'),
-                credited_date: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+                punchSlno,
+
+                calculated_date: format(
+                    new Date(fromDate),
+                    "yyyy-MM-dd"
+                ),
+
+                credited_date: currentDateTime,
+
                 emp_id: empData?.emID,
                 lvetype_slno: 11,
                 plan_slno: planSlno
-            }
-            const result = await axioslogin.post('/LeaveRequest/creditCoff', coffPostData)
-            const { success, message } = result.data;
-            if (success === 1) {
-                succesNofity('C-OFF Credited SuccessFully')
-                setCount(Math.random())
-                setOpenBkDrop(false)
-                setShowForm(0)
-                setInactiveShift(false)
-            } else {
-                errorNofity(`Contact EDP , ${JSON.stringify(message)}`)
-                setOpenBkDrop(false)
-                setShowForm(0)
-                setInactiveShift(false)
-            }
-        }
-    }, [reason, punchSlno, fromDate, punchInTime, punchOutTime, selectedShift, selectedShiftTiming,
-        setCount, empData, coff_min_working_hour, setShowForm, planSlno, holiday_status, cmmn_late_in,
-        holiday_min_working])
+            };
 
-    const refresh = useCallback(() => {
-        setDisableDate(false)
-        setInactiveShift(false)
-    }, [])
+            const { data } = await axioslogin.post(
+                "/LeaveRequest/creditCoff",
+                coffPostData
+            );
+
+            if (data?.success === 1) {
+                succesNofity("C-OFF Credited Successfully");
+                setCount(Math.random());
+            } else {
+                errorNofity(`Contact IT, ${JSON.stringify(data?.message)}`);
+            }
+        } catch (error) {
+            errorNofity(
+                `Contact IT, ${JSON.stringify(error?.response?.data || error?.message)}`
+            );
+        } finally {
+            setOpenBkDrop(false);
+            setShowForm(0);
+            setInactiveShift(false);
+        }
+    }, [
+        reason,
+        punchSlno,
+        fromDate,
+        punchInTime,
+        punchOutTime,
+        selectedShift,
+        selectedShiftTiming,
+        empData,
+        coff_min_working_hour,
+        planSlno,
+        holiday_status,
+        cmmn_late_in,
+        holiday_min_working,
+        setCount,
+        setShowForm
+    ]);
+
 
     return (
         <Paper variant='outlined' sx={{ display: 'flex', flexDirection: 'column', mt: 0.5, py: 0.5 }}>
