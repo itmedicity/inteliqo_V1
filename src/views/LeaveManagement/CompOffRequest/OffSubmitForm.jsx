@@ -129,8 +129,11 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             }
             const result = await axioslogin.post('common/getShiftdetails/', postData);
             const { success, data, message } = result.data;
+            
             if (success === 1) {
-                const { ot_request_flag, punch_slno, holiday_slno, punch_in, punch_out } = data[0];
+                const { ot_request_flag, punch_slno, holiday_slno, punch_in, punch_out,
+                    lvereq_desc,duty_desc
+                 } = data[0];
                 setPunchSlno(punch_slno)
                 const selectedShiftTiming = shiftTiming?.filter(val => val?.shft_slno === selectedShift)
                 const { shft_chkin_time, shft_chkout_time, shft_cross_day } = selectedShiftTiming[0]
@@ -150,6 +153,10 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
 
                 if (ot_request_flag === 1) {
                     warningNofity('Selected Date Already Raised A COFF Request')
+                    setDisableCheck(true)
+                    setOpenBkDrop(false)
+                }else if(holiday_status===1 && duty_desc!=='HP'){
+                    warningNofity('There Is No Correct Punch, Attendnace Must Be HP')
                     setDisableCheck(true)
                     setOpenBkDrop(false)
                 }
