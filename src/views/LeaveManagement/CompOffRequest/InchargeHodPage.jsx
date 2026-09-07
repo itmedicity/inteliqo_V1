@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { getCommonSettings, getDepartmentAll, getDepartmentSectionAll, getEmployeeInformationLimited } from 'src/redux/reduxFun/reduxHelperFun';
 import { getDepartmentSectionBasedHod, getEmployeeArraySectionArray } from '../LeavereRequsition/Func/LeaveFunction';
 
-const InchargeHodPage = ({ state, setState }) => {
+const InchargeHodPage = ({ state, setState ,setShowForm}) => {
 
     const [deptID, setDeptID] = useState(0);
     const [deptSection, setDeptSection] = useState(0);
@@ -124,9 +124,10 @@ const InchargeHodPage = ({ state, setState }) => {
     //HANDLE CHANGE EMPLOYEE NAME 
     const handleChangeEmployeeName = useCallback((e, value) => {
         // formChange(10) // request leave form changeing to null
+        setShowForm(0)
         setEmployeeID(value)
         setState({ ...state, emNo: value })
-    }, [state, setState])
+    }, [state, setState,setShowForm])
 
     return (
         <Box sx={{ display: 'flex', flex: 1, p: 0.5 }} >

@@ -212,6 +212,7 @@ const EmployeeReport = () => {
         { headerName: 'Date Of Birth ', field: 'em_dob' },
         { headerName: 'Gender ', field: 'em_gender' },
         { headerName: 'Date Of Joining ', field: 'em_doj' },
+        { headerName: 'Actual DOJ', field: 'actual_doj' },
         { headerName: 'Mobile No ', field: 'em_mobile' },
         { headerName: 'Mail ID', field: 'em_email' },
         { headerName: 'Branch ', field: 'branch_name' },
@@ -232,6 +233,7 @@ const EmployeeReport = () => {
         { headerName: 'Address2 ', field: 'addressPresent2', minWidth: 200 },
         { headerName: 'Pin', field: 'hrm_pin2' },
         { headerName: 'Gross Salary', field: 'gross_salary' },
+        
 
     ])
     /** Selected checkbox list sumbitted,  to get corresponding data from databse */
