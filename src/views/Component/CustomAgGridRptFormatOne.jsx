@@ -15,7 +15,18 @@ const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
     })
     /** To download report as excel */
     if (exportState > 0 && tableDataMain.length > 0) {
-        apiRef.current.api.exportDataAsCsv();
+       // apiRef.current.api.exportDataAsCsv();
+       apiRef.current.api.exportDataAsCsv({
+    processCellCallback: (params) => {
+        if (params.column.getColId() === 'shiftCountList') {
+            return params.value
+                ?.map((item) => `${item.shft_desc}: ${item.count}`)
+                .join(', ') || '';
+        }
+
+        return params.value;
+    },
+});
     }
 
     /** Ag grid report row and column formatting */
