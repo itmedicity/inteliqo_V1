@@ -201,6 +201,11 @@ export const attednane_three = [{
     to: '/Home/IndividualAttendance',
     name: 'Individual Attendance Report',
     slno: 329
+  },
+    {
+    to: '/Home/overTimeReport',
+    name: 'OverTime Report',
+    slno: 360
   }
 ]
 export const leave_One = [{

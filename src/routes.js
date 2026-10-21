@@ -314,6 +314,7 @@ const PayrollDoctorRight = React.lazy(() => import('./views/Master/DoctorPayroll
 const DoctorLeaveRequest = React.lazy(() => import('./views/PayrollDoctors/DoctorLeaveRequest/LeaveRequest'))
 const DeleteDocLeaveReq = React.lazy(() => import('./views/PayrollDoctors/DoctorLeaveRequest/DeleteRequest'))
 const DeptWisePunchView = React.lazy(() => import('./views/PayrollDoctors/DoctorPunch/DepartmentWisePunchView'))
+const overTimeReport= React.lazy(()=>import('./views/HrReports/PunchReport/OvertimeReport'))
 
 const routes = [
 
@@ -2134,6 +2135,12 @@ const routes = [
     exact: true,
     name: 'Punch View',
     component: DeptWisePunchView
+  },
+  {
+    path:'/Home/overTimeReport',
+    exact:true,
+    name: 'Over Time Report',
+    component:overTimeReport
   }
 
 ]
