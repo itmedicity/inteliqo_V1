@@ -248,6 +248,15 @@ const OffSubmitForm = ({ employeeData, setCount, setShowForm }) => {
             );
             return;
         }
+        // Checking two punches are same
+        if (
+            isEqual(punchOut, punchIn) 
+        ) {
+            warningNofity(
+                "Can't Apply for COFF request, Two Punches are Same!!"
+            );
+            return;
+        }
 
         // Half-day attendance validation
         if (
