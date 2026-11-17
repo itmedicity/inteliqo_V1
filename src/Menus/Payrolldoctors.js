@@ -40,7 +40,7 @@ const PayrollDoctors = [{
   {
     men_slno: 358,
     component: CNavItem,
-    name: 'Delete Leave Report',
+    name: 'Delete Leave Request',
     to: '/Home/DeleteDocLeaveReq',
   },
    {
@@ -48,6 +48,30 @@ const PayrollDoctors = [{
     component: CNavItem,
     name: 'Punch Report',
     to: '/Home/DeptWisePunchView',
+  },
+   {
+    men_slno: 361,
+    component: CNavItem,
+    name: 'HOD Approval',
+    to: '/Home/DoctorHodApproval',
+  },
+   {
+    men_slno: 362,
+    component: CNavItem,
+    name: 'DMS Approval',
+    to: '/Home/DoctorDMSApproval',
+  },
+   {
+    men_slno: 363,
+    component: CNavItem,
+    name: 'MS Approval',
+    to: '/Home/DoctorMSApproval',
+  },
+  {
+    men_slno: 364,
+    component: CNavItem,
+    name: 'Doctor Leave Report',
+    to: '/Home/LeaveReportDoctors',
   },
 ]
 

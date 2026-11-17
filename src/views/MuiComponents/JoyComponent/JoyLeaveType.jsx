@@ -10,26 +10,49 @@ const JoyLeaveType = ({ value, setValue }) => {
 
     const { carry_hl, carry_el, carry_cl, carry_sl } = commonSettings
 
+    // useEffect(() => {
+    //     const getleaveTypeData = async () => {
+    //         const result = await axioslogin.get('/leaveType/select')
+    //             .then((response) => {
+    //                 const arr = response?.data?.data?.filter((val) => {
+    //                     if (carry_cl === 1 || carry_el === 1 || carry_hl === 1 || carry_sl === 1) {
+    //                         return val.lvetype_slno === 1 || val.lvetype_slno === 7 || val.lvetype_slno === 8
+    //                     }
+    //                     //return response.data.data;
+    //                 })
+    //                 setleaveType(arr)
+    //             })  
+
+    //             .catch((error) => {
+    //                 return error;
+    //             });
+    //         return result;
+    //     }
+    //     getleaveTypeData();
+    // }, [carry_hl, carry_el, carry_cl, carry_sl])
     useEffect(() => {
-        const getleaveTypeData = async () => {
-            const result = await axioslogin.get('/leaveType/select')
-                .then((response) => {
-                    const arr = response?.data?.data?.filter((val) => {
-                        if (carry_cl === 1 || carry_el === 1 || carry_hl === 1 || carry_sl === 1) {
-                            return val.lvetype_slno === 1 || val.lvetype_slno === 7 || val.lvetype_slno === 8
-                        }
-                        //return response.data.data;
-                    })
-                    setleaveType(arr)
-                })  
-        
-                .catch((error) => {
-                    return error;
-                });
-            return result;
-        }
-        getleaveTypeData();
-    }, [carry_hl, carry_el, carry_cl, carry_sl])
+        const getLeaveTypeData = async () => {
+            try {
+                const { data } = await axioslogin.get('/leaveType/select');
+
+                const leaveTypes = data?.data?.filter(
+                    ({ lvetype_slno }) =>
+                        [1, 7, 8].includes(lvetype_slno)
+                );
+
+                setleaveType(
+                    carry_cl || carry_el || carry_hl || carry_sl
+                        ? leaveTypes
+                        : []
+                );
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        getLeaveTypeData();
+    }, [carry_cl, carry_el, carry_hl, carry_sl]);
+
     return (
         <Select
             value={value}

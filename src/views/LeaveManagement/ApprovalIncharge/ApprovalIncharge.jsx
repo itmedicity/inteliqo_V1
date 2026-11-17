@@ -503,6 +503,7 @@ const ApprovalIncharge = () => {
                         }
                     </Box>
                 </Paper>
+                
                 <Paper square elevation={0} sx={{ pt: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
                     <CommonAgGrid
                         columnDefs={columnDef}

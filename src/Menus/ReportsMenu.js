@@ -315,6 +315,11 @@ export const doctor_one = [{
     name: 'Inactive Doctors Report',
     slno: 352
   },
+  {
+    to: '/Home/AllDoctorsLeaveReport',
+    name: 'All Doctors Leave Report',
+    slno: 365
+  },
 ]
 
 export const doctor_two = [{

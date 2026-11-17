@@ -1,4 +1,4 @@
-import React, { lazy, memo, useMemo, useState } from 'react';
+import React, { lazy, memo, useEffect, useMemo, useRef, useState } from 'react';
 import CustomLayout from 'src/views/Component/MuiCustomComponent/CustomLayout';
 import { Box, Button, Input, Table, Textarea, Tooltip, Typography } from '@mui/joy';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -12,15 +12,27 @@ import DoctorLeaveTypeSelect from './DoctorLeaveTypeSelect';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { axioslogin } from 'src/views/Axios/Axios';
 
-const CoffCancelModal=lazy(()=>import('./LeaveComponents/CoffCancelModal'))
+const CoffCancelModal = lazy(() => import('./LeaveComponents/CoffCancelModal'))
+const Leavedeletemodal = lazy(() => import('./LeaveComponents/Leavedeletemodal'))
+const Accademicleavecancel = lazy(() => import('./LeaveComponents/Accademicleavecancel'))
 
 const DeleteRequest = () => {
   const [fromDate, setFromDate] = useState(new Date())
   const [toDate, setToDate] = useState(new Date())
   const [leaveType, setLeaveType] = useState(0)
   const [tableData, setTableData] = useState([])
-  const [coffOpen,setCoffopen]=useState(false)
-  const [coffdata,setCoffData]=useState([])
+  const [coffOpen, setCoffopen] = useState(false)
+  const [coffdata, setCoffData] = useState([])
+  const [leaveModalOpen, setLeaveModalOpen] = useState(false)
+  const [leaveModalData, setLeaveModalData] = useState([])
+  const [accademicOpen, setAccademicOpen] = useState(false)
+  const [accademicData, setAccademicData] = useState([])
+  const [count, setCount] = useState(0)
+
+  const leaveTypeRef = useRef(leaveType)
+  useEffect(() => {
+    leaveTypeRef.current = leaveType
+  }, [leaveType])
 
   const [columnDef] = useState([
     { headerName: 'ID#', field: 'em_no', filter: true, minWidth: 100 },
@@ -63,14 +75,54 @@ const DeleteRequest = () => {
     },
   ])
 
-  const handleClickIcon = async (params) => {
-  console.log(params.data)
+  const [columnAccademic] = useState([
+    { headerName: 'ID#', field: 'em_no', filter: true, minWidth: 100 },
+    { headerName: 'Name ', field: 'em_name', filter: true, minWidth: 200 },
+    { headerName: 'Department ', field: 'dept_name', minWidth: 200, filter: true },
+    { headerName: 'Section', field: 'sect_name', filter: true, minWidth: 200 },
+    { headerName: 'No Of Leave', field: 'no_of_leave', filter: true, minWidth: 150 },
+    {
+      headerName: 'Action',
+      cellRenderer: params => {
+        return <IconButton onClick={() => handleAccademicCancel(params)}
+          sx={{ paddingY: 0.5 }} >
+          <Tooltip title="Click Here to Cancel">
+            <CheckCircleOutlineIcon color='primary' />
+          </Tooltip>
+        </IconButton>
+      }
+    },
+  ])
+
+  const handleClickIcon = (params) => {
+    const currentType = leaveTypeRef.current || leaveType
+    if (currentType === 2 || params?.data?.doc_cmp_off_reqid) {
+      setCoffData(params.data)
+      setCoffopen(true)
+    } else if (currentType === 3 || params?.data?.leave_fromdate || params?.data?.rejoin_date) {
+      setAccademicData(params.data)
+      setAccademicOpen(true)
+    } else {
+      setLeaveModalData(params.data)
+      setLeaveModalOpen(true)
+    }
   }
 
-  const handleCoffCancel=async(params)=>{
+  const handleCoffCancel = (params) => {
     setCoffData(params.data)
     setCoffopen(true)
   }
+
+  const handleAccademicCancel = (params) => {
+    setAccademicData(params.data)
+    setAccademicOpen(true)
+  }
+
+  useEffect(() => {
+    if (leaveType !== 0) {
+      searchLeaveRequest()
+    }
+  }, [count])
 
   const searchLeaveRequest = async () => {
     const postData = {
@@ -88,11 +140,10 @@ const DeleteRequest = () => {
         } else {
           warningNofity("There Is No Leave  Request Exist In Between The Dates")
         }
-      } else {
+      } else if (leaveType === 2) {
         const result = await axioslogin.post('/DoctorsProcess/coffrequest', postData)
         const { success, data } = result.data
         if (success === 1 && data?.length !== 0) {
-          console.log(data);
           const newArray = data?.map((val) => {
             const obj = {
               dutyTyp: val?.duty_type === 1 ? 'Night Duty' : val?.duty_type === 2 ? 'Night Duty' : 'NIL',
@@ -107,17 +158,30 @@ const DeleteRequest = () => {
         } else {
           warningNofity("There Is No Leave Request Exist In Between The Dates")
         }
+      } else {
+        const result = await axioslogin.post('/DoctorsProcess/getdoctors/accademicRequest', postData)
+        const { success, data } = result.data
+        if (success === 1 && data?.length !== 0) {
+          setTableData(data)
+        } else {
+          warningNofity("There Is No Academic Leave Request Exist In Between The Dates")
+        }
       }
     }
   }
 
   return (
     <CustomLayout title="Delete Leave Request" displayClose={true}>
-      <CoffCancelModal open={coffOpen} setOpen={setCoffopen} coffdata={coffdata}/>
+      <CoffCancelModal open={coffOpen} setOpen={setCoffopen} coffdata={coffdata} setCount={setCount} />
+      <Leavedeletemodal open={leaveModalOpen} setOpen={setLeaveModalOpen} data={leaveModalData} leavedata={leaveModalData} setCount={setCount} />
+      <Accademicleavecancel open={accademicOpen} setOpen={setAccademicOpen} accData={accademicData} data={accademicData} setCount={setCount} />
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: 'row', p: 0.5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', width: '20%', px: 0.3 }}>
-            <DoctorLeaveTypeSelect value={leaveType} setValue={setLeaveType} />
+            <DoctorLeaveTypeSelect value={leaveType} setValue={(val) => {
+              setLeaveType(val)
+              setTableData([])
+            }} />
           </Box>
           <Box sx={{ display: 'flex', px: 0.5, alignItems: 'center' }}>
             <Typography color="danger" level="title-sm" variant="plain" flexGrow={1} paddingX={2}>
@@ -194,7 +258,8 @@ const DeleteRequest = () => {
         </Box>
         <Box sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column" }} >
           <CommonAgGrid
-            columnDefs={leaveType === 1 ? columnDef : columnCoff}
+            key={leaveType}
+            columnDefs={leaveType === 1 ? columnDef : leaveType === 2 ? columnCoff : columnAccademic}
             tableData={tableData}
             sx={{
               height: 600,

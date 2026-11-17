@@ -314,6 +314,11 @@ const PayrollDoctorRight = React.lazy(() => import('./views/Master/DoctorPayroll
 const DoctorLeaveRequest = React.lazy(() => import('./views/PayrollDoctors/DoctorLeaveRequest/LeaveRequest'))
 const DeleteDocLeaveReq = React.lazy(() => import('./views/PayrollDoctors/DoctorLeaveRequest/DeleteRequest'))
 const DeptWisePunchView = React.lazy(() => import('./views/PayrollDoctors/DoctorPunch/DepartmentWisePunchView'))
+const DoctorHodApproval=React.lazy(()=>import('./views/PayrollDoctors/DoctorLeaveRequest/DoctorApprovals/HODApprove'))
+const DoctorDMSApproval=React.lazy(()=>import('./views/PayrollDoctors/DoctorLeaveRequest/DoctorApprovals/DMSApprove'))
+const DoctorMSApproval=React.lazy(()=>import('./views/PayrollDoctors/DoctorLeaveRequest/DoctorApprovals/MSApprove'))
+const LeaveReportDoctors = React.lazy(() => import('./views/PayrollDoctors/DoctorLeaveReport/LeaveReportDoctors'))
+const AllDoctorsLeaveReport = React.lazy(() => import('./views/HrReports/DoctorsReport/AllDoctorsLeaveReport'))
 
 const routes = [
 
@@ -2134,7 +2139,37 @@ const routes = [
     exact: true,
     name: 'Punch View',
     component: DeptWisePunchView
-  }
+  },
+   {
+    path: '/Home/DoctorHodApproval',
+    exact: true,
+    name: 'HOD Approval',
+    component: DoctorHodApproval
+  },
+   {
+    path: '/Home/DoctorDMSApproval',
+    exact: true,
+    name: 'DMS Approval',
+    component: DoctorDMSApproval
+  },
+   {
+    path: '/Home/DoctorMSApproval',
+    exact: true,
+    name: 'MS Approval',
+    component: DoctorMSApproval
+  },
+  {
+    path: '/Home/LeaveReportDoctors',
+    exact: true,
+    name: 'Doctor Leave Report',
+    component: LeaveReportDoctors
+  },
+  {
+    path: '/Home/AllDoctorsLeaveReport',
+    exact: true,
+    name: 'All Doctors Leave Report',
+    component: AllDoctorsLeaveReport
+  },
 
 ]
 
