@@ -71,7 +71,9 @@ const NopunchCancelEmp = ({ open, setOpen, data, setCount }) => {
             comment: reason,
             apprvdate: moment(new Date()).format('YYYY-MM-DD HH:mm'),
             us_code: emno,
-            slno: slno
+            slno: slno,
+            em_no: emno,
+            duty_day: moment(nopunchdate).format('YYYY-MM-DD')
         }
     }, [emno, reason, slno])
     const noPunchCancel = useCallback(async () => {

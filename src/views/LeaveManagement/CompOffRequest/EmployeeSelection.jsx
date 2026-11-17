@@ -124,7 +124,7 @@ const EmployeeSelection = ({ setShowForm, steEmployeeData, setShowtable }) => {
                 <Suspense fallback={<LinearProgress variant="outlined" />} >
                     {
                         (hod === 1 || incharge === 1)
-                            ? <InchargeHodPage state={requestUser} setState={setRequestUser} />
+                            ? <InchargeHodPage state={requestUser} setState={setRequestUser} setShowForm={setShowForm} />
                             : <NormalEmployeeLeveReqPage />
                     }
                 </Suspense>

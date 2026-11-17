@@ -161,7 +161,7 @@ const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
                                 level="body1"
                                 justifyContent="center"
                             >
-                                Leave Date
+                                Halfday Leave Date
                             </Typography>
                             <Typography startDecorator={<ArrowRightOutlinedIcon />} fontSize="sm" fontWeight="lg" >
                                 {moment(reqDate).format('DD-MM-YYYY')}
@@ -177,37 +177,6 @@ const HalfdayCancelEmp = ({ open, setOpen, data, setCount }) => {
                             Requested Leave Information.
                         </Typography>
                     </Box>
-                    {/* <Paper variant="outlined" square sx={{ p: 0.5, mb: 0.8 }} >
-                        {
-                            reqDetl?.map((val, idx) => {
-                                return <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }} key={idx} >
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                        <Typography fontSize="sm" fontWeight="lg"  >
-                                            Check In:
-                                        </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                            {moment(val.checkIn).format('hh:mm:ss')}
-                                        </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ pl: 2 }} >
-                                            Check Out:
-                                        </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1, pl: 2 }} >
-                                            {moment(val.checkOut).format('hh:mm:ss')}
-                                        </Typography>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'left', flex: 1 }}>
-                                        <Typography fontSize="sm" fontWeight="lg"  >
-                                            Month of Leave:
-                                        </Typography>
-                                        <Typography fontSize="sm" fontWeight="lg" sx={{ flex: 1 }} >
-                                            {val.month}
-                                        </Typography>
-                                    </Box>
-                                </Box>
-                            })
-                        }
-                    </Paper> */}
-
                     <Box sx={{ pt: 0.5 }} >
                         <Textarea name="Outlined" placeholder="Reason For Reject The Request here…"
                             variant="outlined" onChange={(e) => setReason(e.target.value)} />

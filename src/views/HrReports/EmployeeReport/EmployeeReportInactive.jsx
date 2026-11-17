@@ -211,6 +211,7 @@ const EmployeeReportInactive = () => {
         { headerName: 'Date Of Birth ', field: 'em_dob' },
         { headerName: 'Gender ', field: 'em_gender' },
         { headerName: 'Date Of Joining ', field: 'em_doj' },
+        { headerName: 'Actual DOJ', field: 'actual_doj' },
         { headerName: 'Mobile No ', field: 'em_mobile' },
         { headerName: 'Mail ID', field: 'em_email' },
         { headerName: 'Branch ', field: 'branch_name' },

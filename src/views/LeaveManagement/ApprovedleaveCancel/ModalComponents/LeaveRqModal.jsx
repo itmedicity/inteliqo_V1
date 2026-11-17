@@ -72,7 +72,7 @@ const LeaveRqModal = ({ open, setOpen, empData, setCount }) => {
 
         const LeaveCanceldata = {
             lv_cancel_cmnt: reason,
-            lv_cancel_date: moment().format('YYYY-MM-DD HH:mm'),
+            lv_cancel_date: moment().format('YYYY-MM-DD HH:mm:ss'),
             lv_cancel_us_code: em_id,
             lve_uniq_no: empData?.lve_uniq_no
         }

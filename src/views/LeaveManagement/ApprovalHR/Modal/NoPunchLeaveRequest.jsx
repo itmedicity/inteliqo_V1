@@ -178,7 +178,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
                                         comment: reason,
                                         em_no: emno,
                                         duty_day: format(new Date(nopunchdate), 'yyyy-MM-dd'),
-                                        apprvdate: format(new Date(), 'yyyy-MM-dd '),
+                                        apprvdate: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
                                         us_code: loginem_id,
                                         slno: slno
                                     }
@@ -225,7 +225,7 @@ const NoPunchLeaveRequest = ({ open, setOpen, data, setCount }) => {
         return {
             np_hr_apprv_status: 2,
             np_hr_apprv_cmnt: reason,
-            np_hr_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm'),
+            np_hr_apprv_time: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
             np_hr_uscode: loginem_id,
             nopunch_slno: slno,
             em_no: emno,

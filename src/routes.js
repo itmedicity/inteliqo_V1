@@ -319,6 +319,8 @@ const DoctorDMSApproval=React.lazy(()=>import('./views/PayrollDoctors/DoctorLeav
 const DoctorMSApproval=React.lazy(()=>import('./views/PayrollDoctors/DoctorLeaveRequest/DoctorApprovals/MSApprove'))
 const LeaveReportDoctors = React.lazy(() => import('./views/PayrollDoctors/DoctorLeaveReport/LeaveReportDoctors'))
 const AllDoctorsLeaveReport = React.lazy(() => import('./views/HrReports/DoctorsReport/AllDoctorsLeaveReport'))
+const overTimeReport= React.lazy(()=>import('./views/HrReports/PunchReport/OvertimeReport'))
+
 
 const routes = [
 
@@ -2170,7 +2172,12 @@ const routes = [
     name: 'All Doctors Leave Report',
     component: AllDoctorsLeaveReport
   },
-
+  {
+    path:'/Home/overTimeReport',
+    exact:true,
+    name: 'Over Time Report',
+    component:overTimeReport
+  }
 ]
 
 export default routes
