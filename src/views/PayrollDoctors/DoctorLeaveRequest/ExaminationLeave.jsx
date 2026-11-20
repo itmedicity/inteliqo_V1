@@ -1,45 +1,35 @@
-import React, { memo, useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Paper } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { Box, Button, Input, Table, Textarea, Tooltip, Typography, Option, Select } from '@mui/joy'
+import { Box, Button, Input, Textarea, Tooltip, Typography, Option, Select } from '@mui/joy'
 import {
   addDays,
   differenceInCalendarDays,
-  eachDayOfInterval,
   endOfMonth,
   format,
   isValid,
   startOfMonth,
 } from 'date-fns'
 import { axioslogin } from 'src/views/Axios/Axios'
-import { screenInnerHeight } from 'src/views/Constant/Constant'
 import { errorNofity, succesNofity, warningNofity, infoNofity } from 'src/views/CommonCode/Commonfunc'
-import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
 import {
-  getSelectedEmpInformation,
-  findBalanceCommonLeveCount,
-  doctorsallLeavesConvertAnArray,
-  allLeavesConvertAnArray,
+  getSelectedEmpInformation
 } from 'src/redux/reduxFun/reduxHelperFun'
 import { useSelector } from 'react-redux'
-import LeaveRequestTable from 'src/views/LeaveManagement/LeavereRequsition/Func/LeaveRequestTable'
-import moment from 'moment';
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop'
+import { QRCodeSVG } from 'qrcode.react';
 
 const ExaminationLeave = () => {
   const [fromDate, setFromDate] = useState(new Date())
   const [toDate, setToDate] = useState(new Date())
   const [reson, setReason] = useState('')
-  const [table, setTable] = useState([])
-  const [leaveArray, setLeaveArray] = useState([])
   const [openBkDrop, setOpenBkDrop] = useState(false)
-  const [requiredDate, setRequiredDate] = useState(moment(new Date()))
   const [leaveType, setleaveType] = useState(0)
 
   const selectedEmpInform = useSelector((state) => getSelectedEmpInformation(state))
-  const { em_no, em_department, em_id, em_dept_section, actual_doj } = selectedEmpInform ?? {}
+  const { em_no, em_department, em_id, em_dept_section } = selectedEmpInform ?? {}
 
   const handleProcessLeaveRequest = async () => {
     setOpenBkDrop(true)
@@ -65,10 +55,10 @@ const ExaminationLeave = () => {
         request_status: 1,
         resonforleave: reson,
         no_of_leave: numberOfDays,
+        leavetype: leaveType,
         lvereq_desc: leaveType === 1 ? 'ACL' : leaveType === 2 ? 'EML' : null,
         duty_desc: leaveType === 1 ? 'ACL' : leaveType === 2 ? 'EML' : null
       }
-      console.log(postDataMasterTable)
       const result = await axioslogin.post('/DoctorsProcess/createAccademic/request', postDataMasterTable)
       const { success, message } = result.data;
       if (success === 1) {
@@ -167,11 +157,22 @@ const ExaminationLeave = () => {
             />
           </LocalizationProvider>
         </Box>
-        <Box sx={{ display: 'flex', px: 0.3, flex: 1 }}></Box>
+        <Box sx={{ display: 'flex', px: 0.3, flex: 1 }}>
+
+          <QRCodeSVG
+            value="https://www.facebook.com"
+            size={250}
+            level="H"
+          />
+
+          <p>Scan this QR code with your phone</p>
+
+
+        </Box>
       </Box>
       <Box sx={{ display: 'flex', p: 0.5 }}>
         <Tooltip
-          title="reason"
+          title="Click Here to Upload File!"
           followCursor
           placement="top"
           arrow
@@ -180,7 +181,7 @@ const ExaminationLeave = () => {
         >
           <Box sx={{ p: 1, flex: 1 }}>
             <Textarea
-              color="primary"
+              color="success"
               minRows={2}
               defaultValue=""
               placeholder="Leave Request Reason ..."

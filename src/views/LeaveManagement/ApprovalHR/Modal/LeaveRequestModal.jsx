@@ -101,22 +101,6 @@ const LeaveRequestModal = ({ open, setOpen, data, setCount, previousLeave }) => 
                         resolve(1)
                     }
                 })
-
-                //UPDATE HOLIDAY 
-                // const holidayLeavePromise = new Promise(async (resolve, reject) => {
-                //     if (Holiday?.length > 0) {
-                //         const resulthl = await axioslogin.post(`/LeaveRequestApproval/updateHolidayLeaveTable`, Holiday);
-                //         const { success, message } = resulthl.data;
-                //         if (success === 1) {
-                //             resolve('Holiday Leave Request updated')
-                //         } else {
-                //             reject(`HL Updation ! Error ${message}`)
-                //         }
-                //     } else {
-                //         resolve(1)
-                //     }
-                // })
-
                 //EARN LEAVE 
                 const earnLeavePromise = new Promise(async (resolve, reject) => {
                     if (earnLeave?.length > 0) {

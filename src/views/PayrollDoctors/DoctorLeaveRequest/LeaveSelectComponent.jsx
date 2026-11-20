@@ -20,8 +20,7 @@ import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
 import {
   getSelectedEmpInformation,
   findBalanceCommonLeveCount,
-  doctorsallLeavesConvertAnArray,
-  allLeavesConvertAnArray,
+  doctorsallLeavesConvertAnArray
 } from 'src/redux/reduxFun/reduxHelperFun'
 import { useSelector } from 'react-redux'
 import LeaveRequestTable from 'src/views/LeaveManagement/LeavereRequsition/Func/LeaveRequestTable'
@@ -158,6 +157,12 @@ const LeaveSelectComponent = ({ emply }) => {
           request_status: 1,
           resonforleave: reson,
           no_of_leave: numberOfDays,
+          hod_required_status:1,
+          hod_approval_status:0,
+          dms_required_status:1,
+          dms_approval_status:0,
+          ms_required_status:1,
+          ms_approval_status:0
         }
 
         //POST DATA FOR DETAILS TABLE

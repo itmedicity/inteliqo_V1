@@ -16,6 +16,7 @@ const DoctorLeaveTypeSelect = ({ value, setValue }) => {
             sx={{ width: '100%' }}
             variant="outlined"
             color="primary"
+            value={value}
         >
             <Option value={0} disabled>
                 Leave Request Type ...

@@ -17,7 +17,7 @@ import DoctorLeaveTypeSelect from './DoctorLeaveTypeSelect'
 
 const COFFSelectComponent = lazy(() => import('./COFFSelectComponent'))
 const LeaveSelectComponent = lazy(() => import('./LeaveSelectComponent'))
-const ExaminLeave=lazy(()=>import('./ExaminationLeave'))
+const ExaminLeave = lazy(() => import('./ExaminationLeave'))
 
 const LeaveRequest = () => {
     const dispatch = useDispatch()
@@ -28,17 +28,29 @@ const LeaveRequest = () => {
     const [requestType, setRequestType] = useState(0)
 
     const handleProcessLeveRequest = async () => {
-        setRequestType(leaveType);
-        dispatch(getEmployeeInformation(emply))
-        const result = await axioslogin.get(`/common/getEmpoyeeInfomation/${emply}`);
-        const { success, data } = result.data;
-        if (success === 1) {
-            const {em_no}=data[0]
-            dispatch(getCreditedCasualLeave(em_no)); //GET ALL CASUAL LEAVES 
-            dispatch(getCreitedCommonLeave(em_no)); //GET COMMON LEAVES
+        if (dept === 0 || section === 0 || emply === 0) {
+            warningNofity("Must Select Employee")
         } else {
-            warningNofity("There Is No Employee Exist!")
+            setRequestType(leaveType);
+            dispatch(getEmployeeInformation(emply))
+            const result = await axioslogin.get(`/common/getEmpoyeeInfomation/${emply}`);
+            const { success, data } = result.data;
+            if (success === 1) {
+                const { em_no } = data[0]
+                dispatch(getCreditedCasualLeave(em_no)); //GET ALL CASUAL LEAVES 
+                dispatch(getCreitedCommonLeave(em_no)); //GET COMMON LEAVES
+            } else {
+                warningNofity("There Is No Employee Exist!")
+            }
         }
+    }
+
+    const clearFunc = async () => {
+        setRequestType(0)
+        setLeaveType(0)
+        getEmployee(0)
+        changeSection(0)
+        changeDept(0)
     }
 
     return (
@@ -69,7 +81,7 @@ const LeaveRequest = () => {
                         <SectionBasedDoctors value={emply} setValue={getEmployee} sect={section} />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', width: '20%', px: 0.3 }}>
-                        <DoctorLeaveTypeSelect value={leaveType} setValue={setLeaveType}/>
+                        <DoctorLeaveTypeSelect value={leaveType} setValue={setLeaveType} />
                     </Box>
                     <Box sx={{ display: 'flex', px: 0.3 }}>
                         <Tooltip title="Process" followCursor placement="top" arrow>
@@ -89,7 +101,7 @@ const LeaveRequest = () => {
                             aria-label="Like"
                             variant="outlined"
                             color="success"
-                            onClick={() => setRequestType(10)}
+                            onClick={clearFunc}
                             size="sm"
                             className="refreshButton"
                         >
@@ -99,8 +111,8 @@ const LeaveRequest = () => {
                 </Box>
                 {
                     requestType === 1 ? <LeaveSelectComponent emply={emply} /> :
-                        requestType === 2 ? <COFFSelectComponent /> : 
-                        requestType === 3?<ExaminLeave/>: null
+                        requestType === 2 ? <COFFSelectComponent /> :
+                            requestType === 3 ? <ExaminLeave /> : null
                 }
             </Box>
         </CustomLayout>
