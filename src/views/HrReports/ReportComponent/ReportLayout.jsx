@@ -1,6 +1,6 @@
 import { Box, CssVarsProvider, IconButton, Tooltip, Typography } from '@mui/joy'
 import { Paper } from '@mui/material'
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useState, useEffect } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { useHistory } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
@@ -8,12 +8,21 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import { useDispatch } from 'react-redux';
 import { Actiontypes } from 'src/redux/constants/action.type'
-import { screenInnerHeight } from 'src/views/Constant/Constant';
 
 const ReportLayout = ({ children, title, displayClose, data }) => {
 
     const history = useHistory();
     const dispatch = useDispatch()
+
+    const [pageHeight, setPageHeight] = useState(window.innerHeight - 90);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPageHeight(window.innerHeight - 90);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const toRedirectToHome = () => {
         history.push(`/Home/Reports`)
@@ -30,7 +39,7 @@ const ReportLayout = ({ children, title, displayClose, data }) => {
 
     return (
         <Box sx={{ flex: 1 }} >
-            <Paper sx={{ flex: 1, height: screenInnerHeight - 90 }} >
+            <Paper sx={{ flex: 1, height: pageHeight }} >
                 <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", flex: 1, height: 30, }} >
                         <Paper square sx={{

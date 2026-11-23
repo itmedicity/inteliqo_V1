@@ -1,57 +1,31 @@
-import { Button, Box, IconButton, CssVarsProvider, Typography, Input } from '@mui/joy'
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Box, IconButton, CssVarsProvider, Typography, Input } from '@mui/joy'
+import React, { memo, useState } from 'react'
 import { ToastContainer } from 'react-toastify';
 import ReportLayout from '../ReportComponent/ReportLayout';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { Paper } from '@mui/material';
-import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
-import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
-import SectionBsdEmployee from 'src/views/Component/ReduxComponent/SectionBsdEmployee';
-import { useDispatch, useSelector } from 'react-redux';
-import { setDepartment } from 'src/redux/actions/Department.action';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import { infoNofity, warningNofity } from 'src/views/CommonCode/Commonfunc';
-import { axioslogin } from 'src/views/Axios/Axios';
+import { warningNofity } from 'src/views/CommonCode/Commonfunc';
 import moment from 'moment';
-import { Actiontypes } from 'src/redux/constants/action.type'
-import { getAttendanceCalculation, getLateInTimeIntervel, } from 'src/views/Attendance/PunchMarkingHR/punchMarkingHrFunc';
-import { setCommonSetting } from 'src/redux/actions/Common.Action';
-import { setShiftDetails } from 'src/redux/actions/Shift.Action';
-import {
-    addDays, addHours, differenceInHours, format, isValid, max, min, subHours,
-    formatDuration, intervalToDuration, subMonths, addMonths,
-    startOfMonth,
-    endOfMonth
-} from "date-fns";
+import { differenceInMinutes, format, isValid, startOfMonth, endOfMonth } from "date-fns";
 import CustomBackDrop from 'src/views/Component/MuiCustomComponent/CustomBackDrop';
-import JoyCheckbox from 'src/views/MuiComponents/JoyComponent/JoyCheckbox';
-import { setDeptWiseSection } from 'src/redux/actions/DepartmentSection.Action';
-import { setDept } from 'src/redux/actions/Dept.Action';
 import { getEmployeeDetlDutyPlanBased } from 'src/views/Attendance/DutyPlan/DutyPlanFun/DutyPlanFun';
 import { employeePunch } from './Function';
 import DeptSelectByRedux from 'src/views/MuiComponents/DeptSelectByRedux';
 import DeptSecSelectByRedux from 'src/views/MuiComponents/DeptSecSelectByRedux';
-import SaveAltIcon from '@mui/icons-material/SaveAlt'
-import { exportToWOFFExcel } from '../DayWiseAttendence/ExportToExcel'
 
 const OvertimeReport = () => {
     const [dept, setDepartment] = useState(0)
     const [deptSect, setDepartSection] = useState(0)
-    const [Empno, setEmpNo] = useState({})
-    const dispatch = useDispatch();
-    const [fromdate, Setfromdate] = useState(moment(new Date()));
-    const [todate, Settodate] = useState(moment(new Date()));
     const [tableData, setTableData] = useState([])
     const [openBkDrop, setOpenBkDrop] = useState(false)
-    const [all, setAll] = useState(false)
     const [value, setValue] = useState(moment(new Date()));
-    const [click, setClick] = useState(0)
-
 
     const getAttendanceData = async () => {
+        setOpenBkDrop(true)
         if (dept === 0 || deptSect === 0) {
             warningNofity('Check The Department || Department Section Feild');
 
@@ -74,7 +48,6 @@ const OvertimeReport = () => {
                     employeePunch(postdata).then((dataObj) => {
                         const { status, punchdata } = dataObj
                         if (status === 1) {
-                            console.log(punchdata)
                             const combinedArray = data.map((item1) => {
                                 const puncharray = Array.isArray(punchdata)
                                     ? punchdata.filter(
@@ -82,23 +55,40 @@ const OvertimeReport = () => {
                                     )
                                     : [];
 
+                                const overtime = puncharray.reduce((sum, item) => {
+                                    const outTime = moment(item.shift_out).format('HH:mm:ss');
+                                    const chekOut = item?.shft_cross_day === 1 ? `${moment(item.duty_day).add(1, 'days').format('YYYY-MM-DD')} ${outTime}` : `${moment(item.duty_day).format('YYYY-MM-DD')} ${outTime}`;
+
+                                    if (
+                                        item.punch_out &&
+                                        chekOut &&
+                                        isValid(new Date(item.punch_out)) &&
+                                        isValid(new Date(chekOut))
+                                    ) {
+                                        const diff = differenceInMinutes(
+                                            new Date(item.punch_out),
+                                            new Date(chekOut)
+                                        );
+
+                                        return sum + (diff >59 ? diff : 0);
+                                    }
+                                    return sum;
+                                }, 0);
+
                                 const totalHrsWorked = puncharray.reduce(
                                     (sum, item) => sum + (Number(item.hrs_worked) || 0),
                                     0
                                 );
-                                // const totalleavecount=punchdata.filter((item)=>item.duty_desc==='CL'||'EL'||'SL'||'COFF')?.length
-                                // const totalOffcount=punchdata.filter((item)=>item.duty_desc==='NOFF'||'DOFF'||'WOFF')?.length
 
                                 const totalleavecount = puncharray.filter((item) =>
                                     ['CL', 'EL', 'SL'].includes(item.duty_desc)
                                 ).length;
 
                                 const totalOffcount = puncharray.filter((item) =>
-                                    ['NOFF', 'DOFF', 'WOFF',  'COFF'].includes(item.duty_desc)
+                                    ['NOFF', 'DOFF', 'WOFF', 'COFF'].includes(item.duty_desc)
                                 ).length;
                                 const totalHours = totalHrsWorked / 60;
                                 const remhour = totalHours - 208
-                                console.log(puncharray)
 
                                 const shiftCountList = Object.values(
                                     puncharray.reduce((acc, item) => {
@@ -116,7 +106,8 @@ const OvertimeReport = () => {
                                     }, {})
                                 );
 
-                                console.log(shiftCountList);
+                                const otHours = Math.floor(overtime / 60);
+                                const otMinutes = overtime % 60;
 
                                 return {
                                     ...item1,
@@ -127,17 +118,20 @@ const OvertimeReport = () => {
                                     remHours: remhour <= 0 ? 0 : Number(remhour.toFixed(2)),
                                     totalleavecount: totalleavecount,
                                     totalOffcount: totalOffcount,
-                                    shiftCountList: shiftCountList
+                                    shiftCountList: shiftCountList,
+                                    overtime: `${otHours} hrs ${otMinutes} mins`
                                 };
                             });
-                            console.log(combinedArray)
                             setTableData(combinedArray);
+                            setOpenBkDrop(false)
                         } else {
                             warningNofity("Duty Plan Not Done for this Department!!")
+                            setOpenBkDrop(false)
                         }
                     })
                 } else {
                     warningNofity("No Employees Under This Department!!")
+                    setOpenBkDrop(false)
                 }
             })
         }
@@ -155,6 +149,7 @@ const OvertimeReport = () => {
         { headerName: 'Actual Hours', field: 'actualhour', wrapText: true, minWidth: 200 },
         { headerName: 'TIme in Hours', field: 'totalHours', wrapText: true, minWidth: 200 },
         { headerName: 'Remaining Hours for OT', field: 'remHours', wrapText: true, minWidth: 200 },
+        { headerName: 'Over Time', field: 'overtime', wrapText: true, minWidth: 150, filter: true },
         {
             headerName: 'Shift Count',
             field: 'shiftCountList',
@@ -200,8 +195,6 @@ const OvertimeReport = () => {
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DatePicker
                                     views={['year', 'month']}
-                                    //minDate={subMonths(new Date(), 2)}
-                                    //maxDate={addMonnew Date(), 1)}
                                     value={value}
                                     size="small"
                                     onChange={(newValue) => {

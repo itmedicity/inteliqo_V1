@@ -4,6 +4,7 @@ import React, { memo } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { useHistory } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
+import { screenInnerHeight } from 'src/views/Constant/Constant';
 
 const ReportWithoutDownload = ({ children, title, displayClose }) => {
 
@@ -15,12 +16,12 @@ const ReportWithoutDownload = ({ children, title, displayClose }) => {
 
     return (
         <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column' }} >
-            <Paper sx={{ flex: 1, }} >
+            <Paper sx={{ flex: 1, height: screenInnerHeight - 90 }} >
                 <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", flex: 1, height: 30, }} >
                         <Paper square sx={{
                             display: "flex", flex: 1, height: 30,
-                            alignItems: 'center', 
+                            alignItems: 'center',
                         }} >
                             <Box sx={{ display: "flex", flex: 1 }}>
                                 <DragIndicatorOutlinedIcon />

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, memo, useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import { Paper } from '@mui/material'
 import 'ag-grid-community/dist/styles/ag-grid.css'
@@ -6,6 +6,16 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 import { Box } from '@mui/system'
 
 const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged, sx }) => {
+    const [gridHeight, setGridHeight] = useState(window.innerHeight - 200);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setGridHeight(window.innerHeight - 200);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     //Table
     const rowHeight = 25
     const headerHeight = 30
@@ -22,7 +32,7 @@ const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged, 
         gridApi.sizeColumnsToFit()
     }
     const style = {
-        height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
+        height: gridHeight,
         width: '100%',
     }
     const rowStyle = {
@@ -66,4 +76,4 @@ const CustomAgGridMenuSelection = ({ tableData, columnDefs, onSelectionChanged, 
     )
 }
 
-export default CustomAgGridMenuSelection
+export default memo(CustomAgGridMenuSelection)

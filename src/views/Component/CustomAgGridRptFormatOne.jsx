@@ -1,5 +1,5 @@
 
-import React, { Fragment, memo, useRef } from 'react'
+import React, { Fragment, memo, useRef, useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
@@ -7,26 +7,35 @@ import { Box } from '@mui/system'
 import { Paper } from '@mui/material'
 import { useSelector } from 'react-redux'
 
-const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
+const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain, onSelectionChanged, sx }) => {
     const apiRef = useRef();
+    const [gridHeight, setGridHeight] = useState(window.innerHeight - 200);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setGridHeight(window.innerHeight - 200);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
     /** useSelector is used for get aggrid download button state */
     const exportState = useSelector((state) => {
         return state.changeStateAggrid.aggridstate
     })
     /** To download report as excel */
     if (exportState > 0 && tableDataMain.length > 0) {
-       // apiRef.current.api.exportDataAsCsv();
-       apiRef.current.api.exportDataAsCsv({
-    processCellCallback: (params) => {
-        if (params.column.getColId() === 'shiftCountList') {
-            return params.value
-                ?.map((item) => `${item.shft_desc}: ${item.count}`)
-                .join(', ') || '';
-        }
+        // apiRef.current.api.exportDataAsCsv();
+        apiRef.current.api.exportDataAsCsv({
+            processCellCallback: (params) => {
+                if (params.column.getColId() === 'shiftCountList') {
+                    return params.value
+                        ?.map((item) => `${item.shft_desc}: ${item.count}`)
+                        .join(', ') || '';
+                }
 
-        return params.value;
-    },
-});
+                return params.value;
+            },
+        });
     }
 
     /** Ag grid report row and column formatting */
@@ -62,8 +71,9 @@ const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
                 <Box
                     className="ag-theme-material ListItemScrol"
                     sx={{
-                        height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
+                        height: gridHeight,
                         width: '100%',
+                        ...sx,
                     }}
                 >
                     <AgGridReact
@@ -77,6 +87,7 @@ const CustomAgGridRptFormatOne = ({ columnDefMain, tableDataMain }) => {
                         animateRows={true}
                         //onGridReady={onGridReady}
                         rowSelection="multiple"
+                        onSelectionChanged={onSelectionChanged}
                         rowStyle={rowStyle}
                         suppressColumnVirtualisation={true}
                         suppressRowVirtualisation={true}

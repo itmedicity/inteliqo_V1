@@ -1,14 +1,23 @@
 import { Box, CssVarsProvider, IconButton, Tooltip, Typography } from '@mui/joy'
 import { Paper } from '@mui/material'
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useState, useEffect } from 'react'
 import DragIndicatorOutlinedIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { useHistory } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { screenInnerHeight } from 'src/views/Constant/Constant';
 
 const ReportWithFunction = ({ children, title, displayClose, download }) => {
     const history = useHistory();
+
+    const [pageHeight, setPageHeight] = useState(window.innerHeight * 83 / 100);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPageHeight(window.innerHeight * 83 / 100);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const toRedirectToHome = useCallback(() => {
         history.push(`/Home/Reports`)
@@ -16,7 +25,7 @@ const ReportWithFunction = ({ children, title, displayClose, download }) => {
 
     return (
         <Box sx={{ flex: 1 }} >
-            <Paper sx={{ flex: 1, height: screenInnerHeight * 83 / 100 }} >
+            <Paper sx={{ flex: 1, height: pageHeight }} >
                 <Paper square sx={{ display: "flex", height: 30, flexDirection: 'column' }}>
                     <Box sx={{ display: "flex", flex: 1, height: 30, }} >
                         <Paper square sx={{

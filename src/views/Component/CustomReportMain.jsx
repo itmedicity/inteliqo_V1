@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, memo } from 'react'
 import CusIconButton from './CusIconButton'
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
@@ -13,7 +13,6 @@ import { useDispatch } from 'react-redux'
 import { Actiontypes } from 'src/redux/constants/action.type'
 import { warningNofity } from '../CommonCode/Commonfunc'
 import { ToastContainer } from 'react-toastify'
-import { memo } from 'react'
 import { useHistory } from 'react-router-dom'
 
 
@@ -39,6 +38,17 @@ const CustomReportMain = ({
 
     const dispatch = useDispatch()
     const history = useHistory()
+
+    const [pageHeight, setPageHeight] = useState(window.innerHeight - 85);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPageHeight(window.innerHeight - 85);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const onExportClick = () => {
         if (tableDataMain.length === 0) {
             warningNofity("Please Click The Search Button After Selecting the Options")
@@ -60,7 +70,7 @@ const CustomReportMain = ({
             <Paper
                 square
                 sx={{
-                    height: { xs: 550, sm: 550, md: 550, lg: 558, xl: 850 },
+                    height: pageHeight,
                     p: 0.5,
                 }}
             >
@@ -76,7 +86,7 @@ const CustomReportMain = ({
                         sx={{
                             backgroundColor: 'white',
                             width: { md: '20%', lg: '20%', xl: '15%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
                             flexDirection: 'row'
                         }}
                     >
@@ -113,7 +123,7 @@ const CustomReportMain = ({
                         </Paper>
                         <CustomAgGridMenuSelection
                             sx={{
-                                height: { xs: 270, sm: 270, md: 270, lg: 257, xl: 401 },
+                                height: secondMenu === 1 ? (pageHeight - 50) / 2 : pageHeight - 50,
                                 width: '100%',
                             }}
                             columnDefs={columnDefs}
@@ -126,8 +136,7 @@ const CustomReportMain = ({
                             <CustomAgGridMenuSelection
                                 sx={{
                                     width: '100%',
-                                    height: { xs: 270, sm: 270, md: 270, lg: 257, xl: 401 },
-
+                                    height: (pageHeight - 50) / 2,
                                 }}
                                 columnDefs={columnDefMenu2}
                                 onSelectionChanged={onSelectionChanged2}
@@ -144,7 +153,7 @@ const CustomReportMain = ({
                             sx={{
                                 backgroundColor: 'white',
                                 width: { md: '20%', lg: '20%', xl: '15%' },
-                                height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                                height: pageHeight - 10,
                             }}
                         >
                             <Paper
@@ -164,7 +173,7 @@ const CustomReportMain = ({
                             <CustomAgGridMenuSelection
                                 sx={{
                                     width: '100%',
-                                    height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
+                                    height: pageHeight - 50,
                                 }}
                                 columnDefs={columnDefMenu3}
                                 onSelectionChanged={onSelectionChanged3}
@@ -178,7 +187,7 @@ const CustomReportMain = ({
                         sx={{
                             backgroundColor: 'lightGrey',
                             width: { md: '80%', lg: '80%', xl: '85%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
                         }}
                     >
                         {/* Rigth Side Menu  */}
@@ -223,6 +232,10 @@ const CustomReportMain = ({
                                 tableDataMain={tableDataMain}
                                 columnDefMain={columnDefMain}
                                 onSelectionChanged={onSelectionChanged2}
+                                sx={{
+                                    height: pageHeight - 50,
+                                    width: '100%',
+                                }}
                             />
                         </Box>
                         {/* Rigth Side Menu  */}
