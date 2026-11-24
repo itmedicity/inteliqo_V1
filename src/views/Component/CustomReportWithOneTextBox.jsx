@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useState, useEffect } from 'react'
 import CusIconButton from './CusIconButton'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
@@ -24,6 +24,16 @@ const CustomReportWithOneTextBox = ({ columnDefs,
     const dispatch = useDispatch()
     const history = useHistory()
 
+    const [pageHeight, setPageHeight] = useState(window.innerHeight - 85);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPageHeight(window.innerHeight - 85);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const onExportClick = useCallback(() => {
         if (tableDataMain.length === 0) {
             warningNofity("Please Click The Search Button After Selecting the Options")
@@ -44,7 +54,7 @@ const CustomReportWithOneTextBox = ({ columnDefs,
             <Paper
                 square
                 sx={{
-                    height: { xs: 550, sm: 550, md: 550, lg: 558, xl: 850 },
+                    height: pageHeight,
                     p: 0.5,
                 }}
             >
@@ -60,7 +70,7 @@ const CustomReportWithOneTextBox = ({ columnDefs,
                         sx={{
                             backgroundColor: 'white',
                             width: { md: '20%', lg: '20%', xl: '15%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
                         }}
                     >
                         {/* Top Left Menu Section Start */}
@@ -92,7 +102,7 @@ const CustomReportWithOneTextBox = ({ columnDefs,
                             tableData={tableData}
                             setExpiry={setExpiry}
                             sx={{
-                                height: { xs: 200, sm: 200, md: 200, lg: 250, xl: 380 },
+                                height: pageHeight - 85,
                                 width: '100%',
                             }}
                         />
@@ -106,7 +116,7 @@ const CustomReportWithOneTextBox = ({ columnDefs,
                         sx={{
                             backgroundColor: 'lightGrey',
                             width: { md: '80%', lg: '80%', xl: '85%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
                         }}
                     >
                         {/* Rigth Side Menu  */}
@@ -155,6 +165,10 @@ const CustomReportWithOneTextBox = ({ columnDefs,
                             <AgGridWithLoading
                                 tableDataMain={tableDataMain}
                                 columnDefMain={columnDefMain}
+                                sx={{
+                                    height: pageHeight - 45,
+                                    width: '100%',
+                                }}
                             />
 
                             {/* <Backdrop

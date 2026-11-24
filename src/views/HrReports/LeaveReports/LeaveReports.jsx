@@ -1,16 +1,19 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { warningNofity } from 'src/views/CommonCode/Commonfunc'
 import { useDispatch, useSelector } from 'react-redux'
-import { Box, Tooltip, Typography, CssVarsProvider, Input } from '@mui/joy'
+import { Box, Tooltip, Typography, CssVarsProvider, Input, Button, Chip } from '@mui/joy'
 import { Paper } from '@mui/material'
-import IconButton from '@mui/joy/IconButton';
 import DepartmentDropRedx from 'src/views/Component/ReduxComponent/DepartmentRedx';
 import DepartmentSectionRedx from 'src/views/Component/ReduxComponent/DepartmentSectionRedx';
 import { ToastContainer } from 'react-toastify';
 import { setDepartment } from 'src/redux/actions/Department.action';
 import InputComponent from 'src/views/MuiComponents/JoyComponent/InputComponent';
 import ReportLayout from '../ReportComponent/ReportLayout';
-import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import SearchIcon from '@mui/icons-material/Search';
+import BusinessIcon from '@mui/icons-material/Business';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import moment from 'moment';
 import CustomAgGridRptFormatOne from 'src/views/Component/CustomAgGridRptFormatOne';
 import { getCompOffRprtAll, getHalfdayRprtAll, getLeaveReportAll, getNopunchRprttAll, getOneHrAll, getOndutyAll } from 'src/redux/actions/LeaveReport.Action';
@@ -478,12 +481,13 @@ const LeaveReports = () => {
 
     }, [Empno, leaveRqList, compOffRqList, nopunchRqList, halfdayRqList, deptName, deptSecName, fromdate, onehourList, ondutyList, Yeardate])
 
-    useEffect(() => {
-        if (Data?.length === 0) {
-            setEmpNo(0)
-            warningNofity("No Details To Show")
-        }
-    }, [Data])
+    // useEffect(() => {
+    //     if (Data?.length === 0) {
+    //         setEmpNo(0)
+    //         warningNofity("No Details To Show")
+    //     }
+    // }, [Data])
+
     const [columnDef] = useState([
         // { headerName: 'Sl No', field: 'rslno', minWidth: 10, filter: true },
         { headerName: 'Emp No', field: 'emno', minWidth: 200, filter: true },
@@ -501,101 +505,175 @@ const LeaveReports = () => {
         { headerName: 'Remark(for Reject)', field: 'Remark', minWidth: 200 },
     ])
     return (
-        <Box sx={{ display: "flex", flexGrow: 1, width: "100%", }} >
-            {/* <CustomBackDrop open={openBkDrop} text="Please wait !. " /> */}
-            <ToastContainer />
-            <ReportLayout title="Leave Reports" data={Data} displayClose={true} >
-                <Paper sx={{ display: 'flex', flex: 1, flexDirection: 'column', }}>
 
-                    <Box sx={{ mt: 1, ml: 0.5, display: 'flex', flex: { xs: 4, sm: 4, md: 4, lg: 4, xl: 3, }, flexDirection: 'row', }}>
-                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+        <ReportLayout title="Leave Reports" data={Data} displayClose={true} >
+            <Paper sx={{ display: 'flex', flex: 1, flexDirection: 'column', width: '100%', overflowX: 'hidden', boxSizing: 'border-box' }}>
+                {/* Modern Analytics Filter Card */}
+                <Paper
+                    elevation={0}
+                    sx={{
+                        p: 1.2,
+                        m: 0.8,
+                        borderRadius: '10px',
+                        border: '1px solid #e2e8f0',
+                        background: 'linear-gradient(180deg, #fbfcfe 0%, #f8fafc 100%)',
+                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)',
+                        boxSizing: 'border-box',
+                    }}
+                >
+                    {/* Row 1: Target Scope (Department, Section, Employee Number) */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            width: '100%',
+                            alignItems: 'center',
+                            gap: 1.5,
+                            boxSizing: 'border-box',
+                        }}
+                    >
+                        <Box sx={{ flex: 1, minWidth: 160 }}>
+                            <Typography sx={{ fontSize: 11, fontWeight: 600, color: '#64748b', mb: 0.3, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <BusinessIcon sx={{ fontSize: 14, color: '#1976d2' }} /> DEPARTMENT
+                            </Typography>
                             <DepartmentDropRedx getDept={setDepartmentName} />
                         </Box>
-                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }} >
+
+                        <Box sx={{ flex: 1, minWidth: 160 }}>
+                            <Typography sx={{ fontSize: 11, fontWeight: 600, color: '#64748b', mb: 0.3, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <FilterListIcon sx={{ fontSize: 14, color: '#1976d2' }} /> DEPARTMENT SECTION
+                            </Typography>
                             <DepartmentSectionRedx getSection={setDepartSecName} />
                         </Box>
 
-                        <Tooltip title="Employee Number" followCursor placement='top' arrow>
-                            <Box sx={{ flex: 1, mt: 0.5, px: 0.3, }}>
-                                <InputComponent
-                                    type="number"
-                                    size="sm"
-                                    placeholder="Employee Number"
-                                    name="Empno"
-                                    value={Empno}
-                                    onchange={(e) => setEmpNo(e.target.value)}
-                                />
-                            </Box>
-                        </Tooltip>
-
-                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, display: "flex", flexDirection: "row", }} >
-                            <Typography sx={{ p: 1 }}>From:</Typography>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                < DatePicker
-                                    // disableFuture={true}
-                                    views={['month']}
-                                    value={fromdate}
-                                    // maxDate={new Date()}
-                                    size="sm"
-                                    onChange={(e) => {
-                                        Setfromdate(moment(e).format("YYYY-MM"));
-                                    }}
-                                    renderInput={({ inputRef, inputProps, InputProps }) => (
-                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                            <CssVarsProvider>
-                                                <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: "100%" }} />
-                                            </CssVarsProvider>
-                                            {InputProps?.endAdornment}
-                                        </Box>
-                                    )}
-                                />
-                            </LocalizationProvider>
-                        </Box>
-                        <Box sx={{ flex: 1, mt: 0.5, px: 0.3, display: "flex", flexDirection: "row", }} >
-                            <Typography sx={{ p: 1 }}>Year:</Typography>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                < DatePicker
-                                    // disableFuture={true}
-                                    views={['year']}
-                                    value={Yeardate}
-                                    // maxDate={new Date()}
-                                    size="small"
-                                    onChange={(e) => {
-                                        SetYeardate(moment(e).format("YYYY"));
-                                    }}
-                                    renderInput={({ inputRef, inputProps, InputProps }) => (
-                                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                                            <CssVarsProvider>
-                                                <Input ref={inputRef} {...inputProps} disabled={true} style={{ width: "100%" }} />
-                                            </CssVarsProvider>
-                                            {InputProps?.endAdornment}
-                                        </Box>
-                                    )}
-                                />
-                            </LocalizationProvider>
-
-
-                        </Box>
-                        <Box sx={{ flex: 1, mt: 1, ml: 1 }}>
-                            <IconButton variant="outlined" size='sm' color="primary"
-                                onClick={getEmployeeList}
-                            >
-                                <PublishedWithChangesIcon />
-                            </IconButton>
-
+                        <Box sx={{ width: 140, flexShrink: 0 }}>
+                            <Typography sx={{ fontSize: 11, fontWeight: 600, color: '#64748b', mb: 0.3, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <PersonOutlineIcon sx={{ fontSize: 14, color: '#1976d2' }} /> EMPLOYEE NO
+                            </Typography>
+                            <Tooltip title="Employee Number" followCursor placement='top' arrow>
+                                <Box>
+                                    <InputComponent
+                                        type="number"
+                                        size="sm"
+                                        placeholder="Emp No"
+                                        name="Empno"
+                                        value={Empno}
+                                        onchange={(e) => setEmpNo(e.target.value)}
+                                    />
+                                </Box>
+                            </Tooltip>
                         </Box>
                     </Box>
-                    <Paper square elevation={0} sx={{ p: 1, mt: 0.5, display: 'flex', flexDirection: "column", }} >
 
-                        <CustomAgGridRptFormatOne
-                            tableDataMain={Data}
-                            columnDefMain={columnDef}
-                        />
-                    </Paper>
+                    {/* Row 2: Date Filters & Action Button */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'flex-end',
+                            justifyContent: 'space-between',
+                            width: '100%',
+                            mt: 1,
+                            pt: 0.8,
+                            borderTop: '1px dashed #e2e8f0',
+                            boxSizing: 'border-box',
+                        }}
+                    >
+                        {/* Left: Month & Year Pickers */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <Typography sx={{ fontSize: 11, fontWeight: 600, color: '#64748b', mb: 0.3, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                    <CalendarMonthIcon sx={{ fontSize: 14, color: '#1976d2' }} /> FROM MONTH
+                                </Typography>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        views={['month']}
+                                        value={fromdate}
+                                        size="sm"
+                                        onChange={(e) => {
+                                            Setfromdate(moment(e).format("YYYY-MM"));
+                                        }}
+                                        renderInput={({ inputRef, inputProps, InputProps }) => (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', width: 160 }}>
+                                                <CssVarsProvider>
+                                                    <Input ref={inputRef} {...inputProps} disabled={true} size="sm" sx={{ width: "100%", bgcolor: '#fff' }} />
+                                                </CssVarsProvider>
+                                                {InputProps?.endAdornment}
+                                            </Box>
+                                        )}
+                                    />
+                                </LocalizationProvider>
+                            </Box>
 
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <Typography sx={{ fontSize: 11, fontWeight: 600, color: '#64748b', mb: 0.3, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                    <CalendarMonthIcon sx={{ fontSize: 14, color: '#1976d2' }} /> YEAR
+                                </Typography>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DatePicker
+                                        views={['year']}
+                                        value={Yeardate}
+                                        size="small"
+                                        onChange={(e) => {
+                                            SetYeardate(moment(e).format("YYYY"));
+                                        }}
+                                        renderInput={({ inputRef, inputProps, InputProps }) => (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', width: 130 }}>
+                                                <CssVarsProvider>
+                                                    <Input ref={inputRef} {...inputProps} disabled={true} size="sm" sx={{ width: "100%", bgcolor: '#fff' }} />
+                                                </CssVarsProvider>
+                                                {InputProps?.endAdornment}
+                                            </Box>
+                                        )}
+                                    />
+                                </LocalizationProvider>
+                            </Box>
+                        </Box>
+
+                        {/* Right: Records status and Action Button */}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                            {Data.length > 0 && (
+                                <Chip size="sm" variant="outlined" color="success" sx={{ fontSize: 11, fontWeight: 600 }}>
+                                    {Data.length} records found
+                                </Chip>
+                            )}
+                            <Button
+                                variant="solid"
+                                color="primary"
+                                onClick={getEmployeeList}
+                                startDecorator={<SearchIcon sx={{ fontSize: 18 }} />}
+                                sx={{
+                                    height: 34,
+                                    px: 2.2,
+                                    fontWeight: 600,
+                                    fontSize: 13,
+                                    borderRadius: '8px',
+                                    background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+                                    boxShadow: '0 2px 6px rgba(25, 118, 210, 0.3)',
+                                    transition: 'all 0.2s ease',
+                                    '&:hover': {
+                                        background: 'linear-gradient(135deg, #1565c0 0%, #0d47a1 100%)',
+                                        boxShadow: '0 4px 10px rgba(25, 118, 210, 0.4)',
+                                    },
+                                }}
+                            >
+                                Search Report
+                            </Button>
+                        </Box>
+                    </Box>
                 </Paper>
-            </ReportLayout>
-        </Box >
+
+                <Paper square elevation={0} sx={{ px: 1, pb: 1, display: 'flex', flexDirection: "column", width: "100%", boxSizing: 'border-box' }} >
+                    <CustomAgGridRptFormatOne
+                        tableDataMain={Data}
+                        columnDefMain={columnDef}
+                        sx={{ height: 'calc(100vh - 265px)' }}
+                    />
+                </Paper>
+
+            </Paper>
+        </ReportLayout>
+
 
     )
 }

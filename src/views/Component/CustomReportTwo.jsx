@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useState, useEffect } from 'react'
 import CusIconButton from './CusIconButton'
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
@@ -19,6 +19,17 @@ const CustomReportTwo = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableD
     tableDataMenu2, onSelectionChangedMenu2, onChange }) => {
     const dispatch = useDispatch()
     const history = useHistory()
+
+    const [pageHeight, setPageHeight] = useState(window.innerHeight - 85);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPageHeight(window.innerHeight - 85);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     /** To download ag grid report list, if there is no value or not clicked on the search button it shows warning. otherwise it dispatch */
     const onExportClick = useCallback(() => {
         if (tableDataMain.length === 0) {
@@ -42,7 +53,7 @@ const CustomReportTwo = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableD
             <Paper
                 square
                 sx={{
-                    height: { xs: 550, sm: 550, md: 550, lg: 558, xl: 850 },
+                    height: pageHeight,
                     p: 0.5,
                 }}
             >
@@ -58,7 +69,7 @@ const CustomReportTwo = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableD
                         sx={{
                             backgroundColor: 'lightBlue',
                             width: { md: '20%', lg: '20%', xl: '15%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
                         }}
                     >
                         {/* Top Left Menu Section Start */}
@@ -86,7 +97,15 @@ const CustomReportTwo = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableD
                             </CustomeToolTip>
                         </Paper>
 
-                        <CustomAgGridMenuSelection columnDefs={columnDefs} onSelectionChanged={onSelectionChanged} tableData={tableData} />
+                        <CustomAgGridMenuSelection
+                            columnDefs={columnDefs}
+                            onSelectionChanged={onSelectionChanged}
+                            tableData={tableData}
+                            sx={{
+                                height: pageHeight - 45,
+                                width: '100%',
+                            }}
+                        />
 
                         {/* Table Component */}
 
@@ -101,7 +120,7 @@ const CustomReportTwo = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableD
                             sx={{
                                 backgroundColor: 'white',
                                 width: { md: '20%', lg: '20%', xl: '15%' },
-                                height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                                height: pageHeight - 10,
                             }}
                         >
                             <Paper
@@ -118,7 +137,14 @@ const CustomReportTwo = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableD
                             >
                             </Paper>
                             <CustomAgGridMenuSelection
-                                columnDefs={columnDefMenu2} onSelectionChanged={onSelectionChangedMenu2} tableData={tableDataMenu2} />
+                                columnDefs={columnDefMenu2}
+                                onSelectionChanged={onSelectionChangedMenu2}
+                                tableData={tableDataMenu2}
+                                sx={{
+                                    height: pageHeight - 45,
+                                    width: '100%',
+                                }}
+                            />
                         </Paper>
                         : null}
                     {/* Second Left Menu Section End */}
@@ -129,7 +155,7 @@ const CustomReportTwo = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableD
                         sx={{
                             backgroundColor: 'lightGrey',
                             width: { md: '80%', lg: '80%', xl: '85%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
                         }}
                     >
                         {/* Rigth Side Menu  */}
@@ -170,7 +196,15 @@ const CustomReportTwo = ({ secondMenu, ShowSecondMenu, menu2, columnDefs, tableD
                             }}
                         >
                             {/* Table Component */}
-                            <CustomAgGridRptFormatOne tableDataMain={tableDataMain} columnDefMain={columnDefMain} onSelectionChanged={onSelectionChangedMenu2} />
+                            <CustomAgGridRptFormatOne
+                                tableDataMain={tableDataMain}
+                                columnDefMain={columnDefMain}
+                                onSelectionChanged={onSelectionChangedMenu2}
+                                sx={{
+                                    height: pageHeight - 45,
+                                    width: '100%',
+                                }}
+                            />
                         </Box>
                         {/* Rigth Side Menu  */}
                     </Paper>

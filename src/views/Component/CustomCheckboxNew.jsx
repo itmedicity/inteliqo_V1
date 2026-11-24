@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useCallback, useEffect, memo } from 'react'
+import React, { useCallback, useEffect, useState, memo } from 'react'
 import CusIconButton from './CusIconButton'
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch'
 import SearchIcon from '@mui/icons-material/Search'
@@ -38,6 +38,16 @@ const CustomCheckboxNew = ({
     const dispatch = useDispatch()
     const history = useHistory()
 
+    const [pageHeight, setPageHeight] = useState(window.innerHeight - 85);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPageHeight(window.innerHeight - 85);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const onExportClick = useCallback(() => {
         if (tableDataMain.length === 0) {
             warningNofity("Please Click The Search Button After Selecting the Options")
@@ -64,7 +74,7 @@ const CustomCheckboxNew = ({
             <Paper
                 square
                 sx={{
-                    height: { xs: 550, sm: 550, md: 550, lg: 558, xl: 850 },
+                    height: pageHeight,
                     p: 0.5,
                 }}
             >
@@ -80,7 +90,7 @@ const CustomCheckboxNew = ({
                         sx={{
                             backgroundColor: 'white',
                             width: { md: '20%', lg: '20%', xl: '15%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
                             flexDirection: 'row'
                         }}
                     >
@@ -117,7 +127,7 @@ const CustomCheckboxNew = ({
                         </Paper>
                         <CustomAgGridMenuSelection
                             sx={{
-                                height: { xs: 180, sm: 180, md: 180, lg: 183, xl: 280 },
+                                height: secondMenu === 1 ? (pageHeight - 90) / 2 : pageHeight - 50,
                                 width: '100%',
                             }}
                             columnDefs={columnDefs}
@@ -130,8 +140,7 @@ const CustomCheckboxNew = ({
                             <AgGridWithTextInput
                                 sx={{
                                     width: '100%',
-                                    height: { xs: 180, sm: 180, md: 180, lg: 183, xl: 280 },
-
+                                    height: (pageHeight - 90) / 2 - 35,
                                 }}
                                 columnDefs={columnDefMenu2}
                                 onSelectionChanged={onSelectionChanged2}
@@ -154,7 +163,7 @@ const CustomCheckboxNew = ({
                         sx={{
                             backgroundColor: 'lightGrey',
                             width: { md: '80%', lg: '80%', xl: '85%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
                         }}
                     >
                         {/* Rigth Side Menu  */}
@@ -199,6 +208,10 @@ const CustomCheckboxNew = ({
                             <CustomAgGridRptFormatOne
                                 tableDataMain={tableDataMain}
                                 columnDefMain={columnDefMain}
+                                sx={{
+                                    height: pageHeight - 50,
+                                    width: '100%',
+                                }}
                             />
                         </Box>
                         {/* Rigth Side Menu  */}

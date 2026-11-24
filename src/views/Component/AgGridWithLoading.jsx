@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useMemo, useRef } from 'react'
+import React, { Fragment, memo, useMemo, useRef, useState, useEffect } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
@@ -10,12 +10,22 @@ import CustomLoadingCellRenderer from './CustomLoadingCellRenderer'
 const AgGridWithLoading = ({
     columnDefMain,
     tableDataMain,
+    sx,
     // loadingCellRenderer,
     // loadingCellRendererParams,
     // loadingOverlayComponent,
     // loadingOverlayComponentParams
 }) => {
     const apiRef = useRef();
+    const [gridHeight, setGridHeight] = useState(window.innerHeight - 200);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setGridHeight(window.innerHeight - 200);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
     /** useSelector is used for get aggrid download button state */
     const exportState = useSelector((state) => {
         return state.changeStateAggrid.aggridstate
@@ -80,8 +90,9 @@ const AgGridWithLoading = ({
                 <Box
                     className="ag-theme-material ListItemScrol"
                     sx={{
-                        height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
+                        height: gridHeight,
                         width: '100%',
+                        ...sx,
                     }}
                 >
                     {/* {tableDataMain ? <AgGridReact

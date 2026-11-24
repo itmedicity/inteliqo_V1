@@ -1,6 +1,6 @@
 import { Paper, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { memo, useCallback } from 'react'
+import React, { memo, useCallback, useState, useEffect } from 'react'
 import CusIconButton from './CusIconButton'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
@@ -30,6 +30,17 @@ const CustomReportExp = ({ columnDefs,
 
     const dispatch = useDispatch()
     const history = useHistory()
+
+    const [pageHeight, setPageHeight] = useState(window.innerHeight - 85);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setPageHeight(window.innerHeight - 85);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const onExportClick = useCallback(() => {
         if (tableDataMain.length === 0) {
             warningNofity("Please Click The Search Button After Selecting the Options")
@@ -49,7 +60,7 @@ const CustomReportExp = ({ columnDefs,
             <Paper
                 square
                 sx={{
-                    height: { xs: 550, sm: 550, md: 550, lg: 558, xl: 860 },
+                    height: pageHeight,
                     p: 0.3,
                 }}
             >
@@ -65,7 +76,7 @@ const CustomReportExp = ({ columnDefs,
                         sx={{
                             backgroundColor: 'white',
                             width: { md: '20%', lg: '20%', xl: '15%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
                         }}
                     >
                         {/* Top Left Menu Section Start */}
@@ -89,7 +100,7 @@ const CustomReportExp = ({ columnDefs,
                             onSelectionChanged={onSelectionChanged}
                             tableData={tableData}
                             sx={{
-                                height: { xs: 540, sm: 540, md: 540, lg: 514, xl: 802 },
+                                height: pageHeight - 45,
                                 width: '100%',
                             }}
                         />
@@ -103,7 +114,7 @@ const CustomReportExp = ({ columnDefs,
                         sx={{
                             backgroundColor: 'lightGrey',
                             width: { md: '80%', lg: '80%', xl: '85%' },
-                            height: { xs: 540, sm: 540, md: 540, lg: 548, xl: 840 },
+                            height: pageHeight - 10,
 
                         }}
                     >
@@ -217,7 +228,14 @@ const CustomReportExp = ({ columnDefs,
                             }}
                         >
                             {/* Table Component */}
-                            <CustomAgGridRptFormatOne tableDataMain={tableDataMain} columnDefMain={columnDefMain} />
+                            <CustomAgGridRptFormatOne
+                                tableDataMain={tableDataMain}
+                                columnDefMain={columnDefMain}
+                                sx={{
+                                    height: pageHeight - 45,
+                                    width: '100%',
+                                }}
+                            />
                         </Box>
                         {/* Rigth Side Menu  */}
                     </Paper>
